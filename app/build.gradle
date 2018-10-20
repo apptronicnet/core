@@ -7,7 +7,7 @@ apply plugin: 'kotlin-android-extensions'
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "shoppinglist.apptronic.net.shoppinglist"
+        applicationId "net.apptronic.shoppinglist"
         minSdkVersion 21
         targetSdkVersion 28
         versionCode 1
