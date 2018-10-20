@@ -9,6 +9,7 @@ buildscript {
     ext.rx_kotlin_version = "2.3.0"
     ext.rx_android_version = "2.1.0"
     ext.junit_version = "4.12"
+    ext.room_version = "2.1.0-alpha02"
 
     repositories {
         google()

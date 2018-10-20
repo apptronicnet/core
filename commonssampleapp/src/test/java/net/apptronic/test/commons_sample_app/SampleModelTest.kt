@@ -1,4 +1,4 @@
-package net.apptronic.shoppinglist
+package net.apptronic.test.commons_sample_app
 
 import net.apptronic.common.android.ui.components.fragment.FragmentLifecycle
 import net.apptronic.common.android.ui.threading.SynchronousExecutor
