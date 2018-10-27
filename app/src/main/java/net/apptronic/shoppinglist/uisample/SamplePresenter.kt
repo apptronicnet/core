@@ -28,15 +28,15 @@ class SamplePresenter(val view: SampleViewModel) {
 
         // perform some actions on view is resumed
         view.onResume {
-            // when user changes view property userInput
-            view.userInput.subscribe {
-                // then set view property [userInputText] to it
-                view.userInputText.set("Input: $it")
+            // when user changes view property userInputValue
+            view.userInputValue.subscribe {
+                // then set view property [currentInputText] to it
+                view.currentInputText.set("Input: $it")
             }
             // when user clicks on button "Confirm input"
-            view.onClickConfirmInput.subscribe {
-                // then set view property [userConfirmedInputText] to value of [userInput]
-                view.userConfirmedInputText.set(view.userInput)
+            view.onClickConfirmInputEvent.subscribe {
+                // then set view property [confirmedInputText] to value of [userInputValue]
+                view.confirmedInputText.set(view.userInputValue)
             }
             // all subscriptions will be automatically unsubscribed when view paused
         }

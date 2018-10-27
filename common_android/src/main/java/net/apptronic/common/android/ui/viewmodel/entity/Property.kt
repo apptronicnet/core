@@ -28,13 +28,13 @@ abstract class Property<T>(lifecycleHolder: LifecycleHolder<*>) : SubjectEntity<
 
 class ViewProperty<T>(lifecycleHolder: LifecycleHolder<*>) : Property<T>(lifecycleHolder)
 
-class StateProperty<T>(lifecycleHolder: LifecycleHolder<*>) : Property<T>(lifecycleHolder)
+class ValueProperty<T>(lifecycleHolder: LifecycleHolder<*>) : Property<T>(lifecycleHolder)
 
-infix fun <A : ViewProperty<*>> TextView.setTextFrom(property: A) {
+infix fun <A : ViewProperty<*>> TextView.showsTextFrom(property: A) {
     property.subscribe { text = it.toString() }
 }
 
-infix fun EditText.saveChangesTo(property: StateProperty<String>) {
+infix fun EditText.savesTextChangesTo(property: ValueProperty<String>) {
     property.set(text.toString())
     addTextChangedListener(object : BaseTextWatcher() {
         override fun afterTextChanged(s: Editable?) {

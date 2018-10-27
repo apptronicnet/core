@@ -22,26 +22,26 @@ class SampleViewModel(lifecycleHolder: LifecycleHolder<FragmentLifecycle>) : Fra
     /**
      * Action when user changed text in EditText input
      */
-    val textInput = userAction<String>()
+    val userInputUpdates = userAction<String>()
 
     /**
      * Property where saved changes from EditText input
      */
-    val userInput = state<String>()
+    val userInputValue = value<String>()
 
     /**
      * Action when user clicked button "Confirm text input"
      */
-    val onClickConfirmInput = userAction<Unit>()
+    val onClickConfirmInputEvent = userAction<Unit>()
 
     /**
      * User input text
      */
-    val userInputText = property<String>()
+    val currentInputText = property<String>()
 
     /**
      * Confirmed user input text
      */
-    val userConfirmedInputText = property<String>()
+    val confirmedInputText = property<String>()
 
 }

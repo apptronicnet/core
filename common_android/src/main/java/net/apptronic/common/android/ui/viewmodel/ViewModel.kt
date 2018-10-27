@@ -1,7 +1,7 @@
 package net.apptronic.common.android.ui.viewmodel
 
-import net.apptronic.common.android.ui.viewmodel.entity.StateProperty
 import net.apptronic.common.android.ui.viewmodel.entity.UserAction
+import net.apptronic.common.android.ui.viewmodel.entity.ValueProperty
 import net.apptronic.common.android.ui.viewmodel.entity.ViewProperty
 import net.apptronic.common.android.ui.viewmodel.lifecycle.LifecycleHolder
 
@@ -24,17 +24,17 @@ abstract class ViewModel(private val lifecycleHolder: LifecycleHolder<*>) {
     }
 
     /**
-     * State of screen
+     * State value of screen
      */
-    fun <T> state(): StateProperty<T> {
-        return StateProperty(lifecycleHolder)
+    fun <T> value(): ValueProperty<T> {
+        return ValueProperty(lifecycleHolder)
     }
 
     /**
-     * State of screen with default value
+     * State value  of screen with default value
      */
-    fun <T> state(defaultValue: T): StateProperty<T> {
-        return StateProperty<T>(lifecycleHolder).apply {
+    fun <T> value(defaultValue: T): ValueProperty<T> {
+        return ValueProperty<T>(lifecycleHolder).apply {
             set(defaultValue)
         }
     }

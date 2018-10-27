@@ -19,12 +19,12 @@ class UserAction<T>(lifecycleHolder: LifecycleHolder<*>) : SubjectEntity<T>(life
 
 }
 
-infix fun View.sendClicksTo(userAction: UserAction<*>) {
+infix fun View.sendsClicksTo(userAction: UserAction<*>) {
     setOnClickListener { userAction.sendEvent() }
 }
 
 
-infix fun EditText.sendTextChangeEventsTo(userAction: UserAction<String>) {
+infix fun EditText.sendsTextChangeEventsTo(userAction: UserAction<String>) {
     addTextChangedListener(object : BaseTextWatcher() {
         override fun afterTextChanged(s: Editable?) {
             userAction.sendEvent(s.toString())
