@@ -6,7 +6,7 @@ import android.widget.TextView
 import net.apptronic.common.android.ui.utils.BaseTextWatcher
 import net.apptronic.common.android.ui.viewmodel.lifecycle.LifecycleHolder
 
-class Property<T>(lifecycleHolder: LifecycleHolder<*>) : SubjectEntity<T>(lifecycleHolder,
+abstract class Property<T>(lifecycleHolder: LifecycleHolder<*>) : SubjectEntity<T>(lifecycleHolder,
         ValueSubject(lifecycleHolder.threadExecutor())) {
 
     private var value: T? = null
@@ -26,14 +26,19 @@ class Property<T>(lifecycleHolder: LifecycleHolder<*>) : SubjectEntity<T>(lifecy
 
 }
 
-fun Property<*>.textToTextView(textView: TextView) {
-    subscribe { textView.text = it.toString() }
+class ViewProperty<T>(lifecycleHolder: LifecycleHolder<*>) : Property<T>(lifecycleHolder)
+
+class StateProperty<T>(lifecycleHolder: LifecycleHolder<*>) : Property<T>(lifecycleHolder)
+
+infix fun <A : ViewProperty<*>> TextView.setTextFrom(property: A) {
+    property.subscribe { text = it.toString() }
 }
 
-fun Property<String>.handleInput(view: EditText) {
-    view.addTextChangedListener(object : BaseTextWatcher() {
+infix fun EditText.saveChangesTo(property: StateProperty<String>) {
+    property.set(text.toString())
+    addTextChangedListener(object : BaseTextWatcher() {
         override fun afterTextChanged(s: Editable?) {
-            set(s.toString())
+            property.set(s.toString())
         }
     })
 }

@@ -7,7 +7,7 @@ import net.apptronic.common.android.ui.threading.AndroidFragmentMainThreadExecut
 import net.apptronic.common.android.ui.threading.ThreadExecutor
 import net.apptronic.common.android.ui.viewmodel.lifecycle.LifecycleHolder
 
-abstract class BaseFragment : Fragment(), LifecycleHolder<FragmentLifecycle> {
+abstract class BaseFragment<Model : FragmentViewModel> : Fragment(), LifecycleHolder<FragmentLifecycle> {
 
     private val lifecycle = FragmentLifecycle()
     private val threadExecutor = AndroidFragmentMainThreadExecutor(this)
@@ -16,10 +16,21 @@ abstract class BaseFragment : Fragment(), LifecycleHolder<FragmentLifecycle> {
 
     override fun threadExecutor(): ThreadExecutor = threadExecutor
 
-    abstract fun onCreateModel(): FragmentViewModel
+    abstract fun onCreateModel(): Model
+
+    private var model: Model? = null
+
+    fun model(): Model {
+        val model = this.model
+        if (model != null) {
+            return model
+        } else {
+            throw IllegalStateException("Model is not initialized")
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        onCreateModel()
+        model = onCreateModel()
         lifecycle.createdStage.enter()
         super.onCreate(savedInstanceState)
     }

@@ -6,20 +6,19 @@ import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.sample_fragment.*
 import net.apptronic.common.android.ui.components.BaseFragment
-import net.apptronic.common.android.ui.components.FragmentViewModel
-import net.apptronic.common.android.ui.viewmodel.entity.handleClicks
-import net.apptronic.common.android.ui.viewmodel.entity.handleInput
-import net.apptronic.common.android.ui.viewmodel.entity.textToTextView
-import net.apptronic.common.android.ui.viewmodel.setupView
+import net.apptronic.common.android.ui.viewmodel.entity.saveChangesTo
+import net.apptronic.common.android.ui.viewmodel.entity.sendClicksTo
+import net.apptronic.common.android.ui.viewmodel.entity.sendTextChangeEventsTo
+import net.apptronic.common.android.ui.viewmodel.entity.setTextFrom
 import net.apptronic.shoppinglist.R
 
-class SampleFragment : BaseFragment() {
+/**
+ * Sample fragment creates screen View and binds it to ViewModel
+ */
+class SampleFragment : BaseFragment<SampleViewModel>() {
 
-    var model: SampleViewModel? = null
-
-    override fun onCreateModel(): FragmentViewModel {
+    override fun onCreateModel(): SampleViewModel {
         return SampleViewModel(this).apply {
-            model = this
             SamplePresenter(this)
         }
     }
@@ -30,15 +29,20 @@ class SampleFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        model.setupView {
-            title.textToTextView(titleTv)
-            onClickRefreshTitle.handleClicks(btnRefreshTitle)
-            textInput.handleInput(edtSomeInput)
-            userInput.handleInput(edtSomeInput)
-            onClickConfirmInput.handleClicks(btnConfirmInput)
-            userInputText.textToTextView(editedText)
-            userConfirmedInputText.textToTextView(confirmedText)
-        }
+        // TextView [id=titleTv] will show text from property [title]
+        titleTv setTextFrom model().title
+        // Button [id=btnRefreshTitle] will send click events to UserEvent [onClickRefreshTitle]
+        btnRefreshTitle sendClicksTo model().onClickRefreshTitle
+        // EditText [id=edtSomeInput] will send text changes events to UserEvent [textInput]
+        edtSomeInput sendTextChangeEventsTo model().textInput
+        // EditText [id=edtSomeInput] will save text changes to Property [userInput]
+        edtSomeInput saveChangesTo model().userInput
+        // Button [id=btnConfirmInput] will send click events to UserEvent [onClickConfirmInput]
+        btnConfirmInput sendClicksTo model().onClickConfirmInput
+        // TextView [id=editedText] will show text from property [userInputText]
+        editedText setTextFrom model().userInputText
+        // TextView [id=confirmedText] will show text from property [userConfirmedInputText]
+        confirmedText setTextFrom model().userConfirmedInputText
     }
 
 }

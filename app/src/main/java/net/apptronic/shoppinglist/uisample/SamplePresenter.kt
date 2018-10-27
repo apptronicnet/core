@@ -1,27 +1,44 @@
 package net.apptronic.shoppinglist.uisample
 
-class SamplePresenter(val viewModel: SampleViewModel) {
+/**
+ * Sample presenter represents behavior for sample screen
+ */
+class SamplePresenter(val view: SampleViewModel) {
 
+    /**
+     * Sample screen state variable
+     */
     var count = 1
 
+    // initialize behavior
     init {
 
-        viewModel.title.set("Initial title")
+        // Set view title
+        view.title.set("Initial title")
 
-        viewModel.onViewCreated {
-            viewModel.onClickRefreshTitle.subscribe {
-                viewModel.title.set("Title changes ${count++}")
+        // perform some actions on view is created
+        view.onViewCreated {
+            // handle clicks on button "Refresh title"
+            view.onClickRefreshTitle.subscribe {
+                // set new title value
+                view.title.set("Title changes ${count++}")
             }
-
+            // all subscriptions will be automatically unsubscribed when view destoryed
         }
 
-        viewModel.onResume {
-            viewModel.userInput.subscribe {
-                viewModel.userInputText.set(it)
+        // perform some actions on view is resumed
+        view.onResume {
+            // when user changes view property userInput
+            view.userInput.subscribe {
+                // then set view property [userInputText] to it
+                view.userInputText.set("Input: $it")
             }
-            viewModel.onClickConfirmInput.subscribe {
-                viewModel.userConfirmedInputText.set(viewModel.userInput)
+            // when user clicks on button "Confirm input"
+            view.onClickConfirmInput.subscribe {
+                // then set view property [userConfirmedInputText] to value of [userInput]
+                view.userConfirmedInputText.set(view.userInput)
             }
+            // all subscriptions will be automatically unsubscribed when view paused
         }
 
     }
