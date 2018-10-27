@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/titleTv"
+        android:padding="16dp"
+        android:textSize="24dp" />
+
+    <Button
+        android:id="@+id/btnRefreshTitle"
+        android:layout_margin="8dp"
+        android:text="Refresh title" />
+
+    <EditText android:id="@+id/edtSomeInput" />
+
+    <Button
+        android:id="@+id/btnConfirmInput"
+        android:layout_margin="8dp"
+        android:text="Confirm input" />
+
+    <TextView
+        android:id="@+id/editedText"
+        android:padding="8dp"
+        android:textColor="#0f0"
+        android:textSize="14dp" />
+
+    <TextView
+        android:id="@+id/confirmedText"
+        android:padding="8dp"
+        android:textColor="#f00"
+        android:textSize="14dp" />
+
+</TableLayout>
