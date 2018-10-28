@@ -23,7 +23,9 @@ class Property<T>(lifecycleHolder: LifecycleHolder<*>) : SubjectEntity<T>(lifecy
     }
 
     fun get(): T {
-        return valueHolder?.value ?: throw IllegalStateException("No value set")
+        valueHolder?.let {
+            return it.value
+        } ?: throw PropertyNotSetException()
     }
 
 }
@@ -37,6 +39,12 @@ private fun forEachChange(vararg properties: Property<*>, action: () -> Unit) {
         }
     }
 }
+
+fun <T> Property<T>.asCopyOf(source: Property<T>): Property<T> {
+    source.subject.subscribe { set(it) }
+    return this
+}
+
 
 fun <T : Property<R>, R, A1> T.asFunctionFrom(a1: Property<A1>,
                                               function: (A1) -> R): T {

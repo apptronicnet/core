@@ -6,7 +6,7 @@ import android.widget.EditText
 import net.apptronic.common.android.ui.utils.BaseTextWatcher
 import net.apptronic.common.android.ui.viewmodel.lifecycle.LifecycleHolder
 
-class UserAction<T>(lifecycleHolder: LifecycleHolder<*>) : SubjectEntity<T>(lifecycleHolder,
+class ViewEvent<T>(lifecycleHolder: LifecycleHolder<*>) : SubjectEntity<T>(lifecycleHolder,
         EventSubject(lifecycleHolder.threadExecutor())) {
 
     fun sendEvent(event: T) {
@@ -15,19 +15,19 @@ class UserAction<T>(lifecycleHolder: LifecycleHolder<*>) : SubjectEntity<T>(life
 
 }
 
-fun UserAction<Unit>.sendEvent() {
+fun ViewEvent<Unit>.sendEvent() {
     sendEvent(Unit)
 }
 
-infix fun View.sendsClicksTo(userAction: UserAction<Unit>) {
-    setOnClickListener { userAction.sendEvent() }
+infix fun View.sendsClicksTo(viewEvent: ViewEvent<Unit>) {
+    setOnClickListener { viewEvent.sendEvent() }
 }
 
 
-infix fun EditText.sendsTextChangeEventsTo(userAction: UserAction<String>) {
+infix fun EditText.sendsTextChangeEventsTo(viewEvent: ViewEvent<String>) {
     addTextChangedListener(object : BaseTextWatcher() {
         override fun afterTextChanged(s: Editable?) {
-            userAction.sendEvent(s.toString())
+            viewEvent.sendEvent(s.toString())
         }
     })
 }

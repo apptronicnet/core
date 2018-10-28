@@ -2,7 +2,7 @@ package net.apptronic.common.android.ui.viewmodel
 
 import android.content.Context
 import net.apptronic.common.android.ui.viewmodel.entity.Property
-import net.apptronic.common.android.ui.viewmodel.entity.UserAction
+import net.apptronic.common.android.ui.viewmodel.entity.ViewEvent
 import net.apptronic.common.android.ui.viewmodel.lifecycle.LifecycleHolder
 
 abstract class ViewModel {
@@ -39,15 +39,15 @@ abstract class ViewModel {
     /**
      * User action on screen
      */
-    fun genericAction(): UserAction<Unit> {
-        return UserAction(lifecycleHolder)
+    fun genericEvent(): ViewEvent<Unit> {
+        return ViewEvent(lifecycleHolder)
     }
 
     /**
      * User action on screen
      */
-    fun <T> typedAction(): UserAction<T> {
-        return UserAction(lifecycleHolder)
+    fun <T> typedEvent(): ViewEvent<T> {
+        return ViewEvent(lifecycleHolder)
     }
 
     abstract class SubModel(parent: ViewModel) : ViewModel(parent)

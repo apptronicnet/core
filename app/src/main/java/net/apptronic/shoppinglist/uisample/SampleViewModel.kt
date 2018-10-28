@@ -21,12 +21,12 @@ class SampleViewModel(lifecycleHolder: LifecycleHolder<FragmentLifecycle>) : Fra
     /**
      * Action when user clicked button "Refresh title"
      */
-    val onClickRefreshTitle = genericAction()
+    val onClickRefreshTitle = genericEvent()
 
     /**
      * Action when user changed text in EditText input
      */
-    val userInputUpdates = typedAction<String>()
+    val userInputUpdates = typedEvent<String>()
 
     /**
      * Property where saved changes from EditText input
@@ -36,7 +36,7 @@ class SampleViewModel(lifecycleHolder: LifecycleHolder<FragmentLifecycle>) : Fra
     /**
      * Action when user clicked button "Confirm text input"
      */
-    val onClickConfirmInputEvent = genericAction()
+    val onClickConfirmInputEvent = genericEvent()
 
     /**
      * User input text
