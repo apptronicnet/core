@@ -6,35 +6,97 @@ import android.widget.TextView
 import net.apptronic.common.android.ui.utils.BaseTextWatcher
 import net.apptronic.common.android.ui.viewmodel.lifecycle.LifecycleHolder
 
-abstract class Property<T>(lifecycleHolder: LifecycleHolder<*>) : SubjectEntity<T>(lifecycleHolder,
+class Property<T>(lifecycleHolder: LifecycleHolder<*>) : SubjectEntity<T>(lifecycleHolder,
         ValueSubject(lifecycleHolder.threadExecutor())) {
 
-    private var value: T? = null
+    internal var valueHolder: ValueHolder<T>? = null
 
-    fun set(value: T?) {
-        this.value = value
+    fun set(value: T) {
+        this.valueHolder = ValueHolder(value)
         onInput(value)
     }
 
     fun set(property: Property<T>) {
-        set(property.get())
+        property.valueHolder?.let {
+            set(it.value)
+        }
     }
 
-    fun get(): T? {
-        return value
+    fun get(): T {
+        return valueHolder?.value ?: throw IllegalStateException("No value set")
     }
 
 }
 
-class ViewProperty<T>(lifecycleHolder: LifecycleHolder<*>) : Property<T>(lifecycleHolder)
+private fun forEachChange(vararg properties: Property<*>, action: () -> Unit) {
+    properties.forEach { property ->
+        property.subject.subscribe { _ ->
+            if (properties.all { it.valueHolder != null }) {
+                action()
+            }
+        }
+    }
+}
 
-class ValueProperty<T>(lifecycleHolder: LifecycleHolder<*>) : Property<T>(lifecycleHolder)
+fun <T : Property<R>, R, A1> T.asFunctionFrom(a1: Property<A1>,
+                                              function: (A1) -> R): T {
+    forEachChange(a1) {
+        set(function(a1.get()))
+    }
+    return this
+}
 
-infix fun <A : ViewProperty<*>> TextView.showsTextFrom(property: A) {
+fun <T : Property<R>, R, A1, A2> T.asFunctionFrom(a1: Property<A1>,
+                                                  a2: Property<A2>,
+                                                  function: (A1, A2) -> R): T {
+    forEachChange(a1, a2) {
+        set(function(a1.get(), a2.get()))
+    }
+    return this
+}
+
+fun <T : Property<R>, R, A1, A2, A3> T.asFunctionFrom(a1: Property<A1>,
+                                                      a2: Property<A2>,
+                                                      a3: Property<A3>,
+                                                      function: (A1, A2, A3) -> R): T {
+    forEachChange(a1, a2, a3) {
+        set(function(a1.get(), a2.get(), a3.get()))
+    }
+    return this
+}
+
+fun <T : Property<R>, R, A1, A2, A3, A4> T.asFunctionFrom(a1: Property<A1>,
+                                                          a2: Property<A2>,
+                                                          a3: Property<A3>,
+                                                          a4: Property<A4>,
+                                                          function: (A1, A2, A3, A4) -> R): T {
+    forEachChange(a1, a2, a3, a4) {
+        set(function(a1.get(), a2.get(), a3.get(), a4.get()))
+    }
+    return this
+}
+
+fun <T : Property<R>, R, A1, A2, A3, A4, A5> T.asFunctionFrom(a1: Property<A1>,
+                                                              a2: Property<A2>,
+                                                              a3: Property<A3>,
+                                                              a4: Property<A4>,
+                                                              a5: Property<A5>,
+                                                              function: (A1, A2, A3, A4, A5) -> R): T {
+    forEachChange(a1, a2, a3, a4, a5) {
+        set(function(a1.get(), a2.get(), a3.get(), a4.get(), a5.get()))
+    }
+    return this
+}
+
+infix fun <A : Property<*>> TextView.showsTextFrom(property: A) {
     property.subscribe { text = it.toString() }
 }
 
-infix fun EditText.savesTextChangesTo(property: ValueProperty<String>) {
+infix fun <A : Property<Int>> TextView.usesTextColorFrom(property: A) {
+    property.subscribe { setTextColor(it) }
+}
+
+infix fun EditText.savesTextChangesTo(property: Property<String>) {
     property.set(text.toString())
     addTextChangedListener(object : BaseTextWatcher() {
         override fun afterTextChanged(s: Editable?) {

@@ -5,14 +5,16 @@ import java.util.*
 
 class ValueSubject<T>(private val threadExecutor: ThreadExecutor) : ViewModelSubject<T> {
 
-    private val callbacks = LinkedList<(T?) -> Unit>()
+    private val lock = Any()
+
+    private val callbacks = LinkedList<(T) -> Unit>()
 
     @Volatile
-    private var valueHolder: ValueHolder<T?>? = null
+    private var valueHolder: ValueHolder<T>? = null
 
-    override fun send(value: T?) {
+    override fun send(value: T) {
         threadExecutor.execute {
-            synchronized(this) {
+            synchronized(lock) {
                 val valueHolder = this.valueHolder
                 if (valueHolder == null || valueHolder.value != value) {
                     this.valueHolder = ValueHolder(value)
@@ -24,19 +26,23 @@ class ValueSubject<T>(private val threadExecutor: ThreadExecutor) : ViewModelSub
         }
     }
 
-    override fun subscribe(callback: (T?) -> Unit): ViewModelSubject.Subscription {
+    override fun subscribe(callback: (T) -> Unit): ViewModelSubject.Subscription {
         threadExecutor.execute {
             callbacks.add(callback)
             valueHolder?.let {
                 callback(it.value)
             }
         }
-        return Sub(callback)
+        return ThisSubscription(callback)
     }
 
-    private inner class Sub(val callback: (T?) -> Unit) : ViewModelSubject.Subscription {
+    private inner class ThisSubscription(val callback: (T) -> Unit) : ViewModelSubject.Subscription {
         override fun unsubscribe() {
-            callbacks.remove(callback)
+            threadExecutor.execute {
+                synchronized(lock) {
+                    callbacks.remove(callback)
+                }
+            }
         }
     }
 

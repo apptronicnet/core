@@ -36,7 +36,7 @@ class SamplePresenter(val view: SampleViewModel) {
             // when user clicks on button "Confirm input"
             view.onClickConfirmInputEvent.subscribe {
                 // then set view property [confirmedInputText] to value of [userInputValue]
-                view.confirmedInputText.set(view.userInputValue)
+                view.confirmedInputText.text.set(view.userInputValue)
             }
             // all subscriptions will be automatically unsubscribed when view paused
         }

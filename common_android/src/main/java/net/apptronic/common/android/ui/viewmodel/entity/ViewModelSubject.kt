@@ -8,8 +8,8 @@ interface ViewModelSubject<T> {
 
     }
 
-    fun send(value: T?)
+    fun send(value: T)
 
-    fun subscribe(callback: (T?) -> Unit): Subscription
+    fun subscribe(callback: (T) -> Unit): Subscription
 
 }

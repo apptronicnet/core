@@ -6,10 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.sample_fragment.*
 import net.apptronic.common.android.ui.components.BaseFragment
-import net.apptronic.common.android.ui.viewmodel.entity.savesTextChangesTo
-import net.apptronic.common.android.ui.viewmodel.entity.sendsClicksTo
-import net.apptronic.common.android.ui.viewmodel.entity.sendsTextChangeEventsTo
-import net.apptronic.common.android.ui.viewmodel.entity.showsTextFrom
+import net.apptronic.common.android.ui.viewmodel.entity.*
 import net.apptronic.shoppinglist.R
 
 /**
@@ -21,6 +18,10 @@ class SampleFragment : BaseFragment<SampleViewModel>() {
         return SampleViewModel(this).apply {
             SamplePresenter(this)
         }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -42,7 +43,8 @@ class SampleFragment : BaseFragment<SampleViewModel>() {
         // TextView [id=editedText] will show text from property [currentInputText]
         editedText showsTextFrom model().currentInputText
         // TextView [id=confirmedText] will show text from property [confirmedInputText]
-        confirmedText showsTextFrom model().confirmedInputText
+        confirmedText showsTextFrom model().confirmedInputText.text
+        confirmedText usesTextColorFrom model().confirmedInputText.textColor
     }
 
 }

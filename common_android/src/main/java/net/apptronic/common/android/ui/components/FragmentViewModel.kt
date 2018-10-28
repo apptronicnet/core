@@ -3,7 +3,7 @@ package net.apptronic.common.android.ui.components
 import net.apptronic.common.android.ui.viewmodel.ViewModel
 import net.apptronic.common.android.ui.viewmodel.lifecycle.LifecycleHolder
 
-abstract class FragmentViewModel(lifecycleHolder: LifecycleHolder<FragmentLifecycle>) : ViewModel(lifecycleHolder) {
+open class FragmentViewModel(lifecycleHolder: LifecycleHolder<FragmentLifecycle>) : ViewModel(lifecycleHolder) {
 
     private val lifecycle: FragmentLifecycle = lifecycleHolder.localLifecycle()
 

@@ -31,6 +31,9 @@ abstract class BaseFragment<Model : FragmentViewModel> : Fragment(), LifecycleHo
 
     override fun onCreate(savedInstanceState: Bundle?) {
         model = onCreateModel()
+        context?.let {
+            model().context.set(it)
+        }
         lifecycle.createdStage.enter()
         super.onCreate(savedInstanceState)
     }

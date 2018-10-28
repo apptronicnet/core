@@ -1,8 +1,12 @@
 package net.apptronic.shoppinglist.uisample
 
+import androidx.core.content.ContextCompat
 import net.apptronic.common.android.ui.components.FragmentLifecycle
 import net.apptronic.common.android.ui.components.FragmentViewModel
+import net.apptronic.common.android.ui.components.submodels.TextViewModel
+import net.apptronic.common.android.ui.viewmodel.entity.asFunctionFrom
 import net.apptronic.common.android.ui.viewmodel.lifecycle.LifecycleHolder
+import net.apptronic.shoppinglist.R
 
 /**
  * Represents sample screen properties, state and events
@@ -12,17 +16,17 @@ class SampleViewModel(lifecycleHolder: LifecycleHolder<FragmentLifecycle>) : Fra
     /**
      * Title text
      */
-    val title = property("Sample")
+    val title = value("Sample")
 
     /**
      * Action when user clicked button "Refresh title"
      */
-    val onClickRefreshTitle = userAction<Unit>()
+    val onClickRefreshTitle = genericAction()
 
     /**
      * Action when user changed text in EditText input
      */
-    val userInputUpdates = userAction<String>()
+    val userInputUpdates = typedAction<String>()
 
     /**
      * Property where saved changes from EditText input
@@ -32,16 +36,22 @@ class SampleViewModel(lifecycleHolder: LifecycleHolder<FragmentLifecycle>) : Fra
     /**
      * Action when user clicked button "Confirm text input"
      */
-    val onClickConfirmInputEvent = userAction<Unit>()
+    val onClickConfirmInputEvent = genericAction()
 
     /**
      * User input text
      */
-    val currentInputText = property<String>()
+    val currentInputText = value<String>()
 
-    /**
-     * Confirmed user input text
-     */
-    val confirmedInputText = property<String>()
+    val confirmedInputText = TextViewModel(this).apply {
+        textColor.asFunctionFrom(context, text, userInputValue) { context, text, userInputValue ->
+            if (text == userInputValue) {
+                ContextCompat.getColor(context, R.color.blueText)
+            } else {
+                ContextCompat.getColor(context, R.color.redText)
+            }
+        }
+    }
 
 }
+

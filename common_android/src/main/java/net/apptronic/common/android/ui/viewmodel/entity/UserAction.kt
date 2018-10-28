@@ -9,17 +9,17 @@ import net.apptronic.common.android.ui.viewmodel.lifecycle.LifecycleHolder
 class UserAction<T>(lifecycleHolder: LifecycleHolder<*>) : SubjectEntity<T>(lifecycleHolder,
         EventSubject(lifecycleHolder.threadExecutor())) {
 
-    fun sendEvent() {
-        onInput(null)
-    }
-
     fun sendEvent(event: T) {
         onInput(event)
     }
 
 }
 
-infix fun View.sendsClicksTo(userAction: UserAction<*>) {
+fun UserAction<Unit>.sendEvent() {
+    sendEvent(Unit)
+}
+
+infix fun View.sendsClicksTo(userAction: UserAction<Unit>) {
     setOnClickListener { userAction.sendEvent() }
 }
 

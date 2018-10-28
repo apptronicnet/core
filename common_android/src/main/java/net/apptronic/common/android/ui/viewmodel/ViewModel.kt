@@ -1,40 +1,37 @@
 package net.apptronic.common.android.ui.viewmodel
 
+import android.content.Context
+import net.apptronic.common.android.ui.viewmodel.entity.Property
 import net.apptronic.common.android.ui.viewmodel.entity.UserAction
-import net.apptronic.common.android.ui.viewmodel.entity.ValueProperty
-import net.apptronic.common.android.ui.viewmodel.entity.ViewProperty
 import net.apptronic.common.android.ui.viewmodel.lifecycle.LifecycleHolder
 
-abstract class ViewModel(private val lifecycleHolder: LifecycleHolder<*>) {
+abstract class ViewModel {
+
+    private val lifecycleHolder: LifecycleHolder<*>
+    val context: Property<Context>
+
+    constructor(lifecycleHolder: LifecycleHolder<*>) {
+        this.lifecycleHolder = lifecycleHolder
+        context = value()
+    }
+
+    constructor(parent: ViewModel) {
+        this.lifecycleHolder = parent.lifecycleHolder
+        context = parent.context
+    }
 
     /**
      * Property of view
      */
-    fun <T> property(): ViewProperty<T> {
-        return ViewProperty(lifecycleHolder)
+    fun <T> value(): Property<T> {
+        return Property(lifecycleHolder)
     }
 
     /**
      * Property of view with some default value
      */
-    fun <T> property(defaultValue: T): ViewProperty<T> {
-        return ViewProperty<T>(lifecycleHolder).apply {
-            set(defaultValue)
-        }
-    }
-
-    /**
-     * State value of screen
-     */
-    fun <T> value(): ValueProperty<T> {
-        return ValueProperty(lifecycleHolder)
-    }
-
-    /**
-     * State value  of screen with default value
-     */
-    fun <T> value(defaultValue: T): ValueProperty<T> {
-        return ValueProperty<T>(lifecycleHolder).apply {
+    fun <T> value(defaultValue: T): Property<T> {
+        return Property<T>(lifecycleHolder).apply {
             set(defaultValue)
         }
     }
@@ -42,8 +39,17 @@ abstract class ViewModel(private val lifecycleHolder: LifecycleHolder<*>) {
     /**
      * User action on screen
      */
-    fun <T> userAction(): UserAction<T> {
+    fun genericAction(): UserAction<Unit> {
         return UserAction(lifecycleHolder)
     }
+
+    /**
+     * User action on screen
+     */
+    fun <T> typedAction(): UserAction<T> {
+        return UserAction(lifecycleHolder)
+    }
+
+    abstract class SubModel(parent: ViewModel) : ViewModel(parent)
 
 }
