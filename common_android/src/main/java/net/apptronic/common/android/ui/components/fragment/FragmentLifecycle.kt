@@ -1,4 +1,4 @@
-package net.apptronic.common.android.ui.components
+package net.apptronic.common.android.ui.components.fragment
 
 import net.apptronic.common.android.ui.viewmodel.lifecycle.Lifecycle
 

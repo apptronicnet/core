@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import kotlinx.android.synthetic.main.sample_fragment.*
-import net.apptronic.common.android.ui.components.BaseFragment
+import net.apptronic.common.android.ui.components.fragment.BaseFragment
 import net.apptronic.common.android.ui.viewmodel.entity.*
 import net.apptronic.shoppinglist.R
 
@@ -15,8 +15,9 @@ import net.apptronic.shoppinglist.R
  */
 class SampleFragment : BaseFragment<SampleViewModel>() {
 
-    override fun onCreateModel(): SampleViewModel {
-        return SampleViewModel(this)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setModel(SampleViewModel(this))
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -26,14 +27,14 @@ class SampleFragment : BaseFragment<SampleViewModel>() {
     override fun onBindModel(view: View, model: SampleViewModel) {
         model.title.subscribe { titleTv.text = it }
         btnRefreshTitle.setOnClickListener { model.onClickRefreshTitle.sendEvent() }
-        edtSomeInput sendsTextChangeEventsTo model().userInputUpdates
-        edtSomeInput savesTextChangesTo model().userInputValue
-        btnConfirmInput sendsClicksTo model().onClickConfirmInputEvent
-        editedText showsTextFrom model().currentInputText
-        confirmedText showsTextFrom model().confirmedInputText.text
-        confirmedText usesTextColorFrom model().confirmedInputText.textColor
-        secondsCounter.showsTextFrom(model().secondCounter)
-        model().toastOnPause.subscribe {
+        edtSomeInput sendsTextChangeEventsTo model.userInputUpdates
+        edtSomeInput savesTextChangesTo model.userInputValue
+        btnConfirmInput sendsClicksTo model.onClickConfirmInputEvent
+        editedText showsTextFrom model.currentInputText
+        confirmedText showsTextFrom model.confirmedInputText.text
+        confirmedText usesTextColorFrom model.confirmedInputText.textColor
+        secondsCounter.showsTextFrom(model.secondCounter)
+        model.toastOnPause.subscribe {
             Toast.makeText(context, "onPause()!!!", Toast.LENGTH_SHORT).show()
         }
     }

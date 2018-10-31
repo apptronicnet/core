@@ -3,8 +3,8 @@ package net.apptronic.shoppinglist.uisample
 import androidx.core.content.ContextCompat
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import net.apptronic.common.android.ui.components.FragmentLifecycle
-import net.apptronic.common.android.ui.components.FragmentViewModel
+import net.apptronic.common.android.ui.components.fragment.FragmentLifecycle
+import net.apptronic.common.android.ui.components.fragment.FragmentViewModel
 import net.apptronic.common.android.ui.components.submodels.TextViewModel
 import net.apptronic.common.android.ui.viewmodel.entity.assignAsFunctionFrom
 import net.apptronic.common.android.ui.viewmodel.lifecycle.LifecycleHolder

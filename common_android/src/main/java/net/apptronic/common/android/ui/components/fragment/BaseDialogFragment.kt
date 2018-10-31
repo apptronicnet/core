@@ -1,13 +1,14 @@
-package net.apptronic.common.android.ui.components
+package net.apptronic.common.android.ui.components.fragment
 
+import android.graphics.ColorSpace
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.Fragment
+import androidx.fragment.app.DialogFragment
 import net.apptronic.common.android.ui.threading.AndroidFragmentMainThreadExecutor
 import net.apptronic.common.android.ui.threading.ThreadExecutor
 import net.apptronic.common.android.ui.viewmodel.lifecycle.LifecycleHolder
 
-abstract class BaseFragment<Model : FragmentViewModel> : Fragment(), LifecycleHolder<FragmentLifecycle> {
+abstract class BaseDialogFragment<ViewModel : FragmentViewModel> : DialogFragment(), LifecycleHolder<FragmentLifecycle> {
 
     private val lifecycle = FragmentLifecycle()
     private val threadExecutor = AndroidFragmentMainThreadExecutor(this)
@@ -16,24 +17,15 @@ abstract class BaseFragment<Model : FragmentViewModel> : Fragment(), LifecycleHo
 
     override fun threadExecutor(): ThreadExecutor = threadExecutor
 
-    abstract fun onCreateModel(): Model
+    abstract fun onCreateModel(): ColorSpace.Model
 
-    private var model: Model? = null
+    private var model: ViewModel? = null
 
-    fun model(): Model {
-        val model = this.model
-        if (model != null) {
-            return model
-        } else {
-            throw IllegalStateException("Model is not initialized")
-        }
+    fun setModel(model: ViewModel) {
+        this.model = model
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        model = onCreateModel()
-        context?.let {
-            model().context.set(it)
-        }
         lifecycle.createdStage.enter()
         super.onCreate(savedInstanceState)
     }
@@ -41,7 +33,9 @@ abstract class BaseFragment<Model : FragmentViewModel> : Fragment(), LifecycleHo
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         lifecycle.viewCreatedStage.enter()
         super.onViewCreated(view, savedInstanceState)
-        onBindModel(view, model())
+        model?.let {
+            onBindModel(view, it)
+        }
     }
 
     override fun onStart() {
@@ -74,6 +68,8 @@ abstract class BaseFragment<Model : FragmentViewModel> : Fragment(), LifecycleHo
         super.onDestroy()
     }
 
-    abstract fun onBindModel(view: View, model: Model)
+    open fun onBindModel(view: View, model: ViewModel) {
+        model.context.set(view.context)
+    }
 
 }
