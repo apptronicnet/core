@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import kotlinx.android.synthetic.main.sample_fragment.*
 import net.apptronic.common.android.ui.components.BaseFragment
 import net.apptronic.common.android.ui.viewmodel.entity.*
@@ -15,36 +16,26 @@ import net.apptronic.shoppinglist.R
 class SampleFragment : BaseFragment<SampleViewModel>() {
 
     override fun onCreateModel(): SampleViewModel {
-        return SampleViewModel(this).apply {
-            SamplePresenter(this)
-        }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+        return SampleViewModel(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.sample_fragment, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        // TextView [id=titleTv] will show text from property [title]
-        titleTv showsTextFrom model().title
-        // Button [id=btnRefreshTitle] will send click events to UserEvent [onClickRefreshTitle]
-        btnRefreshTitle sendsClicksTo model().onClickRefreshTitle
-        // EditText [id=edtSomeInput] will send text changes events to UserEvent [userInputUpdates]
+    override fun onBindModel(view: View, model: SampleViewModel) {
+        model.title.subscribe { titleTv.text = it }
+        btnRefreshTitle.setOnClickListener { model.onClickRefreshTitle.sendEvent() }
         edtSomeInput sendsTextChangeEventsTo model().userInputUpdates
-        // EditText [id=edtSomeInput] will save text changes to Property [userInputValue]
         edtSomeInput savesTextChangesTo model().userInputValue
-        // Button [id=btnConfirmInput] will send click events to UserEvent [onClickConfirmInputEvent]
         btnConfirmInput sendsClicksTo model().onClickConfirmInputEvent
-        // TextView [id=editedText] will show text from property [currentInputText]
         editedText showsTextFrom model().currentInputText
-        // TextView [id=confirmedText] will show text from property [confirmedInputText]
         confirmedText showsTextFrom model().confirmedInputText.text
         confirmedText usesTextColorFrom model().confirmedInputText.textColor
+        secondsCounter.showsTextFrom(model().secondCounter)
+        model().toastOnPause.subscribe {
+            Toast.makeText(context, "onPause()!!!", Toast.LENGTH_SHORT).show()
+        }
     }
 
 }

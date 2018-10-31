@@ -1,35 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/titleTv"
-        android:padding="16dp"
-        android:textSize="24dp" />
+    <LinearLayout
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/titleTv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="16dp"
+            android:textSize="24dp"
+            tools:text="Title text here" />
+
+        <TextView
+            android:id="@+id/secondsCounter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:textColor="#48d"
+            android:textSize="24dp"
+            tools:text="0" />
+
+    </LinearLayout>
 
     <Button
         android:id="@+id/btnRefreshTitle"
-        android:layout_margin="8dp"
         android:text="Refresh title" />
 
-    <EditText android:id="@+id/edtSomeInput" />
+    <EditText
+        android:id="@+id/edtSomeInput"
+        tools:text="Some input" />
 
     <Button
         android:id="@+id/btnConfirmInput"
-        android:layout_margin="8dp"
         android:text="Confirm input" />
 
-    <TextView
-        android:id="@+id/editedText"
-        android:padding="8dp"
-        android:textColor="#0f0"
-        android:textSize="14dp" />
+    <LinearLayout
+        android:gravity="center"
+        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/confirmedText"
-        android:padding="8dp"
-        android:textColor="#f00"
-        android:textSize="14dp" />
+        <TextView
+            android:id="@+id/editedText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:padding="8dp"
+            android:textColor="#0f0"
+            android:textSize="14dp"
+            tools:text="Entered text" />
+
+        <TextView
+            android:id="@+id/confirmedText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:padding="8dp"
+            android:textColor="#f00"
+            android:textSize="14dp"
+            tools:text="Confirmed text" />
+
+    </LinearLayout>
 
 </TableLayout>

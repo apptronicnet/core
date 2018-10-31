@@ -4,8 +4,8 @@ import net.apptronic.common.android.ui.threading.SynchronousExecutor
 import net.apptronic.common.android.ui.threading.ThreadExecutor
 import net.apptronic.common.android.ui.viewmodel.ViewModel
 import net.apptronic.common.android.ui.viewmodel.entity.PropertyNotSetException
-import net.apptronic.common.android.ui.viewmodel.entity.asCopyOf
-import net.apptronic.common.android.ui.viewmodel.entity.asFunctionFrom
+import net.apptronic.common.android.ui.viewmodel.entity.assignAsCopyOf
+import net.apptronic.common.android.ui.viewmodel.entity.assignAsFunctionFrom
 import net.apptronic.common.android.ui.viewmodel.lifecycle.GenericLifecycle
 import net.apptronic.common.android.ui.viewmodel.lifecycle.LifecycleHolder
 import org.junit.Test
@@ -27,23 +27,23 @@ class ViewModelPropertiesTest : LifecycleHolder<GenericLifecycle> {
 
         val intValue = value<Int>()
 
-        val compositeValue = value<String>().asFunctionFrom(
+        val compositeValue = value<String>().assignAsFunctionFrom(
                 stringValue,
                 stringValueWithDefault
         ) { str1, str2 ->
             "$str1-$str2"
         }
 
-        val compositeStringInt = value<String>().asFunctionFrom(
+        val compositeStringInt = value<String>().assignAsFunctionFrom(
                 stringValue,
                 intValue
         ) { str1, intVal ->
             "$str1-$intVal"
         }
 
-        val copyOfString = value<String>().asCopyOf(stringValueWithDefault)
+        val copyOfString = value<String>().assignAsCopyOf(stringValueWithDefault)
 
-        val copyOfInt = value<Int>().asCopyOf(intValue)
+        val copyOfInt = value<Int>().assignAsCopyOf(intValue)
 
         val nullableString = value<String?>()
 

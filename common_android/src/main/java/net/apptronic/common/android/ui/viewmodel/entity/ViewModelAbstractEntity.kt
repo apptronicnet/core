@@ -1,9 +1,10 @@
 package net.apptronic.common.android.ui.viewmodel.entity
 
+import io.reactivex.Observable
 import net.apptronic.common.android.ui.viewmodel.lifecycle.LifecycleHolder
 import net.apptronic.common.android.ui.viewmodel.lifecycle.LifecycleStage
 
-abstract class ViewModelEntity<T>(private val lifecycleHolder: LifecycleHolder<*>) {
+abstract class ViewModelAbstractEntity<T>(private val lifecycleHolder: LifecycleHolder<*>) {
 
     protected abstract fun onInput(value: T)
 
@@ -14,5 +15,7 @@ abstract class ViewModelEntity<T>(private val lifecycleHolder: LifecycleHolder<*
             onListen(listener, it)
         }
     }
+
+    abstract fun asObservable(): Observable<T>
 
 }

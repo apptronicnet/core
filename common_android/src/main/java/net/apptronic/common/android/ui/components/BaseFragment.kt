@@ -41,6 +41,7 @@ abstract class BaseFragment<Model : FragmentViewModel> : Fragment(), LifecycleHo
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         lifecycle.viewCreatedStage.enter()
         super.onViewCreated(view, savedInstanceState)
+        onBindModel(view, model())
     }
 
     override fun onStart() {
@@ -72,5 +73,7 @@ abstract class BaseFragment<Model : FragmentViewModel> : Fragment(), LifecycleHo
         lifecycle.createdStage.exit()
         super.onDestroy()
     }
+
+    abstract fun onBindModel(view: View, model: Model)
 
 }

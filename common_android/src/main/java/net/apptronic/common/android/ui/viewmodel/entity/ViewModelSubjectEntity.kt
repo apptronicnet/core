@@ -4,15 +4,15 @@ import net.apptronic.common.android.ui.viewmodel.lifecycle.LifecycleEvent
 import net.apptronic.common.android.ui.viewmodel.lifecycle.LifecycleHolder
 import net.apptronic.common.android.ui.viewmodel.lifecycle.LifecycleStage
 
-open class SubjectEntity<T>(lifecycleHolder: LifecycleHolder<*>,
-                            internal val subject: ViewModelSubject<T>) : ViewModelEntity<T>(lifecycleHolder) {
+abstract class ViewModelSubjectEntity<T>(lifecycleHolder: LifecycleHolder<*>,
+                                         internal val entitySubject: ViewModelEntitySubject<T>) : ViewModelAbstractEntity<T>(lifecycleHolder) {
 
     override fun onInput(value: T) {
-        subject.send(value)
+        entitySubject.send(value)
     }
 
     override fun onListen(listener: (T) -> Unit, stage: LifecycleStage) {
-        val subscription = subject.subscribe {
+        val subscription = entitySubject.subscribe {
             listener(it)
         }
         stage.subscribeExit(object : LifecycleEvent.Listener {
@@ -23,6 +23,6 @@ open class SubjectEntity<T>(lifecycleHolder: LifecycleHolder<*>,
         })
     }
 
-    protected fun subject() = subject
+    protected fun subject() = entitySubject
 
 }

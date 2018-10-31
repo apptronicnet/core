@@ -3,7 +3,7 @@ package net.apptronic.common.android.ui.viewmodel.entity
 import net.apptronic.common.android.ui.threading.ThreadExecutor
 import java.util.*
 
-class EventSubject<T>(private val threadExecutor: ThreadExecutor) : ViewModelSubject<T> {
+class EventEntitySubject<T>(private val threadExecutor: ThreadExecutor) : ViewModelEntitySubject<T> {
 
     private val callbacks = LinkedList<(T) -> Unit>()
 
@@ -15,12 +15,12 @@ class EventSubject<T>(private val threadExecutor: ThreadExecutor) : ViewModelSub
         }
     }
 
-    override fun subscribe(callback: (T) -> Unit): ViewModelSubject.Subscription {
+    override fun subscribe(callback: (T) -> Unit): ViewModelEntitySubject.Subscription {
         callbacks.add(callback)
         return Sub(callback)
     }
 
-    private inner class Sub(val callback: (T) -> Unit) : ViewModelSubject.Subscription {
+    private inner class Sub(val callback: (T) -> Unit) : ViewModelEntitySubject.Subscription {
         override fun unsubscribe() {
             callbacks.remove(callback)
         }

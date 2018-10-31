@@ -1,6 +1,6 @@
 package net.apptronic.common.android.ui.viewmodel.entity
 
-interface ViewModelSubject<T> {
+interface ViewModelEntitySubject<T> {
 
     interface Subscription {
 

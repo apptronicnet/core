@@ -3,7 +3,6 @@ package net.apptronic.common.android.ui
 import net.apptronic.common.android.ui.threading.SynchronousExecutor
 import net.apptronic.common.android.ui.threading.ThreadExecutor
 import net.apptronic.common.android.ui.viewmodel.ViewModel
-import net.apptronic.common.android.ui.viewmodel.entity.sendEvent
 import net.apptronic.common.android.ui.viewmodel.lifecycle.GenericLifecycle
 import net.apptronic.common.android.ui.viewmodel.lifecycle.LifecycleHolder
 import org.junit.Test

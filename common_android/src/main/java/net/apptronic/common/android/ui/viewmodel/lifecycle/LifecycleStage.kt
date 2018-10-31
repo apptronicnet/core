@@ -1,5 +1,7 @@
 package net.apptronic.common.android.ui.viewmodel.lifecycle
 
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 import java.util.concurrent.atomic.AtomicBoolean
 
 class LifecycleStage(val name: String) {
@@ -10,13 +12,18 @@ class LifecycleStage(val name: String) {
 
     fun isEntered() = isEntered.get()
 
+    private var disposables: CompositeDisposable? = null
+
     fun enter() {
+        disposables = CompositeDisposable()
         isEntered.set(true)
         enter.notifyListeners()
     }
 
     fun exit() {
         isEntered.set(false)
+        disposables?.dispose()
+        disposables = null
         exit.notifyListeners()
     }
 
@@ -24,18 +31,18 @@ class LifecycleStage(val name: String) {
         return "LifecycleStage: $name"
     }
 
-    fun subscribeEnter(callback: () -> Unit) {
+    fun subscribeEnter(callback: OnEnterHandler.() -> Unit) {
         subscribeEnter(object : LifecycleEvent.Listener {
             override fun onEvent(event: LifecycleEvent) {
-                callback()
+                OnEnterHandler().callback()
             }
         })
     }
 
-    fun subscribeExit(callback: () -> Unit) {
+    fun subscribeExit(callback: OnExitHandler.() -> Unit) {
         subscribeExit(object : LifecycleEvent.Listener {
             override fun onEvent(event: LifecycleEvent) {
-                callback()
+                OnExitHandler().callback()
             }
         })
     }
@@ -49,6 +56,22 @@ class LifecycleStage(val name: String) {
 
     fun subscribeExit(listener: LifecycleEvent.Listener) {
         exit.subscribe(listener)
+    }
+
+    inner class OnEnterHandler {
+
+        fun Disposable.disposeOnExit() {
+            disposables?.add(this) ?: dispose()
+        }
+
+        fun onExit(callback: OnExitHandler.() -> Unit) {
+            subscribeExit(callback)
+        }
+
+    }
+
+    inner class OnExitHandler {
+
     }
 
 }

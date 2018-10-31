@@ -1,14 +1,15 @@
 package net.apptronic.common.android.ui.viewmodel
 
 import android.content.Context
-import net.apptronic.common.android.ui.viewmodel.entity.Property
-import net.apptronic.common.android.ui.viewmodel.entity.ViewEvent
+import net.apptronic.common.android.ui.viewmodel.entity.ViewModelGenericEvent
+import net.apptronic.common.android.ui.viewmodel.entity.ViewModelProperty
+import net.apptronic.common.android.ui.viewmodel.entity.ViewModelTypedEvent
 import net.apptronic.common.android.ui.viewmodel.lifecycle.LifecycleHolder
 
 abstract class ViewModel {
 
     private val lifecycleHolder: LifecycleHolder<*>
-    val context: Property<Context>
+    val context: ViewModelProperty<Context>
 
     constructor(lifecycleHolder: LifecycleHolder<*>) {
         this.lifecycleHolder = lifecycleHolder
@@ -21,17 +22,17 @@ abstract class ViewModel {
     }
 
     /**
-     * Property of view
+     * ViewModelProperty of view
      */
-    fun <T> value(): Property<T> {
-        return Property(lifecycleHolder)
+    fun <T> value(): ViewModelProperty<T> {
+        return ViewModelProperty(lifecycleHolder)
     }
 
     /**
-     * Property of view with some default value
+     * ViewModelProperty of view with some default value
      */
-    fun <T> value(defaultValue: T): Property<T> {
-        return Property<T>(lifecycleHolder).apply {
+    fun <T> value(defaultValue: T): ViewModelProperty<T> {
+        return ViewModelProperty<T>(lifecycleHolder).apply {
             set(defaultValue)
         }
     }
@@ -39,15 +40,15 @@ abstract class ViewModel {
     /**
      * User action on screen
      */
-    fun genericEvent(): ViewEvent<Unit> {
-        return ViewEvent(lifecycleHolder)
+    fun genericEvent(): ViewModelGenericEvent {
+        return ViewModelGenericEvent(lifecycleHolder)
     }
 
     /**
      * User action on screen
      */
-    fun <T> typedEvent(): ViewEvent<T> {
-        return ViewEvent(lifecycleHolder)
+    fun <T> typedEvent(): ViewModelTypedEvent<T> {
+        return ViewModelTypedEvent(lifecycleHolder)
     }
 
     abstract class SubModel(parent: ViewModel) : ViewModel(parent)

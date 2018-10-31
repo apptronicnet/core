@@ -3,7 +3,7 @@ package net.apptronic.common.android.ui.viewmodel.entity
 import net.apptronic.common.android.ui.threading.ThreadExecutor
 import java.util.*
 
-class ValueSubject<T>(private val threadExecutor: ThreadExecutor) : ViewModelSubject<T> {
+class ValueEntitySubject<T>(private val threadExecutor: ThreadExecutor) : ViewModelEntitySubject<T> {
 
     private val lock = Any()
 
@@ -26,7 +26,7 @@ class ValueSubject<T>(private val threadExecutor: ThreadExecutor) : ViewModelSub
         }
     }
 
-    override fun subscribe(callback: (T) -> Unit): ViewModelSubject.Subscription {
+    override fun subscribe(callback: (T) -> Unit): ViewModelEntitySubject.Subscription {
         threadExecutor.execute {
             callbacks.add(callback)
             valueHolder?.let {
@@ -36,7 +36,7 @@ class ValueSubject<T>(private val threadExecutor: ThreadExecutor) : ViewModelSub
         return ThisSubscription(callback)
     }
 
-    private inner class ThisSubscription(val callback: (T) -> Unit) : ViewModelSubject.Subscription {
+    private inner class ThisSubscription(val callback: (T) -> Unit) : ViewModelEntitySubject.Subscription {
         override fun unsubscribe() {
             threadExecutor.execute {
                 synchronized(lock) {
