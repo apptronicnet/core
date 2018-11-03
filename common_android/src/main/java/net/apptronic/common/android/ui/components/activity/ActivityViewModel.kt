@@ -9,27 +9,27 @@ open class ActivityViewModel(lifecycleHolder: LifecycleHolder<ActivityLifecycle>
     private val lifecycle: ActivityLifecycle = lifecycleHolder.localLifecycle()
 
     fun onCreate(callback: LifecycleStage.OnEnterHandler.() -> Unit) {
-        lifecycle.createdStage.subscribeEnter(callback)
+        lifecycle.createdStage.doOnEnter(callback)
     }
 
     fun onStart(callback: LifecycleStage.OnEnterHandler.() -> Unit) {
-        lifecycle.startedStage.subscribeEnter(callback)
+        lifecycle.startedStage.doOnEnter(callback)
     }
 
     fun onResume(callback: LifecycleStage.OnEnterHandler.() -> Unit) {
-        lifecycle.resumedStage.subscribeEnter(callback)
+        lifecycle.resumedStage.doOnEnter(callback)
     }
 
     fun onPause(callback: LifecycleStage.OnExitHandler.() -> Unit) {
-        lifecycle.resumedStage.subscribeExit(callback)
+        lifecycle.resumedStage.doOnExit(callback)
     }
 
     fun onStop(callback: LifecycleStage.OnExitHandler.() -> Unit) {
-        lifecycle.startedStage.subscribeExit(callback)
+        lifecycle.startedStage.doOnExit(callback)
     }
 
     fun onDestroy(callback: LifecycleStage.OnExitHandler.() -> Unit) {
-        lifecycle.createdStage.subscribeExit(callback)
+        lifecycle.createdStage.doOnExit(callback)
     }
 
 }

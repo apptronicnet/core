@@ -52,16 +52,21 @@ class ViewModelPropertiesTest : LifecycleHolder<GenericLifecycle> {
     }
 
     @Test
-    fun shouldFireOnlyWhenLifecycleNotStarted() {
+    fun shouldAutoUnsubscribeCompletely() {
         var stringValue: String? = null
         val model = SampleViewModel(this)
 
-        model.stringValue.subscribe { stringValue = it }
-        model.stringValue.set("One")
-        assert(stringValue == null)
-
         lifecycle.stage1.enter()
         model.stringValue.subscribe { stringValue = it }
+        model.stringValue.set("One")
+        assert(stringValue == "One")
+
+        lifecycle.stage1.exit()
+        model.stringValue.set("Two")
+        assert(stringValue == "One")
+
+        lifecycle.stage1.enter()
+        model.stringValue.set("Three")
         assert(stringValue == "One")
     }
 
@@ -71,11 +76,12 @@ class ViewModelPropertiesTest : LifecycleHolder<GenericLifecycle> {
         val model = SampleViewModel(this)
 
         lifecycle.stage1.enter()
-        lifecycle.stage2.enter()
 
-        lifecycle.stage2.subscribeEnter {
+        lifecycle.stage2.doOnEnter {
             model.stringValue.subscribe { stringValue = it }
         }
+
+        lifecycle.stage2.enter()
         model.stringValue.set("One")
         assert(stringValue == "One")
 
@@ -102,7 +108,7 @@ class ViewModelPropertiesTest : LifecycleHolder<GenericLifecycle> {
     fun shouldAutoFireOnStageEntered() {
         var called = false
 
-        lifecycle.stage1.subscribeEnter {
+        lifecycle.stage1.doOnEnter {
             called = true
         }
 

@@ -24,11 +24,13 @@ class ViewModelEventsTest : LifecycleHolder<GenericLifecycle> {
     }
 
     @Test
-    fun shouldNotSendEvensBeforeLifecycle() {
+    fun shouldAutoUnsubscribeOnExit() {
         val model = SampleViewModel(this)
 
         var genericCalls = 0
         var typedCalls = 0
+
+        lifecycle.stage1.enter()
         model.genericEvent.subscribe {
             genericCalls++
         }
@@ -38,8 +40,20 @@ class ViewModelEventsTest : LifecycleHolder<GenericLifecycle> {
         model.genericEvent.sendEvent()
         model.typedEvent.sendEvent(74)
 
-        assert(genericCalls == 0)
-        assert(typedCalls == 0)
+        assert(genericCalls == 1)
+        assert(typedCalls == 1)
+
+        lifecycle.stage1.exit()
+        model.genericEvent.sendEvent()
+        model.typedEvent.sendEvent(74)
+        assert(genericCalls == 1)
+        assert(typedCalls == 1)
+
+        lifecycle.stage1.enter()
+        model.genericEvent.sendEvent()
+        model.typedEvent.sendEvent(74)
+        assert(genericCalls == 1)
+        assert(typedCalls == 1)
 
     }
 

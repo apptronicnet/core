@@ -43,7 +43,13 @@ class SampleViewModel(lifecycleHolder: LifecycleHolder<FragmentLifecycle>) : Fra
         title.set("Another title")
 
         onCreate {
-
+            val nonNull = "Something"
+            onStart {
+                val nonNull2 = 2
+                onResume {
+                    nonNull2
+                }
+            }
             onExit {
 
             }
@@ -54,6 +60,7 @@ class SampleViewModel(lifecycleHolder: LifecycleHolder<FragmentLifecycle>) : Fra
                 titleChanges++
                 title.set("Title changes $titleChanges")
             }
+            onExit { }
         }
 
         onResume {
@@ -64,7 +71,6 @@ class SampleViewModel(lifecycleHolder: LifecycleHolder<FragmentLifecycle>) : Fra
                 confirmedInputText.text.set(userInputValue)
             }
         }
-
         onResume {
             Observable.interval(1, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
                     .subscribe {
@@ -73,7 +79,6 @@ class SampleViewModel(lifecycleHolder: LifecycleHolder<FragmentLifecycle>) : Fra
             onExit {
                 toastOnPause.sendEvent()
             }
-
         }
 
     }

@@ -9,35 +9,35 @@ open class FragmentViewModel(lifecycleHolder: LifecycleHolder<FragmentLifecycle>
     private val lifecycle: FragmentLifecycle = lifecycleHolder.localLifecycle()
 
     fun onCreate(callback: LifecycleStage.OnEnterHandler.() -> Unit) {
-        lifecycle.createdStage.subscribeEnter(callback)
+        lifecycle.createdStage.doOnEnter(callback)
     }
 
     fun onViewCreated(callback: LifecycleStage.OnEnterHandler.() -> Unit) {
-        lifecycle.viewCreatedStage.subscribeEnter(callback)
+        lifecycle.viewCreatedStage.doOnEnter(callback)
     }
 
     fun onStart(callback: LifecycleStage.OnEnterHandler.() -> Unit) {
-        lifecycle.startedStage.subscribeEnter(callback)
+        lifecycle.startedStage.doOnEnter(callback)
     }
 
     fun onResume(callback: LifecycleStage.OnEnterHandler.() -> Unit) {
-        lifecycle.resumedStage.subscribeEnter(callback)
+        lifecycle.resumedStage.doOnEnter(callback)
     }
 
     fun onPause(callback: LifecycleStage.OnExitHandler.() -> Unit) {
-        lifecycle.resumedStage.subscribeExit(callback)
+        lifecycle.resumedStage.doOnExit(callback)
     }
 
     fun onStop(callback: LifecycleStage.OnExitHandler.() -> Unit) {
-        lifecycle.startedStage.subscribeExit(callback)
+        lifecycle.startedStage.doOnExit(callback)
     }
 
     fun onDestroyView(callback: LifecycleStage.OnExitHandler.() -> Unit) {
-        lifecycle.viewCreatedStage.subscribeExit(callback)
+        lifecycle.viewCreatedStage.doOnExit(callback)
     }
 
     fun onDestroy(callback: LifecycleStage.OnExitHandler.() -> Unit) {
-        lifecycle.createdStage.subscribeExit(callback)
+        lifecycle.createdStage.doOnExit(callback)
     }
 
 }

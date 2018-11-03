@@ -2,75 +2,98 @@ package net.apptronic.common.android.ui.viewmodel.lifecycle
 
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
+import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.atomic.AtomicReference
 
-class LifecycleStage(val name: String) {
+class LifecycleStage(val lifecycle: Lifecycle, val name: String) {
 
     private val isEntered = AtomicBoolean(false)
-    private val enter = LifecycleEvent()
-    private val exit = LifecycleEvent()
 
-    fun isEntered() = isEntered.get()
+    private val enterCallback = CompositeCallback()
+    private val exitCallback = CompositeCallback()
 
-    private var disposables: CompositeDisposable? = null
+    private var enterHandler = AtomicReference<OnEnterHandlerImpl>()
+    private val exitHandler = AtomicReference<OnExitHandlerImpl>()
+
+    private val inStageCallbacks = LinkedList<EventCallback>()
+
+    fun isEntered(): Boolean = isEntered.get()
 
     fun enter() {
-        disposables = CompositeDisposable()
+        enterHandler.set(OnEnterHandlerImpl())
+        exitHandler.set(OnExitHandlerImpl())
         isEntered.set(true)
-        enter.notifyListeners()
+        enterCallback.execute()
     }
 
     fun exit() {
         isEntered.set(false)
-        disposables?.dispose()
-        disposables = null
-        exit.notifyListeners()
+        exitCallback.execute()
+        exitHandler.get().disposables.dispose()
+        inStageCallbacks.forEach { it.cancel() }
+        inStageCallbacks.clear()
     }
 
-    override fun toString(): String {
-        return "LifecycleStage: $name"
-    }
-
-    fun subscribeEnter(callback: OnEnterHandler.() -> Unit) {
-        subscribeEnter(object : LifecycleEvent.Listener {
-            override fun onEvent(event: LifecycleEvent) {
-                OnEnterHandler().callback()
+    private fun subscribeEnter(callback: LifecycleStage.OnEnterHandler.() -> Unit): EventCallback {
+        return EventCallback {
+            enterHandler.get()?.callback()
+        }.apply {
+            if (isEntered.get()) {
+                execute()
             }
-        })
-    }
-
-    fun subscribeExit(callback: OnExitHandler.() -> Unit) {
-        subscribeExit(object : LifecycleEvent.Listener {
-            override fun onEvent(event: LifecycleEvent) {
-                OnExitHandler().callback()
-            }
-        })
-    }
-
-    fun subscribeEnter(listener: LifecycleEvent.Listener) {
-        enter.subscribe(listener)
-        if (isEntered.get()) {
-            listener.onEvent(enter)
         }
     }
 
-    fun subscribeExit(listener: LifecycleEvent.Listener) {
-        exit.subscribe(listener)
+    fun doOnEnter(callback: LifecycleStage.OnEnterHandler.() -> Unit) {
+        val eventCallback = subscribeEnter(callback)
+        enterCallback.add(eventCallback)
+        lifecycle.getActiveStage().cancelOnExit(eventCallback)
     }
 
-    inner class OnEnterHandler {
+    private fun subscribeExit(callback: LifecycleStage.OnExitHandler.() -> Unit): EventCallback {
+        return EventCallback {
+            exitHandler.get()?.callback()
+        }
+    }
 
-        fun Disposable.disposeOnExit() {
-            disposables?.add(this) ?: dispose()
+    fun doOnExit(callback: LifecycleStage.OnExitHandler.() -> Unit) {
+        val eventCallback = subscribeExit(callback)
+        exitCallback.add(eventCallback)
+        lifecycle.getActiveStage().cancelOnExit(eventCallback)
+    }
+
+    private inner class OnEnterHandlerImpl : LifecycleStage.OnEnterHandler {
+
+        override fun Disposable.disposeOnExit() {
+            exitHandler.get().disposables.add(this)
         }
 
-        fun onExit(callback: OnExitHandler.() -> Unit) {
-            subscribeExit(callback)
+        override fun onExit(callback: LifecycleStage.OnExitHandler.() -> Unit) {
+            doOnExit(callback)
         }
+    }
+
+    private inner class OnExitHandlerImpl : LifecycleStage.OnExitHandler {
+
+        val disposables = CompositeDisposable()
 
     }
 
-    inner class OnExitHandler {
+
+    internal fun cancelOnExit(callback: EventCallback) {
+        inStageCallbacks.add(callback)
+    }
+
+    interface OnEnterHandler {
+
+        fun Disposable.disposeOnExit()
+
+        fun onExit(callback: OnExitHandler.() -> Unit)
+
+    }
+
+    interface OnExitHandler {
 
     }
 
