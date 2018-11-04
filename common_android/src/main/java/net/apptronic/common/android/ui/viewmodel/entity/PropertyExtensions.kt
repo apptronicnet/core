@@ -7,7 +7,7 @@ import net.apptronic.common.android.ui.utils.BaseTextWatcher
 
 private fun forEachChange(vararg properties: ViewModelProperty<*>, action: () -> Unit) {
     properties.forEach { property ->
-        property.entitySubject.subscribe { _ ->
+        property.subscribe { _ ->
             if (properties.all { it.valueHolder != null }) {
                 action()
             }
@@ -16,7 +16,7 @@ private fun forEachChange(vararg properties: ViewModelProperty<*>, action: () ->
 }
 
 fun <T> ViewModelProperty<T>.assignAsCopyOf(source: ViewModelProperty<T>): ViewModelProperty<T> {
-    source.entitySubject.subscribe { set(it) }
+    source.subscribe { set(it) }
     return this
 }
 

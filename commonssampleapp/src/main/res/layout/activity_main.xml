@@ -4,6 +4,11 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="shoppinglist.apptronic.net.shoppinglist.MainActivity">
+    tools:context=".MainActivity">
+
+    <fragment
+        android:name="net.apptronic.test.commons_sample_app.SampleFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </FrameLayout>

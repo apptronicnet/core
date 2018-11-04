@@ -1,4 +1,4 @@
-package net.apptronic.shoppinglist.uisample
+package net.apptronic.test.commons_sample_app
 
 import androidx.core.content.ContextCompat
 import io.reactivex.Observable
@@ -8,7 +8,6 @@ import net.apptronic.common.android.ui.components.fragment.FragmentViewModel
 import net.apptronic.common.android.ui.components.submodels.TextViewModel
 import net.apptronic.common.android.ui.viewmodel.entity.assignAsFunctionFrom
 import net.apptronic.common.android.ui.viewmodel.lifecycle.LifecycleHolder
-import net.apptronic.shoppinglist.R
 import java.util.concurrent.TimeUnit
 
 /**

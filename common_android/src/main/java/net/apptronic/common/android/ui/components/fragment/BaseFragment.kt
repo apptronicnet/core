@@ -19,6 +19,9 @@ abstract class BaseFragment<ViewModel : FragmentViewModel> : Fragment(), Lifecyc
     private var model: ViewModel? = null
 
     fun setModel(model: ViewModel) {
+        context?.let {
+            model.context.set(it)
+        }
         this.model = model
     }
 

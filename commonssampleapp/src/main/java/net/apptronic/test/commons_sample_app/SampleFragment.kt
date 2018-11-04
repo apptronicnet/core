@@ -1,4 +1,4 @@
-package net.apptronic.shoppinglist.uisample
+package net.apptronic.test.commons_sample_app
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,7 +8,6 @@ import android.widget.Toast
 import kotlinx.android.synthetic.main.sample_fragment.*
 import net.apptronic.common.android.ui.components.fragment.BaseFragment
 import net.apptronic.common.android.ui.viewmodel.entity.*
-import net.apptronic.shoppinglist.R
 
 /**
  * Sample fragment creates screen View and binds it to ViewModel

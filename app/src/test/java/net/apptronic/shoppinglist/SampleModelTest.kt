@@ -4,7 +4,6 @@ import net.apptronic.common.android.ui.components.fragment.FragmentLifecycle
 import net.apptronic.common.android.ui.threading.SynchronousExecutor
 import net.apptronic.common.android.ui.threading.ThreadExecutor
 import net.apptronic.common.android.ui.viewmodel.lifecycle.LifecycleHolder
-import net.apptronic.shoppinglist.uisample.SampleViewModel
 import org.junit.Test
 import kotlin.test.assertEquals
 
