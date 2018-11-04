@@ -1,33 +1,32 @@
-apply plugin: "com.android.application"
+apply plugin: "com.android.library"
 apply plugin: "kotlin-android"
-apply plugin: "kotlin-android-extensions"
 
 android {
     compileSdkVersion 28
+
     defaultConfig {
-        applicationId "net.apptronic.shoppinglist"
         minSdkVersion 21
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
+
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
     }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
     }
+
 }
 
 dependencies {
-    implementation project(path: ":common_android")
-
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     implementation "androidx.appcompat:appcompat:$androidx_version"
-    implementation "com.google.android.material:material:$androidx_version"
-    implementation "androidx.constraintlayout:constraintlayout:$constraint_layout_version"
 
     implementation "io.reactivex.rxjava2:rxjava:$rx_java_version"
     implementation "io.reactivex.rxjava2:rxkotlin:$rx_kotlin_version"

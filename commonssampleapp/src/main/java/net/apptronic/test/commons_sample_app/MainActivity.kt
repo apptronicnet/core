@@ -1,8 +1,7 @@
-package shoppinglist.apptronic.net.shoppinglist
+package net.apptronic.test.commons_sample_app
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import net.apptronic.shoppinglist.R
 
 class MainActivity : AppCompatActivity() {
 
