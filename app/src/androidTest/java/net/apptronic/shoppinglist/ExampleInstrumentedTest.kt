@@ -13,10 +13,12 @@ import org.junit.runner.RunWith
  */
 @RunWith(AndroidJUnit4::class)
 class ExampleInstrumentedTest {
+
     @Test
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getTargetContext()
-        assertEquals("shoppinglist.apptronic.net.shoppinglist", appContext.packageName)
+        assertEquals("net.apptronic.shoppinglist", appContext.packageName)
     }
+
 }
