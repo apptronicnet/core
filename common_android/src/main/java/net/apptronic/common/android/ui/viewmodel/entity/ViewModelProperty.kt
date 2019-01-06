@@ -4,8 +4,10 @@ import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
 import net.apptronic.common.android.ui.viewmodel.lifecycle.LifecycleHolder
 
-class ViewModelProperty<T>(lifecycleHolder: LifecycleHolder<*>) : ViewModelSubjectEntity<T>(lifecycleHolder,
-        ValueEntitySubject(lifecycleHolder.threadExecutor())) {
+open class ViewModelProperty<T>(lifecycleHolder: LifecycleHolder<*>) : ViewModelSubjectEntity<T>(
+    lifecycleHolder,
+    ValueEntitySubject(lifecycleHolder.threadExecutor())
+) {
 
     internal var valueHolder: ValueHolder<T>? = null
 
@@ -32,6 +34,12 @@ class ViewModelProperty<T>(lifecycleHolder: LifecycleHolder<*>) : ViewModelSubje
             result.onNext(it)
         }
         return result
+    }
+
+    fun doIfSet(action: (T) -> Unit) {
+        valueHolder?.let {
+            action(it.value)
+        }
     }
 
 }

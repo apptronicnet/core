@@ -21,7 +21,7 @@ fun <T> ViewModelProperty<T>.assignAsCopyOf(source: ViewModelProperty<T>): ViewM
     return this
 }
 
-
+@Deprecated("Replaced by ViewModel.function()")
 fun <T : ViewModelProperty<R>, R, A1> T.assignAsFunctionFrom(
     a1: ViewModelProperty<A1>,
     function: (A1) -> R
@@ -32,6 +32,7 @@ fun <T : ViewModelProperty<R>, R, A1> T.assignAsFunctionFrom(
     return this
 }
 
+@Deprecated("Replaced by ViewModel.function()")
 fun <T : ViewModelProperty<R>, R, A1, A2> T.assignAsFunctionFrom(
     a1: ViewModelProperty<A1>,
     a2: ViewModelProperty<A2>,
@@ -43,6 +44,7 @@ fun <T : ViewModelProperty<R>, R, A1, A2> T.assignAsFunctionFrom(
     return this
 }
 
+@Deprecated("Replaced by ViewModel.function()")
 fun <T : ViewModelProperty<R>, R, A1, A2, A3> T.assignAsFunctionFrom(
     a1: ViewModelProperty<A1>,
     a2: ViewModelProperty<A2>,
@@ -55,6 +57,7 @@ fun <T : ViewModelProperty<R>, R, A1, A2, A3> T.assignAsFunctionFrom(
     return this
 }
 
+@Deprecated("Replaced by ViewModel.function()")
 fun <T : ViewModelProperty<R>, R, A1, A2, A3, A4> T.assignAsFunctionFrom(
     a1: ViewModelProperty<A1>,
     a2: ViewModelProperty<A2>,
@@ -73,6 +76,7 @@ fun <T : ViewModelProperty<R>, R, A1, A2, A3, A4> T.assignAsFunctionFrom(
     return this
 }
 
+@Deprecated("Replaced by ViewModel.function()")
 fun <T : ViewModelProperty<R>, R, A1, A2, A3, A4, A5> T.assignAsFunctionFrom(
     a1: ViewModelProperty<A1>,
     a2: ViewModelProperty<A2>,
