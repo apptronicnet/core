@@ -4,8 +4,8 @@ import net.apptronic.common.android.ui.threading.SynchronousExecutor
 import net.apptronic.common.android.ui.threading.ThreadExecutor
 import net.apptronic.common.android.ui.viewmodel.ViewModel
 import net.apptronic.common.android.ui.viewmodel.entity.PropertyNotSetException
-import net.apptronic.common.android.ui.viewmodel.entity.assignAsCopyOf
-import net.apptronic.common.android.ui.viewmodel.entity.assignAsFunctionFrom
+import net.apptronic.common.android.ui.viewmodel.entity.behaviorextensions.assignAsCopyOf
+import net.apptronic.common.android.ui.viewmodel.entity.behaviorextensions.assignAsFunctionFrom
 import net.apptronic.common.android.ui.viewmodel.lifecycle.GenericLifecycle
 import net.apptronic.common.android.ui.viewmodel.lifecycle.LifecycleHolder
 import org.junit.Test

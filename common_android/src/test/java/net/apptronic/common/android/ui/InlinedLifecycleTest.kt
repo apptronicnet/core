@@ -16,10 +16,13 @@ class InlinedLifecycleTest : LifecycleHolder<FragmentLifecycle> {
 
     override fun threadExecutor(): ThreadExecutor = SynchronousExecutor()
 
-    private class SampleViewModel(lifecycleHolder: LifecycleHolder<FragmentLifecycle>) : FragmentViewModel(lifecycleHolder) {
+    private class SampleViewModel(lifecycleHolder: LifecycleHolder<FragmentLifecycle>) :
+        FragmentViewModel(lifecycleHolder) {
 
         var countOnStart = 0
         var countOnStop = 0
+
+        var started = 0
 
     }
 
@@ -74,6 +77,52 @@ class InlinedLifecycleTest : LifecycleHolder<FragmentLifecycle> {
         lifecycle.startedStage.exit()
         assertEquals(model.countOnStart, 5)
         assertEquals(model.countOnStop, 5)
+
+    }
+
+    @Test
+    fun shouldBeConsistent() {
+        val model = SampleViewModel(this).apply {
+            onCreate {
+                onStart {
+                    started++
+                }
+                onStop {
+                    started--
+                }
+            }
+        }
+
+        // first cycle
+        lifecycle.createdStage.enter()
+
+        // start 1
+        lifecycle.startedStage.enter()
+        assertEquals(model.started, 1)
+        lifecycle.startedStage.exit()
+        assertEquals(model.started, 0)
+
+        // start 2
+        lifecycle.startedStage.enter()
+        assertEquals(model.started, 1)
+        lifecycle.startedStage.exit()
+        assertEquals(model.started, 0)
+
+        // now reenter parent stage
+        lifecycle.createdStage.exit()
+        lifecycle.createdStage.enter()
+
+        // start 3
+        lifecycle.startedStage.enter()
+        assertEquals(model.started, 1)
+        lifecycle.startedStage.exit()
+        assertEquals(model.started, 0)
+
+        // start 4
+        lifecycle.startedStage.enter()
+        assertEquals(model.started, 1)
+        lifecycle.startedStage.exit()
+        assertEquals(model.started, 0)
 
     }
 

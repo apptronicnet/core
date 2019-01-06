@@ -5,8 +5,8 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import net.apptronic.common.android.ui.components.fragment.FragmentLifecycle
 import net.apptronic.common.android.ui.components.fragment.FragmentViewModel
-import net.apptronic.common.android.ui.components.submodels.TextViewModel
-import net.apptronic.common.android.ui.viewmodel.entity.assignAsFunctionFrom
+import net.apptronic.common.android.ui.components.submodels.TextLabelModel
+import net.apptronic.common.android.ui.viewmodel.entity.behaviorextensions.assignAsFunctionFrom
 import net.apptronic.common.android.ui.viewmodel.lifecycle.LifecycleHolder
 import java.util.concurrent.TimeUnit
 
@@ -24,7 +24,7 @@ class SampleViewModel(lifecycleHolder: LifecycleHolder<FragmentLifecycle>) : Fra
     val secondCounter = value<String>()
     val toastOnPause = genericEvent()
 
-    val confirmedInputText = TextViewModel(this).apply {
+    val confirmedInputText = TextLabelModel(this).apply {
         textColor.assignAsFunctionFrom(context, text, userInputValue) { context, text, userInputValue ->
             if (text == userInputValue) {
                 ContextCompat.getColor(context, R.color.blueText)

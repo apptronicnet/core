@@ -7,7 +7,11 @@ import android.view.ViewGroup
 import android.widget.Toast
 import kotlinx.android.synthetic.main.sample_fragment.*
 import net.apptronic.common.android.ui.components.fragment.BaseFragment
-import net.apptronic.common.android.ui.viewmodel.entity.*
+import net.apptronic.common.android.ui.viewmodel.entity.behaviorextensions.savesTextChangesTo
+import net.apptronic.common.android.ui.viewmodel.entity.behaviorextensions.showsTextFrom
+import net.apptronic.common.android.ui.viewmodel.entity.behaviorextensions.usesTextColorFrom
+import net.apptronic.common.android.ui.viewmodel.entity.sendsClicksTo
+import net.apptronic.common.android.ui.viewmodel.entity.sendsTextChangeEventsTo
 
 /**
  * Sample fragment creates screen View and binds it to ViewModel

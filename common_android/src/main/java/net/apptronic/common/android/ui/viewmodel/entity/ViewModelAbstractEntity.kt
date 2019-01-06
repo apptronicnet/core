@@ -11,7 +11,7 @@ abstract class ViewModelAbstractEntity<T>(private val lifecycleHolder: Lifecycle
     protected abstract fun onListen(listener: (T) -> Unit, stage: LifecycleStage)
 
     fun subscribe(listener: (T) -> Unit) {
-        lifecycleHolder.localLifecycle().getActiveStage()?.let {
+        lifecycleHolder.localLifecycle().getActiveStage().let {
             onListen(listener, it)
         }
     }

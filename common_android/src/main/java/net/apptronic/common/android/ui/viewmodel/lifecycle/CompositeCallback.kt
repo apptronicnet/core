@@ -19,4 +19,8 @@ internal class CompositeCallback {
         innerCallbacks.remove(callback)
     }
 
+    internal fun clear() {
+        innerCallbacks.clear()
+    }
+
 }

@@ -5,6 +5,7 @@ import io.reactivex.disposables.Disposable
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicReference
+import kotlin.collections.HashMap
 
 class LifecycleStage(val lifecycle: Lifecycle, val name: String) {
 
@@ -12,10 +13,14 @@ class LifecycleStage(val lifecycle: Lifecycle, val name: String) {
 
     private val enterCallback = CompositeCallback()
     private val exitCallback = CompositeCallback()
+    private val whenEnteredActions = HashMap<String, (() -> Unit)>()
 
-    private var enterHandler = AtomicReference<OnEnterHandlerImpl>()
+    private val enterHandler = AtomicReference<OnEnterHandlerImpl>()
     private val exitHandler = AtomicReference<OnExitHandlerImpl>()
 
+    /**
+     * This callbacks are internally created to be executed on exit stage command
+     */
     private val inStageCallbacks = LinkedList<EventCallback>()
 
     fun isEntered(): Boolean = isEntered.get()
@@ -25,6 +30,8 @@ class LifecycleStage(val lifecycle: Lifecycle, val name: String) {
         exitHandler.set(OnExitHandlerImpl())
         isEntered.set(true)
         enterCallback.execute()
+        whenEnteredActions.values.forEach { it.invoke() }
+        whenEnteredActions.clear()
     }
 
     fun exit() {
@@ -45,6 +52,27 @@ class LifecycleStage(val lifecycle: Lifecycle, val name: String) {
         }
     }
 
+    /**
+     * This function is used to perform single-shot action when lifecycle stage will be entered.
+     * It is lifecycle-independent and will not cancelled also if current stage will exit. If
+     * current lifecycle stage already entered - action will be executed immediately.
+     * It may be useful
+     *
+     * @param key unique key for action. If action with same key already exists - previous action
+     * will be disposed
+     * @param action Action to perform when stage will be entered
+     */
+    fun doOnce(key: String, action: () -> Unit) {
+        if (isEntered()) {
+            action()
+        } else {
+            whenEnteredActions[key] = action
+        }
+    }
+
+    /**
+     * Subscribe to
+     */
     fun doOnEnter(callback: LifecycleStage.OnEnterHandler.() -> Unit) {
         val eventCallback = subscribeEnter(callback)
         enterCallback.add(eventCallback)
@@ -81,7 +109,7 @@ class LifecycleStage(val lifecycle: Lifecycle, val name: String) {
     }
 
 
-    internal fun cancelOnExit(callback: EventCallback) {
+    private fun cancelOnExit(callback: EventCallback) {
         inStageCallbacks.add(callback)
     }
 
