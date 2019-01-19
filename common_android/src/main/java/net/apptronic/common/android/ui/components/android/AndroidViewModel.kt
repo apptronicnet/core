@@ -10,45 +10,45 @@ open class AndroidViewModel(lifecycle: Lifecycle) : ViewModel(lifecycle) {
     /**
      * Do single action on stage is created
      */
-    fun onceCreated(key: String, action: () -> Unit) {
+    fun doOnceCreated(key: String, action: () -> Unit) {
         onceStage(AndroidLifecycle.STAGE_CREATED, key, action)
     }
 
     /**
      * Do single action on stage is started
      */
-    fun onceStarted(key: String, action: () -> Unit) {
+    fun doOnceStarted(key: String, action: () -> Unit) {
         onceStage(AndroidLifecycle.STAGE_STARTED, key, action)
     }
 
     /**
      * Do single action on stage is resumed
      */
-    fun onceResumed(key: String, action: () -> Unit) {
+    fun doOnceResumed(key: String, action: () -> Unit) {
         onceStage(AndroidLifecycle.STAGE_RESUMED, key, action)
     }
 
-    fun onCreate(callback: LifecycleStage.OnEnterHandler.() -> Unit) {
+    fun doOnCreate(callback: LifecycleStage.OnEnterHandler.() -> Unit) {
         onEnterStage(AndroidLifecycle.STAGE_CREATED, callback)
     }
 
-    fun onStart(callback: LifecycleStage.OnEnterHandler.() -> Unit) {
+    fun doOnStart(callback: LifecycleStage.OnEnterHandler.() -> Unit) {
         onEnterStage(AndroidLifecycle.STAGE_STARTED, callback)
     }
 
-    fun onResume(callback: LifecycleStage.OnEnterHandler.() -> Unit) {
+    fun doOnResume(callback: LifecycleStage.OnEnterHandler.() -> Unit) {
         onEnterStage(AndroidLifecycle.STAGE_RESUMED, callback)
     }
 
-    fun onPause(callback: LifecycleStage.OnExitHandler.() -> Unit) {
+    fun doOnPause(callback: LifecycleStage.OnExitHandler.() -> Unit) {
         onExitStage(AndroidLifecycle.STAGE_RESUMED, callback)
     }
 
-    fun onStop(callback: LifecycleStage.OnExitHandler.() -> Unit) {
+    fun doOnStop(callback: LifecycleStage.OnExitHandler.() -> Unit) {
         onExitStage(AndroidLifecycle.STAGE_STARTED, callback)
     }
 
-    fun onDestroy(callback: LifecycleStage.OnExitHandler.() -> Unit) {
+    fun doOnDestroy(callback: LifecycleStage.OnExitHandler.() -> Unit) {
         onExitStage(AndroidLifecycle.STAGE_CREATED, callback)
     }
 

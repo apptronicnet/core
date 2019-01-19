@@ -3,7 +3,7 @@ package net.apptronic.common.android.ui.viewmodel.extensions
 import net.apptronic.common.android.ui.viewmodel.entity.ViewModelProperty
 
 /**
- * ViewModelCalculatedProperty af view with value which is calculated from other values
+ * ViewModelCalculatedValue af view with value which is calculated from other values
  */
 fun <A1> doOnChange(
     a1: ViewModelProperty<A1>,
@@ -15,7 +15,7 @@ fun <A1> doOnChange(
 }
 
 /**
- * ViewModelCalculatedProperty af view with value which is calculated from other values
+ * ViewModelCalculatedValue af view with value which is calculated from other values
  */
 fun <A1, A2> doOnChange(
     a1: ViewModelProperty<A1>,
@@ -28,7 +28,7 @@ fun <A1, A2> doOnChange(
 }
 
 /**
- * ViewModelCalculatedProperty af view with value which is calculated from other values
+ * ViewModelCalculatedValue af view with value which is calculated from other values
  */
 fun <A1, A2, A3> doOnChange(
     a1: ViewModelProperty<A1>,
@@ -42,7 +42,7 @@ fun <A1, A2, A3> doOnChange(
 }
 
 /**
- * ViewModelCalculatedProperty af view with value which is calculated from other values
+ * ViewModelCalculatedValue af view with value which is calculated from other values
  */
 fun <A1, A2, A3, A4> doOnChange(
     a1: ViewModelProperty<A1>,
@@ -57,7 +57,7 @@ fun <A1, A2, A3, A4> doOnChange(
 }
 
 /**
- * ViewModelCalculatedProperty af view with value which is calculated from other values
+ * ViewModelCalculatedValue af view with value which is calculated from other values
  */
 fun <A1, A2, A3, A4, A5> doOnChange(
     a1: ViewModelProperty<A1>,
@@ -73,7 +73,7 @@ fun <A1, A2, A3, A4, A5> doOnChange(
 }
 
 /**
- * ViewModelCalculatedProperty af view with value which is calculated from other values
+ * ViewModelCalculatedValue af view with value which is calculated from other values
  */
 fun <A1, A2, A3, A4, A5, A6> doOnChange(
     a1: ViewModelProperty<A1>,
@@ -90,7 +90,7 @@ fun <A1, A2, A3, A4, A5, A6> doOnChange(
 }
 
 /**
- * ViewModelCalculatedProperty af view with value which is calculated from other values
+ * ViewModelCalculatedValue af view with value which is calculated from other values
  */
 fun <A1, A2, A3, A4, A5, A6, A7> doOnChange(
     a1: ViewModelProperty<A1>,
@@ -108,7 +108,7 @@ fun <A1, A2, A3, A4, A5, A6, A7> doOnChange(
 }
 
 /**
- * ViewModelCalculatedProperty af view with value which is calculated from other values
+ * ViewModelCalculatedValue af view with value which is calculated from other values
  */
 fun <T> doOnChange(
     array: Array<ViewModelProperty<*>>,

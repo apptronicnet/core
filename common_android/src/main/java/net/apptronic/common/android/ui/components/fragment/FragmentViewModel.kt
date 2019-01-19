@@ -6,15 +6,15 @@ import net.apptronic.common.android.ui.viewmodel.lifecycle.LifecycleStage
 
 open class FragmentViewModel(lifecycle: Lifecycle) : AndroidViewModel(lifecycle) {
 
-    fun onceViewCreated(key: String, action: () -> Unit) {
+    fun doOnceViewCreated(key: String, action: () -> Unit) {
         onceStage(FragmentLifecycle.STAGE_VIEW_CREATED, key, action)
     }
 
-    fun onViewCreated(callback: LifecycleStage.OnEnterHandler.() -> Unit) {
+    fun doOnViewCreated(callback: LifecycleStage.OnEnterHandler.() -> Unit) {
         onEnterStage(FragmentLifecycle.STAGE_VIEW_CREATED, callback)
     }
 
-    fun onDestroyView(callback: LifecycleStage.OnExitHandler.() -> Unit) {
+    fun doOnDestroyView(callback: LifecycleStage.OnExitHandler.() -> Unit) {
         onExitStage(FragmentLifecycle.STAGE_VIEW_CREATED, callback)
     }
 

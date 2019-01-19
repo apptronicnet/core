@@ -20,7 +20,6 @@ abstract class BaseActivity<Model : ViewModel> : AppCompatActivity() {
         if (viewModelId == ViewModelRegistry.NO_ID) {
             viewModelId = createViewModel()!!.apply {
                 ViewModelRegistry.add(this)
-                startLifecycle()
             }.getId()
         }
         viewModelId

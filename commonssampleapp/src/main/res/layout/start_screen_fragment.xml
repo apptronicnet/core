@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button
+        android:id="@+id/btnRequestNewInput"
+        android:text="Request new input" />
+
+    <TextView
+        android:textSize="12dp"
+        android:padding="8dp"
+        android:text="INPUT:"
+        android:hint="No value" />
+
+    <TextView
+        android:id="@+id/inputValue"
+        android:textSize="18dp"
+        android:padding="16dp"
+        tools:text="Some text"
+        android:hint="No value" />
+
+    <TextView
+        android:textSize="12dp"
+        android:padding="8dp"
+        android:text="LENGHT:"
+        android:hint="No value" />
+
+    <TextView
+        android:id="@+id/inputLength"
+        android:textSize="18dp"
+        android:padding="16dp"
+        tools:text="9"
+        android:hint="-" />
+
+</TableLayout>

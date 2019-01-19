@@ -1,9 +1,7 @@
 package net.apptronic.common.android.ui.viewmodel
 
 import net.apptronic.common.android.ui.viewmodel.adapter.ViewModelStack
-import net.apptronic.common.android.ui.viewmodel.entity.ViewModelGenericEvent
-import net.apptronic.common.android.ui.viewmodel.entity.ViewModelProperty
-import net.apptronic.common.android.ui.viewmodel.entity.ViewModelTypedEvent
+import net.apptronic.common.android.ui.viewmodel.entity.*
 import net.apptronic.common.android.ui.viewmodel.lifecycle.Lifecycle
 import net.apptronic.common.android.ui.viewmodel.lifecycle.LifecycleHolder
 import net.apptronic.common.android.ui.viewmodel.lifecycle.LifecycleStage
@@ -28,27 +26,19 @@ abstract class ViewModel(private val lifecycle: Lifecycle) : LifecycleHolder {
         getLifecycle().getStage(stageName)?.doOnExit(callback)
     }
 
+    fun doOnTerminate(callback: LifecycleStage.OnExitHandler.() -> Unit) {
+        onExitStage(Lifecycle.ROOT_STAGE, callback)
+    }
+
     override fun getLifecycle(): Lifecycle {
         return lifecycle
     }
 
-    fun startLifecycle() {
-        lifecycle.start()
-        getLifecycle().getStage(Lifecycle.ROOT_STAGE)!!.doOnExit {
-            ViewModelRegistry.add(this@ViewModel)
-            onStartLifecycle()
-        }
-        getLifecycle().getStage(Lifecycle.ROOT_STAGE)!!.doOnExit {
-            onTerminateLifecycle()
-            lifecycle.finish()
+    init {
+        ViewModelRegistry.add(this@ViewModel)
+        doOnTerminate {
             ViewModelRegistry.remove(this@ViewModel)
         }
-    }
-
-    open fun onStartLifecycle() {
-    }
-
-    open fun onTerminateLifecycle() {
     }
 
     /**
@@ -62,8 +52,8 @@ abstract class ViewModel(private val lifecycle: Lifecycle) : LifecycleHolder {
         lifecycle.finish()
     }
 
-    fun innerModel(): ViewModelStack {
-        return ViewModelStack().also {
+    fun modelStack(): ViewModelStack {
+        return ViewModelStack(this).also {
             innerStacks.add(it)
         }
     }
@@ -72,14 +62,14 @@ abstract class ViewModel(private val lifecycle: Lifecycle) : LifecycleHolder {
      * ViewModelProperty of view
      */
     fun <T> value(): ViewModelProperty<T> {
-        return ViewModelProperty(this)
+        return ViewModelValue(this)
     }
 
     /**
      * ViewModelProperty of view with some default value
      */
     fun <T> value(defaultValue: T): ViewModelProperty<T> {
-        return ViewModelProperty<T>(this).apply {
+        return ViewModelValue<T>(this).apply {
             set(defaultValue)
         }
     }
@@ -99,5 +89,16 @@ abstract class ViewModel(private val lifecycle: Lifecycle) : LifecycleHolder {
     }
 
     abstract class SubModel(parent: ViewModel) : ViewModel(parent.lifecycle)
+
+    fun <T> resultListener(onReceived: (T) -> Unit): ResultListener<T> {
+        val resultEvent = typedEvent<T>()
+        resultEvent.subscribe(onReceived)
+        return object : ResultListener<T> {
+            override fun setResult(result: T) {
+                resultEvent.sendEvent(result)
+            }
+        }
+
+    }
 
 }

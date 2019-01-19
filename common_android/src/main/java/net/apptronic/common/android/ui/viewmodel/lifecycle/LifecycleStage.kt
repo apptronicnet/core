@@ -18,6 +18,10 @@ class LifecycleStage(val lifecycle: Lifecycle, val name: String) {
     private val enterHandler = AtomicReference<OnEnterHandlerImpl>()
     private val exitHandler = AtomicReference<OnExitHandlerImpl>()
 
+    override fun toString(): String {
+        return super.toString() + " $name isEntered=${isEntered.get()}"
+    }
+
     /**
      * This callbacks are internally created to be executed on exit stage command
      */

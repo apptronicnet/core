@@ -1,20 +1,38 @@
 package net.apptronic.common.android.ui.viewmodel.adapter
 
 import net.apptronic.common.android.ui.viewmodel.ViewModel
+import net.apptronic.common.android.ui.viewmodel.entity.ViewModelProperty
+import net.apptronic.common.android.ui.viewmodel.lifecycle.LifecycleHolder
 import java.util.*
 
-class ViewModelStack {
+class ViewModelStack(lifecycleHolder: LifecycleHolder) :
+    ViewModelProperty<ViewModel?>(lifecycleHolder) {
 
-    private var adapter: ViewModelAdapter? = null
+    override fun isSet(): Boolean {
+        return true
+    }
 
-    private val stack = LinkedList<ViewModel>()
+    override fun onSetValue(value: ViewModel?) {
+        clear()
+        if (value != null) {
+            add(value)
+        }
+    }
+
+    override fun onGetValue(): ViewModel? {
+        return getActiveModel()
+    }
 
     /**
      * Get currently active model in stack
      */
     fun getActiveModel(): ViewModel? {
-        return stack.firstOrNull()
+        return stack.lastOrNull()
     }
+
+    private var adapter: ViewModelAdapter? = null
+
+    private val stack = LinkedList<ViewModel>()
 
     /**
      * Get size of stack
@@ -31,7 +49,7 @@ class ViewModelStack {
         adapter?.apply {
             onInvalidate(
                 oldModel = null,
-                newModel = getActiveModel(),
+                newModel = getOrNull(),
                 transitionInfo = null
             )
         }
@@ -41,7 +59,7 @@ class ViewModelStack {
      * Clear all [ViewModel]s from stack
      */
     fun clear(transitionInfo: Any? = null) {
-        val activeModel = getActiveModel()
+        val activeModel = getOrNull()
         stack.forEach {
             it.finishLifecycle()
         }
@@ -53,16 +71,15 @@ class ViewModelStack {
                 transitionInfo = transitionInfo
             )
         }
+        onInput(null)
     }
 
     /**
      * Add [ViewModel] to stack
      */
     fun add(viewModel: ViewModel, transitionInfo: Any? = null) {
-        viewModel.startLifecycle()
-        val activeModel = getActiveModel()
+        val activeModel = getOrNull()
         stack.add(viewModel)
-        viewModel.startLifecycle()
         adapter?.apply {
             onInvalidate(
                 oldModel = activeModel,
@@ -70,14 +87,14 @@ class ViewModelStack {
                 transitionInfo = transitionInfo
             )
         }
+        onInput(getOrNull())
     }
 
     /**
      * Replace last [ViewModel] in stack
      */
     fun replace(viewModel: ViewModel, transitionInfo: Any? = null) {
-        viewModel.startLifecycle()
-        val activeModel = getActiveModel()
+        val activeModel = getOrNull()
         activeModel?.also {
             stack.remove(it)
             activeModel.finishLifecycle()
@@ -90,6 +107,7 @@ class ViewModelStack {
                 transitionInfo = transitionInfo
             )
         }
+        onInput(getOrNull())
     }
 
     /**
@@ -97,11 +115,11 @@ class ViewModelStack {
      * @param transitionInfo will be used only if this [ViewModel] is now active
      */
     fun remove(viewModel: ViewModel, transitionInfo: Any? = null) {
-        val activeModel = getActiveModel()
+        val activeModel = getOrNull()
         viewModel.finishLifecycle()
         stack.remove(viewModel)
         if (viewModel == activeModel) {
-            val newActiveModel = getActiveModel()
+            val newActiveModel = getOrNull()
             adapter?.apply {
                 onInvalidate(
                     oldModel = viewModel,
@@ -110,6 +128,7 @@ class ViewModelStack {
                 )
             }
         }
+        onInput(getOrNull())
     }
 
     /**
@@ -118,9 +137,10 @@ class ViewModelStack {
      * @return true if last model removed from stack
      */
     fun popBackStack(transitionInfo: Any? = null): Boolean {
-        val activeModel = getActiveModel()
+        val activeModel = getOrNull()
         return if (activeModel != null) {
             remove(activeModel, transitionInfo)
+            onInput(getOrNull())
             true
         } else {
             false
@@ -134,7 +154,7 @@ class ViewModelStack {
      */
     fun popBackStackTo(viewModel: ViewModel, transitionInfo: Any? = null): Boolean {
         return if (stack.contains(viewModel) && stack.last != viewModel) {
-            val activeModel = getActiveModel()
+            val activeModel = getOrNull()
             while (stack.last != viewModel) {
                 stack.removeLast().finishLifecycle()
             }
@@ -145,6 +165,7 @@ class ViewModelStack {
                     transitionInfo = transitionInfo
                 )
             }
+            onInput(getOrNull())
             true
         } else {
             false

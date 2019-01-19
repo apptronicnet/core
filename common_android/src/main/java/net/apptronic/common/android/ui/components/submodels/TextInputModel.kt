@@ -2,46 +2,47 @@ package net.apptronic.common.android.ui.components.submodels
 
 import android.text.Editable
 import android.widget.EditText
-import androidx.core.content.ContextCompat
+import net.apptronic.common.android.ui.generic.Color
+import net.apptronic.common.android.ui.generic.Text
 import net.apptronic.common.android.ui.utils.BaseTextWatcher
 import net.apptronic.common.android.ui.viewmodel.ViewModel
 import net.apptronic.common.android.ui.viewmodel.entity.PropertyNotSetException
 
 class TextInputModel(parent: ViewModel) : ViewModel.SubModel(parent) {
 
-    val text = value<String>("")
-    val textColorRes = value<Int>()
-    val textColor = value<Int>()
-    val hint = value<String>()
+    val inputText = value<String>("")
+    val textColor = value<Color>()
+    val hint = value<Text>()
 
-    init {
-        textColorRes.subscribe {
-
-        }
+    fun getText(): String {
+        return inputText.getOrNull() ?: ""
     }
 
 }
 
-fun TextInputModel.bind(view: EditText) {
-    view.addTextChangedListener(object : BaseTextWatcher() {
+fun EditText.bind(model: TextInputModel) {
+    addTextChangedListener(object : BaseTextWatcher() {
         override fun afterTextChanged(s: Editable?) {
             super.afterTextChanged(s)
             val newValue = s.toString()
             try {
-                if (text.get() != newValue) {
-                    text.set(newValue)
+                if (model.inputText.get() != newValue) {
+                    model.inputText.set(newValue)
                 }
             } catch (e: PropertyNotSetException) {
-                text.set(newValue)
+                model.inputText.set(newValue)
             }
         }
     })
-    text.subscribe {
-        if (view.text.toString() != it) {
-            view.setText(it)
+    model.inputText.subscribe {
+        if (text.toString() != it) {
+            setText(it)
         }
     }
-    textColor.subscribe {
-        view.setTextColor(ContextCompat.getColor(view.context, it))
+    model.textColor.subscribe {
+        setTextColor(it.getValue(context))
+    }
+    model.hint.subscribe {
+        setHint(it.getValue(context))
     }
 }

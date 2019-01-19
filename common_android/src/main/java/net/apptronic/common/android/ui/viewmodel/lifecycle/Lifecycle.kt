@@ -20,15 +20,13 @@ open class Lifecycle(provider: ThreadExecutorProvider) : ThreadExecutorProvider 
         const val ROOT_STAGE = "_root"
     }
 
-    private val isStarted = AtomicBoolean(false)
     private val isTerminated = AtomicBoolean(false)
     private val stages = LinkedList<LifecycleStage>()
 
-    private val rootStage: LifecycleStage = createStage(ROOT_STAGE)
-
-    private fun verifyStarted() {
-        if (!isStarted.get()) {
-            throw IllegalStateException("Lifecycle is not started yet")
+    private val rootStage: LifecycleStage = createStage(ROOT_STAGE).apply {
+        enter()
+        doOnExit {
+            isTerminated.set(true)
         }
     }
 
@@ -39,26 +37,13 @@ open class Lifecycle(provider: ThreadExecutorProvider) : ThreadExecutorProvider 
     }
 
     fun getActiveStage(): LifecycleStage {
-        verifyStarted()
         return stages.lastOrNull { it.isEntered() } ?: rootStage
     }
 
     fun getStage(name: String): LifecycleStage? {
-        verifyStarted()
         return stages.firstOrNull {
             it.name == name
         }
-    }
-
-    fun start() {
-        if (isStarted.get()) {
-            throw IllegalStateException("Lifecycle is already started")
-        }
-        if (isTerminated()) {
-            return
-        }
-        isStarted.set(true)
-        rootStage.enter()
     }
 
     /**
@@ -74,7 +59,6 @@ open class Lifecycle(provider: ThreadExecutorProvider) : ThreadExecutorProvider 
                 it.exit()
             }
         }
-        isTerminated.set(true)
     }
 
     fun isTerminated(): Boolean {

@@ -23,8 +23,8 @@ class InlinedLifecycleTest {
     @Test
     fun shouldCallSomeTimes() {
         val model = SampleViewModel(lifecycle).apply {
-            onCreate {
-                onStart {
+            doOnCreate {
+                doOnStart {
                     countOnStart++
                     onExit {
                         countOnStop++
@@ -61,7 +61,7 @@ class InlinedLifecycleTest {
         assertEquals(model.countOnStart, 4)
         assertEquals(model.countOnStop, 4)
 
-        // onStart was called from onCreate so after onDestroy and reCreate it resubscribes
+        // doOnStart was called from doOnCreate so after doOnDestroy and reCreate it resubscribes
         lifecycle.getCreatedStage().exit()
         lifecycle.getCreatedStage().enter()
 
@@ -77,11 +77,11 @@ class InlinedLifecycleTest {
     @Test
     fun shouldBeConsistent() {
         val model = SampleViewModel(lifecycle).apply {
-            onCreate {
-                onStart {
+            doOnCreate {
+                doOnStart {
                     started++
                 }
-                onStop {
+                doOnStop {
                     started--
                 }
             }
