@@ -4,6 +4,7 @@ import net.apptronic.common.android.ui.components.fragment.FragmentLifecycle
 import net.apptronic.common.android.ui.threading.SynchronousExecutor
 import net.apptronic.common.android.ui.threading.ThreadExecutor
 import net.apptronic.common.android.ui.viewmodel.lifecycle.LifecycleHolder
+import net.apptronic.test.commons_sample_app.models.StartScreenModel
 import org.junit.Test
 import kotlin.test.assertEquals
 
@@ -15,7 +16,7 @@ class SampleModelTest : LifecycleHolder<FragmentLifecycle> {
 
     override fun threadExecutor(): ThreadExecutor = SynchronousExecutor()
 
-    val model = SampleViewModel(this)
+    val model = StartScreenModel(this)
 
     @Test
     fun shouldSetTitleAfterEachClick() {

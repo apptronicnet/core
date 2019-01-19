@@ -3,8 +3,9 @@ package net.apptronic.common.android.ui.viewmodel.entity
 import net.apptronic.common.android.ui.viewmodel.lifecycle.LifecycleHolder
 import net.apptronic.common.android.ui.viewmodel.lifecycle.LifecycleStage
 
-abstract class ViewModelSubjectEntity<T>(lifecycleHolder: LifecycleHolder<*>,
-                                         private val entitySubject: ViewModelEntitySubject<T>) : ViewModelAbstractEntity<T>(lifecycleHolder) {
+abstract class ViewModelSubjectEntity<T>(
+    lifecycleHolder: LifecycleHolder,
+    private val entitySubject: ViewModelEntitySubject<T>) : ViewModelAbstractEntity<T>(lifecycleHolder) {
 
     override fun onInput(value: T) {
         entitySubject.send(value)

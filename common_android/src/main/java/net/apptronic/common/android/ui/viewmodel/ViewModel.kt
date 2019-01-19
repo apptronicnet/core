@@ -1,177 +1,86 @@
 package net.apptronic.common.android.ui.viewmodel
 
-import android.content.Context
+import net.apptronic.common.android.ui.viewmodel.adapter.ViewModelStack
 import net.apptronic.common.android.ui.viewmodel.entity.ViewModelGenericEvent
 import net.apptronic.common.android.ui.viewmodel.entity.ViewModelProperty
 import net.apptronic.common.android.ui.viewmodel.entity.ViewModelTypedEvent
-import net.apptronic.common.android.ui.viewmodel.entity.behaviorextensions.forEachChange
+import net.apptronic.common.android.ui.viewmodel.lifecycle.Lifecycle
 import net.apptronic.common.android.ui.viewmodel.lifecycle.LifecycleHolder
+import net.apptronic.common.android.ui.viewmodel.lifecycle.LifecycleStage
+import java.util.*
 
-abstract class ViewModel {
+abstract class ViewModel(private val lifecycle: Lifecycle) : LifecycleHolder {
 
-    private val lifecycleHolder: LifecycleHolder<*>
-    val context: ViewModelProperty<Context>
+    private val id: Long = ViewModelRegistry.nextId()
+    private val innerStacks = LinkedList<ViewModelStack>()
 
-    constructor(lifecycleHolder: LifecycleHolder<*>) {
-        this.lifecycleHolder = lifecycleHolder
-        context = value()
+    fun getId(): Long = id
+
+    fun onceStage(stageName: String, key: String, action: () -> Unit) {
+        getLifecycle().getStage(stageName)?.doOnce(key, action)
     }
 
-    constructor(parent: ViewModel) {
-        this.lifecycleHolder = parent.lifecycleHolder
-        context = parent.context
+    fun onEnterStage(stageName: String, callback: LifecycleStage.OnEnterHandler.() -> Unit) {
+        getLifecycle().getStage(stageName)?.doOnEnter(callback)
+    }
+
+    fun onExitStage(stageName: String, callback: LifecycleStage.OnExitHandler.() -> Unit) {
+        getLifecycle().getStage(stageName)?.doOnExit(callback)
+    }
+
+    override fun getLifecycle(): Lifecycle {
+        return lifecycle
+    }
+
+    fun startLifecycle() {
+        lifecycle.start()
+        getLifecycle().getStage(Lifecycle.ROOT_STAGE)!!.doOnExit {
+            ViewModelRegistry.add(this@ViewModel)
+            onStartLifecycle()
+        }
+        getLifecycle().getStage(Lifecycle.ROOT_STAGE)!!.doOnExit {
+            onTerminateLifecycle()
+            lifecycle.finish()
+            ViewModelRegistry.remove(this@ViewModel)
+        }
+    }
+
+    open fun onStartLifecycle() {
+    }
+
+    open fun onTerminateLifecycle() {
+    }
+
+    /**
+     * Called to end lifecycle for this view model: lifecycle will be forced to be exited and
+     * all inner models will be also finished
+     */
+    fun finishLifecycle() {
+        innerStacks.forEach {
+            it.finishAll()
+        }
+        lifecycle.finish()
+    }
+
+    fun innerModel(): ViewModelStack {
+        return ViewModelStack().also {
+            innerStacks.add(it)
+        }
     }
 
     /**
      * ViewModelProperty of view
      */
     fun <T> value(): ViewModelProperty<T> {
-        return ViewModelProperty(lifecycleHolder)
+        return ViewModelProperty(this)
     }
 
     /**
      * ViewModelProperty of view with some default value
      */
     fun <T> value(defaultValue: T): ViewModelProperty<T> {
-        return ViewModelProperty<T>(lifecycleHolder).apply {
+        return ViewModelProperty<T>(this).apply {
             set(defaultValue)
-        }
-    }
-
-    /**
-     * ViewModelCalculatedProperty af view with value which is calculated from other values
-     */
-    fun <T, A1> function(
-        a1: ViewModelProperty<A1>,
-        function: (A1) -> T
-    ): ViewModelProperty<T> {
-        return value<T>().apply {
-            forEachChange(a1) {
-                set(function(a1.get()))
-            }
-        }
-    }
-
-    /**
-     * ViewModelCalculatedProperty af view with value which is calculated from other values
-     */
-    fun <T, A1, A2> function(
-        a1: ViewModelProperty<A1>,
-        a2: ViewModelProperty<A2>,
-        function: (A1, A2) -> T
-    ): ViewModelProperty<T> {
-        return value<T>().apply {
-            forEachChange(a1, a2) {
-                set(function(a1.get(), a2.get()))
-            }
-        }
-    }
-
-    /**
-     * ViewModelCalculatedProperty af view with value which is calculated from other values
-     */
-    fun <T, A1, A2, A3> function(
-        a1: ViewModelProperty<A1>,
-        a2: ViewModelProperty<A2>,
-        a3: ViewModelProperty<A3>,
-        function: (A1, A2, A3) -> T
-    ): ViewModelProperty<T> {
-        return value<T>().apply {
-            forEachChange(a1, a2, a3) {
-                set(function(a1.get(), a2.get(), a3.get()))
-            }
-        }
-    }
-
-    /**
-     * ViewModelCalculatedProperty af view with value which is calculated from other values
-     */
-    fun <T, A1, A2, A3, A4> function(
-        a1: ViewModelProperty<A1>,
-        a2: ViewModelProperty<A2>,
-        a3: ViewModelProperty<A3>,
-        a4: ViewModelProperty<A4>,
-        function: (A1, A2, A3, A4) -> T
-    ): ViewModelProperty<T> {
-        return value<T>().apply {
-            forEachChange(a1, a2, a3, a4) {
-                set(function(a1.get(), a2.get(), a3.get(), a4.get()))
-            }
-        }
-    }
-
-    /**
-     * ViewModelCalculatedProperty af view with value which is calculated from other values
-     */
-    fun <T, A1, A2, A3, A4, A5> function(
-        a1: ViewModelProperty<A1>,
-        a2: ViewModelProperty<A2>,
-        a3: ViewModelProperty<A3>,
-        a4: ViewModelProperty<A4>,
-        a5: ViewModelProperty<A5>,
-        function: (A1, A2, A3, A4, A5) -> T
-    ): ViewModelProperty<T> {
-        return value<T>().apply {
-            forEachChange(a1, a2, a3, a4, a5) {
-                set(function(a1.get(), a2.get(), a3.get(), a4.get(), a5.get()))
-            }
-        }
-    }
-
-    /**
-     * ViewModelCalculatedProperty af view with value which is calculated from other values
-     */
-    fun <T, A1, A2, A3, A4, A5, A6> function(
-        a1: ViewModelProperty<A1>,
-        a2: ViewModelProperty<A2>,
-        a3: ViewModelProperty<A3>,
-        a4: ViewModelProperty<A4>,
-        a5: ViewModelProperty<A5>,
-        a6: ViewModelProperty<A6>,
-        function: (A1, A2, A3, A4, A5, A6) -> T
-    ): ViewModelProperty<T> {
-        return value<T>().apply {
-            forEachChange(a1, a2, a3, a4, a5, a6) {
-                set(function(a1.get(), a2.get(), a3.get(), a4.get(), a5.get(), a6.get()))
-            }
-        }
-    }
-
-    /**
-     * ViewModelCalculatedProperty af view with value which is calculated from other values
-     */
-    fun <T, A1, A2, A3, A4, A5, A6, A7> function(
-        a1: ViewModelProperty<A1>,
-        a2: ViewModelProperty<A2>,
-        a3: ViewModelProperty<A3>,
-        a4: ViewModelProperty<A4>,
-        a5: ViewModelProperty<A5>,
-        a6: ViewModelProperty<A6>,
-        a7: ViewModelProperty<A7>,
-        function: (A1, A2, A3, A4, A5, A6, A7) -> T
-    ): ViewModelProperty<T> {
-        return value<T>().apply {
-            forEachChange(a1, a2, a3, a4, a5, a6, a7) {
-                set(function(a1.get(), a2.get(), a3.get(), a4.get(), a5.get(), a6.get(), a7.get()))
-            }
-        }
-    }
-
-    /**
-     * ViewModelCalculatedProperty af view with value which is calculated from other values
-     */
-    fun <T> function(
-        array: Array<ViewModelProperty<*>>,
-        function: (Array<Any?>) -> T
-    ): ViewModelProperty<T> {
-        return value<T>().apply {
-            forEachChange(*array) {
-                set(
-                    function(
-                        array.map { it.get() }.toTypedArray()
-                    )
-                )
-            }
         }
     }
 
@@ -179,16 +88,16 @@ abstract class ViewModel {
      * User action on screen
      */
     fun genericEvent(): ViewModelGenericEvent {
-        return ViewModelGenericEvent(lifecycleHolder)
+        return ViewModelGenericEvent(this)
     }
 
     /**
      * User action on screen
      */
     fun <T> typedEvent(): ViewModelTypedEvent<T> {
-        return ViewModelTypedEvent(lifecycleHolder)
+        return ViewModelTypedEvent(this)
     }
 
-    abstract class SubModel(parent: ViewModel) : ViewModel(parent)
+    abstract class SubModel(parent: ViewModel) : ViewModel(parent.lifecycle)
 
 }

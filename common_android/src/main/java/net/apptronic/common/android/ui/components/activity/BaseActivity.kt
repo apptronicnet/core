@@ -3,59 +3,74 @@ package net.apptronic.common.android.ui.components.activity
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import net.apptronic.common.android.ui.components.fragment.FragmentLifecycle
-import net.apptronic.common.android.ui.components.fragment.FragmentViewModel
-import net.apptronic.common.android.ui.threading.AndroidActivityMainThreadExecutor
-import net.apptronic.common.android.ui.threading.ThreadExecutor
-import net.apptronic.common.android.ui.viewmodel.lifecycle.LifecycleHolder
+import net.apptronic.common.android.ui.viewmodel.ViewModel
+import net.apptronic.common.android.ui.viewmodel.ViewModelRegistry
+import net.apptronic.common.android.ui.viewmodel.lifecycle.enterStage
+import net.apptronic.common.android.ui.viewmodel.lifecycle.exitStage
 
-abstract class BaseActivity<Model : FragmentViewModel> : AppCompatActivity(), LifecycleHolder<FragmentLifecycle> {
+abstract class BaseActivity<Model : ViewModel> : AppCompatActivity() {
 
-    private val lifecycle = FragmentLifecycle()
-    private val threadExecutor = AndroidActivityMainThreadExecutor(this)
+    companion object {
+        const val VIEW_MODEL_ID = "_view_model_id"
+    }
 
-    override fun localLifecycle(): FragmentLifecycle = lifecycle
+    private var viewModelId: Long = ViewModelRegistry.NO_ID
 
-    override fun threadExecutor(): ThreadExecutor = threadExecutor
+    val model: Model by ViewModelRegistry.obtain {
+        if (viewModelId == ViewModelRegistry.NO_ID) {
+            viewModelId = createViewModel()!!.apply {
+                ViewModelRegistry.add(this)
+                startLifecycle()
+            }.getId()
+        }
+        viewModelId
+    }
 
-    private var model: Model? = null
-
-    fun setModel(model: Model) {
-        this.model = model
-        onBindModel(model)
+    /**
+     * Creates [ViewModel] for this [BaseActivity]
+     */
+    open fun createViewModel(): Model? {
+        return null
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        lifecycle.createdStage.enter()
+        if (intent.hasExtra(VIEW_MODEL_ID)) {
+            viewModelId = intent.getLongExtra(VIEW_MODEL_ID, ViewModelRegistry.NO_ID)
+        } else savedInstanceState?.let {
+            if (it.containsKey(VIEW_MODEL_ID)) {
+                viewModelId = savedInstanceState.getLong(VIEW_MODEL_ID)
+            }
+        }
+        enterStage(model, FragmentLifecycle.STAGE_CREATED)
         super.onCreate(savedInstanceState)
     }
 
-    open fun onBindModel(model: Model) {
-        model.context.set(this)
-    }
-
     override fun onStart() {
-        lifecycle.startedStage.enter()
+        enterStage(model, FragmentLifecycle.STAGE_STARTED)
         super.onStart()
     }
 
     override fun onResume() {
-        lifecycle.resumedStage.enter()
+        enterStage(model, FragmentLifecycle.STAGE_RESUMED)
         super.onResume()
     }
 
     override fun onPause() {
-        lifecycle.resumedStage.exit()
+        exitStage(model, FragmentLifecycle.STAGE_RESUMED)
         super.onPause()
     }
 
     override fun onStop() {
-        lifecycle.startedStage.exit()
+        exitStage(model, FragmentLifecycle.STAGE_STARTED)
         super.onStop()
     }
 
     override fun onDestroy() {
-        lifecycle.createdStage.exit()
+        exitStage(model, FragmentLifecycle.STAGE_CREATED)
         super.onDestroy()
+        if (isFinishing) {
+            model.finishLifecycle()
+        }
     }
 
 }

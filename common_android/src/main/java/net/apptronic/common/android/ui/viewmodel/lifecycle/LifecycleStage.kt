@@ -26,6 +26,12 @@ class LifecycleStage(val lifecycle: Lifecycle, val name: String) {
     fun isEntered(): Boolean = isEntered.get()
 
     fun enter() {
+        if (lifecycle.isTerminated()) {
+            return
+        }
+        if (isEntered()) {
+            throw IllegalStateException("Stage already entered")
+        }
         enterHandler.set(OnEnterHandlerImpl())
         exitHandler.set(OnExitHandlerImpl())
         isEntered.set(true)
@@ -35,6 +41,12 @@ class LifecycleStage(val lifecycle: Lifecycle, val name: String) {
     }
 
     fun exit() {
+        if (lifecycle.isTerminated()) {
+            return
+        }
+        if (!isEntered()) {
+            throw IllegalStateException("Stage already exited")
+        }
         isEntered.set(false)
         exitCallback.execute()
         exitHandler.get().disposables.dispose()
@@ -63,6 +75,9 @@ class LifecycleStage(val lifecycle: Lifecycle, val name: String) {
      * @param action Action to perform when stage will be entered
      */
     fun doOnce(key: String, action: () -> Unit) {
+        if (lifecycle.isTerminated()) {
+            return
+        }
         if (isEntered()) {
             action()
         } else {
@@ -74,6 +89,9 @@ class LifecycleStage(val lifecycle: Lifecycle, val name: String) {
      * Subscribe to
      */
     fun doOnEnter(callback: LifecycleStage.OnEnterHandler.() -> Unit) {
+        if (lifecycle.isTerminated()) {
+            return
+        }
         val eventCallback = subscribeEnter(callback)
         enterCallback.add(eventCallback)
         lifecycle.getActiveStage().cancelOnExit(eventCallback)
@@ -86,6 +104,9 @@ class LifecycleStage(val lifecycle: Lifecycle, val name: String) {
     }
 
     fun doOnExit(callback: LifecycleStage.OnExitHandler.() -> Unit) {
+        if (lifecycle.isTerminated()) {
+            return
+        }
         val eventCallback = subscribeExit(callback)
         exitCallback.add(eventCallback)
         lifecycle.getActiveStage().cancelOnExit(eventCallback)

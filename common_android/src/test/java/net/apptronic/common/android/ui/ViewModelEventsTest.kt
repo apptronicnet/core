@@ -1,22 +1,16 @@
 package net.apptronic.common.android.ui
 
 import net.apptronic.common.android.ui.threading.SynchronousExecutor
-import net.apptronic.common.android.ui.threading.ThreadExecutor
 import net.apptronic.common.android.ui.viewmodel.ViewModel
 import net.apptronic.common.android.ui.viewmodel.lifecycle.GenericLifecycle
-import net.apptronic.common.android.ui.viewmodel.lifecycle.LifecycleHolder
+import net.apptronic.common.android.ui.viewmodel.lifecycle.Lifecycle
 import org.junit.Test
 
-class ViewModelEventsTest : LifecycleHolder<GenericLifecycle> {
+class ViewModelEventsTest {
 
-    private val lifecycle = GenericLifecycle()
+    private val lifecycle = GenericLifecycle(SynchronousExecutor()).apply { start() }
 
-    override fun localLifecycle(): GenericLifecycle = lifecycle
-
-    override fun threadExecutor(): ThreadExecutor = SynchronousExecutor()
-
-    private class SampleViewModel(lifecycleHolder: LifecycleHolder<*>) :
-        ViewModel(lifecycleHolder) {
+    private class SampleViewModel(lifecycle: Lifecycle) : ViewModel(lifecycle) {
 
         val genericEvent = genericEvent()
 
@@ -26,7 +20,7 @@ class ViewModelEventsTest : LifecycleHolder<GenericLifecycle> {
 
     @Test
     fun shouldAutoUnsubscribeOnExit() {
-        val model = SampleViewModel(this)
+        val model = SampleViewModel(lifecycle)
 
         var genericCalls = 0
         var typedCalls = 0
@@ -60,7 +54,7 @@ class ViewModelEventsTest : LifecycleHolder<GenericLifecycle> {
 
     @Test
     fun shouldSendEvensAfterLifecycle() {
-        val model = SampleViewModel(this)
+        val model = SampleViewModel(lifecycle)
 
         var genericCalls = 0
         var typedCalls = 0
@@ -86,7 +80,7 @@ class ViewModelEventsTest : LifecycleHolder<GenericLifecycle> {
 
     @Test
     fun shouldNotSendEvensAfterLifecycleExit() {
-        val model = SampleViewModel(this)
+        val model = SampleViewModel(lifecycle)
 
         var genericCalls = 0
         var typedCalls = 0

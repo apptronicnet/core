@@ -4,9 +4,9 @@ import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
 import net.apptronic.common.android.ui.viewmodel.lifecycle.LifecycleHolder
 
-open class ViewModelProperty<T>(lifecycleHolder: LifecycleHolder<*>) : ViewModelSubjectEntity<T>(
+open class ViewModelProperty<T>(lifecycleHolder: LifecycleHolder) : ViewModelSubjectEntity<T>(
     lifecycleHolder,
-    ValueEntitySubject(lifecycleHolder.threadExecutor())
+    ValueEntitySubject(lifecycleHolder)
 ) {
 
     internal var valueHolder: ValueHolder<T>? = null
