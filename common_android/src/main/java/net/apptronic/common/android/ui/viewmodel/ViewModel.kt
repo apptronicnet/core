@@ -11,6 +11,7 @@ abstract class ViewModel(private val lifecycle: Lifecycle) : LifecycleHolder {
 
     private val id: Long = ViewModelRegistry.nextId()
     private val innerStacks = LinkedList<ViewModelStack>()
+    private var parent: ViewModelParent? = null
 
     fun getId(): Long = id
 
@@ -99,6 +100,21 @@ abstract class ViewModel(private val lifecycle: Lifecycle) : LifecycleHolder {
             }
         }
 
+    }
+
+    fun closeSelf(transitionInfo: Any? = null): Boolean {
+        return parent?.let {
+            it.requestCloseSelf(this, transitionInfo)
+            true
+        } ?: false
+    }
+
+    fun onAttachToParent(parent: ViewModelParent) {
+        this.parent = parent
+    }
+
+    fun onDetachFromParent() {
+        this.parent = null
     }
 
 }

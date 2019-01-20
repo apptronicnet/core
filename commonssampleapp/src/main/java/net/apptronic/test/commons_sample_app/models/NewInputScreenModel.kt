@@ -16,6 +16,7 @@ class NewInputScreenModel(
     val submitBtnClicked = genericEvent().setup {
         subscribe {
             resultCallback(newInput.getText())
+            closeSelf()
         }
     }
 

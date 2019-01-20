@@ -1,12 +1,13 @@
 package net.apptronic.common.android.ui.viewmodel.adapter
 
 import net.apptronic.common.android.ui.viewmodel.ViewModel
+import net.apptronic.common.android.ui.viewmodel.ViewModelParent
 import net.apptronic.common.android.ui.viewmodel.entity.ViewModelProperty
 import net.apptronic.common.android.ui.viewmodel.lifecycle.LifecycleHolder
 import java.util.*
 
 class ViewModelStack(lifecycleHolder: LifecycleHolder) :
-    ViewModelProperty<ViewModel?>(lifecycleHolder) {
+    ViewModelProperty<ViewModel?>(lifecycleHolder), ViewModelParent {
 
     override fun isSet(): Boolean {
         return true
@@ -62,6 +63,7 @@ class ViewModelStack(lifecycleHolder: LifecycleHolder) :
         val activeModel = getOrNull()
         stack.forEach {
             it.finishLifecycle()
+            onRemoved(it)
         }
         stack.clear()
         adapter?.apply {
@@ -80,6 +82,7 @@ class ViewModelStack(lifecycleHolder: LifecycleHolder) :
     fun add(viewModel: ViewModel, transitionInfo: Any? = null) {
         val activeModel = getOrNull()
         stack.add(viewModel)
+        onAdded(viewModel)
         adapter?.apply {
             onInvalidate(
                 oldModel = activeModel,
@@ -97,9 +100,11 @@ class ViewModelStack(lifecycleHolder: LifecycleHolder) :
         val activeModel = getOrNull()
         activeModel?.also {
             stack.remove(it)
+            onRemoved(it)
             activeModel.finishLifecycle()
         }
         stack.add(viewModel)
+        onAdded(viewModel)
         adapter?.apply {
             onInvalidate(
                 oldModel = activeModel,
@@ -118,6 +123,7 @@ class ViewModelStack(lifecycleHolder: LifecycleHolder) :
         val activeModel = getOrNull()
         viewModel.finishLifecycle()
         stack.remove(viewModel)
+        onRemoved(viewModel)
         if (viewModel == activeModel) {
             val newActiveModel = getOrNull()
             adapter?.apply {
@@ -156,7 +162,10 @@ class ViewModelStack(lifecycleHolder: LifecycleHolder) :
         return if (stack.contains(viewModel) && stack.last != viewModel) {
             val activeModel = getOrNull()
             while (stack.last != viewModel) {
-                stack.removeLast().finishLifecycle()
+                stack.removeLast().apply {
+                    finishLifecycle()
+                    onRemoved(this)
+                }
             }
             adapter?.apply {
                 onInvalidate(
@@ -176,6 +185,18 @@ class ViewModelStack(lifecycleHolder: LifecycleHolder) :
         stack.forEach {
             it.finishLifecycle()
         }
+    }
+
+    private fun onAdded(viewModel: ViewModel) {
+        viewModel.onAttachToParent(this)
+    }
+
+    private fun onRemoved(viewModel: ViewModel) {
+        viewModel.onDetachFromParent()
+    }
+
+    override fun requestCloseSelf(viewModel: ViewModel, transitionInfo: Any?) {
+        remove(viewModel, transitionInfo)
     }
 
 }

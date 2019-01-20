@@ -34,7 +34,6 @@ class MainViewModel(lifecycle: Lifecycle) : ActivityViewModel(lifecycle) {
     private fun openRequestNewInputScreen(resultListener: ResultListener<String>) {
         rootModel.add(NewInputScreenModel(FragmentLifecycle(this)) {
             resultListener.setResult(it)
-            rootModel.popBackStack()
         })
     }
 
