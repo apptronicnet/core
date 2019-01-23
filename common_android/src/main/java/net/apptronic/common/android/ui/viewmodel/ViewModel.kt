@@ -96,7 +96,9 @@ abstract class ViewModel(private val lifecycle: Lifecycle) : LifecycleHolder {
         resultEvent.subscribe(onReceived)
         return object : ResultListener<T> {
             override fun setResult(result: T) {
-                resultEvent.sendEvent(result)
+                lifecycle.provideThreadExecutor().execute {
+                    resultEvent.sendEvent(result)
+                }
             }
         }
 
@@ -104,7 +106,9 @@ abstract class ViewModel(private val lifecycle: Lifecycle) : LifecycleHolder {
 
     fun closeSelf(transitionInfo: Any? = null): Boolean {
         return parent?.let {
-            it.requestCloseSelf(this, transitionInfo)
+            lifecycle.provideThreadExecutor().execute {
+                it.requestCloseSelf(this, transitionInfo)
+            }
             true
         } ?: false
     }
@@ -116,5 +120,10 @@ abstract class ViewModel(private val lifecycle: Lifecycle) : LifecycleHolder {
     fun onDetachFromParent() {
         this.parent = null
     }
+
+    fun update(block: () -> Unit) {
+        lifecycle.provideThreadExecutor().execute(block)
+    }
+
 
 }

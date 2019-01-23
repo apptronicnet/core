@@ -18,12 +18,17 @@ class MainActivity : BaseActivity<MainViewModel>() {
         model.toolbarTitle.subscribe {
             activityTitle.text = it
         }
-        model.rootModel.setAdapter(RootModelAdapter(supportFragmentManager, R.id.fragmentContainer))
+        model.currentRootScreen.setAdapter(
+            RootModelAdapter(
+                supportFragmentManager,
+                R.id.fragmentContainer
+            )
+        )
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        model.rootModel.setAdapter(null)
+        model.currentRootScreen.setAdapter(null)
     }
 
     override fun onBackPressed() {

@@ -41,7 +41,12 @@ abstract class BaseActivity<Model : ViewModel> : AppCompatActivity() {
             }
         }
         enterStage(model, FragmentLifecycle.STAGE_CREATED)
-        super.onCreate(savedInstanceState)
+        super.onCreate(null)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle?) {
+        super.onSaveInstanceState(outState)
+        outState?.putLong(VIEW_MODEL_ID, viewModelId)
     }
 
     override fun onStart() {

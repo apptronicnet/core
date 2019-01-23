@@ -8,43 +8,52 @@ import net.apptronic.common.android.ui.viewmodel.extensions.asFunctionOf
 import net.apptronic.common.android.ui.viewmodel.lifecycle.Lifecycle
 import net.apptronic.test.commons_sample_app.models.NewInputScreenModel
 import net.apptronic.test.commons_sample_app.models.StartScreenModel
+import net.apptronic.test.commons_sample_app.models.YesNoSelectorViewModel
 
 class MainViewModel(lifecycle: Lifecycle) : ActivityViewModel(lifecycle) {
 
-    val rootModel = modelStack()
+    val currentRootScreen = modelStack()
+
+    init {
+        openStartScreen()
+    }
 
     val toolbarTitle = value<String>().setup {
-        asFunctionOf(rootModel) {
+        asFunctionOf(currentRootScreen) {
             (it as? ToolbarTitled)?.getToolbarTitle() ?: "Sample app"
         }
     }
 
-    init {
-        openMainScreen()
-    }
-
-    private fun openMainScreen() {
+    private fun openStartScreen() {
         val model = StartScreenModel(FragmentLifecycle(this))
-        model.requestNewInputEvent.subscribe {
+        model.onUserClickButtonRequestNewInput.subscribe {
             openRequestNewInputScreen(model.newInputResultListener)
         }
-        rootModel.add(model)
+        model.onUserClickButtonSelector.subscribe {
+            openSelectorScreen(model.selectionResultListener)
+        }
+        currentRootScreen.add(model)
     }
 
     private fun openRequestNewInputScreen(resultListener: ResultListener<String>) {
-        rootModel.add(NewInputScreenModel(FragmentLifecycle(this)) {
-            resultListener.setResult(it)
-        })
+        currentRootScreen.add(
+            NewInputScreenModel(FragmentLifecycle(this), resultListener)
+        )
+    }
+
+    private fun openSelectorScreen(resultListener: ResultListener<String>) {
+        currentRootScreen.add(
+            YesNoSelectorViewModel(FragmentLifecycle(this), resultListener)
+        )
     }
 
     fun onBackPressed(): Boolean {
-        return if (rootModel.getSize() > 1) {
-            rootModel.popBackStack()
+        return if (currentRootScreen.getSize() > 1) {
+            currentRootScreen.popBackStack()
             true
         } else {
             false
         }
     }
-
 
 }

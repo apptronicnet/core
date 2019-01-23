@@ -1,9 +1,6 @@
 package net.apptronic.test.commons_sample_app.models
 
 import net.apptronic.common.android.ui.components.fragment.FragmentViewModel
-import net.apptronic.common.android.ui.components.submodels.TextLabelModel
-import net.apptronic.common.android.ui.viewmodel.entity.setup
-import net.apptronic.common.android.ui.viewmodel.extensions.asFunctionOf
 import net.apptronic.common.android.ui.viewmodel.lifecycle.Lifecycle
 import net.apptronic.test.commons_sample_app.ToolbarTitled
 
@@ -12,24 +9,48 @@ import net.apptronic.test.commons_sample_app.ToolbarTitled
  */
 class StartScreenModel(lifecycle: Lifecycle) : FragmentViewModel(lifecycle), ToolbarTitled {
 
-    val lastInput = TextLabelModel(this)
+    /**
+     * This is text field with some text
+     */
+    val someText = value<String>("")
 
-    val lastInputLength = TextLabelModel(this).apply {
-        text.setup {
-            asFunctionOf(lastInput.text) {
-                it.length.toString()
-            }
+    /**
+     * This is text field with text which is length of [someText]
+     */
+    val someTextLength = value<Int>()
+
+    /**
+     * This event is called when user clicked button "Request new input"
+     */
+    val onUserClickButtonRequestNewInput = genericEvent()
+
+    val onUserClickButtonSelector = genericEvent()
+
+    /**
+     * This result listener is for receive new value for someText
+     */
+    val newInputResultListener = resultListener<String> {
+        someText.set(it)
+    }
+
+    val selectionResultListener = resultListener<String> { result ->
+        doOnceResumed("showToast") {
+            showToastEvent.sendEvent(result)
         }
     }
 
-    override fun getToolbarTitle(): String {
-        return "Main screen"
+    val showToastEvent = typedEvent<String>()
+
+    init {
+        someText.subscribe { lastInputValue ->
+            someTextLength.set(lastInputValue.length)
+        }
     }
 
-    val requestNewInputEvent = genericEvent()
+    // do not watch on this
 
-    val newInputResultListener = resultListener<String> {
-        lastInput.text.set(it)
+    override fun getToolbarTitle(): String {
+        return "Main screen"
     }
 
 }

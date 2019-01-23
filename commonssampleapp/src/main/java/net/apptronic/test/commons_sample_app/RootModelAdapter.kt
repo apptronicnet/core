@@ -7,8 +7,10 @@ import net.apptronic.common.android.ui.components.fragment.FragmentViewModelAdap
 import net.apptronic.common.android.ui.viewmodel.ViewModel
 import net.apptronic.test.commons_sample_app.fragments.NewInputScreenFragment
 import net.apptronic.test.commons_sample_app.fragments.StartScreenFragment
+import net.apptronic.test.commons_sample_app.fragments.YesNoSelectorFragment
 import net.apptronic.test.commons_sample_app.models.NewInputScreenModel
 import net.apptronic.test.commons_sample_app.models.StartScreenModel
+import net.apptronic.test.commons_sample_app.models.YesNoSelectorViewModel
 
 class RootModelAdapter(
     fragmentManager: FragmentManager,
@@ -19,6 +21,7 @@ class RootModelAdapter(
         return when (viewModel) {
             is StartScreenModel -> StartScreenFragment()
             is NewInputScreenModel -> NewInputScreenFragment()
+            is YesNoSelectorViewModel -> YesNoSelectorFragment()
             else -> null
         }
     }

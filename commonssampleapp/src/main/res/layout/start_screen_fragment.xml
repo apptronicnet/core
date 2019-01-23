@@ -5,8 +5,8 @@
     android:layout_height="match_parent">
 
     <Button
-        android:id="@+id/btnRequestNewInput"
-        android:text="Request new input" />
+        android:id="@+id/btnRequestNewText"
+        android:text="Request new text" />
 
     <TextView
         android:textSize="12dp"
@@ -24,7 +24,7 @@
     <TextView
         android:textSize="12dp"
         android:padding="8dp"
-        android:text="LENGHT:"
+        android:text="LENGTH:"
         android:hint="No value" />
 
     <TextView
@@ -33,5 +33,10 @@
         android:padding="16dp"
         tools:text="9"
         android:hint="-" />
+
+    <Button
+        android:id="@+id/btnSelector"
+        android:layout_marginTop="24dp"
+        android:text="I want to select" />
 
 </TableLayout>
