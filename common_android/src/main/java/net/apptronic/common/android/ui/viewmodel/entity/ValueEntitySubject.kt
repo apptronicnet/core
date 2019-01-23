@@ -1,9 +1,10 @@
 package net.apptronic.common.android.ui.viewmodel.entity
 
-import net.apptronic.common.android.ui.threading.ThreadExecutor
+import net.apptronic.common.android.ui.viewmodel.lifecycle.LifecycleHolder
 import java.util.*
 
-class ValueEntitySubject<T>(private val threadExecutor: ThreadExecutor) : ViewModelEntitySubject<T> {
+class ValueEntitySubject<T>(private val lifecycleHolder: LifecycleHolder) :
+    ViewModelEntitySubject<T> {
 
     private val lock = Any()
 
@@ -13,7 +14,7 @@ class ValueEntitySubject<T>(private val threadExecutor: ThreadExecutor) : ViewMo
     private var valueHolder: ValueHolder<T>? = null
 
     override fun send(value: T) {
-        threadExecutor.execute {
+        lifecycleHolder.getLifecycle().provideThreadExecutor().execute {
             synchronized(lock) {
                 val valueHolder = this.valueHolder
                 if (valueHolder == null || valueHolder.value != value) {
@@ -27,7 +28,7 @@ class ValueEntitySubject<T>(private val threadExecutor: ThreadExecutor) : ViewMo
     }
 
     override fun subscribe(callback: (T) -> Unit): ViewModelEntitySubject.Subscription {
-        threadExecutor.execute {
+        lifecycleHolder.getLifecycle().provideThreadExecutor().execute {
             callbacks.add(callback)
             valueHolder?.let {
                 callback(it.value)
@@ -38,7 +39,7 @@ class ValueEntitySubject<T>(private val threadExecutor: ThreadExecutor) : ViewMo
 
     private inner class ThisSubscription(val callback: (T) -> Unit) : ViewModelEntitySubject.Subscription {
         override fun unsubscribe() {
-            threadExecutor.execute {
+            lifecycleHolder.getLifecycle().provideThreadExecutor().execute {
                 synchronized(lock) {
                     callbacks.remove(callback)
                 }

@@ -1,25 +1,20 @@
 package net.apptronic.common.android.ui
 
 import net.apptronic.common.android.ui.threading.SynchronousExecutor
-import net.apptronic.common.android.ui.threading.ThreadExecutor
 import net.apptronic.common.android.ui.viewmodel.ViewModel
 import net.apptronic.common.android.ui.viewmodel.entity.PropertyNotSetException
-import net.apptronic.common.android.ui.viewmodel.entity.assignAsCopyOf
-import net.apptronic.common.android.ui.viewmodel.entity.assignAsFunctionFrom
+import net.apptronic.common.android.ui.viewmodel.extensions.asFunctionOf
+import net.apptronic.common.android.ui.viewmodel.extensions.copyValueFrom
 import net.apptronic.common.android.ui.viewmodel.lifecycle.GenericLifecycle
-import net.apptronic.common.android.ui.viewmodel.lifecycle.LifecycleHolder
+import net.apptronic.common.android.ui.viewmodel.lifecycle.Lifecycle
 import org.junit.Test
 import kotlin.test.assertFailsWith
 
-class ViewModelPropertiesTest : LifecycleHolder<GenericLifecycle> {
+class ViewModelPropertiesTest {
 
-    private val lifecycle = GenericLifecycle()
+    private val lifecycle = GenericLifecycle(SynchronousExecutor()).apply { start() }
 
-    override fun localLifecycle(): GenericLifecycle = lifecycle
-
-    override fun threadExecutor(): ThreadExecutor = SynchronousExecutor()
-
-    private class SampleViewModel(lifecycleHolder: LifecycleHolder<*>) : ViewModel(lifecycleHolder) {
+    private class SampleViewModel(lifecycle: Lifecycle) : ViewModel(lifecycle) {
 
         val stringValue = value<String>()
 
@@ -27,23 +22,23 @@ class ViewModelPropertiesTest : LifecycleHolder<GenericLifecycle> {
 
         val intValue = value<Int>()
 
-        val compositeValue = value<String>().assignAsFunctionFrom(
-                stringValue,
-                stringValueWithDefault
+        val compositeValue = value<String>().asFunctionOf(
+            stringValue,
+            stringValueWithDefault
         ) { str1, str2 ->
             "$str1-$str2"
         }
 
-        val compositeStringInt = value<String>().assignAsFunctionFrom(
-                stringValue,
-                intValue
+        val compositeStringInt = value<String>().asFunctionOf(
+            stringValue,
+            intValue
         ) { str1, intVal ->
             "$str1-$intVal"
         }
 
-        val copyOfString = value<String>().assignAsCopyOf(stringValueWithDefault)
+        val copyOfString = value<String>().copyValueFrom(stringValueWithDefault)
 
-        val copyOfInt = value<Int>().assignAsCopyOf(intValue)
+        val copyOfInt = value<Int>().copyValueFrom(intValue)
 
         val nullableString = value<String?>()
 
@@ -52,9 +47,10 @@ class ViewModelPropertiesTest : LifecycleHolder<GenericLifecycle> {
     }
 
     @Test
+
     fun shouldAutoUnsubscribeCompletely() {
         var stringValue: String? = null
-        val model = SampleViewModel(this)
+        val model = SampleViewModel(lifecycle)
 
         lifecycle.stage1.enter()
         model.stringValue.subscribe { stringValue = it }
@@ -73,7 +69,7 @@ class ViewModelPropertiesTest : LifecycleHolder<GenericLifecycle> {
     @Test
     fun shouldAutoUnsibscribeAndResubscribe() {
         var stringValue: String? = null
-        val model = SampleViewModel(this)
+        val model = SampleViewModel(lifecycle)
 
         lifecycle.stage1.enter()
 
@@ -96,7 +92,7 @@ class ViewModelPropertiesTest : LifecycleHolder<GenericLifecycle> {
     @Test
     fun shouldAutoAssignAfterSubscribe() {
         var stringValue: String? = null
-        val model = SampleViewModel(this)
+        val model = SampleViewModel(lifecycle)
         model.stringValue.set("One")
 
         lifecycle.stage1.enter()
@@ -120,7 +116,7 @@ class ViewModelPropertiesTest : LifecycleHolder<GenericLifecycle> {
     fun functionShouldBeCalculatedWhenAllIsSet() {
         var compositeValue: String? = null
         var compositeStringInt: String? = null
-        val model = SampleViewModel(this)
+        val model = SampleViewModel(lifecycle)
         lifecycle.stage1.enter()
         model.compositeValue.subscribe { compositeValue = it }
         model.compositeStringInt.subscribe { compositeStringInt = it }
@@ -150,7 +146,7 @@ class ViewModelPropertiesTest : LifecycleHolder<GenericLifecycle> {
 
     @Test
     fun shouldCopy() {
-        val model = SampleViewModel(this)
+        val model = SampleViewModel(lifecycle)
 
         assert(model.copyOfString.get() == "Default")
         assertFailsWith<PropertyNotSetException> { model.copyOfInt.get() }
@@ -169,7 +165,7 @@ class ViewModelPropertiesTest : LifecycleHolder<GenericLifecycle> {
 
     @Test
     fun checkNullables() {
-        val model = SampleViewModel(this)
+        val model = SampleViewModel(lifecycle)
         lifecycle.stage1.enter()
 
         assertFailsWith<PropertyNotSetException> { model.nullableString.get() }

@@ -1,14 +1,15 @@
 package net.apptronic.common.android.ui.viewmodel.entity
 
-import net.apptronic.common.android.ui.threading.ThreadExecutor
+import net.apptronic.common.android.ui.viewmodel.lifecycle.LifecycleHolder
 import java.util.*
 
-class EventEntitySubject<T>(private val threadExecutor: ThreadExecutor) : ViewModelEntitySubject<T> {
+class EventEntitySubject<T>(private val lifecycleHolder: LifecycleHolder) :
+    ViewModelEntitySubject<T> {
 
     private val callbacks = LinkedList<(T) -> Unit>()
 
     override fun send(value: T) {
-        threadExecutor.execute {
+        lifecycleHolder.getLifecycle().provideThreadExecutor().execute {
             callbacks.toTypedArray().forEach {
                 it(value)
             }

@@ -1,17 +1,19 @@
 package net.apptronic.shoppinglist.data.constants
 
-const val ShoppingListStatus_ACTIVE = 1
-const val ShoppingListStatus_ARCHIVED = 2
-const val ShoppingListStatus_DELETED = 3
-
 enum class ShoppingListStatus(val id: Int) : IntEnum {
 
-    Active(ShoppingListStatus_ACTIVE),
-    Archived(ShoppingListStatus_ARCHIVED),
-    Deleted(ShoppingListStatus_DELETED);
+    Active(1),
+    Archived(2),
+    Deleted(3);
 
     override fun id(): Int {
         return id
+    }
+
+    companion object {
+        const val ACTIVE = 1
+        const val ARCHIVED = 2
+        const val DELETED = 3
     }
 
 }

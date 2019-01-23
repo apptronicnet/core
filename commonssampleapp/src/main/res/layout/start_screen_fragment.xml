@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <Button
+        android:id="@+id/btnRequestNewText"
+        android:text="Request new text" />
+
+    <TextView
+        android:textSize="12dp"
+        android:padding="8dp"
+        android:text="INPUT:"
+        android:hint="No value" />
+
+    <TextView
+        android:id="@+id/inputValue"
+        android:textSize="18dp"
+        android:padding="16dp"
+        tools:text="Some text"
+        android:hint="No value" />
+
+    <TextView
+        android:textSize="12dp"
+        android:padding="8dp"
+        android:text="LENGTH:"
+        android:hint="No value" />
+
+    <TextView
+        android:id="@+id/inputLength"
+        android:textSize="18dp"
+        android:padding="16dp"
+        tools:text="9"
+        android:hint="-" />
+
+    <Button
+        android:id="@+id/btnSelector"
+        android:layout_marginTop="24dp"
+        android:text="I want to select" />
+
+</TableLayout>

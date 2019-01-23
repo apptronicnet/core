@@ -1,43 +1,22 @@
 package net.apptronic.common.android.ui.components.fragment
 
-import net.apptronic.common.android.ui.viewmodel.ViewModel
-import net.apptronic.common.android.ui.viewmodel.lifecycle.LifecycleHolder
+import net.apptronic.common.android.ui.components.activity.AndroidViewModel
+import net.apptronic.common.android.ui.viewmodel.lifecycle.Lifecycle
 import net.apptronic.common.android.ui.viewmodel.lifecycle.LifecycleStage
 
-open class FragmentViewModel(lifecycleHolder: LifecycleHolder<FragmentLifecycle>) : ViewModel(lifecycleHolder) {
+open class FragmentViewModel(lifecycle: Lifecycle) : AndroidViewModel(lifecycle) {
 
-    private val lifecycle: FragmentLifecycle = lifecycleHolder.localLifecycle()
-
-    fun onCreate(callback: LifecycleStage.OnEnterHandler.() -> Unit) {
-        lifecycle.createdStage.doOnEnter(callback)
+    fun doOnceViewCreated(key: String, action: () -> Unit) {
+        onceStage(FragmentLifecycle.STAGE_VIEW_CREATED, key, action)
     }
 
-    fun onViewCreated(callback: LifecycleStage.OnEnterHandler.() -> Unit) {
-        lifecycle.viewCreatedStage.doOnEnter(callback)
+    fun doOnViewCreated(callback: LifecycleStage.OnEnterHandler.() -> Unit) {
+        onEnterStage(FragmentLifecycle.STAGE_VIEW_CREATED, callback)
     }
 
-    fun onStart(callback: LifecycleStage.OnEnterHandler.() -> Unit) {
-        lifecycle.startedStage.doOnEnter(callback)
+    fun doOnDestroyView(callback: LifecycleStage.OnExitHandler.() -> Unit) {
+        onExitStage(FragmentLifecycle.STAGE_VIEW_CREATED, callback)
     }
 
-    fun onResume(callback: LifecycleStage.OnEnterHandler.() -> Unit) {
-        lifecycle.resumedStage.doOnEnter(callback)
-    }
-
-    fun onPause(callback: LifecycleStage.OnExitHandler.() -> Unit) {
-        lifecycle.resumedStage.doOnExit(callback)
-    }
-
-    fun onStop(callback: LifecycleStage.OnExitHandler.() -> Unit) {
-        lifecycle.startedStage.doOnExit(callback)
-    }
-
-    fun onDestroyView(callback: LifecycleStage.OnExitHandler.() -> Unit) {
-        lifecycle.viewCreatedStage.doOnExit(callback)
-    }
-
-    fun onDestroy(callback: LifecycleStage.OnExitHandler.() -> Unit) {
-        lifecycle.createdStage.doOnExit(callback)
-    }
 
 }

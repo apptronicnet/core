@@ -4,26 +4,41 @@ import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
 import net.apptronic.common.android.ui.viewmodel.lifecycle.LifecycleHolder
 
-class ViewModelProperty<T>(lifecycleHolder: LifecycleHolder<*>) : ViewModelSubjectEntity<T>(lifecycleHolder,
-        ValueEntitySubject(lifecycleHolder.threadExecutor())) {
-
-    internal var valueHolder: ValueHolder<T>? = null
+abstract class ViewModelProperty<T>(lifecycleHolder: LifecycleHolder) : ViewModelSubjectEntity<T>(
+    lifecycleHolder,
+    ValueEntitySubject(lifecycleHolder)
+) {
 
     fun set(value: T) {
-        this.valueHolder = ValueHolder(value)
+        onSetValue(value)
         onInput(value)
     }
 
-    fun set(property: ViewModelProperty<T>) {
-        property.valueHolder?.let {
-            set(it.value)
+    abstract fun isSet(): Boolean
+
+    protected abstract fun onSetValue(value: T)
+
+    protected abstract fun onGetValue(): T
+
+    fun set(property: ViewModelProperty<T>): Boolean {
+        return try {
+            set(property.get())
+            true
+        } catch (e: PropertyNotSetException) {
+            false
         }
     }
 
     fun get(): T {
-        valueHolder?.let {
-            return it.value
-        } ?: throw PropertyNotSetException()
+        return onGetValue()
+    }
+
+    fun getOrNull(): T? {
+        return try {
+            get()
+        } catch (e: PropertyNotSetException) {
+            null
+        }
     }
 
     override fun asObservable(): Observable<T> {
@@ -32,6 +47,15 @@ class ViewModelProperty<T>(lifecycleHolder: LifecycleHolder<*>) : ViewModelSubje
             result.onNext(it)
         }
         return result
+    }
+
+    fun doIfSet(action: (T) -> Unit): Boolean {
+        return try {
+            action(get())
+            true
+        } catch (e: PropertyNotSetException) {
+            false
+        }
     }
 
 }

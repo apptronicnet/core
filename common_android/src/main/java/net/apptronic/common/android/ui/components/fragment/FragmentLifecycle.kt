@@ -1,15 +1,38 @@
 package net.apptronic.common.android.ui.components.fragment
 
-import net.apptronic.common.android.ui.viewmodel.lifecycle.Lifecycle
+import net.apptronic.common.android.ui.components.android.AndroidLifecycle
+import net.apptronic.common.android.ui.threading.ThreadExecutorProvider
+import net.apptronic.common.android.ui.viewmodel.lifecycle.LifecycleStage
 
-class FragmentLifecycle : Lifecycle() {
+class FragmentLifecycle(provider: ThreadExecutorProvider) : AndroidLifecycle(provider) {
 
-    val createdStage = createStage("Created")
+    companion object {
+        const val STAGE_CREATED = AndroidLifecycle.STAGE_CREATED
+        const val STAGE_VIEW_CREATED = "android:view_created"
+        const val STAGE_STARTED = AndroidLifecycle.STAGE_STARTED
+        const val STAGE_RESUMED = AndroidLifecycle.STAGE_RESUMED
+    }
 
-    val viewCreatedStage = createStage("ViewCreated")
+    private val createdStage = createStage(STAGE_CREATED)
+    private val viewCreatedStage = createStage(STAGE_VIEW_CREATED)
+    private val startedStage = createStage(STAGE_STARTED)
+    private val resumedStage = createStage(STAGE_RESUMED)
 
-    val startedStage = createStage("Started")
+    override fun getCreatedStage(): LifecycleStage {
+        return createdStage
+    }
 
-    val resumedStage = createStage("Resumed")
+    fun getViewCreatedStage(): LifecycleStage {
+        return viewCreatedStage
+    }
+
+    override fun getStartedStage(): LifecycleStage {
+        return startedStage
+    }
+
+    override fun getResumedStage(): LifecycleStage {
+        return resumedStage
+    }
+
 
 }
