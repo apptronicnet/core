@@ -9,7 +9,7 @@ import kotlin.test.assertEquals
 
 class InlinedLifecycleTest {
 
-    private val lifecycle = FragmentLifecycle(SynchronousExecutor()).apply { start() }
+    private val lifecycle = FragmentLifecycle(SynchronousExecutor())
 
     private class SampleViewModel(lifecycle: Lifecycle) : FragmentViewModel(lifecycle) {
 

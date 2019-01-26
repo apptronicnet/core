@@ -22,5 +22,9 @@ open class ViewModelValue<T>(lifecycleHolder: LifecycleHolder) : ViewModelProper
         } ?: throw PropertyNotSetException()
     }
 
+    override fun toString(): String {
+        return super.toString() + if (valueHolder == null) "/not-set" else "=$valueHolder"
+    }
+
 }
 

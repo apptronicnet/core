@@ -7,9 +7,11 @@ import net.apptronic.common.android.ui.viewmodel.lifecycle.LifecycleStage
 
 abstract class ViewModelAbstractEntity<T>(internal val lifecycleHolder: LifecycleHolder) {
 
-    protected abstract fun onInput(value: T)
+    internal var id: String? = null
 
-    protected abstract fun onListen(listener: (T) -> Unit, stage: LifecycleStage)
+    internal abstract fun onInput(value: T)
+
+    internal abstract fun onListen(listener: (T) -> Unit, stage: LifecycleStage)
 
     fun subscribe(listener: (T) -> Unit) {
         lifecycleHolder.getLifecycle().getActiveStage().let {
@@ -19,6 +21,15 @@ abstract class ViewModelAbstractEntity<T>(internal val lifecycleHolder: Lifecycl
 
     abstract fun asObservable(): Observable<T>
 
+    override fun toString(): String {
+        return javaClass.simpleName + if (id != null) ":id=$id" else ""
+    }
+
+}
+
+fun <E : ViewModelAbstractEntity<T>, T> E.withId(id: String): E {
+    this.id = id
+    return this
 }
 
 fun <E : ViewModelAbstractEntity<T>, T> E.setup(setupBlock: E.() -> Unit): E {
@@ -27,4 +38,3 @@ fun <E : ViewModelAbstractEntity<T>, T> E.setup(setupBlock: E.() -> Unit): E {
     }
     return this
 }
-

@@ -1,0 +1,122 @@
+package net.apptronic.common.android.ui
+
+import net.apptronic.common.android.ui.components.fragment.FragmentLifecycle
+import net.apptronic.common.android.ui.threading.SynchronousExecutor
+import net.apptronic.common.android.ui.viewmodel.ViewModel
+import net.apptronic.common.android.ui.viewmodel.entity.functions.doWhen
+import net.apptronic.common.android.ui.viewmodel.entity.functions.variants.and
+import net.apptronic.common.android.ui.viewmodel.entity.functions.variants.not
+import net.apptronic.common.android.ui.viewmodel.entity.functions.variants.or
+import net.apptronic.common.android.ui.viewmodel.entity.functions.variants.xor
+import net.apptronic.common.android.ui.viewmodel.entity.setAs
+import net.apptronic.common.android.ui.viewmodel.entity.withId
+import net.apptronic.common.android.ui.viewmodel.lifecycle.Lifecycle
+import org.junit.Test
+
+class BooleanPredicatesTest {
+
+    private val lifecycle = FragmentLifecycle(SynchronousExecutor())
+
+    private class SampleViewModel(lifecycle: Lifecycle) : ViewModel(lifecycle) {
+
+        val left = value<Boolean>().withId("left")
+        val right = value<Boolean>().withId("right")
+
+        val and = value<Boolean>().setAs(left and right).withId("and")
+        val or = value<Boolean>().setAs(left or right).withId("or")
+        val xor = value<Boolean>().setAs(left xor right).withId("xor")
+        val notLeft = value<Boolean>().setAs(left.not()).withId("notLeft")
+
+    }
+
+    private val model = SampleViewModel(lifecycle)
+
+    @Test
+    fun shouldCallDoWhenOrElse() {
+
+        with(model) {
+
+            var leftFalse = 0
+            var leftTrue = 0
+            var rightFalse = 0
+            var rightTrue = 0
+
+            doWhen(left) {
+                leftTrue++
+            } orElseDo {
+                leftFalse++
+            }
+            doWhen(right.not()) {
+                rightFalse++
+            } orElseDo {
+                rightTrue++
+            }
+
+            assert(leftFalse == 0)
+            assert(leftTrue == 0)
+            assert(rightFalse == 0)
+            assert(rightTrue == 0)
+
+            left.set(true)
+            assert(leftTrue == 1)
+            assert(leftFalse == 0)
+
+            left.set(false)
+            assert(leftTrue == 1)
+            assert(leftFalse == 1)
+
+            right.set(true)
+            assert(rightTrue == 1)
+            assert(rightFalse == 0)
+
+            right.set(false)
+            assert(rightTrue == 1)
+            assert(rightFalse == 1)
+
+        }
+
+    }
+
+    @Test
+    fun shouldSetAs() {
+
+        with(model) {
+
+
+            left.set(false)
+            right.set(false)
+
+            and.assertFalse()
+            or.assertFalse()
+            xor.assertFalse()
+            notLeft.assertTrue()
+
+            left.set(true)
+            right.set(false)
+
+            and.assertFalse()
+            or.assertTrue()
+            xor.assertTrue()
+            notLeft.assertFalse()
+
+            left.set(false)
+            right.set(true)
+
+            and.assertFalse()
+            or.assertTrue()
+            xor.assertTrue()
+            notLeft.assertTrue()
+
+            left.set(true)
+            right.set(true)
+
+            and.assertTrue()
+            or.assertTrue()
+            xor.assertFalse()
+            notLeft.assertFalse()
+
+        }
+
+    }
+
+}

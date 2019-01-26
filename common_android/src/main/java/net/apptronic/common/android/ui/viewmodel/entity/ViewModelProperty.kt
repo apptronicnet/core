@@ -2,12 +2,14 @@ package net.apptronic.common.android.ui.viewmodel.entity
 
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
+import net.apptronic.common.android.ui.viewmodel.entity.functions.Predicate
+import net.apptronic.common.android.ui.viewmodel.entity.functions.subscribe
 import net.apptronic.common.android.ui.viewmodel.lifecycle.LifecycleHolder
 
 abstract class ViewModelProperty<T>(lifecycleHolder: LifecycleHolder) : ViewModelSubjectEntity<T>(
     lifecycleHolder,
     ValueEntitySubject(lifecycleHolder)
-) {
+), Predicate<T> {
 
     fun set(value: T) {
         onSetValue(value)
@@ -19,6 +21,14 @@ abstract class ViewModelProperty<T>(lifecycleHolder: LifecycleHolder) : ViewMode
     protected abstract fun onSetValue(value: T)
 
     protected abstract fun onGetValue(): T
+
+    override fun getPredicateSubjects(): Set<ViewModelProperty<*>> {
+        return setOf(this)
+    }
+
+    override fun getPredicateValue(): T {
+        return onGetValue()
+    }
 
     fun set(property: ViewModelProperty<T>): Boolean {
         return try {
@@ -58,5 +68,12 @@ abstract class ViewModelProperty<T>(lifecycleHolder: LifecycleHolder) : ViewMode
         }
     }
 
+}
+
+fun <E : ViewModelProperty<T>, T> E.setAs(predicate: Predicate<T>): E {
+    predicate.subscribe {
+        set(it)
+    }
+    return this
 }
 

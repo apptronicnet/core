@@ -2,6 +2,7 @@ package net.apptronic.common.android.ui.viewmodel
 
 import net.apptronic.common.android.ui.viewmodel.adapter.ViewModelStack
 import net.apptronic.common.android.ui.viewmodel.entity.*
+import net.apptronic.common.android.ui.viewmodel.entity.functions.Predicate
 import net.apptronic.common.android.ui.viewmodel.lifecycle.Lifecycle
 import net.apptronic.common.android.ui.viewmodel.lifecycle.LifecycleHolder
 import net.apptronic.common.android.ui.viewmodel.lifecycle.LifecycleStage
@@ -64,6 +65,13 @@ abstract class ViewModel(private val lifecycle: Lifecycle) : LifecycleHolder {
      */
     fun <T> value(): ViewModelProperty<T> {
         return ViewModelValue(this)
+    }
+
+    /**
+     * ViewModelProperty of view
+     */
+    fun <T> function(predicate: Predicate<T>): ViewModelProperty<T> {
+        return value<T>().setAs(predicate)
     }
 
     /**

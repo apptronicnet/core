@@ -12,7 +12,7 @@ import kotlin.test.assertFailsWith
 
 class ViewModelPropertiesTest {
 
-    private val lifecycle = GenericLifecycle(SynchronousExecutor()).apply { start() }
+    private val lifecycle = GenericLifecycle(SynchronousExecutor())
 
     private class SampleViewModel(lifecycle: Lifecycle) : ViewModel(lifecycle) {
 
