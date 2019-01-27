@@ -2,9 +2,9 @@ package net.apptronic.test.commons_sample_app
 
 import android.os.Bundle
 import kotlinx.android.synthetic.main.activity_main.*
-import net.apptronic.common.android.ui.components.activity.ActivityLifecycle
-import net.apptronic.common.android.ui.components.activity.BaseActivity
-import net.apptronic.common.android.ui.threading.AndroidMainThreadExecutor
+import net.apptronic.common.android.mvvm.components.activity.ActivityLifecycle
+import net.apptronic.common.android.mvvm.components.activity.BaseActivity
+import net.apptronic.common.android.mvvm.threading.AndroidMainThreadExecutor
 
 class MainActivity : BaseActivity<MainViewModel>() {
 

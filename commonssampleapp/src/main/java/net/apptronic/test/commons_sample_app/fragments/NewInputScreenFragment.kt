@@ -8,8 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import kotlinx.android.synthetic.main.new_input_fragment.*
-import net.apptronic.common.android.ui.components.fragment.BaseFragment
-import net.apptronic.common.android.ui.components.submodels.bind
+import net.apptronic.common.android.mvvm.components.fragment.BaseFragment
+import net.apptronic.common.core.mvvm.generic.bind
 import net.apptronic.test.commons_sample_app.R
 import net.apptronic.test.commons_sample_app.models.NewInputScreenModel
 

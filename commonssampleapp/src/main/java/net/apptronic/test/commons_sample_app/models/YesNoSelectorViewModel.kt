@@ -1,9 +1,9 @@
 package net.apptronic.test.commons_sample_app.models
 
-import net.apptronic.common.android.ui.components.fragment.FragmentViewModel
-import net.apptronic.common.android.ui.viewmodel.entity.ResultListener
-import net.apptronic.common.android.ui.viewmodel.entity.setup
-import net.apptronic.common.android.ui.viewmodel.lifecycle.Lifecycle
+import net.apptronic.common.android.mvvm.components.fragment.FragmentViewModel
+import net.apptronic.common.core.mvvm.viewmodel.entity.ResultListener
+import net.apptronic.common.core.mvvm.viewmodel.entity.setup
+import net.apptronic.common.core.mvvm.viewmodel.lifecycle.Lifecycle
 
 class YesNoSelectorViewModel(
     lifecycle: Lifecycle,

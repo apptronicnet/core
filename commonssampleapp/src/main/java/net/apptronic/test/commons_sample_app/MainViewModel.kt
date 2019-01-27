@@ -1,11 +1,11 @@
 package net.apptronic.test.commons_sample_app
 
-import net.apptronic.common.android.ui.components.activity.ActivityViewModel
-import net.apptronic.common.android.ui.components.fragment.FragmentLifecycle
-import net.apptronic.common.android.ui.viewmodel.entity.ResultListener
-import net.apptronic.common.android.ui.viewmodel.entity.setup
-import net.apptronic.common.android.ui.viewmodel.extensions.asFunctionOf
-import net.apptronic.common.android.ui.viewmodel.lifecycle.Lifecycle
+import net.apptronic.common.android.mvvm.components.activity.ActivityViewModel
+import net.apptronic.common.android.mvvm.components.fragment.FragmentLifecycle
+import net.apptronic.common.core.mvvm.viewmodel.entity.ResultListener
+import net.apptronic.common.core.mvvm.viewmodel.entity.setup
+import net.apptronic.common.core.mvvm.viewmodel.extensions.asFunctionOf
+import net.apptronic.common.core.mvvm.viewmodel.lifecycle.Lifecycle
 import net.apptronic.test.commons_sample_app.models.NewInputScreenModel
 import net.apptronic.test.commons_sample_app.models.StartScreenModel
 import net.apptronic.test.commons_sample_app.models.YesNoSelectorViewModel

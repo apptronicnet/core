@@ -1,9 +1,9 @@
 package net.apptronic.test.commons_sample_app
 
-import net.apptronic.common.android.ui.components.fragment.FragmentLifecycle
-import net.apptronic.common.android.ui.threading.SynchronousExecutor
-import net.apptronic.common.android.ui.threading.ThreadExecutor
-import net.apptronic.common.android.ui.viewmodel.lifecycle.LifecycleHolder
+import net.apptronic.common.android.mvvm.components.fragment.FragmentLifecycle
+import net.apptronic.common.core.mvvm.threading.SynchronousExecutor
+import net.apptronic.common.core.mvvm.threading.ThreadExecutor
+import net.apptronic.common.core.mvvm.viewmodel.lifecycle.LifecycleHolder
 import net.apptronic.test.commons_sample_app.models.StartScreenModel
 import org.junit.Test
 import kotlin.test.assertEquals

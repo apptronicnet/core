@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import kotlinx.android.synthetic.main.start_screen_fragment.*
-import net.apptronic.common.android.ui.components.fragment.BaseFragment
+import net.apptronic.common.android.mvvm.components.fragment.BaseFragment
 import net.apptronic.test.commons_sample_app.R
 import net.apptronic.test.commons_sample_app.models.StartScreenModel
 

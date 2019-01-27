@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.yes_no_selector.*
-import net.apptronic.common.android.ui.components.fragment.BaseFragment
+import net.apptronic.common.android.mvvm.components.fragment.BaseFragment
 import net.apptronic.test.commons_sample_app.R
 import net.apptronic.test.commons_sample_app.models.YesNoSelectorViewModel
 
