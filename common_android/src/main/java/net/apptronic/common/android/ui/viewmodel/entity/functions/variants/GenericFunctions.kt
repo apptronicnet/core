@@ -20,3 +20,11 @@ fun <T> Predicate<T?>.ifNull(predicate: Predicate<T>): Predicate<T> =
     }
 
 fun <T> value(value: T): Predicate<T> = ValuePredicate(value)
+
+fun <T> Predicate<T>.isTrueThat(test: T.() -> Boolean): Predicate<Boolean> =
+    predicateFunction(this) {
+        it.test()
+    }
+
+fun <T> Predicate<T>.isFalseThat(test: T.() -> Boolean): Predicate<Boolean> =
+    isTrueThat(test).not()

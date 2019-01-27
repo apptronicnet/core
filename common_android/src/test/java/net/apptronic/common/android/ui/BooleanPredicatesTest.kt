@@ -4,12 +4,7 @@ import net.apptronic.common.android.ui.components.fragment.FragmentLifecycle
 import net.apptronic.common.android.ui.threading.SynchronousExecutor
 import net.apptronic.common.android.ui.viewmodel.ViewModel
 import net.apptronic.common.android.ui.viewmodel.entity.functions.doWhen
-import net.apptronic.common.android.ui.viewmodel.entity.functions.variants.and
-import net.apptronic.common.android.ui.viewmodel.entity.functions.variants.not
-import net.apptronic.common.android.ui.viewmodel.entity.functions.variants.or
-import net.apptronic.common.android.ui.viewmodel.entity.functions.variants.xor
-import net.apptronic.common.android.ui.viewmodel.entity.setAs
-import net.apptronic.common.android.ui.viewmodel.entity.withId
+import net.apptronic.common.android.ui.viewmodel.entity.functions.variants.*
 import net.apptronic.common.android.ui.viewmodel.lifecycle.Lifecycle
 import org.junit.Test
 
@@ -19,13 +14,24 @@ class BooleanPredicatesTest {
 
     private class SampleViewModel(lifecycle: Lifecycle) : ViewModel(lifecycle) {
 
-        val left = value<Boolean>().withId("left")
-        val right = value<Boolean>().withId("right")
+        val left = value<Boolean>()
+        val right = value<Boolean>()
 
-        val and = value<Boolean>().setAs(left and right).withId("and")
-        val or = value<Boolean>().setAs(left or right).withId("or")
-        val xor = value<Boolean>().setAs(left xor right).withId("xor")
-        val notLeft = value<Boolean>().setAs(left.not()).withId("notLeft")
+        val and = function(left and right)
+        val or = function(left or right)
+        val xor = function(left xor right)
+        val notLeft = function(left.not())
+
+        val login = value("")
+        val password = value("")
+
+        val isLoginButtonEnabled = function(
+            login.isNoEmpty()
+                    and password.isNoEmpty()
+                    and password.isTrueThat { length > 8 }
+        )
+
+        val loginLength = function(login.map { length })
 
     }
 

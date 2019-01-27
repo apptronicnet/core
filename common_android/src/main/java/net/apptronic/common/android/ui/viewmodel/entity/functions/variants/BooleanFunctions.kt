@@ -82,8 +82,3 @@ fun <T : CharSequence> Predicate<T>.isNotBlank(): Predicate<Boolean> =
     predicateFunction(this) {
         it.isNotBlank()
     }
-
-fun <T : CharSequence> Predicate<T>.isThat(test: T.() -> Boolean): Predicate<Boolean> =
-    predicateFunction(this) {
-        it.test()
-    }
