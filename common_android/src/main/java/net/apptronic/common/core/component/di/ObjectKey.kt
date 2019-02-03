@@ -4,5 +4,5 @@ import kotlin.reflect.KClass
 
 data class ObjectKey(
     val clazz: KClass<*>,
-    val key: String = ""
+    val name: String = ""
 )

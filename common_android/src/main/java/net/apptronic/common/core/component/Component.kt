@@ -7,14 +7,12 @@ import net.apptronic.common.core.component.lifecycle.LifecycleStage
 import net.apptronic.common.core.component.threading.ContextWorkers
 import net.apptronic.common.core.mvvm.process.InViewBackgroundProcess
 import net.apptronic.common.core.mvvm.viewmodel.ComponentRegistry
-import net.apptronic.common.core.mvvm.viewmodel.ViewModelParent
 
 open class Component(
     private val context: ComponentContext
 ) : ComponentContext by context {
 
     private val id: Long = ComponentRegistry.nextId()
-    private var parent: ViewModelParent? = null
 
     open fun getDefaultWorker() = ContextWorkers.SYNCHRONOUS
 
@@ -106,23 +104,6 @@ open class Component(
             }
         }
 
-    }
-
-    fun closeSelf(transitionInfo: Any? = null): Boolean {
-        return parent?.let {
-            workers().execute {
-                it.requestCloseSelf(this, transitionInfo)
-            }
-            true
-        } ?: false
-    }
-
-    fun onAttachToParent(parent: ViewModelParent) {
-        this.parent = parent
-    }
-
-    fun onDetachFromParent() {
-        this.parent = null
     }
 
     fun update(block: () -> Unit) {

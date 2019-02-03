@@ -1,7 +1,7 @@
 package net.apptronic.common.core.component.di
 
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import net.apptronic.common.core.component.ComponentContext
+import net.apptronic.common.core.component.lifecycle.LifecycleStage
 import kotlin.reflect.KClass
 
 class DIContext(
@@ -9,16 +9,21 @@ class DIContext(
     private val parent: DIContext?
 ) {
 
-    private val factoryContext = FactoryContext(this)
-
     private val objects = mutableMapOf<ObjectKey, Any>()
     private val modules = mutableListOf<Module>()
 
-    inline fun <reified T : Any> addInstance(instance: T, name: String = "") {
-        addInstance(instance, T::class, name)
+    inline fun <reified TypeDeclaration : Any> addInstance(
+        instance: TypeDeclaration,
+        name: String = ""
+    ) {
+        addInstance(instance, TypeDeclaration::class, name)
     }
 
-    fun <T : Any> addInstance(instance: T, clazz: KClass<*>, name: String = "") {
+    fun <TypeDeclaration : Any> addInstance(
+        instance: TypeDeclaration, clazz:
+        KClass<TypeDeclaration>,
+        name: String = ""
+    ) {
         val key = ObjectKey(clazz, name)
         objects[key] = instance
     }
@@ -27,40 +32,71 @@ class DIContext(
         modules.add(moduleDefinition.buildInstance(this))
     }
 
-    inline fun <reified T : Any> get(name: String = ""): T {
-        return get(T::class, name)
+    inline fun <reified TypeDeclaration : Any> get(
+        name: String = "",
+        params: Parameters = parameters { }
+    ): TypeDeclaration {
+        return get(TypeDeclaration::class, name, params)
     }
 
-    fun <T : Any> get(clazz: KClass<*>, name: String = ""): T {
+    fun <TypeDeclaration : Any> get(
+        clazz: KClass<TypeDeclaration>,
+        name: String = "",
+        params: Parameters = parameters { }
+    ): TypeDeclaration {
         val key = ObjectKey(clazz, name)
-        return get(key)
+        return getInstanceInternal(key, params)
     }
 
-    private fun <T : Any> get(key: ObjectKey): T {
-        val local: T? = obtainLocalInstance(key)
+    private fun <TypeDeclaration : Any> getInstanceInternal(
+        key: ObjectKey,
+        params: Parameters
+    ): TypeDeclaration {
+        val localLifecycleStage = context.getLifecycle().getActiveStage()
+            ?: throw IllegalStateException("Lifecycle was terminated")
+        return searchInstance(localLifecycleStage, key, params)
+    }
+
+    private fun <TypeDeclaration : Any> searchInstance(
+        callerLifecycleStage: LifecycleStage,
+        key: ObjectKey,
+        params: Parameters
+    ): TypeDeclaration {
+        val localLifecycleStage = context.getLifecycle().getActiveStage()
+            ?: throw IllegalStateException("Lifecycle was terminated")
+        val local: TypeDeclaration? =
+            obtainLocalInstance(callerLifecycleStage, localLifecycleStage, key, params)
         if (local != null) {
             return local
         }
-        if (parent != null) {
-            return parent.get(key)
+        val parental: TypeDeclaration? = parent?.searchInstance(callerLifecycleStage, key, params)
+        if (parental != null) {
+            return parental
         }
-        throw ObjectIsNotFoundException()
+        throw ObjectNotFoundException()
     }
 
-    private fun <T : Any> obtainLocalInstance(key: ObjectKey): T? {
+    private fun <TypeDeclaration : Any> obtainLocalInstance(
+        callerLifecycleStage: LifecycleStage,
+        localLifecycleStage: LifecycleStage,
+        key: ObjectKey,
+        params: Parameters
+    ): TypeDeclaration? {
         val obj = objects[key]
         if (obj != null) {
-            return obj as T
+            return obj as TypeDeclaration
         }
         modules.forEach { module ->
             val providerSearch = module.getProvider(key)
             if (providerSearch != null) {
-                val provider = providerSearch as ObjectProvider<T>
-                val instance = provider.provide(factoryContext)
-                context.getLifecycle().getActiveStage()?.doOnExit {
-                    provider.recycler.invoke(instance)
-                }
-                return@obtainLocalInstance instance
+                val provider = providerSearch as ObjectProvider<TypeDeclaration>
+                val factoryContext = FactoryContext(
+                    this,
+                    params,
+                    localLifecycleStage,
+                    callerLifecycleStage
+                )
+                return@obtainLocalInstance provider.provide(factoryContext)
             }
         }
         return null

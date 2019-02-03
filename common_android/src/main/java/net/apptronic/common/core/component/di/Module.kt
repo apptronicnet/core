@@ -2,30 +2,31 @@ package net.apptronic.common.core.component.di
 
 import kotlin.reflect.KClass
 
-internal class ObjectDefinition<T : Any>(
-    private val providerFactory: () -> ObjectProvider<T>
+internal class ObjectDefinition<TypeDeclaration : Any>(
+    private val providerFactory: () -> ObjectProvider<TypeDeclaration>
 ) {
 
-    private var recycler: (T) -> Unit = {}
+    private var recycler: (TypeDeclaration) -> Unit = {}
 
-    internal fun getProvider(context: DIContext): ObjectProvider<T> {
+    internal fun getProvider(context: DIContext): ObjectProvider<TypeDeclaration> {
         return providerFactory.invoke().also {
             it.recycler = recycler
         }
     }
 
-    internal fun addRecycler(recycler: (T) -> Unit) {
+    internal fun addRecycler(recycler: (TypeDeclaration) -> Unit) {
         this.recycler = recycler
     }
 
 }
 
-class ProviderDefinition<T : Any> internal constructor(
-    private val objectDefinition: ObjectDefinition<T>
+class ProviderDefinition<TypeDeclaration : Any> internal constructor(
+    private val objectDefinition: ObjectDefinition<TypeDeclaration>
 ) {
 
-    fun onRecycle(recycler: (T) -> Unit) {
+    fun onRecycle(recycler: (TypeDeclaration) -> Unit): ProviderDefinition<TypeDeclaration> {
         objectDefinition.addRecycler(recycler)
+        return this
     }
 
 }
@@ -41,43 +42,58 @@ class ModuleDefinition internal constructor() {
         return Module(providers)
     }
 
-    inline fun <reified T : Any> factory(
+    inline fun <reified TypeDeclaration : Any> factory(
         name: String = "",
-        noinline builder: FactoryContext.() -> T
-    ): ProviderDefinition<T> {
-        return factory(T::class, name, builder)
+        noinline builder: FactoryContext.() -> TypeDeclaration
+    ): ProviderDefinition<TypeDeclaration> {
+        return factory(TypeDeclaration::class, name, builder)
     }
 
-    inline fun <reified T : Any> single(
+    inline fun <reified TypeDeclaration : Any> single(
         name: String = "",
-        noinline builder: FactoryContext.() -> T
-    ): ProviderDefinition<T> {
-        return single(T::class, name, builder)
+        noinline builder: FactoryContext.() -> TypeDeclaration
+    ): ProviderDefinition<TypeDeclaration> {
+        return single(TypeDeclaration::class, name, builder)
     }
 
-    fun <T : Any> factory(
-        clazz: KClass<T>,
+    inline fun <reified TypeDeclaration : Any> cast(
+        name: String = ""
+    ): ProviderDefinition<TypeDeclaration> {
+        return cast(TypeDeclaration::class, name)
+    }
+
+    fun <TypeDeclaration : Any> factory(
+        clazz: KClass<TypeDeclaration>,
         name: String = "",
-        builder: FactoryContext.() -> T
-    ): ProviderDefinition<T> {
+        builder: FactoryContext.() -> TypeDeclaration
+    ): ProviderDefinition<TypeDeclaration> {
         return addDefinition {
             factoryProvider(ObjectKey(clazz, name), builder)
         }
     }
 
-    fun <T : Any> single(
-        clazz: KClass<T>,
+    fun <TypeDeclaration : Any> single(
+        clazz: KClass<TypeDeclaration>,
         name: String = "",
-        builder: FactoryContext.() -> T
-    ): ProviderDefinition<T> {
+        builder: FactoryContext.() -> TypeDeclaration
+    ): ProviderDefinition<TypeDeclaration> {
         return addDefinition {
             singleProvider(ObjectKey(clazz, name), builder)
         }
     }
 
-    private fun <T : Any> addDefinition(
-        providerFactory: () -> ObjectProvider<T>
-    ): ProviderDefinition<T> {
+    fun <TypeDeclaration : Any> cast(
+        clazz: KClass<TypeDeclaration>,
+        name: String = ""
+    ): ProviderDefinition<TypeDeclaration> {
+        return addDefinition {
+            castProvider<TypeDeclaration>(ObjectKey(clazz, name))
+        }
+    }
+
+    private fun <TypeDeclaration : Any> addDefinition(
+        providerFactory: () -> ObjectProvider<TypeDeclaration>
+    ): ProviderDefinition<TypeDeclaration> {
         val definition = ObjectDefinition(providerFactory)
         definitions.add(definition)
         return ProviderDefinition(definition)

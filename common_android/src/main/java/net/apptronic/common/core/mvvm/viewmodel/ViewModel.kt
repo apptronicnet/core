@@ -24,4 +24,23 @@ open class ViewModel(context: ViewModelContext) : Component(context) {
         }
     }
 
+    private var parent: ViewModelParent? = null
+
+    fun onAttachToParent(parent: ViewModelParent) {
+        this.parent = parent
+    }
+
+    fun onDetachFromParent() {
+        this.parent = null
+    }
+
+    fun closeSelf(transitionInfo: Any? = null): Boolean {
+        return parent?.let {
+            workers().execute {
+                it.requestCloseSelf(this, transitionInfo)
+            }
+            true
+        } ?: false
+    }
+
 }

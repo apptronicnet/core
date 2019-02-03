@@ -3,14 +3,15 @@ package net.apptronic.common.core.mvvm.viewmodel.adapter
 import net.apptronic.common.core.component.entity.ValueEntitySubject
 import net.apptronic.common.core.component.entity.ViewModelProperty
 import net.apptronic.common.core.mvvm.viewmodel.ViewModel
+import net.apptronic.common.core.mvvm.viewmodel.ViewModelLifecycle
 import net.apptronic.common.core.mvvm.viewmodel.ViewModelParent
 import java.util.*
 
 class ViewModelContainer(
-    lifecycleHolder: LifecycleHolder
+    lifecycle: ViewModelLifecycle
 ) : ViewModelProperty<ViewModel?>(
-    lifecycleHolder,
-    ValueEntitySubject(lifecycleHolder)
+    lifecycle,
+    ValueEntitySubject(lifecycle)
 ), ViewModelParent {
 
     override fun isSet(): Boolean {

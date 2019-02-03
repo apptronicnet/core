@@ -2,56 +2,99 @@ package net.apptronic.common.core.component.di
 
 import net.apptronic.common.core.base.AtomicEntity
 
-internal abstract class ObjectProvider<T : Any> internal constructor(
-    internal val key: ObjectKey,
-    internal val builder: FactoryContext.() -> T
+abstract class ObjectProvider<TypeDeclaration : Any>(
+    internal val key: ObjectKey
 ) {
 
-    internal var recycler: (T) -> Unit = {}
+    internal var recycler: (TypeDeclaration) -> Unit = {}
 
-    abstract fun provide(context: FactoryContext): T
+    abstract fun provide(context: FactoryContext): TypeDeclaration
 
-}
-
-internal fun <T : Any> singleProvider(
-    key: ObjectKey,
-    builder: FactoryContext.() -> T
-): ObjectProvider<T> {
-    return SingleProvider(key, builder)
-}
-
-internal fun <T : Any> factoryProvider(
-    key: ObjectKey,
-    builder: FactoryContext.() -> T
-): ObjectProvider<T> {
-    return FactoryProvider(key, builder)
-}
-
-private class SingleProvider<T : Any>(
-    key: ObjectKey,
-    builder: FactoryContext.() -> T
-) : ObjectProvider<T>(key, builder) {
-
-    private val entity = AtomicEntity<T?>(null)
-
-    override fun provide(context: FactoryContext): T {
-        return entity.perform {
-            if (get() == null) {
-                set(builder.invoke(context))
-            }
-            get()!!
+    protected fun recycle(instance: TypeDeclaration) {
+        recycler.invoke(instance)
+        if (instance is AutoRecycling) {
+            instance.onAutoRecycle()
         }
     }
 
 }
 
-private class FactoryProvider<T : Any>(
+internal abstract class ObjectBuilderProvider<TypeDeclaration : Any> internal constructor(
     key: ObjectKey,
-    builder: FactoryContext.() -> T
-) : ObjectProvider<T>(key, builder) {
+    internal val builder: FactoryContext.() -> TypeDeclaration
+) : ObjectProvider<TypeDeclaration>(key) {
 
-    override fun provide(context: FactoryContext): T {
-        return builder.invoke(context)
+}
+
+internal fun <TypeDeclaration : Any> singleProvider(
+    key: ObjectKey,
+    builder: FactoryContext.() -> TypeDeclaration
+): ObjectProvider<TypeDeclaration> {
+    return SingleProvider(key, builder)
+}
+
+internal fun <TypeDeclaration : Any> factoryProvider(
+    key: ObjectKey,
+    builder: FactoryContext.() -> TypeDeclaration
+): ObjectProvider<TypeDeclaration> {
+    return FactoryProvider(key, builder)
+}
+
+internal fun <TypeDeclaration : Any> castProvider(
+    key: ObjectKey
+): ObjectProvider<TypeDeclaration> {
+    return CastProvider(key)
+}
+
+private class SingleProvider<TypeDeclaration : Any>(
+    key: ObjectKey,
+    builder: FactoryContext.() -> TypeDeclaration
+) : ObjectBuilderProvider<TypeDeclaration>(key, builder) {
+
+    private val entity = AtomicEntity<TypeDeclaration?>(null)
+
+    override fun provide(context: FactoryContext): TypeDeclaration {
+        return entity.perform {
+            if (get() == null) {
+                set(builder.invoke(context))
+            }
+            val instance = get()!!
+            /**
+             * Single instance recycled on exit declared context stage
+             */
+            context.localLifecycleStage.doOnExit {
+                recycle(instance)
+            }
+            instance
+        }
+    }
+
+}
+
+private class FactoryProvider<TypeDeclaration : Any>(
+    key: ObjectKey,
+    builder: FactoryContext.() -> TypeDeclaration
+) : ObjectBuilderProvider<TypeDeclaration>(key, builder) {
+
+    override fun provide(context: FactoryContext): TypeDeclaration {
+        val instance = builder.invoke(context)
+        /**
+         * Factory instance recycled when on exit from caller stage
+         */
+        context.callerLifecycleStage.doOnExit {
+            recycle(instance)
+        }
+        return instance
+    }
+
+}
+
+private class CastProvider<TypeDeclaration : Any>(
+    key: ObjectKey
+) : ObjectProvider<TypeDeclaration>(key) {
+
+    override fun provide(context: FactoryContext): TypeDeclaration {
+        return context.inject(key.clazz, key.name) as TypeDeclaration
     }
 
 }

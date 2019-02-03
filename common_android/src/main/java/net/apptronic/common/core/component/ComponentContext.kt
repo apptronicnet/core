@@ -11,7 +11,7 @@ interface ComponentContext {
 
     fun workers(): ContextWorkers
 
-    fun di(): DIContext
+    fun objects(): DIContext
 
 }
 
@@ -19,10 +19,15 @@ abstract class SubContext(
     private val parent: ComponentContext
 ) : ComponentContext {
 
+    private val objects = DIContext(this, parent.objects())
     private val workers = SubContextWorkers(parent.workers())
 
     override fun workers(): ContextWorkers {
         return workers
+    }
+
+    override fun objects(): DIContext {
+        return objects
     }
 
 }
