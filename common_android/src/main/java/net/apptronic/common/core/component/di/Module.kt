@@ -3,19 +3,25 @@ package net.apptronic.common.core.component.di
 import kotlin.reflect.KClass
 
 internal class ObjectDefinition<TypeDeclaration : Any>(
-    private val providerFactory: () -> ObjectProvider<TypeDeclaration>
+    private val providerFactory: ProviderFactoryMethod<TypeDeclaration>
 ) {
 
-    private var recycler: (TypeDeclaration) -> Unit = {}
+    private var recyclers = mutableListOf<RecyclerMethod<TypeDeclaration>>()
+    private var mappings = mutableListOf<ObjectKey>()
 
     internal fun getProvider(context: DIContext): ObjectProvider<TypeDeclaration> {
         return providerFactory.invoke().also {
-            it.recycler = recycler
+            it.recyclers.addAll(this.recyclers)
+            it.addMapping(mappings)
         }
     }
 
-    internal fun addRecycler(recycler: (TypeDeclaration) -> Unit) {
-        this.recycler = recycler
+    internal fun addRecycler(recycler: RecyclerMethod<TypeDeclaration>) {
+        this.recyclers.add(recycler)
+    }
+
+    internal fun addMappings(objectKey: ObjectKey) {
+        mappings.add(objectKey)
     }
 
 }
@@ -25,8 +31,16 @@ class ProviderDefinition<TypeDeclaration : Any> internal constructor(
 ) {
 
     fun onRecycle(recycler: (TypeDeclaration) -> Unit): ProviderDefinition<TypeDeclaration> {
-        objectDefinition.addRecycler(recycler)
+        objectDefinition.addRecycler(RecyclerMethod(recycler))
         return this
+    }
+
+    inline fun <reified Mapping : Any> addMapping(name: String = "") {
+        addMapping(Mapping::class, name)
+    }
+
+    fun <Mapping : Any> addMapping(clazz: KClass<Mapping>, name: String = "") {
+        objectDefinition.addMappings(ObjectKey(clazz, name))
     }
 
 }
@@ -68,7 +82,7 @@ class ModuleDefinition internal constructor() {
         builder: FactoryContext.() -> TypeDeclaration
     ): ProviderDefinition<TypeDeclaration> {
         return addDefinition {
-            factoryProvider(ObjectKey(clazz, name), builder)
+            factoryProvider(ObjectKey(clazz, name), BuilderMethod(builder))
         }
     }
 
@@ -78,7 +92,7 @@ class ModuleDefinition internal constructor() {
         builder: FactoryContext.() -> TypeDeclaration
     ): ProviderDefinition<TypeDeclaration> {
         return addDefinition {
-            singleProvider(ObjectKey(clazz, name), builder)
+            singleProvider(ObjectKey(clazz, name), BuilderMethod(builder))
         }
     }
 
@@ -94,7 +108,7 @@ class ModuleDefinition internal constructor() {
     private fun <TypeDeclaration : Any> addDefinition(
         providerFactory: () -> ObjectProvider<TypeDeclaration>
     ): ProviderDefinition<TypeDeclaration> {
-        val definition = ObjectDefinition(providerFactory)
+        val definition = ObjectDefinition(ProviderFactoryMethod(providerFactory))
         definitions.add(definition)
         return ProviderDefinition(definition)
     }
@@ -105,9 +119,9 @@ internal class Module constructor(
     private val providers: List<ObjectProvider<*>>
 ) {
 
-    fun getProvider(key: ObjectKey): ObjectProvider<*>? {
+    fun getProvider(objectKey: ObjectKey): ObjectProvider<*>? {
         return providers.firstOrNull {
-            it.key == key
+            it.isMatch(objectKey)
         }
     }
 

@@ -7,6 +7,9 @@ package net.apptronic.common.core.component.di
  */
 interface AutoRecycling {
 
+    /**
+     * Called by DI when it defines that lifecycle stage when it created is exited
+     */
     fun onAutoRecycle()
 
 }

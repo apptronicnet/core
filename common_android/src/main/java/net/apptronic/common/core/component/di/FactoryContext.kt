@@ -3,6 +3,9 @@ package net.apptronic.common.core.component.di
 import net.apptronic.common.core.component.lifecycle.LifecycleStage
 import kotlin.reflect.KClass
 
+/**
+ * Context of creating methods in module definition
+ */
 class FactoryContext(
     private val context: DIContext,
     private val parameters: Parameters,

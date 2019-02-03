@@ -1,4 +1,6 @@
 package net.apptronic.common.core.component.di
 
-class ObjectNotFoundException : RuntimeException() {
-}
+/**
+ * Defines that object is not found
+ */
+class ObjectNotFoundException(msg: String) : RuntimeException(msg)

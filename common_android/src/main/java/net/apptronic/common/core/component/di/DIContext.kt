@@ -73,21 +73,21 @@ class DIContext(
         if (parental != null) {
             return parental
         }
-        throw ObjectNotFoundException()
+        throw ObjectNotFoundException("Object $key or it's factory/cast is not found in current context and all parental contexts")
     }
 
     private fun <TypeDeclaration : Any> obtainLocalInstance(
         callerLifecycleStage: LifecycleStage,
         localLifecycleStage: LifecycleStage,
-        key: ObjectKey,
+        objectKey: ObjectKey,
         params: Parameters
     ): TypeDeclaration? {
-        val obj = objects[key]
+        val obj = objects[objectKey]
         if (obj != null) {
             return obj as TypeDeclaration
         }
         modules.forEach { module ->
-            val providerSearch = module.getProvider(key)
+            val providerSearch = module.getProvider(objectKey)
             if (providerSearch != null) {
                 val provider = providerSearch as ObjectProvider<TypeDeclaration>
                 val factoryContext = FactoryContext(
