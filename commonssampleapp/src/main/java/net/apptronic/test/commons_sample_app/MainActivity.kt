@@ -4,12 +4,11 @@ import android.os.Bundle
 import kotlinx.android.synthetic.main.activity_main.*
 import net.apptronic.common.android.mvvm.components.activity.ActivityLifecycle
 import net.apptronic.common.android.mvvm.components.activity.BaseActivity
-import net.apptronic.common.android.mvvm.threading.AndroidMainThreadExecutor
 
 class MainActivity : BaseActivity<MainViewModel>() {
 
     override fun createViewModel(): MainViewModel? {
-        return MainViewModel(ActivityLifecycle(AndroidMainThreadExecutor()))
+        return MainViewModel(ActivityLifecycle(AndroidMainContextWorkers()))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

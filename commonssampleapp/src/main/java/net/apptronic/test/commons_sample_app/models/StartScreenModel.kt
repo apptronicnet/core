@@ -1,7 +1,7 @@
 package net.apptronic.test.commons_sample_app.models
 
 import net.apptronic.common.android.mvvm.components.fragment.FragmentViewModel
-import net.apptronic.common.core.mvvm.viewmodel.lifecycle.Lifecycle
+import net.apptronic.common.core.component.lifecycle.Lifecycle
 import net.apptronic.test.commons_sample_app.ToolbarTitled
 
 /**

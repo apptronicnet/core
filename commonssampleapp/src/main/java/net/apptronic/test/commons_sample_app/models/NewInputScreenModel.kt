@@ -1,10 +1,10 @@
 package net.apptronic.test.commons_sample_app.models
 
 import net.apptronic.common.android.mvvm.components.fragment.FragmentViewModel
+import net.apptronic.common.core.component.entity.ResultListener
+import net.apptronic.common.core.component.entity.setup
+import net.apptronic.common.core.component.lifecycle.Lifecycle
 import net.apptronic.common.core.mvvm.generic.TextInputModel
-import net.apptronic.common.core.mvvm.viewmodel.entity.ResultListener
-import net.apptronic.common.core.mvvm.viewmodel.entity.setup
-import net.apptronic.common.core.mvvm.viewmodel.lifecycle.Lifecycle
 import net.apptronic.test.commons_sample_app.ToolbarTitled
 
 class NewInputScreenModel(

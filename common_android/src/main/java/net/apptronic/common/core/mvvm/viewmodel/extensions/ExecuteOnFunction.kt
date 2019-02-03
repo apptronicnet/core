@@ -1,6 +1,6 @@
 package net.apptronic.common.core.mvvm.viewmodel.extensions
 
-import net.apptronic.common.core.mvvm.viewmodel.entity.ViewModelProperty
+import net.apptronic.common.core.component.entity.ViewModelProperty
 
 fun <A1> ((A1) -> Unit).executeOn(
     a1: ViewModelProperty<A1>

@@ -1,8 +1,8 @@
 package net.apptronic.common.android.mvvm.components.fragment
 
 import net.apptronic.common.android.mvvm.components.activity.AndroidViewModel
-import net.apptronic.common.core.mvvm.viewmodel.lifecycle.Lifecycle
-import net.apptronic.common.core.mvvm.viewmodel.lifecycle.LifecycleStage
+import net.apptronic.common.core.component.lifecycle.Lifecycle
+import net.apptronic.common.core.component.lifecycle.LifecycleStage
 
 open class FragmentViewModel(lifecycle: Lifecycle) : AndroidViewModel(lifecycle) {
 

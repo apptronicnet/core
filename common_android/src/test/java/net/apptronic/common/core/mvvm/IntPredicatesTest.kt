@@ -1,11 +1,10 @@
 package net.apptronic.common.core.mvvm
 
 import net.apptronic.common.android.mvvm.components.fragment.FragmentLifecycle
-import net.apptronic.common.core.mvvm.threading.SynchronousExecutor
-import net.apptronic.common.core.mvvm.viewmodel.ViewModel
-import net.apptronic.common.core.mvvm.viewmodel.entity.functions.Predicate
-import net.apptronic.common.core.mvvm.viewmodel.entity.functions.variants.*
-import net.apptronic.common.core.mvvm.viewmodel.lifecycle.Lifecycle
+import net.apptronic.common.core.component.Component
+import net.apptronic.common.core.component.entity.functions.Predicate
+import net.apptronic.common.core.component.entity.functions.variants.*
+import net.apptronic.common.core.component.lifecycle.Lifecycle
 import org.junit.Test
 
 class IntPredicatesTest {
@@ -16,7 +15,7 @@ class IntPredicatesTest {
 
     private val lifecycle = FragmentLifecycle(SynchronousExecutor())
 
-    private class SampleViewModel(lifecycle: Lifecycle) : ViewModel(lifecycle) {
+    private class SampleViewModel(lifecycle: Lifecycle) : Component(lifecycle) {
 
         val left = value<Int>()
         val right = value<Int>()

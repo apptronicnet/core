@@ -1,6 +1,6 @@
 package net.apptronic.common.core.mvvm.viewmodel.extensions
 
-import net.apptronic.common.core.mvvm.viewmodel.entity.ViewModelProperty
+import net.apptronic.common.core.component.entity.ViewModelProperty
 
 /**
  * ViewModelCalculatedValue af view with value which is calculated from other values

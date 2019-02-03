@@ -4,7 +4,7 @@ import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
-import net.apptronic.common.core.mvvm.viewmodel.ViewModel
+import net.apptronic.common.core.component.Component
 import net.apptronic.common.core.mvvm.viewmodel.adapter.ViewModelAdapter
 
 abstract class FragmentViewModelAdapter(
@@ -12,7 +12,7 @@ abstract class FragmentViewModelAdapter(
     @IdRes private val containerViewId: Int
 ) : ViewModelAdapter() {
 
-    override fun onInvalidate(oldModel: ViewModel?, newModel: ViewModel?, transitionInfo: Any?) {
+    override fun onInvalidate(oldModel: Component?, newModel: Component?, transitionInfo: Any?) {
         val oldFragment = fragmentManager.findFragmentById(containerViewId)
         val newFragment: Fragment? = if (newModel != null) {
             createFragment(newModel)?.also {
@@ -33,11 +33,11 @@ abstract class FragmentViewModelAdapter(
         }.commitNowAllowingStateLoss()
     }
 
-    abstract fun createFragment(viewModel: ViewModel): Fragment?
+    abstract fun createFragment(viewModel: Component): Fragment?
 
     open fun setupTransition(
-        oldModel: ViewModel?,
-        newModel: ViewModel?,
+        oldModel: Component?,
+        newModel: Component?,
         transitionInfo: Any?,
         fragmentTransaction: FragmentTransaction
     ) {

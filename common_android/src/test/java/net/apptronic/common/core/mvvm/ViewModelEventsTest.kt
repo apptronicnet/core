@@ -1,16 +1,15 @@
 package net.apptronic.common.core.mvvm
 
-import net.apptronic.common.core.mvvm.threading.SynchronousExecutor
-import net.apptronic.common.core.mvvm.viewmodel.ViewModel
-import net.apptronic.common.core.mvvm.viewmodel.lifecycle.GenericLifecycle
-import net.apptronic.common.core.mvvm.viewmodel.lifecycle.Lifecycle
+import net.apptronic.common.core.component.Component
+import net.apptronic.common.core.component.lifecycle.GenericLifecycle
+import net.apptronic.common.core.component.lifecycle.Lifecycle
 import org.junit.Test
 
 class ViewModelEventsTest {
 
     private val lifecycle = GenericLifecycle(SynchronousExecutor())
 
-    private class SampleViewModel(lifecycle: Lifecycle) : ViewModel(lifecycle) {
+    private class SampleViewModel(lifecycle: Lifecycle) : Component(lifecycle) {
 
         val genericEvent = genericEvent()
 

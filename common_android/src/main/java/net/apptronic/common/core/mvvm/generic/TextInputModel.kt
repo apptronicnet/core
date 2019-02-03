@@ -3,10 +3,10 @@ package net.apptronic.common.core.mvvm.generic
 import android.text.Editable
 import android.widget.EditText
 import net.apptronic.common.android.mvvm.utils.BaseTextWatcher
-import net.apptronic.common.core.mvvm.viewmodel.ViewModel
-import net.apptronic.common.core.mvvm.viewmodel.entity.PropertyNotSetException
+import net.apptronic.common.core.component.Component
+import net.apptronic.common.core.component.entity.PropertyNotSetException
 
-class TextInputModel(parent: ViewModel) : ViewModel.SubModel(parent) {
+class TextInputModel(parent: Component) : Component.SubModel(parent) {
 
     val inputText = value<String>("")
     val textColor = value<Color>()

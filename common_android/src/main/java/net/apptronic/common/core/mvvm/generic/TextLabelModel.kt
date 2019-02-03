@@ -1,9 +1,9 @@
 package net.apptronic.common.core.mvvm.generic
 
 import android.widget.TextView
-import net.apptronic.common.core.mvvm.viewmodel.ViewModel
+import net.apptronic.common.core.component.Component
 
-class TextLabelModel(parent: ViewModel) : ViewModel.SubModel(parent) {
+class TextLabelModel(parent: Component) : Component.SubModel(parent) {
 
     val text = value<String>()
     val textColor = value<Color>()

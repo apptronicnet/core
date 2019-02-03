@@ -1,11 +1,11 @@
 package net.apptronic.common.android.mvvm.components.activity
 
 import net.apptronic.common.android.mvvm.components.android.AndroidLifecycle
-import net.apptronic.common.core.mvvm.viewmodel.ViewModel
-import net.apptronic.common.core.mvvm.viewmodel.lifecycle.Lifecycle
-import net.apptronic.common.core.mvvm.viewmodel.lifecycle.LifecycleStage
+import net.apptronic.common.core.component.Component
+import net.apptronic.common.core.component.lifecycle.Lifecycle
+import net.apptronic.common.core.component.lifecycle.LifecycleStageImpl
 
-open class AndroidViewModel(lifecycle: Lifecycle) : ViewModel(lifecycle) {
+open class AndroidViewModel(lifecycle: Lifecycle) : Component(lifecycle) {
 
     /**
      * Do single action on stage is created
@@ -28,27 +28,27 @@ open class AndroidViewModel(lifecycle: Lifecycle) : ViewModel(lifecycle) {
         onceStage(AndroidLifecycle.STAGE_RESUMED, key, action)
     }
 
-    fun doOnCreate(callback: LifecycleStage.OnEnterHandler.() -> Unit) {
+    fun doOnCreate(callback: LifecycleStageImpl.OnEnterHandler.() -> Unit) {
         onEnterStage(AndroidLifecycle.STAGE_CREATED, callback)
     }
 
-    fun doOnStart(callback: LifecycleStage.OnEnterHandler.() -> Unit) {
+    fun doOnStart(callback: LifecycleStageImpl.OnEnterHandler.() -> Unit) {
         onEnterStage(AndroidLifecycle.STAGE_STARTED, callback)
     }
 
-    fun doOnResume(callback: LifecycleStage.OnEnterHandler.() -> Unit) {
+    fun doOnResume(callback: LifecycleStageImpl.OnEnterHandler.() -> Unit) {
         onEnterStage(AndroidLifecycle.STAGE_RESUMED, callback)
     }
 
-    fun doOnPause(callback: LifecycleStage.OnExitHandler.() -> Unit) {
+    fun doOnPause(callback: LifecycleStageImpl.OnExitHandler.() -> Unit) {
         onExitStage(AndroidLifecycle.STAGE_RESUMED, callback)
     }
 
-    fun doOnStop(callback: LifecycleStage.OnExitHandler.() -> Unit) {
+    fun doOnStop(callback: LifecycleStageImpl.OnExitHandler.() -> Unit) {
         onExitStage(AndroidLifecycle.STAGE_STARTED, callback)
     }
 
-    fun doOnDestroy(callback: LifecycleStage.OnExitHandler.() -> Unit) {
+    fun doOnDestroy(callback: LifecycleStageImpl.OnExitHandler.() -> Unit) {
         onExitStage(AndroidLifecycle.STAGE_CREATED, callback)
     }
 

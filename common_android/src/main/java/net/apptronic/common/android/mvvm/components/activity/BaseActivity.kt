@@ -3,30 +3,30 @@ package net.apptronic.common.android.mvvm.components.activity
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import net.apptronic.common.android.mvvm.components.fragment.FragmentLifecycle
-import net.apptronic.common.core.mvvm.viewmodel.ViewModel
-import net.apptronic.common.core.mvvm.viewmodel.ViewModelRegistry
-import net.apptronic.common.core.mvvm.viewmodel.lifecycle.enterStage
-import net.apptronic.common.core.mvvm.viewmodel.lifecycle.exitStage
+import net.apptronic.common.core.component.Component
+import net.apptronic.common.core.component.lifecycle.enterStage
+import net.apptronic.common.core.component.lifecycle.exitStage
+import net.apptronic.common.core.mvvm.viewmodel.ComponentRegistry
 
-abstract class BaseActivity<Model : ViewModel> : AppCompatActivity() {
+abstract class BaseActivity<Model : Component> : AppCompatActivity() {
 
     companion object {
         const val VIEW_MODEL_ID = "_view_model_id"
     }
 
-    private var viewModelId: Long = ViewModelRegistry.NO_ID
+    private var viewModelId: Long = ComponentRegistry.NO_ID
 
-    val model: Model by ViewModelRegistry.obtain {
-        if (viewModelId == ViewModelRegistry.NO_ID) {
+    val model: Model by ComponentRegistry.obtain {
+        if (viewModelId == ComponentRegistry.NO_ID) {
             viewModelId = createViewModel()!!.apply {
-                ViewModelRegistry.add(this)
+                ComponentRegistry.add(this)
             }.getId()
         }
         viewModelId
     }
 
     /**
-     * Creates [ViewModel] for this [BaseActivity]
+     * Creates [Component] for this [BaseActivity]
      */
     open fun createViewModel(): Model? {
         return null
@@ -34,7 +34,7 @@ abstract class BaseActivity<Model : ViewModel> : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         if (intent.hasExtra(VIEW_MODEL_ID)) {
-            viewModelId = intent.getLongExtra(VIEW_MODEL_ID, ViewModelRegistry.NO_ID)
+            viewModelId = intent.getLongExtra(VIEW_MODEL_ID, ComponentRegistry.NO_ID)
         } else savedInstanceState?.let {
             if (it.containsKey(VIEW_MODEL_ID)) {
                 viewModelId = savedInstanceState.getLong(VIEW_MODEL_ID)

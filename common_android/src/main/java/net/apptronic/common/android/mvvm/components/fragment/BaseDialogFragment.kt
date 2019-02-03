@@ -3,18 +3,18 @@ package net.apptronic.common.android.mvvm.components.fragment
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.DialogFragment
-import net.apptronic.common.core.mvvm.viewmodel.ViewModel
-import net.apptronic.common.core.mvvm.viewmodel.ViewModelRegistry
-import net.apptronic.common.core.mvvm.viewmodel.lifecycle.enterStage
-import net.apptronic.common.core.mvvm.viewmodel.lifecycle.exitStage
+import net.apptronic.common.core.component.Component
+import net.apptronic.common.core.component.lifecycle.enterStage
+import net.apptronic.common.core.component.lifecycle.exitStage
+import net.apptronic.common.core.mvvm.viewmodel.ComponentRegistry
 
-abstract class BaseDialogFragment<Model : ViewModel> : DialogFragment(), ViewModelController {
+abstract class BaseDialogFragment<Model : Component> : DialogFragment(), ViewModelController {
 
     companion object {
         const val VIEW_MODEL_ID = "_view_model_id"
     }
 
-    val model: Model by ViewModelRegistry.obtain {
+    val model: Model by ComponentRegistry.obtain {
         arguments!!.getLong(VIEW_MODEL_ID, -1)
     }
 

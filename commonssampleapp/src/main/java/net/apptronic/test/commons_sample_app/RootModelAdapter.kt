@@ -4,7 +4,7 @@ import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import net.apptronic.common.android.mvvm.components.fragment.FragmentViewModelAdapter
-import net.apptronic.common.core.mvvm.viewmodel.ViewModel
+import net.apptronic.common.core.component.Component
 import net.apptronic.test.commons_sample_app.fragments.NewInputScreenFragment
 import net.apptronic.test.commons_sample_app.fragments.StartScreenFragment
 import net.apptronic.test.commons_sample_app.fragments.YesNoSelectorFragment
@@ -17,7 +17,7 @@ class RootModelAdapter(
     @IdRes containerViewId: Int
 ) : FragmentViewModelAdapter(fragmentManager, containerViewId) {
 
-    override fun createFragment(viewModel: ViewModel): Fragment? {
+    override fun createFragment(viewModel: Component): Fragment? {
         return when (viewModel) {
             is StartScreenModel -> StartScreenFragment()
             is NewInputScreenModel -> NewInputScreenFragment()

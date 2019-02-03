@@ -1,8 +1,7 @@
 package net.apptronic.common.android.mvvm.components.activity
 
 import net.apptronic.common.android.mvvm.components.android.AndroidLifecycle
-import net.apptronic.common.core.mvvm.threading.ThreadExecutorProvider
-import net.apptronic.common.core.mvvm.viewmodel.lifecycle.LifecycleStage
+import net.apptronic.common.core.component.lifecycle.LifecycleStageImpl
 
 class ActivityLifecycle(provider: ThreadExecutorProvider) : AndroidLifecycle(provider) {
 
@@ -16,15 +15,15 @@ class ActivityLifecycle(provider: ThreadExecutorProvider) : AndroidLifecycle(pro
     private val startedStage = createStage(STAGE_STARTED)
     private val resumedStage = createStage(STAGE_RESUMED)
 
-    override fun getCreatedStage(): LifecycleStage {
+    override fun getCreatedStage(): LifecycleStageImpl {
         return createdStage
     }
 
-    override fun getStartedStage(): LifecycleStage {
+    override fun getStartedStage(): LifecycleStageImpl {
         return startedStage
     }
 
-    override fun getResumedStage(): LifecycleStage {
+    override fun getResumedStage(): LifecycleStageImpl {
         return resumedStage
     }
 

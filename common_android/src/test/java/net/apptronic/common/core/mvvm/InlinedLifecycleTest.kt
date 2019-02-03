@@ -2,8 +2,7 @@ package net.apptronic.common.core.mvvm
 
 import net.apptronic.common.android.mvvm.components.fragment.FragmentLifecycle
 import net.apptronic.common.android.mvvm.components.fragment.FragmentViewModel
-import net.apptronic.common.core.mvvm.threading.SynchronousExecutor
-import net.apptronic.common.core.mvvm.viewmodel.lifecycle.Lifecycle
+import net.apptronic.common.core.component.lifecycle.Lifecycle
 import org.junit.Test
 import kotlin.test.assertEquals
 

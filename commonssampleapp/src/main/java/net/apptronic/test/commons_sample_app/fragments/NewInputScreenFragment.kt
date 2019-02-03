@@ -14,7 +14,7 @@ import net.apptronic.test.commons_sample_app.R
 import net.apptronic.test.commons_sample_app.models.NewInputScreenModel
 
 /**
- * Sample fragment creates screen View and binds it to ViewModel
+ * Sample fragment creates screen View and binds it to Component
  */
 class NewInputScreenFragment : BaseFragment<NewInputScreenModel>() {
 

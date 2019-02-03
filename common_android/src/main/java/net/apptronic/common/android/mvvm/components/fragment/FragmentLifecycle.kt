@@ -1,8 +1,7 @@
 package net.apptronic.common.android.mvvm.components.fragment
 
 import net.apptronic.common.android.mvvm.components.android.AndroidLifecycle
-import net.apptronic.common.core.mvvm.threading.ThreadExecutorProvider
-import net.apptronic.common.core.mvvm.viewmodel.lifecycle.LifecycleStage
+import net.apptronic.common.core.component.lifecycle.LifecycleStageImpl
 
 class FragmentLifecycle(provider: ThreadExecutorProvider) : AndroidLifecycle(provider) {
 
@@ -18,19 +17,19 @@ class FragmentLifecycle(provider: ThreadExecutorProvider) : AndroidLifecycle(pro
     private val startedStage = createStage(STAGE_STARTED)
     private val resumedStage = createStage(STAGE_RESUMED)
 
-    override fun getCreatedStage(): LifecycleStage {
+    override fun getCreatedStage(): LifecycleStageImpl {
         return createdStage
     }
 
-    fun getViewCreatedStage(): LifecycleStage {
+    fun getViewCreatedStage(): LifecycleStageImpl {
         return viewCreatedStage
     }
 
-    override fun getStartedStage(): LifecycleStage {
+    override fun getStartedStage(): LifecycleStageImpl {
         return startedStage
     }
 
-    override fun getResumedStage(): LifecycleStage {
+    override fun getResumedStage(): LifecycleStageImpl {
         return resumedStage
     }
 

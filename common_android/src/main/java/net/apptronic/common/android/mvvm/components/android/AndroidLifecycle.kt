@@ -1,8 +1,7 @@
 package net.apptronic.common.android.mvvm.components.android
 
-import net.apptronic.common.core.mvvm.threading.ThreadExecutorProvider
-import net.apptronic.common.core.mvvm.viewmodel.lifecycle.Lifecycle
-import net.apptronic.common.core.mvvm.viewmodel.lifecycle.LifecycleStage
+import net.apptronic.common.core.component.lifecycle.Lifecycle
+import net.apptronic.common.core.component.lifecycle.LifecycleStageImpl
 
 abstract class AndroidLifecycle(provider: ThreadExecutorProvider) : Lifecycle(provider) {
 
@@ -12,8 +11,8 @@ abstract class AndroidLifecycle(provider: ThreadExecutorProvider) : Lifecycle(pr
         const val STAGE_RESUMED = "android:resumed"
     }
 
-    abstract fun getCreatedStage(): LifecycleStage
-    abstract fun getStartedStage(): LifecycleStage
-    abstract fun getResumedStage(): LifecycleStage
+    abstract fun getCreatedStage(): LifecycleStageImpl
+    abstract fun getStartedStage(): LifecycleStageImpl
+    abstract fun getResumedStage(): LifecycleStageImpl
 
 }
