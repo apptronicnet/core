@@ -1,4 +1,4 @@
-package net.apptronic.common.core.component.entity.functions
+package net.apptronic.common.core.component.entity
 
 import net.apptronic.common.core.component.entity.functions.variants.not
 

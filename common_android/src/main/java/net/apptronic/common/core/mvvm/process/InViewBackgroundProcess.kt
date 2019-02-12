@@ -6,10 +6,8 @@ import net.apptronic.common.core.base.threading.parallelWorker
 import net.apptronic.common.core.base.threading.serialWorker
 import net.apptronic.common.core.base.threading.singleWorker
 import net.apptronic.common.core.component.Component
-import net.apptronic.common.core.component.entity.ViewModelAbstractEntity
-import net.apptronic.common.core.component.entity.functions.Predicate
+import net.apptronic.common.core.component.entity.Predicate
 import net.apptronic.common.core.component.entity.functions.variants.map
-import net.apptronic.common.core.component.entity.setup
 
 class InViewBackgroundProcess<T, R>(
     private val parent: Component,

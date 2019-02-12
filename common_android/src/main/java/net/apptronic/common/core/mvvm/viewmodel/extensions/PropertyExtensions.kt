@@ -1,8 +1,8 @@
 package net.apptronic.common.core.mvvm.viewmodel.extensions
 
-import net.apptronic.common.core.component.entity.ViewModelProperty
+import net.apptronic.common.core.component.entity.entities.LiveModelProperty
 
-fun forEachChangeAnyOf(vararg properties: ViewModelProperty<*>, action: () -> Unit) {
+fun forEachChangeAnyOf(vararg properties: LiveModelProperty<*>, action: () -> Unit) {
     properties.forEach { property ->
         property.subscribe { _ ->
             ifAllIsSet(*properties) {
@@ -12,7 +12,7 @@ fun forEachChangeAnyOf(vararg properties: ViewModelProperty<*>, action: () -> Un
     }
 }
 
-fun <T> ViewModelProperty<T>.copyValueFrom(source: ViewModelProperty<T>): ViewModelProperty<T> {
+fun <T> LiveModelProperty<T>.copyValueFrom(source: LiveModelProperty<T>): LiveModelProperty<T> {
     source.subscribe { set(it) }
     return this
 }

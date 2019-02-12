@@ -1,10 +1,12 @@
-package net.apptronic.common.core.component.entity
+package net.apptronic.common.core.component.entity.entities
 
-import net.apptronic.common.core.component.lifecycle.Lifecycle
+import net.apptronic.common.core.component.ComponentContext
+import net.apptronic.common.core.component.entity.base.DistinctUntilChangedStorePredicate
+import net.apptronic.common.core.component.entity.base.ValueHolder
 
-class ViewModelValue<T>(lifecycle: Lifecycle) : ViewModelProperty<T>(
-    Lifecycle,
-    ValueEntitySubject(lifecycleHolder)
+class LiveModelValue<T>(context: ComponentContext) : LiveModelProperty<T>(
+    context,
+    DistinctUntilChangedStorePredicate()
 ) {
 
     internal var valueHolder: ValueHolder<T>? = null

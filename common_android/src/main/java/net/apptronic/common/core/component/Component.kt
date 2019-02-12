@@ -1,7 +1,7 @@
 package net.apptronic.common.core.component
 
-import net.apptronic.common.core.component.entity.*
-import net.apptronic.common.core.component.entity.functions.Predicate
+import net.apptronic.common.core.component.entity.Predicate
+import net.apptronic.common.core.component.entity.entities.*
 import net.apptronic.common.core.component.lifecycle.Lifecycle
 import net.apptronic.common.core.component.lifecycle.LifecycleStage
 import net.apptronic.common.core.component.threading.ContextWorkers
@@ -9,7 +9,7 @@ import net.apptronic.common.core.mvvm.process.InViewBackgroundProcess
 import net.apptronic.common.core.mvvm.viewmodel.ComponentRegistry
 
 open class Component(
-    private val context: ComponentContext
+    val context: ComponentContext
 ) : ComponentContext by context {
 
     private val id: Long = ComponentRegistry.nextId()
@@ -39,26 +39,26 @@ open class Component(
     }
 
     /**
-     * ViewModelProperty of view
+     * LiveModelProperty of view
      */
-    fun <T> value(): ViewModelProperty<T> {
-        return ViewModelValue(context)
+    fun <T> value(): LiveModelProperty<T> {
+        return LiveModelValue(context)
     }
 
     /**
-     * ViewModelProperty of view with some default value
+     * LiveModelProperty of view with some default value
      */
-    fun <T> value(defaultValue: T): ViewModelProperty<T> {
+    fun <T> value(defaultValue: T): LiveModelProperty<T> {
         return value<T>().setup {
             set(defaultValue)
         }
     }
 
-    fun <T> mutableValue(): ViewModelMutableValue<T> {
-        return ViewModelMutableValue(this)
+    fun <T> mutableValue(): LiveModelMutableValue<T> {
+        return LiveModelMutableValue(this)
     }
 
-    fun <T> mutableValue(defaultValue: T): ViewModelMutableValue<T> {
+    fun <T> mutableValue(defaultValue: T): LiveModelMutableValue<T> {
         return mutableValue<T>().setup {
             set(defaultValue)
         }
@@ -71,17 +71,17 @@ open class Component(
     fun <T> valueList() = mutableValue<MutableList<T>>(mutableListOf<T>())
 
     /**
-     * ViewModelProperty of view
+     * LiveModelProperty of view
      */
-    fun <T> function(predicate: Predicate<T>): ViewModelProperty<T> {
+    fun <T> function(predicate: Predicate<T>): LiveModelProperty<T> {
         return value<T>().setAs(predicate)
     }
 
     /**
      * User action on screen
      */
-    fun genericEvent(): ViewModelGenericEvent {
-        return ViewModelGenericEvent(this)
+    fun genericEvent(): LiveModelGenericEvent {
+        return LiveModelGenericEvent(this)
     }
 
     /**
@@ -98,7 +98,7 @@ open class Component(
         resultEvent.subscribe(onReceived)
         return object : ResultListener<T> {
             override fun setResult(result: T) {
-                workers().execute {
+                workers().execute(ContextWorkers.DEFAULT) {
                     resultEvent.sendEvent(result)
                 }
             }
@@ -107,7 +107,7 @@ open class Component(
     }
 
     fun update(block: () -> Unit) {
-        workers().execute(block)
+        workers().execute(ContextWorkers.DEFAULT, block)
     }
 
     fun <T, R> backgroundProcess(action: (T) -> R): InViewBackgroundProcess<T, R> {

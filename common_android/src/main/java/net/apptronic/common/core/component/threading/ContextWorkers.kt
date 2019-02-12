@@ -20,8 +20,6 @@ interface ContextWorkers {
 
     fun getWorker(workerName: String): Worker
 
-    fun execute(action: () -> Unit)
-
-    fun execute(workerName: String = DEFAULT, action: () -> Unit)
+    fun execute(workerName: String, action: () -> Unit)
 
 }

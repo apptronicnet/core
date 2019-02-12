@@ -1,6 +1,6 @@
 package net.apptronic.common.core.mvvm
 
-import net.apptronic.common.core.component.entity.functions.Predicate
+import net.apptronic.common.core.component.entity.Predicate
 import net.apptronic.common.core.component.entity.functions.variants.not
 import kotlin.test.assertNull
 

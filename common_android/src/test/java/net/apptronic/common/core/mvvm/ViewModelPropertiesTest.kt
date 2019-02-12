@@ -1,7 +1,7 @@
 package net.apptronic.common.core.mvvm
 
 import net.apptronic.common.core.component.Component
-import net.apptronic.common.core.component.entity.PropertyNotSetException
+import net.apptronic.common.core.component.entity.entities.PropertyNotSetException
 import net.apptronic.common.core.component.lifecycle.GenericLifecycle
 import net.apptronic.common.core.component.lifecycle.Lifecycle
 import net.apptronic.common.core.mvvm.viewmodel.extensions.asFunctionOf

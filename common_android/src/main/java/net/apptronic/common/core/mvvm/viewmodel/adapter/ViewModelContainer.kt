@@ -1,17 +1,17 @@
 package net.apptronic.common.core.mvvm.viewmodel.adapter
 
-import net.apptronic.common.core.component.entity.ValueEntitySubject
-import net.apptronic.common.core.component.entity.ViewModelProperty
+import net.apptronic.common.core.component.ComponentContext
+import net.apptronic.common.core.component.entity.base.DistinctUntilChangedStorePredicate
+import net.apptronic.common.core.component.entity.entities.LiveModelProperty
 import net.apptronic.common.core.mvvm.viewmodel.ViewModel
-import net.apptronic.common.core.mvvm.viewmodel.ViewModelLifecycle
 import net.apptronic.common.core.mvvm.viewmodel.ViewModelParent
 import java.util.*
 
 class ViewModelContainer(
-    lifecycle: ViewModelLifecycle
-) : ViewModelProperty<ViewModel?>(
-    lifecycle,
-    ValueEntitySubject(lifecycle)
+    context: ComponentContext
+) : LiveModelProperty<ViewModel?>(
+    context,
+    DistinctUntilChangedStorePredicate()
 ), ViewModelParent {
 
     override fun isSet(): Boolean {
@@ -61,6 +61,10 @@ class ViewModelContainer(
         }
     }
 
+    private fun updateFromGet() {
+        workingPredicate.update(getOrNull())
+    }
+
     /**
      * Clear all [ViewModel]s from stack
      */
@@ -78,7 +82,7 @@ class ViewModelContainer(
                 transitionInfo = transitionInfo
             )
         }
-        onInput(null)
+        updateFromGet()
     }
 
     /**
@@ -95,7 +99,7 @@ class ViewModelContainer(
                 transitionInfo = transitionInfo
             )
         }
-        onInput(getOrNull())
+        updateFromGet()
     }
 
     /**
@@ -117,7 +121,7 @@ class ViewModelContainer(
                 transitionInfo = transitionInfo
             )
         }
-        onInput(getOrNull())
+        updateFromGet()
     }
 
     /**
@@ -139,7 +143,7 @@ class ViewModelContainer(
                 )
             }
         }
-        onInput(getOrNull())
+        updateFromGet()
     }
 
     /**
@@ -151,7 +155,7 @@ class ViewModelContainer(
         val activeModel = getOrNull()
         return if (activeModel != null) {
             remove(activeModel, transitionInfo)
-            onInput(getOrNull())
+            workingPredicate.update(getOrNull())
             true
         } else {
             false
@@ -179,7 +183,7 @@ class ViewModelContainer(
                     transitionInfo = transitionInfo
                 )
             }
-            onInput(getOrNull())
+            workingPredicate.update(getOrNull())
             true
         } else {
             false

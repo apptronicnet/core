@@ -1,9 +1,10 @@
 package net.apptronic.common.android.mvvm.components.activity
 
 import net.apptronic.common.android.mvvm.components.android.AndroidLifecycle
-import net.apptronic.common.core.component.lifecycle.LifecycleStageImpl
+import net.apptronic.common.core.component.lifecycle.LifecycleStage
+import net.apptronic.common.core.component.threading.ContextWorkers
 
-class ActivityLifecycle(provider: ThreadExecutorProvider) : AndroidLifecycle(provider) {
+class ActivityLifecycle(workers: ContextWorkers) : AndroidLifecycle(workers) {
 
     companion object {
         const val STAGE_CREATED = AndroidLifecycle.STAGE_CREATED
@@ -11,19 +12,19 @@ class ActivityLifecycle(provider: ThreadExecutorProvider) : AndroidLifecycle(pro
         const val STAGE_RESUMED = AndroidLifecycle.STAGE_RESUMED
     }
 
-    private val createdStage = createStage(STAGE_CREATED)
-    private val startedStage = createStage(STAGE_STARTED)
-    private val resumedStage = createStage(STAGE_RESUMED)
+    private val createdStage = addStage(STAGE_CREATED)
+    private val startedStage = addStage(STAGE_STARTED)
+    private val resumedStage = addStage(STAGE_RESUMED)
 
-    override fun getCreatedStage(): LifecycleStageImpl {
+    override fun getCreatedStage(): LifecycleStage {
         return createdStage
     }
 
-    override fun getStartedStage(): LifecycleStageImpl {
+    override fun getStartedStage(): LifecycleStage {
         return startedStage
     }
 
-    override fun getResumedStage(): LifecycleStageImpl {
+    override fun getResumedStage(): LifecycleStage {
         return resumedStage
     }
 

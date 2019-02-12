@@ -4,7 +4,7 @@ import android.text.Editable
 import android.widget.EditText
 import net.apptronic.common.android.mvvm.utils.BaseTextWatcher
 import net.apptronic.common.core.component.Component
-import net.apptronic.common.core.component.entity.PropertyNotSetException
+import net.apptronic.common.core.component.entity.entities.PropertyNotSetException
 
 class TextInputModel(parent: Component) : Component.SubModel(parent) {
 

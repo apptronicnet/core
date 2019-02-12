@@ -1,16 +1,10 @@
 package net.apptronic.common.core.component.entity.functions
 
-import net.apptronic.common.core.component.entity.ViewModelProperty
+import net.apptronic.common.core.component.entity.Predicate
+import net.apptronic.common.core.component.entity.base.DistinctUntilChangedStorePredicate
+import net.apptronic.common.core.component.entity.base.ValueHolder
 
-abstract class Function<T> : Predicate<T> {
-
-    abstract fun calculate(): T
-
-    override fun getPredicateValue(): T {
-        return calculate()
-    }
-
-}
+abstract class Function<T> : DistinctUntilChangedStorePredicate<T>()
 
 fun <T, A> predicateFunction(
     source: Predicate<A>,
@@ -35,54 +29,86 @@ fun <T, A, B> predicateFunction(
 }
 
 private class SingleFunction<T, X>(
-    private val source: Predicate<X>,
+    source: Predicate<X>,
     private val method: (X) -> T
 ) : Function<T>() {
 
-    override fun getPredicateSubjects(): Set<ViewModelProperty<*>> {
-        return source.getPredicateSubjects()
+    private var sourceValue: ValueHolder<X>? = null
+
+    init {
+        source.subscribe {
+            sourceValue = ValueHolder(it)
+            calculate()
+        }
     }
 
-    override fun calculate(): T {
-        return method(source.getPredicateValue())
+    private fun calculate() {
+        val sourceValue = this.sourceValue
+        if (sourceValue != null) {
+            val result = method(sourceValue.value)
+            update(result)
+        }
     }
 
 }
 
 private class DoubleFunction<T, A, B>(
-    private val left: Predicate<A>,
-    private val right: Predicate<B>,
+    left: Predicate<A>,
+    right: Predicate<B>,
     private val method: (A, B) -> T
 ) : Function<T>() {
 
-    override fun getPredicateSubjects(): Set<ViewModelProperty<*>> {
-        return mutableSetOf<ViewModelProperty<*>>().apply {
-            addAll(left.getPredicateSubjects())
-            addAll(right.getPredicateSubjects())
+    private var leftValue: ValueHolder<A>? = null
+    private var rightValue: ValueHolder<B>? = null
+
+    init {
+        left.subscribe {
+            leftValue = ValueHolder(it)
+            calculate()
+        }
+        right.subscribe {
+            rightValue = ValueHolder(it)
+            calculate()
         }
     }
 
-    override fun calculate(): T {
-        return method(left.getPredicateValue(), right.getPredicateValue())
+    private fun calculate() {
+        val leftValue = this.leftValue
+        val rightValue = this.rightValue
+        if (leftValue != null && rightValue != null) {
+            val result = method(leftValue.value, rightValue.value)
+            update(result)
+        }
     }
 
 }
 
 private class ArrayFunction<T>(
-    private val source: Array<Predicate<*>>,
+    private val sources: Array<Predicate<*>>,
     private val method: (Array<Any>) -> T
 ) : Function<T>() {
 
-    override fun getPredicateSubjects(): Set<ViewModelProperty<*>> {
-        return mutableSetOf<ViewModelProperty<*>>().apply {
-            source.forEach {
-                addAll(it.getPredicateSubjects())
+    private val sourceValues = arrayOfNulls<ValueHolder<*>>(sources.size)
+
+    init {
+        for (i in 0 until sources.size) {
+            i.let { index ->
+                sources[index].subscribe {
+                    sourceValues[index] =
+                        ValueHolder(it)
+                    calculate()
+                }
             }
         }
     }
 
-    override fun calculate(): T {
-        return method(source.map { it.getPredicateValue() as Any }.toTypedArray())
+    private fun calculate() {
+        val sourceValues = this.sourceValues.clone()
+        if (sourceValues.all { it != null }) {
+            val params = sourceValues.map { it!!.value }
+            val result = method(arrayOf(params))
+            update(result)
+        }
     }
 
 }

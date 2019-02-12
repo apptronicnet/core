@@ -1,7 +1,7 @@
 package net.apptronic.common.core.component.entity.functions.variants
 
-import net.apptronic.common.core.component.entity.functions.Predicate
-import net.apptronic.common.core.component.entity.functions.ValuePredicate
+import net.apptronic.common.core.component.entity.Predicate
+import net.apptronic.common.core.component.entity.base.ConstantPredicate
 import net.apptronic.common.core.component.entity.functions.predicateFunction
 
 fun <T, R> Predicate<T>.map(map: T.() -> R): Predicate<R> =
@@ -19,7 +19,8 @@ fun <T> Predicate<T?>.ifNull(predicate: Predicate<T>): Predicate<T> =
         value ?: ifNull
     }
 
-fun <T> value(value: T): Predicate<T> = ValuePredicate(value)
+fun <T> value(value: T): Predicate<T> =
+    ConstantPredicate(value)
 
 fun <T> Predicate<T>.isTrueThat(test: T.() -> Boolean): Predicate<Boolean> =
     predicateFunction(this) {

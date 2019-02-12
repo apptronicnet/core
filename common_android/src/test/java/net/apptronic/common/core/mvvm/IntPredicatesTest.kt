@@ -2,7 +2,7 @@ package net.apptronic.common.core.mvvm
 
 import net.apptronic.common.android.mvvm.components.fragment.FragmentLifecycle
 import net.apptronic.common.core.component.Component
-import net.apptronic.common.core.component.entity.functions.Predicate
+import net.apptronic.common.core.component.entity.Predicate
 import net.apptronic.common.core.component.entity.functions.variants.*
 import net.apptronic.common.core.component.lifecycle.Lifecycle
 import org.junit.Test

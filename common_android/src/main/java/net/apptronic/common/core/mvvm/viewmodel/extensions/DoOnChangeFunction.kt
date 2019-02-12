@@ -1,12 +1,12 @@
 package net.apptronic.common.core.mvvm.viewmodel.extensions
 
-import net.apptronic.common.core.component.entity.ViewModelProperty
+import net.apptronic.common.core.component.entity.entities.LiveModelProperty
 
 /**
  * ViewModelCalculatedValue af view with value which is calculated from other values
  */
 fun <A1> doOnChange(
-    a1: ViewModelProperty<A1>,
+    a1: LiveModelProperty<A1>,
     action: (A1) -> Unit
 ) {
     forEachChangeAnyOf(a1) {
@@ -18,8 +18,8 @@ fun <A1> doOnChange(
  * ViewModelCalculatedValue af view with value which is calculated from other values
  */
 fun <A1, A2> doOnChange(
-    a1: ViewModelProperty<A1>,
-    a2: ViewModelProperty<A2>,
+    a1: LiveModelProperty<A1>,
+    a2: LiveModelProperty<A2>,
     action: (A1, A2) -> Unit
 ) {
     forEachChangeAnyOf(a1, a2) {
@@ -31,9 +31,9 @@ fun <A1, A2> doOnChange(
  * ViewModelCalculatedValue af view with value which is calculated from other values
  */
 fun <A1, A2, A3> doOnChange(
-    a1: ViewModelProperty<A1>,
-    a2: ViewModelProperty<A2>,
-    a3: ViewModelProperty<A3>,
+    a1: LiveModelProperty<A1>,
+    a2: LiveModelProperty<A2>,
+    a3: LiveModelProperty<A3>,
     action: (A1, A2, A3) -> Unit
 ) {
     forEachChangeAnyOf(a1, a2, a3) {
@@ -45,10 +45,10 @@ fun <A1, A2, A3> doOnChange(
  * ViewModelCalculatedValue af view with value which is calculated from other values
  */
 fun <A1, A2, A3, A4> doOnChange(
-    a1: ViewModelProperty<A1>,
-    a2: ViewModelProperty<A2>,
-    a3: ViewModelProperty<A3>,
-    a4: ViewModelProperty<A4>,
+    a1: LiveModelProperty<A1>,
+    a2: LiveModelProperty<A2>,
+    a3: LiveModelProperty<A3>,
+    a4: LiveModelProperty<A4>,
     action: (A1, A2, A3, A4) -> Unit
 ) {
     forEachChangeAnyOf(a1, a2, a3, a4) {
@@ -60,11 +60,11 @@ fun <A1, A2, A3, A4> doOnChange(
  * ViewModelCalculatedValue af view with value which is calculated from other values
  */
 fun <A1, A2, A3, A4, A5> doOnChange(
-    a1: ViewModelProperty<A1>,
-    a2: ViewModelProperty<A2>,
-    a3: ViewModelProperty<A3>,
-    a4: ViewModelProperty<A4>,
-    a5: ViewModelProperty<A5>,
+    a1: LiveModelProperty<A1>,
+    a2: LiveModelProperty<A2>,
+    a3: LiveModelProperty<A3>,
+    a4: LiveModelProperty<A4>,
+    a5: LiveModelProperty<A5>,
     action: (A1, A2, A3, A4, A5) -> Unit
 ) {
     forEachChangeAnyOf(a1, a2, a3, a4, a5) {
@@ -76,12 +76,12 @@ fun <A1, A2, A3, A4, A5> doOnChange(
  * ViewModelCalculatedValue af view with value which is calculated from other values
  */
 fun <A1, A2, A3, A4, A5, A6> doOnChange(
-    a1: ViewModelProperty<A1>,
-    a2: ViewModelProperty<A2>,
-    a3: ViewModelProperty<A3>,
-    a4: ViewModelProperty<A4>,
-    a5: ViewModelProperty<A5>,
-    a6: ViewModelProperty<A6>,
+    a1: LiveModelProperty<A1>,
+    a2: LiveModelProperty<A2>,
+    a3: LiveModelProperty<A3>,
+    a4: LiveModelProperty<A4>,
+    a5: LiveModelProperty<A5>,
+    a6: LiveModelProperty<A6>,
     action: (A1, A2, A3, A4, A5, A6) -> Unit
 ) {
     forEachChangeAnyOf(a1, a2, a3, a4, a5, a6) {
@@ -93,13 +93,13 @@ fun <A1, A2, A3, A4, A5, A6> doOnChange(
  * ViewModelCalculatedValue af view with value which is calculated from other values
  */
 fun <A1, A2, A3, A4, A5, A6, A7> doOnChange(
-    a1: ViewModelProperty<A1>,
-    a2: ViewModelProperty<A2>,
-    a3: ViewModelProperty<A3>,
-    a4: ViewModelProperty<A4>,
-    a5: ViewModelProperty<A5>,
-    a6: ViewModelProperty<A6>,
-    a7: ViewModelProperty<A7>,
+    a1: LiveModelProperty<A1>,
+    a2: LiveModelProperty<A2>,
+    a3: LiveModelProperty<A3>,
+    a4: LiveModelProperty<A4>,
+    a5: LiveModelProperty<A5>,
+    a6: LiveModelProperty<A6>,
+    a7: LiveModelProperty<A7>,
     action: (A1, A2, A3, A4, A5, A6, A7) -> Unit
 ) {
     forEachChangeAnyOf(a1, a2, a3, a4, a5, a6, a7) {
@@ -111,7 +111,7 @@ fun <A1, A2, A3, A4, A5, A6, A7> doOnChange(
  * ViewModelCalculatedValue af view with value which is calculated from other values
  */
 fun <T> doOnChange(
-    array: Array<ViewModelProperty<*>>,
+    array: Array<LiveModelProperty<*>>,
     action: (Array<Any?>) -> Unit
 ) {
     forEachChangeAnyOf(*array) {

@@ -1,4 +1,6 @@
-package net.apptronic.common.core.component.entity
+package net.apptronic.common.core.component.entity.base
+
+import net.apptronic.common.core.component.entity.entities.PropertyNotSetException
 
 class ValueHolder<T>(val value: T) {
 

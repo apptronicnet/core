@@ -1,6 +1,7 @@
 package net.apptronic.common.core.mvvm.viewmodel
 
 import net.apptronic.common.core.component.Component
+import net.apptronic.common.core.component.threading.ContextWorkers
 import net.apptronic.common.core.mvvm.viewmodel.adapter.ViewModelContainer
 import java.util.*
 
@@ -36,7 +37,7 @@ open class ViewModel(context: ViewModelContext) : Component(context) {
 
     fun closeSelf(transitionInfo: Any? = null): Boolean {
         return parent?.let {
-            workers().execute {
+            workers().execute(ContextWorkers.DEFAULT) {
                 it.requestCloseSelf(this, transitionInfo)
             }
             true

@@ -45,7 +45,7 @@ open class Lifecycle(
         return rootStage.lastEntered()
     }
 
-    fun addStage(name: String): LifecycleStage? {
+    fun addStage(name: String): LifecycleStage {
         return rootStage.last().addStage(name)
     }
 

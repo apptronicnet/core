@@ -1,9 +1,9 @@
 package net.apptronic.common.core.mvvm.viewmodel.extensions
 
-import net.apptronic.common.core.component.entity.ViewModelProperty
+import net.apptronic.common.core.component.entity.entities.LiveModelProperty
 
-fun <E : ViewModelProperty<T>, T, A1> E.asFunctionOf(
-    a1: ViewModelProperty<A1>,
+fun <E : LiveModelProperty<T>, T, A1> E.asFunctionOf(
+    a1: LiveModelProperty<A1>,
     functionOf: (A1) -> T
 ): E {
     forEachChangeAnyOf(a1) {
@@ -12,9 +12,9 @@ fun <E : ViewModelProperty<T>, T, A1> E.asFunctionOf(
     return this
 }
 
-fun <E : ViewModelProperty<T>, T, A1, A2> E.asFunctionOf(
-    a1: ViewModelProperty<A1>,
-    a2: ViewModelProperty<A2>,
+fun <E : LiveModelProperty<T>, T, A1, A2> E.asFunctionOf(
+    a1: LiveModelProperty<A1>,
+    a2: LiveModelProperty<A2>,
     functionOf: (A1, A2) -> T
 ): E {
     forEachChangeAnyOf(a1, a2) {
@@ -23,10 +23,10 @@ fun <E : ViewModelProperty<T>, T, A1, A2> E.asFunctionOf(
     return this
 }
 
-fun <E : ViewModelProperty<T>, T, A1, A2, A3> E.asFunctionOf(
-    a1: ViewModelProperty<A1>,
-    a2: ViewModelProperty<A2>,
-    a3: ViewModelProperty<A3>,
+fun <E : LiveModelProperty<T>, T, A1, A2, A3> E.asFunctionOf(
+    a1: LiveModelProperty<A1>,
+    a2: LiveModelProperty<A2>,
+    a3: LiveModelProperty<A3>,
     functionOf: (A1, A2, A3) -> T
 ): E {
     forEachChangeAnyOf(a1, a2, a3) {
@@ -36,11 +36,11 @@ fun <E : ViewModelProperty<T>, T, A1, A2, A3> E.asFunctionOf(
 }
 
 
-fun <E : ViewModelProperty<T>, T, A1, A2, A3, A4> E.asFunctionOf(
-    a1: ViewModelProperty<A1>,
-    a2: ViewModelProperty<A2>,
-    a3: ViewModelProperty<A3>,
-    a4: ViewModelProperty<A4>,
+fun <E : LiveModelProperty<T>, T, A1, A2, A3, A4> E.asFunctionOf(
+    a1: LiveModelProperty<A1>,
+    a2: LiveModelProperty<A2>,
+    a3: LiveModelProperty<A3>,
+    a4: LiveModelProperty<A4>,
     functionOf: (A1, A2, A3, A4) -> T
 ): E {
     forEachChangeAnyOf(a1, a2, a3, a4) {
@@ -49,8 +49,8 @@ fun <E : ViewModelProperty<T>, T, A1, A2, A3, A4> E.asFunctionOf(
     return this
 }
 
-fun <E : ViewModelProperty<T>, T> E.asFunctionOf(
-    array: Array<ViewModelProperty<*>>,
+fun <E : LiveModelProperty<T>, T> E.asFunctionOf(
+    array: Array<LiveModelProperty<*>>,
     functionOf: (Array<Any?>) -> T
 ) {
     forEachChangeAnyOf(*array) {
