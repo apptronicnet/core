@@ -1,14 +1,12 @@
 package net.apptronic.common.core.component.entity.entities
 
 import net.apptronic.common.core.component.ComponentContext
-import net.apptronic.common.core.component.entity.base.UpdateAndStorePredicate
+import net.apptronic.common.core.component.entity.base.DistinctUntilChangedStorePredicate
 import net.apptronic.common.core.component.entity.base.ValueHolder
 
-class LiveModelMutableValue<T>(
-    context: ComponentContext
-) : LiveModelProperty<T>(
+class Value<T>(context: ComponentContext) : Property<T>(
     context,
-    UpdateAndStorePredicate()
+    DistinctUntilChangedStorePredicate()
 ) {
 
     internal var valueHolder: ValueHolder<T>? = null
@@ -25,13 +23,6 @@ class LiveModelMutableValue<T>(
         valueHolder?.let {
             return it.value
         } ?: throw PropertyNotSetException()
-    }
-
-    fun update(action: T.() -> Unit) {
-        valueHolder?.let {
-            it.value.action()
-            workingPredicate.update(it.value)
-        }
     }
 
     override fun toString(): String {

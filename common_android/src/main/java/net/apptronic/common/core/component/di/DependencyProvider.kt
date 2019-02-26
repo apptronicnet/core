@@ -4,9 +4,9 @@ import net.apptronic.common.core.component.ComponentContext
 import net.apptronic.common.core.component.lifecycle.LifecycleStage
 import kotlin.reflect.KClass
 
-class DIContext(
+class DependencyProvider(
     private val context: ComponentContext,
-    private val parent: DIContext?
+    private val parent: DependencyProvider?
 ) {
 
     private val objects = mutableMapOf<ObjectKey, Any>()

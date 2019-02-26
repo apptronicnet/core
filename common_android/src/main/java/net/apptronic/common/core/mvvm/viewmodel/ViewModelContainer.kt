@@ -1,15 +1,14 @@
-package net.apptronic.common.core.mvvm.viewmodel.adapter
+package net.apptronic.common.core.mvvm.viewmodel
 
 import net.apptronic.common.core.component.ComponentContext
 import net.apptronic.common.core.component.entity.base.DistinctUntilChangedStorePredicate
-import net.apptronic.common.core.component.entity.entities.LiveModelProperty
-import net.apptronic.common.core.mvvm.viewmodel.ViewModel
-import net.apptronic.common.core.mvvm.viewmodel.ViewModelParent
+import net.apptronic.common.core.component.entity.entities.Property
+import net.apptronic.common.core.mvvm.viewmodel.adapter.ViewModelAdapter
 import java.util.*
 
 class ViewModelContainer(
     context: ComponentContext
-) : LiveModelProperty<ViewModel?>(
+) : Property<ViewModel?>(
     context,
     DistinctUntilChangedStorePredicate()
 ), ViewModelParent {

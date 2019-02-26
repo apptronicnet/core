@@ -7,7 +7,7 @@ import kotlin.reflect.KClass
  * Context of creating methods in module definition
  */
 class FactoryContext(
-    private val context: DIContext,
+    private val context: DependencyProvider,
     private val parameters: Parameters,
     internal val localLifecycleStage: LifecycleStage,
     internal val callerLifecycleStage: LifecycleStage

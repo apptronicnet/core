@@ -2,21 +2,19 @@ package net.apptronic.common.core.mvvm.process
 
 import net.apptronic.common.core.base.SerialIdGenerator
 import net.apptronic.common.core.base.threading.Worker
-import net.apptronic.common.core.base.threading.parallelWorker
 import net.apptronic.common.core.base.threading.serialWorker
-import net.apptronic.common.core.base.threading.singleWorker
 import net.apptronic.common.core.component.Component
 import net.apptronic.common.core.component.entity.Predicate
 import net.apptronic.common.core.component.entity.functions.variants.map
+import net.apptronic.common.core.component.entity.setup
 
 class InViewBackgroundProcess<T, R>(
     private val parent: Component,
-    private val action: (T) -> R
+    private val action: (T) -> R,
+    private val worker: Worker = serialWorker()
 ) {
 
     private val idGenerator = SerialIdGenerator()
-
-    internal var worker: Worker = serialWorker()
 
     private val idsInProgress = parent.valueSet<Long>()
 
@@ -35,33 +33,33 @@ class InViewBackgroundProcess<T, R>(
     fun onProgress(): Predicate<Boolean> = isInProgress
 
     fun onProgress(action: (Boolean) -> Unit) {
-        isInProgress.subscribe(action)
+        onProgress().subscribe(action)
     }
 
     fun onProgressStart(action: () -> Unit) {
-        isInProgress.subscribe { if (it) action() }
+        onProgress().subscribe { if (it) action() }
     }
 
     fun onProgressEnd(action: () -> Unit) {
-        isInProgress.subscribe { if (it.not()) action() }
+        onProgress().subscribe { if (it.not()) action() }
     }
 
-    fun onRequest(): ViewModelAbstractEntity<T> = requestEvent
+    fun onRequest(): Predicate<T> = requestEvent
 
     fun onRequest(action: (T) -> Unit) {
-        requestEvent.subscribe(action)
+        onRequest().subscribe(action)
     }
 
-    fun onSuccess(): ViewModelAbstractEntity<R> = successEvent
+    fun onSuccess(): Predicate<R> = successEvent
 
     fun onSuccess(action: (R) -> Unit) {
-        successEvent.subscribe(action)
+        onSuccess().subscribe(action)
     }
 
-    fun onError(): ViewModelAbstractEntity<Exception> = failedEvent
+    fun onError(): Predicate<Exception> = failedEvent
 
     fun onError(action: (Exception) -> Unit) {
-        failedEvent.subscribe(action)
+        onError().subscribe(action)
     }
 
     private fun doProcess(request: T) {
@@ -83,20 +81,5 @@ class InViewBackgroundProcess<T, R>(
 
 fun <P : InViewBackgroundProcess<T, R>, T, R> P.setup(setupBlock: P.() -> Unit): P {
     this.setupBlock()
-    return this
-}
-
-fun <P : InViewBackgroundProcess<T, R>, T, R> P.runInParallel(): P {
-    worker = parallelWorker()
-    return this
-}
-
-fun <P : InViewBackgroundProcess<T, R>, T, R> P.runSingle(): P {
-    worker = singleWorker()
-    return this
-}
-
-fun <P : InViewBackgroundProcess<T, R>, T, R> P.runSerial(): P {
-    worker = serialWorker()
     return this
 }

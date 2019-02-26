@@ -14,12 +14,8 @@ class SubContextWorkers(
         return defaultWorker
     }
 
-    override fun assignWorker(threadName: String, worker: Worker) {
-        workers[threadName] = worker
-    }
-
-    override fun execute(action: () -> Unit) {
-        getWorker(defaultWorker).run(action)
+    override fun assignWorker(workerName: String, worker: Worker) {
+        workers[workerName] = worker
     }
 
     override fun getWorker(workerName: String): Worker {

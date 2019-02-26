@@ -1,17 +1,16 @@
-package net.apptronic.common.core.mvvm
+package net.apptronic.common.core.component
 
-import net.apptronic.common.android.mvvm.components.fragment.FragmentLifecycle
-import net.apptronic.common.core.component.Component
 import net.apptronic.common.core.component.entity.doWhen
-import net.apptronic.common.core.component.entity.functions.variants.*
-import net.apptronic.common.core.component.lifecycle.Lifecycle
+import net.apptronic.common.core.component.entity.functions.variants.and
+import net.apptronic.common.core.component.entity.functions.variants.not
+import net.apptronic.common.core.component.entity.functions.variants.or
+import net.apptronic.common.core.component.entity.functions.variants.xor
+import net.apptronic.common.utils.BaseTestComponent
 import org.junit.Test
 
 class BooleanPredicatesTest {
 
-    private val lifecycle = FragmentLifecycle(SynchronousExecutor())
-
-    private class SampleViewModel(lifecycle: Lifecycle) : Component(lifecycle) {
+    private class TestComponent : BaseTestComponent() {
 
         val left = value<Boolean>()
         val right = value<Boolean>()
@@ -24,22 +23,14 @@ class BooleanPredicatesTest {
         val login = value("")
         val password = value("")
 
-        val isLoginButtonEnabled = function(
-            login.isNoEmpty()
-                    and password.isNoEmpty()
-                    and password.isTrueThat { length > 8 }
-        )
-
-        val loginLength = function(login.map { length })
-
     }
 
-    private val model = SampleViewModel(lifecycle)
+    private val component = TestComponent()
 
     @Test
     fun shouldCallDoWhenOrElse() {
 
-        with(model) {
+        with(component) {
 
             var leftFalse = 0
             var leftTrue = 0
@@ -85,7 +76,7 @@ class BooleanPredicatesTest {
     @Test
     fun shouldSetAs() {
 
-        with(model) {
+        with(component) {
 
 
             left.set(false)

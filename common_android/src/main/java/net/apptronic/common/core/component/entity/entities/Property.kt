@@ -4,10 +4,10 @@ import net.apptronic.common.core.component.ComponentContext
 import net.apptronic.common.core.component.entity.Predicate
 import net.apptronic.common.core.component.entity.base.UpdatePredicate
 
-abstract class LiveModelProperty<T>(
+abstract class Property<T>(
     context: ComponentContext,
     predicate: UpdatePredicate<T>
-) : LiveModelEntity<T>(
+) : ComponentEntity<T>(
     context,
     predicate
 ), Predicate<T> {
@@ -23,12 +23,25 @@ abstract class LiveModelProperty<T>(
 
     protected abstract fun onGetValue(): T
 
-    fun setFrom(property: LiveModelProperty<T>): Boolean {
+    /**
+     * Set current value from given [source]
+     * @return true if value set, false if no value set inside [source]
+     */
+    fun setFrom(source: Property<T>): Boolean {
         return try {
-            set(property.get())
+            set(source.get())
             true
         } catch (e: PropertyNotSetException) {
             false
+        }
+    }
+
+    /**
+     * Subscribe to updates of [source] and set all new values automatically
+     */
+    fun setAs(source: Predicate<T>) {
+        source.subscribe {
+            set(it)
         }
     }
 
@@ -55,7 +68,7 @@ abstract class LiveModelProperty<T>(
 
 }
 
-fun <E : LiveModelProperty<T>, T> E.setAs(predicate: Predicate<T>): E {
+fun <E : Property<T>, T> E.setAs(predicate: Predicate<T>): E {
     predicate.subscribe {
         set(it)
     }

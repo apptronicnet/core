@@ -14,7 +14,7 @@ open class Lifecycle(
     private val baseParent = object : LifecycleStageParent {
 
         override fun onChildEnter() {
-            rootStage.enter()
+            // ignore
         }
 
         override fun cancelOnExitFromActiveStage(eventCallback: EventCallback) {
@@ -30,10 +30,14 @@ open class Lifecycle(
 
     private val isTerminated = AtomicBoolean(false)
 
-    private val rootStage: LifecycleStageImpl = LifecycleStageImpl(baseParent, ROOT_STAGE).apply {
-        enter()
-        doOnExit {
-            isTerminated.set(true)
+    private val rootStage: LifecycleStageImpl = LifecycleStageImpl(baseParent, ROOT_STAGE)
+
+    init {
+        rootStage.apply {
+            enter()
+            doOnExit {
+                isTerminated.set(true)
+            }
         }
     }
 
@@ -47,6 +51,14 @@ open class Lifecycle(
 
     fun addStage(name: String): LifecycleStage {
         return rootStage.last().addStage(name)
+    }
+
+    fun onExitFromActiveStage(action: () -> Unit) {
+        getActiveStage()?.let {
+            it.doOnExit {
+                action()
+            }
+        } ?: run(action)
     }
 
     /**

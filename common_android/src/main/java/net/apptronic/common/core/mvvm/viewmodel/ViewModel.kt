@@ -1,8 +1,6 @@
 package net.apptronic.common.core.mvvm.viewmodel
 
 import net.apptronic.common.core.component.Component
-import net.apptronic.common.core.component.threading.ContextWorkers
-import net.apptronic.common.core.mvvm.viewmodel.adapter.ViewModelContainer
 import java.util.*
 
 open class ViewModel(context: ViewModelContext) : Component(context) {
@@ -25,6 +23,14 @@ open class ViewModel(context: ViewModelContext) : Component(context) {
         }
     }
 
+    internal fun onAddedToContainer(parent: ViewModelParent) {
+        context.getLifecycle().enterStage(ViewModelLifecycle.STAGE_CREATED)
+    }
+
+    internal fun onRemovedFromContainer(parent: ViewModelParent) {
+        context.getLifecycle().exitStage(ViewModelLifecycle.STAGE_CREATED)
+    }
+
     private var parent: ViewModelParent? = null
 
     fun onAttachToParent(parent: ViewModelParent) {
@@ -37,7 +43,7 @@ open class ViewModel(context: ViewModelContext) : Component(context) {
 
     fun closeSelf(transitionInfo: Any? = null): Boolean {
         return parent?.let {
-            workers().execute(ContextWorkers.DEFAULT) {
+            workers().execute(context.workers().getDefaultWorker()) {
                 it.requestCloseSelf(this, transitionInfo)
             }
             true

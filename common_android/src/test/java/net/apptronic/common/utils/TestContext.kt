@@ -1,15 +1,14 @@
-package net.apptronic.common.core.component.base
+package net.apptronic.common.utils
 
 import net.apptronic.common.core.component.ComponentContext
 import net.apptronic.common.core.component.di.DependencyProvider
 import net.apptronic.common.core.component.lifecycle.Lifecycle
 import net.apptronic.common.core.component.threading.ContextWorkers
-import net.apptronic.common.core.component.threading.DefaultContextWorkers
 
-class CoreComponentContext : ComponentContext {
+class TestContext : ComponentContext {
 
-    private val lifecycle = DefaultApplicationLifecycle(this)
-    private val workers = DefaultContextWorkers()
+    private val workers = TestWorkers()
+    private val lifecycle = TestLifecycle(workers)
     private val diContext = DependencyProvider(this, null)
 
     override fun getLifecycle(): Lifecycle {

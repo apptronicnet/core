@@ -2,6 +2,7 @@ package net.apptronic.common.core.component
 
 import net.apptronic.common.core.component.entity.Predicate
 import net.apptronic.common.core.component.entity.entities.*
+import net.apptronic.common.core.component.entity.setup
 import net.apptronic.common.core.component.lifecycle.Lifecycle
 import net.apptronic.common.core.component.lifecycle.LifecycleStage
 import net.apptronic.common.core.component.threading.ContextWorkers
@@ -39,26 +40,26 @@ open class Component(
     }
 
     /**
-     * LiveModelProperty of view
+     * Property of view
      */
-    fun <T> value(): LiveModelProperty<T> {
-        return LiveModelValue(context)
+    fun <T> value(): Property<T> {
+        return Value(context)
     }
 
     /**
-     * LiveModelProperty of view with some default value
+     * Property of view with some default value
      */
-    fun <T> value(defaultValue: T): LiveModelProperty<T> {
+    fun <T> value(defaultValue: T): Property<T> {
         return value<T>().setup {
             set(defaultValue)
         }
     }
 
-    fun <T> mutableValue(): LiveModelMutableValue<T> {
-        return LiveModelMutableValue(this)
+    fun <T> mutableValue(): MutableValue<T> {
+        return MutableValue(this)
     }
 
-    fun <T> mutableValue(defaultValue: T): LiveModelMutableValue<T> {
+    fun <T> mutableValue(defaultValue: T): MutableValue<T> {
         return mutableValue<T>().setup {
             set(defaultValue)
         }
@@ -71,40 +72,27 @@ open class Component(
     fun <T> valueList() = mutableValue<MutableList<T>>(mutableListOf<T>())
 
     /**
-     * LiveModelProperty of view
+     * Property of view
      */
-    fun <T> function(predicate: Predicate<T>): LiveModelProperty<T> {
-        return value<T>().setAs(predicate)
+    fun <T> function(predicate: Predicate<T>): Property<T> {
+        return value<T>().setup { setAs(predicate) }
     }
 
     /**
      * User action on screen
      */
-    fun genericEvent(): LiveModelGenericEvent {
-        return LiveModelGenericEvent(this)
+    fun genericEvent(): ComponentGenericEvent {
+        return ComponentGenericEvent(this)
     }
 
     /**
      * User action on screen
      */
-    fun <T> typedEvent(): ViewModelTypedEvent<T> {
-        return ViewModelTypedEvent(this)
+    fun <T> typedEvent(): ComponentEvent<T> {
+        return ComponentTypedEvent(context)
     }
 
     abstract class SubModel(parent: Component) : Component(parent)
-
-    fun <T> resultListener(onReceived: (T) -> Unit): ResultListener<T> {
-        val resultEvent = typedEvent<T>()
-        resultEvent.subscribe(onReceived)
-        return object : ResultListener<T> {
-            override fun setResult(result: T) {
-                workers().execute(ContextWorkers.DEFAULT) {
-                    resultEvent.sendEvent(result)
-                }
-            }
-        }
-
-    }
 
     fun update(block: () -> Unit) {
         workers().execute(ContextWorkers.DEFAULT, block)

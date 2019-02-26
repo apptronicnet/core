@@ -3,6 +3,9 @@ package net.apptronic.common.core.base.threading
 import net.apptronic.common.core.base.AtomicEntity
 import kotlin.concurrent.thread
 
+/**
+ * [Worker] implementation which executes actions one after another in single thread.
+ */
 internal class SerialWorker(
     private val maxCount: Int = NO_LIMIT
 ) : Worker {

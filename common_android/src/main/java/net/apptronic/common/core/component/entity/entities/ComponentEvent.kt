@@ -3,9 +3,9 @@ package net.apptronic.common.core.component.entity.entities
 import net.apptronic.common.core.component.ComponentContext
 import net.apptronic.common.core.component.entity.base.UpdatePredicate
 
-abstract class LiveModelEvent<T>(
+abstract class ComponentEvent<T>(
     context: ComponentContext
-) : LiveModelEntity<T>(context, UpdatePredicate()) {
+) : ComponentEntity<T>(context, UpdatePredicate()) {
 
     fun sendEvent(event: T) {
         workingPredicate.update(event)
@@ -13,10 +13,18 @@ abstract class LiveModelEvent<T>(
 
 }
 
-class LiveModelGenericEvent(context: ComponentContext) : LiveModelEvent<Unit>(context) {
+class ComponentGenericEvent(context: ComponentContext) : ComponentEvent<Unit>(context) {
 
     fun sendEvent() {
         sendEvent(Unit)
+    }
+
+}
+
+class ComponentTypedEvent<T>(context: ComponentContext) : ComponentEvent<T>(context) {
+
+    fun send(event: T) {
+        sendEvent(event)
     }
 
 }

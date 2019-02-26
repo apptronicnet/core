@@ -8,6 +8,9 @@ fun synchronousWorker(): Worker {
     return SynchronousWorker()
 }
 
+/**
+ * Worker which executes actions in single thread.
+ */
 fun singleWorker(): Worker {
     return SerialWorker(1)
 }

@@ -15,5 +15,4 @@ class ViewModelLifecycle(workers: ContextWorkers) : Lifecycle(workers) {
     val visible = addStage(STAGE_VISIBLE)
     val focused = addStage(STAGE_FOCUSED)
 
-
 }

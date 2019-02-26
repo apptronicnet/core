@@ -33,8 +33,8 @@ class DefaultContextWorkers : ContextWorkers {
         return workers[workerName] ?: fallbackWorker
     }
 
-    override fun execute(action: () -> Unit) {
-        execute(defaultWorker, action)
+    override fun getDefaultWorker(): String {
+        return defaultWorker
     }
 
     override fun execute(workerName: String, action: () -> Unit) {

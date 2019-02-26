@@ -27,3 +27,8 @@ fun doWhen(predicate: Predicate<Boolean>, action: () -> Unit): OrElseSubscriptio
 fun doWhenNot(predicate: Predicate<Boolean>, action: () -> Unit): OrElseSubscription {
     return doWhen(predicate.not(), action)
 }
+
+fun <T, D : Predicate<T>> D.setup(block: D.() -> Any): D {
+    this.block()
+    return this
+}

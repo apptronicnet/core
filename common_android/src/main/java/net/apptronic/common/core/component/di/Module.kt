@@ -9,7 +9,7 @@ internal class ObjectDefinition<TypeDeclaration : Any>(
     private var recyclers = mutableListOf<RecyclerMethod<TypeDeclaration>>()
     private var mappings = mutableListOf<ObjectKey>()
 
-    internal fun getProvider(context: DIContext): ObjectProvider<TypeDeclaration> {
+    internal fun getProvider(context: DependencyProvider): ObjectProvider<TypeDeclaration> {
         return providerFactory.invoke().also {
             it.recyclers.addAll(this.recyclers)
             it.addMapping(mappings)
@@ -49,7 +49,7 @@ class ModuleDefinition internal constructor() {
 
     private val definitions = mutableListOf<ObjectDefinition<*>>()
 
-    internal fun buildInstance(context: DIContext): Module {
+    internal fun buildInstance(context: DependencyProvider): Module {
         val providers: List<ObjectProvider<*>> = definitions.map {
             it.getProvider(context)
         }
