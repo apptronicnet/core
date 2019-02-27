@@ -1,7 +1,6 @@
 package net.apptronic.common.core.component.lifecycle
 
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
 import net.apptronic.common.core.base.AtomicEntity
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
@@ -152,13 +151,10 @@ internal class LifecycleStageImpl(val parent: LifecycleStageParent, val name: St
 
     private inner class OnEnterHandlerImpl : LifecycleStage.OnEnterHandler {
 
-        override fun Disposable.disposeOnExit() {
-            exitHandler.get().disposables.add(this)
-        }
-
         override fun onExit(callback: LifecycleStage.OnExitHandler.() -> Unit) {
             doOnExit(callback)
         }
+
     }
 
     private inner class OnExitHandlerImpl : LifecycleStage.OnExitHandler {

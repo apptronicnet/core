@@ -13,8 +13,8 @@ abstract class Property<T>(
 ), Predicate<T> {
 
     fun set(value: T) {
-        workingPredicate.update(value)
         onSetValue(value)
+        workingPredicate.update(value)
     }
 
     abstract fun isSet(): Boolean
