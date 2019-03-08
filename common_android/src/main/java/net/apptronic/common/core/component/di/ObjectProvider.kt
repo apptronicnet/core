@@ -2,7 +2,7 @@ package net.apptronic.common.core.component.di
 
 import net.apptronic.common.core.base.AtomicEntity
 
-internal abstract class ObjectProvider<TypeDeclaration : Any>(
+internal abstract class ObjectProvider<TypeDeclaration>(
     objectKey: ObjectKey
 ) {
 
@@ -32,34 +32,34 @@ internal abstract class ObjectProvider<TypeDeclaration : Any>(
 
 }
 
-internal abstract class ObjectBuilderProvider<TypeDeclaration : Any> internal constructor(
+internal abstract class ObjectBuilderProvider<TypeDeclaration> internal constructor(
     objectKey: ObjectKey,
     internal val builder: BuilderMethod<TypeDeclaration>
 ) : ObjectProvider<TypeDeclaration>(objectKey) {
 
 }
 
-internal fun <TypeDeclaration : Any> singleProvider(
+internal fun <TypeDeclaration> singleProvider(
     objectKey: ObjectKey,
     builder: BuilderMethod<TypeDeclaration>
 ): ObjectProvider<TypeDeclaration> {
     return SingleProvider(objectKey, builder)
 }
 
-internal fun <TypeDeclaration : Any> factoryProvider(
+internal fun <TypeDeclaration> factoryProvider(
     objectKey: ObjectKey,
     builder: BuilderMethod<TypeDeclaration>
 ): ObjectProvider<TypeDeclaration> {
     return FactoryProvider(objectKey, builder)
 }
 
-internal fun <TypeDeclaration : Any> castProvider(
+internal fun <TypeDeclaration> castProvider(
     objectKey: ObjectKey
 ): ObjectProvider<TypeDeclaration> {
     return CastProvider(objectKey)
 }
 
-private class SingleProvider<TypeDeclaration : Any>(
+private class SingleProvider<TypeDeclaration>(
     objectKey: ObjectKey,
     builder: BuilderMethod<TypeDeclaration>
 ) : ObjectBuilderProvider<TypeDeclaration>(objectKey, builder) {
@@ -69,26 +69,27 @@ private class SingleProvider<TypeDeclaration : Any>(
     override fun provide(context: FactoryContext): TypeDeclaration {
         return entity.perform {
             if (get() == null) {
-                set(builder.invoke(context))
-            }
-            val instance = get()!!
-            /**
-             * Single instance recycled on exit declared context stage
-             */
-            context.localLifecycleStage.doOnExit {
-                perform {
-                    // make instance null. It will be recreated when called again
-                    recycle(instance)
-                    set(null)
+                val created = builder.invoke(context)
+                set(created)
+                /**
+                 * Single instance recycled on exit declared context stage
+                 */
+                context.localLifecycleStage.doOnExit {
+                    perform {
+                        // make instance null. It will be recreated when called again
+                        recycle(created)
+                        set(null)
+                    }
                 }
             }
+            val instance = get()!!
             instance
         }
     }
 
 }
 
-private class FactoryProvider<TypeDeclaration : Any>(
+private class FactoryProvider<TypeDeclaration>(
     objectKey: ObjectKey,
     builder: BuilderMethod<TypeDeclaration>
 ) : ObjectBuilderProvider<TypeDeclaration>(objectKey, builder) {
@@ -106,7 +107,7 @@ private class FactoryProvider<TypeDeclaration : Any>(
 
 }
 
-private class CastProvider<TypeDeclaration : Any>(
+private class CastProvider<TypeDeclaration>(
     private val objectKey: ObjectKey
 ) : ObjectProvider<TypeDeclaration>(objectKey) {
 
@@ -114,7 +115,7 @@ private class CastProvider<TypeDeclaration : Any>(
         /**
          * Cast instance is not recycling as it will be recycled by real provider when required
          */
-        return context.inject(objectKey.clazz, objectKey.name) as TypeDeclaration
+        return context.inject(objectKey) as TypeDeclaration
     }
 
 }

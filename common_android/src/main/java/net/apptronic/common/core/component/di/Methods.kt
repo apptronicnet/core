@@ -3,7 +3,7 @@ package net.apptronic.common.core.component.di
 /**
  * Method to create instance of Object in provider
  */
-internal class BuilderMethod<TypeDeclaration : Any>(
+internal class BuilderMethod<TypeDeclaration>(
     private val builder: FactoryContext.() -> TypeDeclaration
 ) {
 
@@ -16,7 +16,7 @@ internal class BuilderMethod<TypeDeclaration : Any>(
 /**
  * Method to create factory of object providers
  */
-internal class ProviderFactoryMethod<TypeDeclaration : Any>(
+internal class ProviderFactoryMethod<TypeDeclaration>(
     private val providerFactory: () -> ObjectProvider<TypeDeclaration>
 ) {
 
@@ -29,7 +29,7 @@ internal class ProviderFactoryMethod<TypeDeclaration : Any>(
 /**
  * Method to recycle object instance
  */
-internal class RecyclerMethod<TypeDeclaration : Any>(
+internal class RecyclerMethod<TypeDeclaration>(
     private val recycler: (TypeDeclaration) -> Unit
 ) {
 

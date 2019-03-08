@@ -4,14 +4,22 @@ import net.apptronic.common.core.component.ComponentContext
 import net.apptronic.common.core.component.lifecycle.LifecycleStage
 import kotlin.reflect.KClass
 
+/**
+ * Class for providing dependencies
+ */
 class DependencyProvider(
     private val context: ComponentContext,
     private val parent: DependencyProvider?
 ) {
 
-    private val objects = mutableMapOf<ObjectKey, Any>()
+    private val externalInstances = mutableMapOf<ObjectKey, Any>()
     private val modules = mutableListOf<Module>()
 
+    /**
+     * Add external instance to this provider.
+     * @param instance instance which can be injected using this [DependencyProvider]
+     * @param name optional name for instance
+     */
     inline fun <reified TypeDeclaration : Any> addInstance(
         instance: TypeDeclaration,
         name: String = ""
@@ -19,13 +27,19 @@ class DependencyProvider(
         addInstance(instance, TypeDeclaration::class, name)
     }
 
+    /**
+     * Add external instance to this provider.
+     * @param instance instance which can be injected using this [DependencyProvider]
+     * @param clazz optional class for this instance
+     * @param name optional name for instance
+     */
     fun <TypeDeclaration : Any> addInstance(
         instance: TypeDeclaration, clazz:
         KClass<TypeDeclaration>,
         name: String = ""
     ) {
-        val key = ObjectKey(clazz, name)
-        objects[key] = instance
+        val key = objectKey(clazz, name)
+        externalInstances[key] = instance
     }
 
     fun addModule(moduleDefinition: ModuleDefinition) {
@@ -39,16 +53,71 @@ class DependencyProvider(
         return get(TypeDeclaration::class, name, params)
     }
 
+    inline fun <reified TypeDeclaration : Any> lazy(
+        name: String = "",
+        params: Parameters = parameters { }
+    ): Lazy<TypeDeclaration> {
+        return lazy(TypeDeclaration::class, name, params)
+    }
+
+    fun <TypeDeclaration> get(
+        clazz: Class<*>,
+        name: String = ""
+    ): TypeDeclaration {
+        val key = objectKey(clazz, name)
+        return getInstanceInternal(key, emptyParameters())
+    }
+
+    fun <TypeDeclaration> lazy(
+        clazz: Class<*>,
+        name: String = ""
+    ): Lazy<TypeDeclaration> {
+        val key = objectKey(clazz, name)
+        return getLazyInstanceInternal(key, emptyParameters())
+    }
+
+    fun <TypeDeclaration : Any> get(
+        clazz: KClass<TypeDeclaration>,
+        name: String = ""
+    ): TypeDeclaration {
+        val key = objectKey(clazz, name)
+        return getInstanceInternal(key, emptyParameters())
+    }
+
+    fun <TypeDeclaration : Any> lazy(
+        clazz: KClass<TypeDeclaration>,
+        name: String = ""
+    ): Lazy<TypeDeclaration> {
+        val key = objectKey(clazz, name)
+        return getLazyInstanceInternal(key, emptyParameters())
+    }
+
     fun <TypeDeclaration : Any> get(
         clazz: KClass<TypeDeclaration>,
         name: String = "",
-        params: Parameters = parameters { }
+        params: Parameters
     ): TypeDeclaration {
-        val key = ObjectKey(clazz, name)
+        val key = objectKey(clazz, name)
         return getInstanceInternal(key, params)
     }
 
-    private fun <TypeDeclaration : Any> getInstanceInternal(
+    fun <TypeDeclaration : Any> lazy(
+        clazz: KClass<TypeDeclaration>,
+        name: String = "",
+        params: Parameters
+    ): Lazy<TypeDeclaration> {
+        val key = objectKey(clazz, name)
+        return getLazyInstanceInternal(key, params)
+    }
+
+    internal fun <TypeDeclaration> get(
+        objectKey: ObjectKey,
+        params: Parameters = parameters { }
+    ): TypeDeclaration {
+        return getInstanceInternal(objectKey, params)
+    }
+
+    private fun <TypeDeclaration> getInstanceInternal(
         key: ObjectKey,
         params: Parameters
     ): TypeDeclaration {
@@ -57,7 +126,18 @@ class DependencyProvider(
         return searchInstance(localLifecycleStage, key, params)
     }
 
-    private fun <TypeDeclaration : Any> searchInstance(
+    private fun <TypeDeclaration> getLazyInstanceInternal(
+        key: ObjectKey,
+        params: Parameters
+    ): Lazy<TypeDeclaration> {
+        val localLifecycleStage = context.getLifecycle().getActiveStage()
+            ?: throw IllegalStateException("Lifecycle was terminated")
+        return lazy {
+            searchInstance<TypeDeclaration>(localLifecycleStage, key, params)
+        }
+    }
+
+    private fun <TypeDeclaration> searchInstance(
         callerLifecycleStage: LifecycleStage,
         key: ObjectKey,
         params: Parameters
@@ -76,13 +156,13 @@ class DependencyProvider(
         throw ObjectNotFoundException("Object $key or it's factory/cast is not found in current context and all parental contexts")
     }
 
-    private fun <TypeDeclaration : Any> obtainLocalInstance(
+    private fun <TypeDeclaration> obtainLocalInstance(
         callerLifecycleStage: LifecycleStage,
         localLifecycleStage: LifecycleStage,
         objectKey: ObjectKey,
         params: Parameters
     ): TypeDeclaration? {
-        val obj = objects[objectKey]
+        val obj = externalInstances[objectKey]
         if (obj != null) {
             return obj as TypeDeclaration
         }

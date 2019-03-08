@@ -83,6 +83,10 @@ open class Lifecycle(
         rootStage.stageByName(name)?.exit()
     }
 
+    fun terminate() {
+        rootStage.terminate()
+    }
+
 }
 
 fun enterStage(context: ComponentContext?, name: String) {

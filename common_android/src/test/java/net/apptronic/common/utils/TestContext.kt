@@ -5,7 +5,7 @@ import net.apptronic.common.core.component.di.DependencyProvider
 import net.apptronic.common.core.component.lifecycle.Lifecycle
 import net.apptronic.common.core.component.threading.ContextWorkers
 
-class TestContext : ComponentContext {
+open class TestContext : ComponentContext {
 
     private val workers = TestWorkers()
     private val lifecycle = TestLifecycle(workers)

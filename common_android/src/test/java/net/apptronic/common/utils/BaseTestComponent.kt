@@ -3,7 +3,17 @@ package net.apptronic.common.utils
 import net.apptronic.common.core.component.Component
 import net.apptronic.common.core.component.lifecycle.LifecycleStage
 
-open class BaseTestComponent() : Component(TestContext()) {
+open class BaseTestComponent : Component {
+
+    constructor() : super(TestContext())
+
+    constructor(contextInitializer: TestContext.() -> Unit = {}) : super(
+        TestContext().apply(
+            contextInitializer
+        )
+    )
+
+    constructor(context: TestContext) : super(context)
 
     fun getTestContext(): TestContext = context as TestContext
 

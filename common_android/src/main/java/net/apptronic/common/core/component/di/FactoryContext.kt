@@ -25,7 +25,7 @@ class FactoryContext(
         return injectLazy(ObjectType::class, name)
     }
 
-    fun <ObjectType : Any> injectLazy(
+    inline fun <reified ObjectType : Any> injectLazy(
         clazz: KClass<ObjectType>,
         name: String = ""
     ): Lazy<ObjectType> {
@@ -38,7 +38,13 @@ class FactoryContext(
         clazz: KClass<ObjectType>,
         name: String = ""
     ): ObjectType {
-        return parameters.get(clazz, name) ?: context.get(clazz, name)
+        return parameters.get(objectKey(clazz, name)) ?: context.get(clazz, name)
+    }
+
+    internal fun <ObjectType> inject(
+        objectKey: ObjectKey
+    ): ObjectType {
+        return parameters.get(objectKey) ?: context.get(objectKey)
     }
 
 }

@@ -2,7 +2,7 @@ package net.apptronic.common.core.component.di
 
 import kotlin.reflect.KClass
 
-internal class ObjectDefinition<TypeDeclaration : Any>(
+internal class ObjectDefinition<TypeDeclaration>(
     private val providerFactory: ProviderFactoryMethod<TypeDeclaration>
 ) {
 
@@ -26,7 +26,7 @@ internal class ObjectDefinition<TypeDeclaration : Any>(
 
 }
 
-class ProviderDefinition<TypeDeclaration : Any> internal constructor(
+class ProviderDefinition<TypeDeclaration> internal constructor(
     private val objectDefinition: ObjectDefinition<TypeDeclaration>
 ) {
 
@@ -40,7 +40,7 @@ class ProviderDefinition<TypeDeclaration : Any> internal constructor(
     }
 
     fun <Mapping : Any> addMapping(clazz: KClass<Mapping>, name: String = "") {
-        objectDefinition.addMappings(ObjectKey(clazz, name))
+        objectDefinition.addMappings(objectKey(clazz, name))
     }
 
 }
@@ -82,7 +82,7 @@ class ModuleDefinition internal constructor() {
         builder: FactoryContext.() -> TypeDeclaration
     ): ProviderDefinition<TypeDeclaration> {
         return addDefinition {
-            factoryProvider(ObjectKey(clazz, name), BuilderMethod(builder))
+            factoryProvider(objectKey(clazz, name), BuilderMethod(builder))
         }
     }
 
@@ -92,7 +92,7 @@ class ModuleDefinition internal constructor() {
         builder: FactoryContext.() -> TypeDeclaration
     ): ProviderDefinition<TypeDeclaration> {
         return addDefinition {
-            singleProvider(ObjectKey(clazz, name), BuilderMethod(builder))
+            singleProvider(objectKey(clazz, name), BuilderMethod(builder))
         }
     }
 
@@ -101,11 +101,82 @@ class ModuleDefinition internal constructor() {
         name: String = ""
     ): ProviderDefinition<TypeDeclaration> {
         return addDefinition {
-            castProvider<TypeDeclaration>(ObjectKey(clazz, name))
+            castProvider<TypeDeclaration>(objectKey(clazz, name))
         }
     }
 
-    private fun <TypeDeclaration : Any> addDefinition(
+    /**
+     * Java version of [factory]
+     */
+    fun <TypeDeclaration> declareFactory(
+        clazz: Class<TypeDeclaration>,
+        builder: ObjectBuilder<TypeDeclaration>
+    ): ProviderDefinition<TypeDeclaration> {
+        return declareFactory(clazz, "", builder)
+    }
+
+    /**
+     * Java version of [factory]
+     */
+    fun <TypeDeclaration> declareFactory(
+        clazz: Class<TypeDeclaration>,
+        name: String = "",
+        builder: ObjectBuilder<TypeDeclaration>
+    ): ProviderDefinition<TypeDeclaration> {
+        return addDefinition {
+            factoryProvider(objectKey(clazz, name), BuilderMethod {
+                builder.build(this)
+            })
+        }
+    }
+
+    /**
+     * Java version of [single]
+     */
+    fun <TypeDeclaration> declareSingle(
+        clazz: Class<TypeDeclaration>,
+        builder: ObjectBuilder<TypeDeclaration>
+    ): ProviderDefinition<TypeDeclaration> {
+        return declareSingle(clazz, "", builder)
+    }
+
+    /**
+     * Java version of [single]
+     */
+    fun <TypeDeclaration> declareSingle(
+        clazz: Class<TypeDeclaration>,
+        name: String,
+        builder: ObjectBuilder<TypeDeclaration>
+    ): ProviderDefinition<TypeDeclaration> {
+        return addDefinition {
+            singleProvider(objectKey(clazz, name), BuilderMethod {
+                builder.build(this)
+            })
+        }
+    }
+
+    /**
+     * Java version of [cast]
+     */
+    fun <TypeDeclaration> declareCast(
+        clazz: Class<TypeDeclaration>
+    ): ProviderDefinition<TypeDeclaration> {
+        return declareCast(clazz, "")
+    }
+
+    /**
+     * Java version of [cast]
+     */
+    fun <TypeDeclaration> declareCast(
+        clazz: Class<TypeDeclaration>,
+        name: String
+    ): ProviderDefinition<TypeDeclaration> {
+        return addDefinition {
+            castProvider<TypeDeclaration>(objectKey(clazz, name))
+        }
+    }
+
+    private fun <TypeDeclaration> addDefinition(
         providerFactory: () -> ObjectProvider<TypeDeclaration>
     ): ProviderDefinition<TypeDeclaration> {
         val definition = ObjectDefinition(ProviderFactoryMethod(providerFactory))
@@ -129,4 +200,22 @@ internal class Module constructor(
 
 fun declareModule(initializer: ModuleDefinition.() -> Unit): ModuleDefinition {
     return ModuleDefinition().apply(initializer)
+}
+
+fun declareModule(initializer: ModuleBuilder): ModuleDefinition {
+    return ModuleDefinition().apply {
+        initializer.build(this)
+    }
+}
+
+interface ModuleBuilder {
+
+    fun build(definition: ModuleDefinition)
+
+}
+
+interface ObjectBuilder<T> {
+
+    fun build(context: FactoryContext): T
+
 }
