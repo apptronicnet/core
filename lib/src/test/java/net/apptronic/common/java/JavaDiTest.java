@@ -1,12 +1,12 @@
 package net.apptronic.common.java;
 
-import net.apptronic.common.core.component.di.FactoryContext;
-import net.apptronic.common.core.component.di.ModuleBuilder;
-import net.apptronic.common.core.component.di.ModuleDefinition;
-import net.apptronic.common.core.component.di.ModuleKt;
-import net.apptronic.common.core.component.di.ObjectBuilder;
 import net.apptronic.common.utils.BaseTestComponent;
 import net.apptronic.common.utils.TestContext;
+import net.apptronic.core.component.di.FactoryContext;
+import net.apptronic.core.component.di.ModuleBuilder;
+import net.apptronic.core.component.di.ModuleDefinition;
+import net.apptronic.core.component.di.ModuleKt;
+import net.apptronic.core.component.di.ObjectBuilder;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;

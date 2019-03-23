@@ -1,7 +1,7 @@
 package net.apptronic.test.commons_sample_app.app
 
 import android.app.Application
-import net.apptronic.common.core.component.base.CoreComponentContext
+import net.apptronic.core.component.context.CoreComponentContext
 import net.apptronic.test.commons_sample_app.app.di.BaseAppModule
 
 class SampleAndroidApplication : Application() {

@@ -1,9 +1,9 @@
 package net.apptronic.common.utils
 
-import net.apptronic.common.core.component.ComponentContext
-import net.apptronic.common.core.component.di.DependencyProvider
-import net.apptronic.common.core.component.lifecycle.Lifecycle
-import net.apptronic.common.core.component.threading.ContextWorkers
+import net.apptronic.core.component.context.ComponentContext
+import net.apptronic.core.component.di.DependencyProvider
+import net.apptronic.core.component.lifecycle.Lifecycle
+import net.apptronic.core.component.threading.ContextWorkers
 
 open class TestContext : ComponentContext {
 

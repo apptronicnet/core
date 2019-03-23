@@ -1,6 +1,6 @@
 package net.apptronic.test.commons_sample_app
 
-import net.apptronic.common.core.component.lifecycle.Lifecycle
+import net.apptronic.core.component.lifecycle.Lifecycle
 import net.apptronic.test.commons_sample_app.models.NewInputScreenModel
 import net.apptronic.test.commons_sample_app.models.StartScreenModel
 import net.apptronic.test.commons_sample_app.models.YesNoSelectorViewModel

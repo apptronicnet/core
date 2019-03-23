@@ -1,6 +1,6 @@
 package net.apptronic.test.commons_sample_app.app.di
 
-import net.apptronic.common.core.component.di.declareModule
+import net.apptronic.core.component.di.declareModule
 import net.apptronic.test.commons_sample_app.ToolbarTitled
 
 val BaseAppModule = declareModule {

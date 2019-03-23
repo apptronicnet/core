@@ -1,7 +1,7 @@
 package net.apptronic.common.utils
 
-import net.apptronic.common.core.component.Component
-import net.apptronic.common.core.component.lifecycle.LifecycleStage
+import net.apptronic.core.component.Component
+import net.apptronic.core.component.lifecycle.LifecycleStage
 
 open class BaseTestComponent : Component {
 

@@ -1,7 +1,7 @@
 package net.apptronic.common.utils
 
-import net.apptronic.common.core.component.lifecycle.Lifecycle
-import net.apptronic.common.core.component.threading.ContextWorkers
+import net.apptronic.core.component.lifecycle.Lifecycle
+import net.apptronic.core.component.threading.ContextWorkers
 
 class TestLifecycle(workers: ContextWorkers) : Lifecycle(workers) {
 

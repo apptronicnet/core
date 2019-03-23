@@ -1,6 +1,6 @@
 package net.apptronic.test.commons_sample_app.models
 
-import net.apptronic.common.core.component.lifecycle.Lifecycle
+import net.apptronic.core.component.lifecycle.Lifecycle
 
 class YesNoSelectorViewModel(
     lifecycle: Lifecycle,

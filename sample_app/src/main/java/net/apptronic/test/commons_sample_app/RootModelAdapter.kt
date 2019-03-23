@@ -3,7 +3,7 @@ package net.apptronic.test.commons_sample_app
 import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import net.apptronic.common.core.component.Component
+import net.apptronic.core.component.Component
 import net.apptronic.test.commons_sample_app.fragments.NewInputScreenFragment
 import net.apptronic.test.commons_sample_app.fragments.StartScreenFragment
 import net.apptronic.test.commons_sample_app.fragments.YesNoSelectorFragment

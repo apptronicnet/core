@@ -1,9 +1,9 @@
 package net.apptronic.common.utils
 
-import net.apptronic.common.core.base.threading.Worker
-import net.apptronic.common.core.base.threading.synchronousWorker
-import net.apptronic.common.core.component.threading.ContextWorkers
-import net.apptronic.common.core.component.threading.ContextWorkers.Companion.DEFAULT
+import net.apptronic.core.component.threading.ContextWorkers
+import net.apptronic.core.component.threading.ContextWorkers.Companion.DEFAULT
+import net.apptronic.core.threading.Worker
+import net.apptronic.core.threading.synchronousWorker
 
 class TestWorkers : ContextWorkers {
 

@@ -1,8 +1,8 @@
 package net.apptronic.test.commons_sample_app.app
 
-import net.apptronic.common.core.component.Component
-import net.apptronic.common.core.component.ComponentContext
-import net.apptronic.common.core.component.di.parameters
+import net.apptronic.core.component.Component
+import net.apptronic.core.component.context.ComponentContext
+import net.apptronic.core.component.di.parameters
 import net.apptronic.test.commons_sample_app.app.di.SomeInterface
 
 class AppComponent(context: ComponentContext) : Component(context) {

@@ -1,7 +1,7 @@
 package net.apptronic.common.core.di
 
-import net.apptronic.common.core.component.di.declareModule
 import net.apptronic.common.utils.BaseTestComponent
+import net.apptronic.core.component.di.declareModule
 import org.junit.Test
 
 class BasicProvidersTest {

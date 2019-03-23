@@ -1,7 +1,8 @@
 package net.apptronic.test.commons_sample_app.models
 
-import net.apptronic.common.core.component.lifecycle.Lifecycle
-import net.apptronic.common.core.mvvm.generic.TextInputModel
+import android.provider.SyncStateContract.Helpers.update
+import net.apptronic.core.component.entity.functions.variants.value
+import net.apptronic.core.component.lifecycle.Lifecycle
 import net.apptronic.test.commons_sample_app.ToolbarTitled
 
 class NewInputScreenModel(

@@ -1,6 +1,6 @@
 package net.apptronic.test.commons_sample_app
 
-import net.apptronic.common.core.component.threading.ContextWorkers
+import net.apptronic.core.component.threading.ContextWorkers
 import net.apptronic.test.commons_sample_app.models.StartScreenModel
 import org.junit.Test
 import kotlin.test.assertEquals
