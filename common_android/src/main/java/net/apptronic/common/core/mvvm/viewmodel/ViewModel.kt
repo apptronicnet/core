@@ -1,11 +1,10 @@
 package net.apptronic.common.core.mvvm.viewmodel
 
 import net.apptronic.common.core.component.Component
-import java.util.*
 
 open class ViewModel(context: ViewModelContext) : Component(context) {
 
-    private val innerContainers = LinkedList<ViewModelContainer>()
+    private val innerContainers = mutableListOf<ViewModelContainer>()
     /**
      * Called to end lifecycle for this view model: lifecycle will be forced to be exited and
      * all inner models will be also finished

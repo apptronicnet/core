@@ -36,15 +36,6 @@ abstract class Property<T>(
         }
     }
 
-    /**
-     * Subscribe to updates of [source] and set all new values automatically
-     */
-    fun setAs(source: Predicate<T>) {
-        source.subscribe {
-            set(it)
-        }
-    }
-
     fun get(): T {
         return onGetValue()
     }
@@ -68,6 +59,9 @@ abstract class Property<T>(
 
 }
 
+/**
+ * Subscribe to updates of [source] and set all new values automatically
+ */
 fun <E : Property<T>, T> E.setAs(predicate: Predicate<T>): E {
     predicate.subscribe {
         set(it)

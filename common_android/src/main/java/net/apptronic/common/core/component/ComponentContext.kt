@@ -3,6 +3,7 @@ package net.apptronic.common.core.component
 import net.apptronic.common.core.component.di.DependencyProvider
 import net.apptronic.common.core.component.lifecycle.Lifecycle
 import net.apptronic.common.core.component.threading.ContextWorkers
+import net.apptronic.common.core.component.threading.DefaultContextWorkers
 import net.apptronic.common.core.component.threading.SubContextWorkers
 
 interface ComponentContext {
@@ -28,6 +29,26 @@ abstract class SubContext(
 
     override fun objects(): DependencyProvider {
         return objects
+    }
+
+}
+
+class EmptyContext : ComponentContext {
+
+    private val workers = DefaultContextWorkers()
+    private val lifecycle = Lifecycle(workers)
+    private val diContext = DependencyProvider(this, null)
+
+    override fun getLifecycle(): Lifecycle {
+        return lifecycle
+    }
+
+    override fun workers(): ContextWorkers {
+        return workers
+    }
+
+    override fun objects(): DependencyProvider {
+        return diContext
     }
 
 }
