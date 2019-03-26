@@ -14,31 +14,31 @@ class FactoryContext(
 ) {
 
     inline fun <reified ObjectType : Any> inject(
-        name: String = ""
+        descriptor: Descriptor<ObjectType>? = null
     ): ObjectType {
-        return inject(ObjectType::class, name)
+        return inject(ObjectType::class, descriptor)
     }
 
     inline fun <reified ObjectType : Any> injectLazy(
-        name: String = ""
+        descriptor: Descriptor<ObjectType>? = null
     ): Lazy<ObjectType> {
-        return injectLazy(ObjectType::class, name)
+        return injectLazy(ObjectType::class, descriptor)
     }
 
     inline fun <reified ObjectType : Any> injectLazy(
         clazz: KClass<ObjectType>,
-        name: String = ""
+        descriptor: Descriptor<ObjectType>? = null
     ): Lazy<ObjectType> {
         return lazy {
-            inject(clazz, name)
+            inject(clazz, descriptor)
         }
     }
 
     fun <ObjectType : Any> inject(
         clazz: KClass<ObjectType>,
-        name: String = ""
+        descriptor: Descriptor<ObjectType>? = null
     ): ObjectType {
-        return parameters.get(objectKey(clazz, name)) ?: context.get(clazz, name)
+        return parameters.get(objectKey(clazz, descriptor)) ?: context.get(clazz, descriptor)
     }
 
     internal fun <ObjectType> inject(

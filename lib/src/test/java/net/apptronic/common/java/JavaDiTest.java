@@ -41,7 +41,7 @@ public class JavaDiTest {
             super(testContext);
         }
 
-        final JavaInterface instance = objects().get(JavaInterface.class, "");
+        final JavaInterface instance = objects().get(JavaInterface.class);
 
     }
 

@@ -7,30 +7,30 @@ import kotlin.reflect.KClass
  */
 data class ObjectKey internal constructor(
     val className: String,
-    val name: String = ""
+    val descriptor: Descriptor<*>?
 )
 
 fun objectKey(
     className: String,
-    name: String = ""
+    descriptor: Descriptor<*>?
 ): ObjectKey {
-    return ObjectKey(className, name)
+    return ObjectKey(className, descriptor)
 }
 
 fun objectKey(
     clazz: KClass<*>,
-    name: String = ""
+    descriptor: Descriptor<*>?
 ): ObjectKey {
     val className = clazz.qualifiedName
         ?: throw IllegalArgumentException("Cannot work with anonymous classes")
-    return ObjectKey(className, name)
+    return ObjectKey(className, descriptor)
 }
 
 fun objectKey(
     clazz: Class<*>,
-    name: String = ""
+    descriptor: Descriptor<*>?
 ): ObjectKey {
     val className = clazz.canonicalName
         ?: throw IllegalArgumentException("Cannot work with anonymous classes")
-    return ObjectKey(className, name)
+    return ObjectKey(className, descriptor)
 }

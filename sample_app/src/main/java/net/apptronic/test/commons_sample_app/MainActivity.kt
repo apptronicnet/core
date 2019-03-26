@@ -1,35 +1,28 @@
 package net.apptronic.test.commons_sample_app
 
 import android.os.Bundle
+import android.os.PersistableBundle
+import androidx.appcompat.app.AppCompatActivity
+import kotlinx.android.synthetic.main.activity_main.*
+import net.apptronic.test.commons_sample_app.app.lazyApplicationComponent
 
-class MainActivity : BaseActivity<MainViewModel>() {
+class MainActivity : AppCompatActivity() {
 
-    override fun createViewModel(): MainViewModel? {
-        return MainViewModel(ActivityLifecycle(AndroidMainContextWorkers()))
+    private val appComponent by lazyApplicationComponent()
+    private val viewModel by lazy {
+        appComponent.getApplicationScreenModel()
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
+        super.onCreate(savedInstanceState, persistentState)
         setContentView(R.layout.activity_main)
-        model.toolbarTitle.subscribe {
-            activityTitle.text = it
-        }
-        model.currentRootScreen.setAdapter(
-            RootModelAdapter(
-                supportFragmentManager,
-                R.id.fragmentContainer
-            )
-        )
+        viewModel.mainScreen.setAdapter(MainModelAdapter(container))
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        model.currentRootScreen.setAdapter(null)
-    }
-
-    override fun onBackPressed() {
-        if (!model.onBackPressed()) {
-            super.onBackPressed()
+        if (isFinishing) {
+            appComponent.applicationScreenClosed()
         }
     }
 

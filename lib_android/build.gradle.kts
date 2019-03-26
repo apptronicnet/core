@@ -41,6 +41,10 @@ repositories {
 }
 
 dependencies {
+    val kotlinVersion = "1.3.21"
+    implementation(kotlin("stdlib:$kotlinVersion"))
+    implementation(kotlin("reflect:$kotlinVersion"))
+
     "implementation"(project(":lib"))
     "implementation"("androidx.core:core:1.0.1")
     "implementation"("androidx.appcompat:appcompat:1.0.2")

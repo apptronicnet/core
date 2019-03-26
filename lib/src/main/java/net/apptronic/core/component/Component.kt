@@ -6,8 +6,10 @@ import net.apptronic.core.component.entity.entities.*
 import net.apptronic.core.component.entity.setup
 import net.apptronic.core.component.lifecycle.Lifecycle
 import net.apptronic.core.component.lifecycle.LifecycleStage
+import net.apptronic.core.component.process.BackgroundAction
+import net.apptronic.core.component.process.BackgroundProcess
+import net.apptronic.core.component.process.setup
 import net.apptronic.core.component.threading.ContextWorkers
-import net.apptronic.core.mvvm.process.InViewBackgroundProcess
 import net.apptronic.core.mvvm.viewmodel.ComponentRegistry
 
 open class Component(
@@ -99,8 +101,23 @@ open class Component(
         workers().execute(ContextWorkers.DEFAULT, block)
     }
 
-    fun <T, R> backgroundProcess(action: (T) -> R): InViewBackgroundProcess<T, R> {
-        return InViewBackgroundProcess(this, action)
+    fun <T, R> backgroundProcess(
+        workerName: String,
+        action: BackgroundAction<T, R>,
+        setupBlock: BackgroundProcess<T, R>.() -> Unit = {}
+    ): BackgroundProcess<T, R> {
+        return BackgroundProcess(this, action, workerName).setup(setupBlock)
+    }
+
+    fun <T, R> backgroundProcess(
+        action: BackgroundAction<T, R>,
+        setupBlock: BackgroundProcess<T, R>.() -> Unit = {}
+    ): BackgroundProcess<T, R> {
+        return BackgroundProcess(this, action).setup(setupBlock)
+    }
+
+    fun terminateSelf() {
+        getLifecycle().terminate()
     }
 
 }

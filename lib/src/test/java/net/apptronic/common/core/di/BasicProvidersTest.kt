@@ -30,7 +30,7 @@ class BasicProvidersTest {
 
     }
 
-    companion object {
+    private companion object {
 
         val sampleModule = declareModule {
             factory<ManyInstances> {
@@ -47,7 +47,7 @@ class BasicProvidersTest {
 
     }
 
-    class TestComponent : BaseTestComponent(
+    private class TestComponent : BaseTestComponent(
         contextInitializer = {
             objects().addModule(sampleModule)
         }

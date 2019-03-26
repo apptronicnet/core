@@ -1,6 +1,6 @@
 package net.apptronic.core.mvvm.viewmodel.adapter
 
-import net.apptronic.core.component.Component
+import net.apptronic.core.mvvm.viewmodel.ViewModel
 
 /**
  * View model adapter is a class which reflects creates view controller
@@ -17,8 +17,8 @@ abstract class ViewModelAdapter {
      * required animation etc.
      */
     abstract fun onInvalidate(
-        oldModel: Component?,
-        newModel: Component?,
+        oldModel: ViewModel?,
+        newModel: ViewModel?,
         transitionInfo: Any?
     )
 

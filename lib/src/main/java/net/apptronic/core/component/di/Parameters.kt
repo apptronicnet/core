@@ -8,10 +8,10 @@ class Parameters {
 
     internal fun <ObjectType : Any> add(
         clazz: KClass<ObjectType>,
-        name: String = "",
+        descriptor: Descriptor<ObjectType>? = null,
         instance: ObjectType
     ) {
-        instances[objectKey(clazz, name)] = instance
+        instances[objectKey(clazz, descriptor)] = instance
     }
 
     internal fun <ObjectType> get(objectKey: ObjectKey): ObjectType? {
@@ -24,17 +24,17 @@ class Builder internal constructor(private val params: Parameters) {
 
     fun <ObjectType : Any> add(
         clazz: KClass<ObjectType>,
-        name: String = "",
+        descriptor: Descriptor<ObjectType>? = null,
         instance: ObjectType
     ) {
-        params.add(clazz, name, instance)
+        params.add(clazz, descriptor, instance)
     }
 
     inline fun <reified ObjectType : Any> add(
-        name: String = "",
+        descriptor: Descriptor<ObjectType>? = null,
         instance: ObjectType
     ) {
-        add(ObjectType::class, name, instance)
+        add(ObjectType::class, descriptor, instance)
     }
 
 }

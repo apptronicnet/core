@@ -1,17 +1,16 @@
-package net.apptronic.core.mvvm.process
+package net.apptronic.core.component.process
 
 import net.apptronic.core.base.SerialIdGenerator
 import net.apptronic.core.component.Component
 import net.apptronic.core.component.entity.Predicate
 import net.apptronic.core.component.entity.functions.variants.map
 import net.apptronic.core.component.entity.setup
-import net.apptronic.core.threading.Worker
-import net.apptronic.core.threading.serialWorker
+import net.apptronic.core.component.threading.ContextWorkers
 
-class InViewBackgroundProcess<T, R>(
+class BackgroundProcess<T, R>(
     private val parent: Component,
-    private val action: (T) -> R,
-    private val worker: Worker = serialWorker()
+    private val action: BackgroundAction<T, R>,
+    private val workerName: String = ContextWorkers.PARALLEL_BACKGROUND
 ) {
 
     private val idGenerator = SerialIdGenerator()
@@ -63,11 +62,11 @@ class InViewBackgroundProcess<T, R>(
     }
 
     private fun doProcess(request: T) {
-        worker.run {
+        parent.workers().getWorker(workerName).run {
             val id = idGenerator.nextId()
             idsInProgress.update { add(id) }
             try {
-                val result = action(request)
+                val result = action.execute(request)
                 successEvent.sendEvent(result)
             } catch (e: Exception) {
                 failedEvent.sendEvent(e)
@@ -79,7 +78,7 @@ class InViewBackgroundProcess<T, R>(
 
 }
 
-fun <P : InViewBackgroundProcess<T, R>, T, R> P.setup(setupBlock: P.() -> Unit): P {
+fun <P : BackgroundProcess<T, R>, T, R> P.setup(setupBlock: P.() -> Unit): P {
     this.setupBlock()
     return this
 }
