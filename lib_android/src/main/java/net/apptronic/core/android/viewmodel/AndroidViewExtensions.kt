@@ -8,7 +8,7 @@ fun AndroidView<*>.view(id: Int): View = findView(id)
 
 fun AndroidView<*>.textView(id: Int): TextView = findView(id)
 
-fun AndroidView<*>.editText(id: Int): TextView = findView(id)
+fun AndroidView<*>.editText(id: Int): EditText = findView(id)
 
 fun AndroidView<*>.imageView(id: Int): ImageView = findView(id)
 

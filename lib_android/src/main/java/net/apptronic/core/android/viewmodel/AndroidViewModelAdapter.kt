@@ -23,6 +23,7 @@ open class AndroidViewModelAdapter(
 
     override fun onInvalidate(oldModel: ViewModel?, newModel: ViewModel?, transitionInfo: Any?) {
         val newAndroidView = if (newModel != null) viewFactory.build(newModel) else null
+        newAndroidView?.bindView(container)
         setView(newAndroidView, transitionInfo)
     }
 
