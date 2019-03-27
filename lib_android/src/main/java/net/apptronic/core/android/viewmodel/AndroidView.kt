@@ -9,11 +9,11 @@ abstract class AndroidView<T : ViewModel>(
     val viewModel: T
 ) {
 
-    private var view: View? = null
+    private var contentView: View? = null
 
     internal fun bindView(container: ViewGroup) {
         val inflater = LayoutInflater.from(container.context)
-        view = onCreateView(inflater, container)
+        contentView = onCreateView(inflater, container)
         onBindView()
     }
 
@@ -22,7 +22,7 @@ abstract class AndroidView<T : ViewModel>(
     abstract fun onBindView()
 
     fun getView(): View {
-        return view
+        return contentView
             ?: throw IllegalStateException("Should not call getView() when view is not created")
     }
 

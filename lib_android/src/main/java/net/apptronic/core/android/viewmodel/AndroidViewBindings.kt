@@ -49,6 +49,12 @@ fun View.bindAsVisibleGone(property: Predicate<Boolean>) {
     }
 }
 
+fun View.bindAsEnabledDisabled(property: Predicate<Boolean>) {
+    property.subscribe {
+        this.isEnabled = it
+    }
+}
+
 fun View.bindOnClickListener(event: ComponentEvent<Unit>) {
     this.setOnClickListener {
         event.sendEvent(Unit)

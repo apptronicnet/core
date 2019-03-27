@@ -10,12 +10,12 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Login"
+        android:text="Email"
         android:textColor="#222"
         android:textSize="16sp" />
 
     <EditText
-        android:id="@+id/loginField"
+        android:id="@+id/email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:singleLine="true"
@@ -31,25 +31,43 @@
         android:textSize="16sp" />
 
     <EditText
-        android:id="@+id/passwordField"
+        android:id="@+id/password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:singleLine="true"
         android:textColor="#222"
         android:textSize="16sp" />
 
-    <Button
-        android:id="@+id/loginButton"
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Login" />
+        android:text="Password confirmation"
+        android:textColor="#222"
+        android:textSize="16sp" />
+
+    <EditText
+        android:id="@+id/passwordConfirmation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:textColor="#222"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/passwordConfirmationError"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Password confirmation does not match password"
+        android:textColor="#f44"
+        android:textSize="16sp" />
 
     <Button
-        android:id="@+id/registerNewAccount"
+        android:id="@+id/registerButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Create account" />
+        android:text="Register" />
 
 </LinearLayout>

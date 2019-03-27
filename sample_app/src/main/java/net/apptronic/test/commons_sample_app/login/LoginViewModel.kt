@@ -3,9 +3,11 @@ package net.apptronic.test.commons_sample_app.login
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 import net.apptronic.test.commons_sample_app.login.LoginViewModelContext.Companion.LoginActionDescriptor
+import net.apptronic.test.commons_sample_app.login.LoginViewModelContext.Companion.LoginRouterDescriptor
 
 class LoginViewModel(context: ViewModelContext) : ViewModel(context) {
 
+    private val loginRouter = objects().get(LoginRouterDescriptor)
     private val loginAction = objects().get(LoginActionDescriptor)
 
     val login = value("")
@@ -14,6 +16,14 @@ class LoginViewModel(context: ViewModelContext) : ViewModel(context) {
 
     val loginClick = genericEvent()
 
+    val registerClick = genericEvent()
+
     private val loginProcess = backgroundProcess(LoginAction)
+
+    init {
+        registerClick.subscribe {
+            loginRouter.openRegistrationScreen()
+        }
+    }
 
 }

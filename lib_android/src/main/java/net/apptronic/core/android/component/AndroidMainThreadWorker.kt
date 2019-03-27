@@ -9,8 +9,12 @@ object AndroidMainThreadWorker : Worker {
     private val handler = Handler(Looper.getMainLooper())
 
     override fun run(action: () -> Unit) {
-        handler.post {
+        if (Looper.myLooper() == Looper.getMainLooper()) {
             action.invoke()
+        } else {
+            handler.post {
+                action.invoke()
+            }
         }
     }
 

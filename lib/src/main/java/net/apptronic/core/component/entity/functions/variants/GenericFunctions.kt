@@ -19,8 +19,14 @@ fun <T> Predicate<T?>.ifNull(predicate: Predicate<T>): Predicate<T> =
         value ?: ifNull
     }
 
-fun <T> value(value: T): Predicate<T> =
+fun <T> nullValue(): Predicate<T?> =
+    ConstantPredicate<T?>(null)
+
+fun <T> ofValue(value: T): Predicate<T> =
     ConstantPredicate(value)
+
+fun <T> T.asValue(): Predicate<T> =
+    ConstantPredicate(this)
 
 fun <T> Predicate<T>.isTrueThat(test: T.() -> Boolean): Predicate<Boolean> =
     predicateFunction(this) {
@@ -29,3 +35,8 @@ fun <T> Predicate<T>.isTrueThat(test: T.() -> Boolean): Predicate<Boolean> =
 
 fun <T> Predicate<T>.isFalseThat(test: T.() -> Boolean): Predicate<Boolean> =
     isTrueThat(test).not()
+
+fun <T> Predicate<T>.toNullable(): Predicate<T?> =
+    predicateFunction(this) {
+        it
+    }

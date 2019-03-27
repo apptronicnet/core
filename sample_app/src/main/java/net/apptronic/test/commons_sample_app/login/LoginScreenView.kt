@@ -16,6 +16,7 @@ class LoginScreenView(viewModel: LoginViewModel) : AndroidView<LoginViewModel>(v
         editText(R.id.loginField).bindTo(viewModel.login)
         editText(R.id.passwordField).bindTo(viewModel.password)
         view(R.id.loginButton).bindOnClickListener(viewModel.loginClick)
+        view(R.id.registerNewAccount).bindOnClickListener(viewModel.registerClick)
     }
 
 }

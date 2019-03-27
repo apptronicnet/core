@@ -18,6 +18,12 @@ class MainActivity : AppCompatActivity() {
         viewModel.mainScreen.setAdapter(MainModelAdapter(container))
     }
 
+    override fun onBackPressed() {
+        viewModel.onBackPressed {
+            finish()
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         if (isFinishing) {

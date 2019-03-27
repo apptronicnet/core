@@ -28,6 +28,42 @@ fun <T, A, B> predicateFunction(
     return DoubleFunction(left, right, method)
 }
 
+fun <T, A, B, C> predicateFunction(
+    a: Predicate<A>,
+    b: Predicate<B>,
+    c: Predicate<C>,
+    method: (A, B, C) -> T
+): Function<T> {
+    return ArrayFunction(arrayOf(a, b, c)) {
+        method(it[0] as A, it[1] as B, it[2] as C)
+    }
+}
+
+fun <T, A, B, C, D> predicateFunction(
+    a: Predicate<A>,
+    b: Predicate<B>,
+    c: Predicate<C>,
+    d: Predicate<D>,
+    method: (A, B, C, D) -> T
+): Function<T> {
+    return ArrayFunction(arrayOf(a, b, c, d)) {
+        method(it[0] as A, it[1] as B, it[2] as C, it[3] as D)
+    }
+}
+
+fun <T, A, B, C, D, E> predicateFunction(
+    a: Predicate<A>,
+    b: Predicate<B>,
+    c: Predicate<C>,
+    d: Predicate<D>,
+    e: Predicate<E>,
+    method: (A, B, C, D, E) -> T
+): Function<T> {
+    return ArrayFunction(arrayOf(a, b, c, d, e)) {
+        method(it[0] as A, it[1] as B, it[2] as C, it[3] as D, it[4] as E)
+    }
+}
+
 private class SingleFunction<T, X>(
     source: Predicate<X>,
     private val method: (X) -> T

@@ -4,7 +4,6 @@ import net.apptronic.core.component.context.ComponentContext
 import net.apptronic.core.component.entity.base.DistinctUntilChangedStorePredicate
 import net.apptronic.core.component.entity.entities.Property
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelAdapter
-import java.util.*
 
 class ViewModelContainer(
     context: ComponentContext
@@ -37,7 +36,7 @@ class ViewModelContainer(
 
     private var adapter: ViewModelAdapter? = null
 
-    private val stack = LinkedList<ViewModel>()
+    private val stack = mutableListOf<ViewModel>()
 
     /**
      * Get size of stack
@@ -162,15 +161,35 @@ class ViewModelContainer(
     }
 
     /**
+     * Remove last [ViewModel] from stack or execute action if current model is
+     * last or no model in stack
+     */
+    fun navigateBack(actionIfEmpty: () -> Unit) {
+        navigateBack(null, actionIfEmpty)
+    }
+
+    /**
+     * Remove last [ViewModel] from stack or execute action if current model is
+     * last or no model in stack
+     */
+    fun navigateBack(transitionInfo: Any?, actionIfEmpty: () -> Unit) {
+        if (stack.size > 1) {
+            popBackStack(transitionInfo)
+        } else {
+            actionIfEmpty()
+        }
+    }
+
+    /**
      * Remove all [ViewModel]s from stack which are placed after specified [viewModel].
      * Will do nothing if stack is empty of [viewModel] is not present in stack
      * @return true if anything is removed from stack
      */
     fun popBackStackTo(viewModel: ViewModel, transitionInfo: Any? = null): Boolean {
-        return if (stack.contains(viewModel) && stack.last != viewModel) {
+        return if (stack.contains(viewModel) && stack.last() != viewModel) {
             val activeModel = getOrNull()
-            while (stack.last != viewModel) {
-                stack.removeLast().apply {
+            while (stack.last() != viewModel) {
+                stack.removeAt(stack.size - 1).apply {
                     finishLifecycle()
                     onRemoved(this)
                 }
