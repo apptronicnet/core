@@ -1,7 +1,7 @@
 package net.apptronic.common.core.di
 
 import net.apptronic.common.utils.BaseTestComponent
-import net.apptronic.core.component.di.Descriptor
+import net.apptronic.core.component.di.createDescriptor
 import net.apptronic.core.component.di.declareModule
 import org.junit.Test
 
@@ -21,10 +21,10 @@ class DescriptorProvidersTest {
 
     private companion object {
 
-        val MultiOneDescriptor = Descriptor<MultiInterface>()
-        val MultiTwoDescriptor = Descriptor<MultiInterface>()
-        val SingleOneDescriptor = Descriptor<SingleInterface>()
-        val SingleTwoDescriptor = Descriptor<SingleInterface>()
+        val MultiOneDescriptor = createDescriptor<MultiInterface>()
+        val MultiTwoDescriptor = createDescriptor<MultiInterface>()
+        val SingleOneDescriptor = createDescriptor<SingleInterface>()
+        val SingleTwoDescriptor = createDescriptor<SingleInterface>()
 
         private val sampleModule = declareModule {
 

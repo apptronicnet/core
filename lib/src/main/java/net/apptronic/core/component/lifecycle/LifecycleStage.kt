@@ -50,4 +50,6 @@ interface LifecycleStage {
 
     }
 
+    fun getStageName(): String
+
 }

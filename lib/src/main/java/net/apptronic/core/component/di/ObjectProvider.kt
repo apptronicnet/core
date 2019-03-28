@@ -53,10 +53,10 @@ internal fun <TypeDeclaration> factoryProvider(
     return FactoryProvider(objectKey, builder)
 }
 
-internal fun <TypeDeclaration> castProvider(
+internal fun <TypeDeclaration> bindProvider(
     objectKey: ObjectKey
 ): ObjectProvider<TypeDeclaration> {
-    return CastProvider(objectKey)
+    return BindProvider(objectKey)
 }
 
 private class SingleProvider<TypeDeclaration>(
@@ -107,7 +107,7 @@ private class FactoryProvider<TypeDeclaration>(
 
 }
 
-private class CastProvider<TypeDeclaration>(
+private class BindProvider<TypeDeclaration>(
     private val objectKey: ObjectKey
 ) : ObjectProvider<TypeDeclaration>(objectKey) {
 

@@ -11,11 +11,36 @@ class MainActivity : AppCompatActivity() {
     private val viewModel by lazy {
         appComponent.getApplicationScreenModel()
     }
+    private val lifecycleController by lazy {
+        viewModel.getLifecycleController()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        lifecycleController.setCreated(true)
         setContentView(R.layout.activity_main)
-        viewModel.mainScreen.setAdapter(MainModelAdapter(container))
+        viewModel.rootScreen.setAdapter(MainModelAdapter(container))
+        lifecycleController.setBound(true)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        lifecycleController.setVisible(true)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        lifecycleController.setFocused(true)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        lifecycleController.setFocused(false)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        lifecycleController.setVisible(false)
     }
 
     override fun onBackPressed() {
@@ -26,7 +51,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        lifecycleController.setBound(false)
+        viewModel.rootScreen.setAdapter(null)
         if (isFinishing) {
+            lifecycleController.setCreated(false)
             appComponent.applicationScreenClosed()
         }
     }

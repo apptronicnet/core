@@ -8,10 +8,16 @@ class Parameters {
 
     internal fun <ObjectType : Any> add(
         clazz: KClass<ObjectType>,
-        descriptor: Descriptor<ObjectType>? = null,
         instance: ObjectType
     ) {
-        instances[objectKey(clazz, descriptor)] = instance
+        instances[objectKey(clazz)] = instance
+    }
+
+    internal fun <ObjectType : Any> add(
+        descriptor: Descriptor<ObjectType>,
+        instance: ObjectType
+    ) {
+        instances[objectKey(descriptor)] = instance
     }
 
     internal fun <ObjectType> get(objectKey: ObjectKey): ObjectType? {
@@ -22,19 +28,24 @@ class Parameters {
 
 class Builder internal constructor(private val params: Parameters) {
 
-    fun <ObjectType : Any> add(
-        clazz: KClass<ObjectType>,
-        descriptor: Descriptor<ObjectType>? = null,
+    inline fun <reified ObjectType : Any> add(
         instance: ObjectType
     ) {
-        params.add(clazz, descriptor, instance)
+        add(ObjectType::class, instance)
     }
 
-    inline fun <reified ObjectType : Any> add(
-        descriptor: Descriptor<ObjectType>? = null,
+    fun <ObjectType : Any> add(
+        clazz: KClass<ObjectType>,
         instance: ObjectType
     ) {
-        add(ObjectType::class, descriptor, instance)
+        params.add(clazz, instance)
+    }
+
+    fun <ObjectType : Any> add(
+        descriptor: Descriptor<ObjectType>,
+        instance: ObjectType
+    ) {
+        params.add(descriptor, instance)
     }
 
 }

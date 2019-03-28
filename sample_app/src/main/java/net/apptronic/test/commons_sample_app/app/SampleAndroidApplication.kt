@@ -2,13 +2,22 @@ package net.apptronic.test.commons_sample_app.app
 
 import android.app.Application
 import android.content.Context
+import android.util.Log
 import net.apptronic.core.android.component.AndroidMainThreadWorker
-import net.apptronic.core.component.context.CoreComponentContext
 import net.apptronic.core.component.threading.ContextWorkers
 
 class SampleAndroidApplication : Application() {
 
-    private val coreContext = CoreComponentContext()
+    private val coreContext = ApplicationContext(
+        object : HttpClientFactory {
+            override fun createHttpClient(): HttpClient {
+                return object : HttpClient {}
+            }
+        },
+        Platform.Android
+    ).apply {
+        setLogging { Log.i("ComponentContext", it) }
+    }
     val appComponent by lazy {
         ApplicationComponent(coreContext)
     }

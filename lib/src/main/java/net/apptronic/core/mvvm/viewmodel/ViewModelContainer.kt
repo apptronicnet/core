@@ -50,11 +50,46 @@ class ViewModelContainer(
      */
     fun setAdapter(adapter: ViewModelAdapter?) {
         this.adapter = adapter
+        if (adapter != null) {
+            invalidate(
+                oldModel = null, newModel = getOrNull(), transitionInfo = null
+            )
+        } else {
+            val currentModel = getOrNull()
+            if (currentModel != null) {
+                onUnbind(currentModel)
+            }
+        }
+    }
+
+    private fun onBind(viewModel: ViewModel) {
+        viewModel.getLifecycleController().setBound(true)
+        viewModel.getLifecycleController().setVisible(true)
+        viewModel.getLifecycleController().setFocused(true)
+    }
+
+    private fun onUnbind(viewModel: ViewModel) {
+        viewModel.getLifecycleController().setBound(false)
+        viewModel.getLifecycleController().setVisible(false)
+        viewModel.getLifecycleController().setFocused(false)
+    }
+
+    private fun invalidate(
+        oldModel: ViewModel?,
+        newModel: ViewModel?,
+        transitionInfo: Any?
+    ) {
         adapter?.apply {
+            if (oldModel != null) {
+                onUnbind(oldModel)
+            }
+            if (newModel != null) {
+                onBind(newModel)
+            }
             onInvalidate(
-                oldModel = null,
-                newModel = getOrNull(),
-                transitionInfo = null
+                oldModel,
+                newModel,
+                transitionInfo
             )
         }
     }
@@ -73,13 +108,11 @@ class ViewModelContainer(
             onRemoved(it)
         }
         stack.clear()
-        adapter?.apply {
-            onInvalidate(
-                oldModel = activeModel,
-                newModel = null,
-                transitionInfo = transitionInfo
-            )
-        }
+        invalidate(
+            oldModel = activeModel,
+            newModel = null,
+            transitionInfo = transitionInfo
+        )
         updateFromGet()
     }
 
@@ -90,13 +123,11 @@ class ViewModelContainer(
         val activeModel = getOrNull()
         stack.add(viewModel)
         onAdded(viewModel)
-        adapter?.apply {
-            onInvalidate(
-                oldModel = activeModel,
-                newModel = viewModel,
-                transitionInfo = transitionInfo
-            )
-        }
+        invalidate(
+            oldModel = activeModel,
+            newModel = viewModel,
+            transitionInfo = transitionInfo
+        )
         updateFromGet()
     }
 
@@ -112,13 +143,11 @@ class ViewModelContainer(
         }
         stack.add(viewModel)
         onAdded(viewModel)
-        adapter?.apply {
-            onInvalidate(
-                oldModel = activeModel,
-                newModel = viewModel,
-                transitionInfo = transitionInfo
-            )
-        }
+        invalidate(
+            oldModel = activeModel,
+            newModel = viewModel,
+            transitionInfo = transitionInfo
+        )
         updateFromGet()
     }
 
@@ -133,13 +162,11 @@ class ViewModelContainer(
         onRemoved(viewModel)
         if (viewModel == activeModel) {
             val newActiveModel = getOrNull()
-            adapter?.apply {
-                onInvalidate(
-                    oldModel = viewModel,
-                    newModel = newActiveModel,
-                    transitionInfo = transitionInfo
-                )
-            }
+            invalidate(
+                oldModel = viewModel,
+                newModel = newActiveModel,
+                transitionInfo = transitionInfo
+            )
         }
         updateFromGet()
     }
@@ -194,13 +221,11 @@ class ViewModelContainer(
                     onRemoved(this)
                 }
             }
-            adapter?.apply {
-                onInvalidate(
-                    oldModel = activeModel,
-                    newModel = viewModel,
-                    transitionInfo = transitionInfo
-                )
-            }
+            invalidate(
+                oldModel = activeModel,
+                newModel = viewModel,
+                transitionInfo = transitionInfo
+            )
             workingPredicate.update(getOrNull())
             true
         } else {
@@ -216,10 +241,13 @@ class ViewModelContainer(
 
     private fun onAdded(viewModel: ViewModel) {
         viewModel.onAttachToParent(this)
+        viewModel.getLifecycleController().setCreated(true)
     }
 
     private fun onRemoved(viewModel: ViewModel) {
         viewModel.onDetachFromParent()
+        viewModel.getLifecycleController().setCreated(false)
+        viewModel.terminateSelf()
     }
 
     override fun requestCloseSelf(viewModel: ViewModel, transitionInfo: Any?) {

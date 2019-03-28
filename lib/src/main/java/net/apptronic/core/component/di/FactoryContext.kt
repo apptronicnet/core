@@ -13,38 +13,48 @@ class FactoryContext(
     internal val callerLifecycleStage: LifecycleStage
 ) {
 
-    inline fun <reified ObjectType : Any> inject(
-        descriptor: Descriptor<ObjectType>? = null
-    ): ObjectType {
-        return inject(ObjectType::class, descriptor)
+    inline fun <reified ObjectType : Any> inject(): ObjectType {
+        return inject(ObjectType::class)
     }
 
-    inline fun <reified ObjectType : Any> injectLazy(
-        descriptor: Descriptor<ObjectType>? = null
-    ): Lazy<ObjectType> {
-        return injectLazy(ObjectType::class, descriptor)
-    }
-
-    inline fun <reified ObjectType : Any> injectLazy(
-        clazz: KClass<ObjectType>,
-        descriptor: Descriptor<ObjectType>? = null
-    ): Lazy<ObjectType> {
-        return lazy {
-            inject(clazz, descriptor)
-        }
+    inline fun <reified ObjectType : Any> injectLazy(): Lazy<ObjectType> {
+        return injectLazy(ObjectType::class)
     }
 
     fun <ObjectType : Any> inject(
-        clazz: KClass<ObjectType>,
-        descriptor: Descriptor<ObjectType>? = null
+        clazz: KClass<ObjectType>
     ): ObjectType {
-        return parameters.get(objectKey(clazz, descriptor)) ?: context.get(clazz, descriptor)
+        return inject(objectKey(clazz))
+    }
+
+    fun <ObjectType : Any> injectLazy(
+        clazz: KClass<ObjectType>
+    ): Lazy<ObjectType> {
+        return injectLazy(objectKey(clazz))
+    }
+
+    fun <ObjectType : Any> inject(
+        descriptor: Descriptor<ObjectType>
+    ): ObjectType {
+        return inject(objectKey(descriptor))
+    }
+
+    fun <ObjectType : Any> injectLazy(
+        descriptor: Descriptor<ObjectType>
+    ): Lazy<ObjectType> {
+        return injectLazy(objectKey(descriptor))
     }
 
     internal fun <ObjectType> inject(
         objectKey: ObjectKey
     ): ObjectType {
         return parameters.get(objectKey) ?: context.get(objectKey)
+    }
+
+    internal fun <ObjectType> injectLazy(
+        objectKey: ObjectKey
+    ): Lazy<ObjectType> {
+        return parameters.get(objectKey) ?: context.lazy(objectKey)
     }
 
 }

@@ -33,6 +33,18 @@ abstract class SubContext(
 
 }
 
+open class BasicContext(
+    parent: ComponentContext
+) : SubContext(parent) {
+
+    private val lifecycle = Lifecycle(workers())
+
+    override fun getLifecycle(): Lifecycle {
+        return this.lifecycle
+    }
+
+}
+
 class EmptyContext : ComponentContext {
 
     private val workers = DefaultContextWorkers()

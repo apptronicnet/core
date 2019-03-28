@@ -21,10 +21,9 @@ class DependencyProvider(
      * @param name optional name for instance
      */
     inline fun <reified TypeDeclaration : Any> addInstance(
-        instance: TypeDeclaration,
-        descriptor: Descriptor<TypeDeclaration>? = null
+        instance: TypeDeclaration
     ) {
-        addInstance(instance, TypeDeclaration::class, descriptor)
+        addInstance(TypeDeclaration::class, instance)
     }
 
     /**
@@ -34,11 +33,24 @@ class DependencyProvider(
      * @param name optional name for instance
      */
     fun <TypeDeclaration : Any> addInstance(
-        instance: TypeDeclaration, clazz:
-        KClass<TypeDeclaration>,
-        descriptor: Descriptor<TypeDeclaration>? = null
+        clazz: KClass<TypeDeclaration>,
+        instance: TypeDeclaration
     ) {
-        val key = objectKey(clazz, descriptor)
+        val key = objectKey(clazz)
+        externalInstances[key] = instance
+    }
+
+    /**
+     * Add external instance to this provider.
+     * @param instance instance which can be injected using this [DependencyProvider]
+     * @param clazz optional class for this instance
+     * @param name optional name for instance
+     */
+    fun <TypeDeclaration : Any> addInstance(
+        descriptor: Descriptor<TypeDeclaration>,
+        instance: TypeDeclaration
+    ) {
+        val key = objectKey(descriptor)
         externalInstances[key] = instance
     }
 
@@ -47,73 +59,46 @@ class DependencyProvider(
     }
 
     inline fun <reified TypeDeclaration : Any> get(
-        descriptor: Descriptor<TypeDeclaration>? = null,
-        params: Parameters = parameters { }
+        params: Parameters = emptyParameters()
     ): TypeDeclaration {
-        return get(TypeDeclaration::class, descriptor, params)
+        return get(TypeDeclaration::class, params)
     }
 
     inline fun <reified TypeDeclaration : Any> lazy(
-        descriptor: Descriptor<TypeDeclaration>? = null,
-        params: Parameters = parameters { }
+        params: Parameters = emptyParameters()
     ): Lazy<TypeDeclaration> {
-        return lazy(TypeDeclaration::class, descriptor, params)
-    }
-
-    fun <TypeDeclaration> get(
-        clazz: Class<*>
-    ): TypeDeclaration {
-        val key = objectKey(clazz, null)
-        return getInstanceInternal(key, emptyParameters())
-    }
-
-    fun <TypeDeclaration> get(
-        clazz: Class<*>,
-        descriptor: Descriptor<TypeDeclaration>? = null
-    ): TypeDeclaration {
-        val key = objectKey(clazz, descriptor)
-        return getInstanceInternal(key, emptyParameters())
-    }
-
-    fun <TypeDeclaration> lazy(
-        clazz: Class<*>,
-        descriptor: Descriptor<TypeDeclaration>? = null
-    ): Lazy<TypeDeclaration> {
-        val key = objectKey(clazz, descriptor)
-        return getLazyInstanceInternal(key, emptyParameters())
+        return lazy(TypeDeclaration::class, params)
     }
 
     fun <TypeDeclaration : Any> get(
         clazz: KClass<TypeDeclaration>,
-        descriptor: Descriptor<TypeDeclaration>? = null
+        params: Parameters = emptyParameters()
     ): TypeDeclaration {
-        val key = objectKey(clazz, descriptor)
-        return getInstanceInternal(key, emptyParameters())
-    }
-
-    fun <TypeDeclaration : Any> lazy(
-        clazz: KClass<TypeDeclaration>,
-        descriptor: Descriptor<TypeDeclaration>? = null
-    ): Lazy<TypeDeclaration> {
-        val key = objectKey(clazz, descriptor)
-        return getLazyInstanceInternal(key, emptyParameters())
-    }
-
-    fun <TypeDeclaration : Any> get(
-        clazz: KClass<TypeDeclaration>,
-        descriptor: Descriptor<TypeDeclaration>? = null,
-        params: Parameters
-    ): TypeDeclaration {
-        val key = objectKey(clazz, descriptor)
+        val key = objectKey(clazz)
         return getInstanceInternal(key, params)
     }
 
     fun <TypeDeclaration : Any> lazy(
         clazz: KClass<TypeDeclaration>,
-        descriptor: Descriptor<TypeDeclaration>? = null,
-        params: Parameters
+        params: Parameters = emptyParameters()
     ): Lazy<TypeDeclaration> {
-        val key = objectKey(clazz, descriptor)
+        val key = objectKey(clazz)
+        return getLazyInstanceInternal(key, params)
+    }
+
+    fun <TypeDeclaration> get(
+        descriptor: Descriptor<TypeDeclaration>,
+        params: Parameters = emptyParameters()
+    ): TypeDeclaration {
+        val key = objectKey(descriptor)
+        return getInstanceInternal(key, params)
+    }
+
+    fun <TypeDeclaration> lazy(
+        descriptor: Descriptor<TypeDeclaration>,
+        params: Parameters = emptyParameters()
+    ): Lazy<TypeDeclaration> {
+        val key = objectKey(descriptor)
         return getLazyInstanceInternal(key, params)
     }
 
@@ -122,6 +107,13 @@ class DependencyProvider(
         params: Parameters = parameters { }
     ): TypeDeclaration {
         return getInstanceInternal(objectKey, params)
+    }
+
+    internal fun <TypeDeclaration> lazy(
+        objectKey: ObjectKey,
+        params: Parameters = parameters { }
+    ): Lazy<TypeDeclaration> {
+        return getLazyInstanceInternal(objectKey, params)
     }
 
     private fun <TypeDeclaration> getInstanceInternal(

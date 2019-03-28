@@ -35,18 +35,39 @@ class ProviderDefinition<TypeDeclaration> internal constructor(
         return this
     }
 
-    inline fun <reified Mapping : Any> addMapping(descriptor: Descriptor<Mapping>? = null) {
-        addMapping(Mapping::class, descriptor)
+    inline fun <reified Mapping : Any> addMapping() {
+        addMapping(Mapping::class)
     }
 
     fun <Mapping : Any> addMapping(
-        clazz: KClass<Mapping>,
-        descriptor: Descriptor<Mapping>? = null
+        clazz: KClass<Mapping>
     ) {
-        objectDefinition.addMappings(objectKey(clazz, descriptor))
+        objectDefinition.addMappings(objectKey(clazz))
+    }
+
+    fun <Mapping : Any> addMapping(
+        descriptor: Descriptor<Mapping>
+    ) {
+        objectDefinition.addMappings(objectKey(descriptor))
     }
 
 }
+
+class BindDefinition<To : Any>(
+    val from: ObjectKey, val to: ObjectKey
+)
+
+infix fun <To : Any> KClass<*>.alsoAs(to: KClass<To>) =
+    BindDefinition<To>(objectKey(this), objectKey(to))
+
+infix fun <To : Any> Descriptor<*>.alsoAs(to: KClass<To>) =
+    BindDefinition<To>(objectKey(this), objectKey(to))
+
+infix fun <To : Any> KClass<*>.alsoAs(to: Descriptor<To>) =
+    BindDefinition<To>(objectKey(this), objectKey(to))
+
+infix fun <To : Any> Descriptor<*>.alsoAs(to: Descriptor<To>) =
+    BindDefinition<To>(objectKey(this), objectKey(to))
 
 class ModuleDefinition internal constructor() {
 
@@ -60,124 +81,145 @@ class ModuleDefinition internal constructor() {
     }
 
     inline fun <reified TypeDeclaration : Any> factory(
-        descriptor: Descriptor<TypeDeclaration>? = null,
         noinline builder: FactoryContext.() -> TypeDeclaration
     ): ProviderDefinition<TypeDeclaration> {
-        return factory(TypeDeclaration::class, descriptor, builder)
+        return factory(TypeDeclaration::class, builder)
     }
 
     inline fun <reified TypeDeclaration : Any> single(
-        descriptor: Descriptor<TypeDeclaration>? = null,
         noinline builder: FactoryContext.() -> TypeDeclaration
     ): ProviderDefinition<TypeDeclaration> {
-        return single(TypeDeclaration::class, descriptor, builder)
-    }
-
-    inline fun <reified TypeDeclaration : Any> cast(
-        descriptor: Descriptor<TypeDeclaration>? = null
-    ): ProviderDefinition<TypeDeclaration> {
-        return cast(TypeDeclaration::class, descriptor)
+        return single(TypeDeclaration::class, builder)
     }
 
     fun <TypeDeclaration : Any> factory(
         clazz: KClass<TypeDeclaration>,
-        descriptor: Descriptor<TypeDeclaration>? = null,
         builder: FactoryContext.() -> TypeDeclaration
     ): ProviderDefinition<TypeDeclaration> {
         return addDefinition {
-            factoryProvider(objectKey(clazz, descriptor), BuilderMethod(builder))
+            factoryProvider(objectKey(clazz), BuilderMethod(builder))
+        }
+    }
+
+    fun <TypeDeclaration : Any> factory(
+        descriptor: Descriptor<TypeDeclaration>,
+        builder: FactoryContext.() -> TypeDeclaration
+    ): ProviderDefinition<TypeDeclaration> {
+        return addDefinition {
+            factoryProvider(objectKey(descriptor), BuilderMethod(builder))
         }
     }
 
     fun <TypeDeclaration : Any> single(
         clazz: KClass<TypeDeclaration>,
-        descriptor: Descriptor<TypeDeclaration>? = null,
         builder: FactoryContext.() -> TypeDeclaration
     ): ProviderDefinition<TypeDeclaration> {
         return addDefinition {
-            singleProvider(objectKey(clazz, descriptor), BuilderMethod(builder))
+            singleProvider(objectKey(clazz), BuilderMethod(builder))
         }
     }
 
-    fun <TypeDeclaration : Any> cast(
-        clazz: KClass<TypeDeclaration>,
-        descriptor: Descriptor<TypeDeclaration>? = null
+    fun <TypeDeclaration : Any> single(
+        descriptor: Descriptor<TypeDeclaration>,
+        builder: FactoryContext.() -> TypeDeclaration
     ): ProviderDefinition<TypeDeclaration> {
         return addDefinition {
-            castProvider<TypeDeclaration>(objectKey(clazz, descriptor))
+            singleProvider(objectKey(descriptor), BuilderMethod(builder))
         }
     }
 
-    /**
-     * Java version of [factory]
-     */
-    fun <TypeDeclaration> declareFactory(
-        clazz: Class<TypeDeclaration>,
-        builder: ObjectBuilder<TypeDeclaration>
-    ): ProviderDefinition<TypeDeclaration> {
-        return declareFactory(clazz, null, builder)
+    inline fun <reified To : Any> bind(
+        descriptor: Descriptor<*>
+    ): ProviderDefinition<To> {
+        val clazz = To::class
+        return bind(descriptor alsoAs clazz)
     }
 
-    /**
-     * Java version of [factory]
-     */
-    fun <TypeDeclaration> declareFactory(
-        clazz: Class<TypeDeclaration>,
-        descriptor: Descriptor<TypeDeclaration>? = null,
-        builder: ObjectBuilder<TypeDeclaration>
-    ): ProviderDefinition<TypeDeclaration> {
+    inline fun <reified To : Any> bind(
+        fromClazz: KClass<*>
+    ): ProviderDefinition<To> {
+        val clazz = To::class
+        return bind(fromClazz alsoAs clazz)
+    }
+
+    fun <To : Any> bind(
+        bindDefinition: BindDefinition<To>
+    ): ProviderDefinition<To> {
         return addDefinition {
-            factoryProvider(objectKey(clazz, descriptor), BuilderMethod {
-                builder.build(this)
-            })
+            bindProvider<To>(bindDefinition.from)
         }
     }
 
-    /**
-     * Java version of [single]
-     */
-    fun <TypeDeclaration> declareSingle(
-        clazz: Class<TypeDeclaration>,
-        builder: ObjectBuilder<TypeDeclaration>
-    ): ProviderDefinition<TypeDeclaration> {
-        return declareSingle(clazz, null, builder)
-    }
-
-    /**
-     * Java version of [single]
-     */
-    fun <TypeDeclaration> declareSingle(
-        clazz: Class<TypeDeclaration>,
-        descriptor: Descriptor<TypeDeclaration>? = null,
-        builder: ObjectBuilder<TypeDeclaration>
-    ): ProviderDefinition<TypeDeclaration> {
-        return addDefinition {
-            singleProvider(objectKey(clazz, descriptor), BuilderMethod {
-                builder.build(this)
-            })
-        }
-    }
-
-    /**
-     * Java version of [cast]
-     */
-    fun <TypeDeclaration> declareCast(
-        clazz: Class<TypeDeclaration>
-    ): ProviderDefinition<TypeDeclaration> {
-        return declareCast(clazz, null)
-    }
-
-    /**
-     * Java version of [cast]
-     */
-    fun <TypeDeclaration> declareCast(
-        clazz: Class<TypeDeclaration>,
-        descriptor: Descriptor<TypeDeclaration>?
-    ): ProviderDefinition<TypeDeclaration> {
-        return addDefinition {
-            castProvider<TypeDeclaration>(objectKey(clazz, descriptor))
-        }
-    }
+//    /**
+//     * Java version of [factory]
+//     */
+//    fun <TypeDeclaration> declareFactory(
+//        clazz: Class<TypeDeclaration>,
+//        builder: ObjectBuilder<TypeDeclaration>
+//    ): ProviderDefinition<TypeDeclaration> {
+//        return declareFactory(clazz, null, builder)
+//    }
+//
+//    /**
+//     * Java version of [factory]
+//     */
+//    fun <TypeDeclaration> declareFactory(
+//        clazz: Class<TypeDeclaration>,
+//        descriptor: Descriptor<TypeDeclaration>? = null,
+//        builder: ObjectBuilder<TypeDeclaration>
+//    ): ProviderDefinition<TypeDeclaration> {
+//        return addDefinition {
+//            factoryProvider(objectKey(clazz), BuilderMethod {
+//                builder.build(this)
+//            })
+//        }
+//    }
+//
+//    /**
+//     * Java version of [single]
+//     */
+//    fun <TypeDeclaration> declareSingle(
+//        clazz: Class<TypeDeclaration>,
+//        builder: ObjectBuilder<TypeDeclaration>
+//    ): ProviderDefinition<TypeDeclaration> {
+//        return declareSingle(clazz, null, builder)
+//    }
+//
+//    /**
+//     * Java version of [single]
+//     */
+//    fun <TypeDeclaration> declareSingle(
+//        clazz: Class<TypeDeclaration>,
+//        descriptor: Descriptor<TypeDeclaration>? = null,
+//        builder: ObjectBuilder<TypeDeclaration>
+//    ): ProviderDefinition<TypeDeclaration> {
+//        return addDefinition {
+//            singleProvider(objectKey(clazz), BuilderMethod {
+//                builder.build(this)
+//            })
+//        }
+//    }
+//
+//    /**
+//     * Java version of [cast]
+//     */
+//    fun <TypeDeclaration> declareCast(
+//        clazz: Class<TypeDeclaration>
+//    ): ProviderDefinition<TypeDeclaration> {
+//        return declareCast(clazz, null)
+//    }
+//
+//    /**
+//     * Java version of [cast]
+//     */
+//    fun <TypeDeclaration> declareCast(
+//        clazz: Class<TypeDeclaration>,
+//        descriptor: Descriptor<TypeDeclaration>?
+//    ): ProviderDefinition<TypeDeclaration> {
+//        return addDefinition {
+//            bindProvider<TypeDeclaration>(objectKey(clazz, descriptor))
+//        }
+//    }
 
     private fun <TypeDeclaration> addDefinition(
         providerFactory: () -> ObjectProvider<TypeDeclaration>

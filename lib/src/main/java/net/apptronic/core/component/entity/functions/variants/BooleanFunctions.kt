@@ -73,7 +73,7 @@ fun <T : CharSequence> Predicate<T>.isEmpty(): Predicate<Boolean> =
         it.isEmpty()
     }
 
-fun <T : CharSequence> Predicate<T>.isNoEmpty(): Predicate<Boolean> =
+fun <T : CharSequence> Predicate<T>.isNotEmpty(): Predicate<Boolean> =
     predicateFunction(this) {
         it.isNotEmpty()
     }

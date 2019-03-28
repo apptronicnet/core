@@ -171,4 +171,8 @@ internal class LifecycleStageImpl(val parent: LifecycleStageParent, val name: St
         }
     }
 
+    override fun getStageName(): String {
+        return this.name
+    }
+
 }

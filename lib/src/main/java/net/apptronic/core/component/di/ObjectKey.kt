@@ -11,26 +11,29 @@ data class ObjectKey internal constructor(
 )
 
 fun objectKey(
-    className: String,
-    descriptor: Descriptor<*>?
+    name: String
 ): ObjectKey {
-    return ObjectKey(className, descriptor)
+    return ObjectKey(name, null)
 }
 
 fun objectKey(
-    clazz: KClass<*>,
-    descriptor: Descriptor<*>?
-): ObjectKey {
-    val className = clazz.qualifiedName
-        ?: throw IllegalArgumentException("Cannot work with anonymous classes")
-    return ObjectKey(className, descriptor)
-}
-
-fun objectKey(
-    clazz: Class<*>,
-    descriptor: Descriptor<*>?
+    clazz: Class<*>
 ): ObjectKey {
     val className = clazz.canonicalName
         ?: throw IllegalArgumentException("Cannot work with anonymous classes")
-    return ObjectKey(className, descriptor)
+    return ObjectKey(className, null)
+}
+
+fun objectKey(
+    clazz: KClass<*>
+): ObjectKey {
+    val className = clazz.qualifiedName
+        ?: throw IllegalArgumentException("Cannot work with anonymous classes")
+    return ObjectKey(className, null)
+}
+
+fun objectKey(
+    descriptor: Descriptor<*>
+): ObjectKey {
+    return ObjectKey("", descriptor)
 }
