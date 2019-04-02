@@ -62,9 +62,9 @@ class ViewModelLifecycleTest {
         viewModel.doOnUnbind {
             counter.onExitOutside++
         }
-        viewModelContext.setCreated(true)
+        viewModelContext.setBound(true)
         counter.assertEntered()
-        viewModelContext.setCreated(false)
+        viewModelContext.setBound(false)
         counter.assertExited()
     }
 
@@ -80,9 +80,9 @@ class ViewModelLifecycleTest {
         viewModel.doOnHidden {
             counter.onExitOutside++
         }
-        viewModelContext.setCreated(true)
+        viewModelContext.setVisible(true)
         counter.assertEntered()
-        viewModelContext.setCreated(false)
+        viewModelContext.setVisible(false)
         counter.assertExited()
     }
 
@@ -98,9 +98,9 @@ class ViewModelLifecycleTest {
         viewModel.doOnUnfocused {
             counter.onExitOutside++
         }
-        viewModelContext.setCreated(true)
+        viewModelContext.setFocused(true)
         counter.assertEntered()
-        viewModelContext.setCreated(false)
+        viewModelContext.setFocused(false)
         counter.assertExited()
     }
 

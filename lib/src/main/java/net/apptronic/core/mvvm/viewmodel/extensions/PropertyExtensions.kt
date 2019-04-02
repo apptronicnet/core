@@ -1,8 +1,11 @@
 package net.apptronic.core.mvvm.viewmodel.extensions
 
+import net.apptronic.core.base.SubscriptionHolder
+import net.apptronic.core.base.SubscriptionHolders
 import net.apptronic.core.component.entity.entities.Property
 
-fun forEachChangeAnyOf(vararg properties: Property<*>, action: () -> Unit) {
+fun forEachChangeAnyOf(vararg properties: Property<*>, action: () -> Unit): SubscriptionHolder {
+    val subscriptionHolders = SubscriptionHolders()
     properties.forEach { property ->
         property.subscribe { _ ->
             ifAllIsSet(*properties) {
@@ -10,6 +13,7 @@ fun forEachChangeAnyOf(vararg properties: Property<*>, action: () -> Unit) {
             }
         }
     }
+    return subscriptionHolders
 }
 
 fun <T> Property<T>.copyValueFrom(source: Property<T>): Property<T> {

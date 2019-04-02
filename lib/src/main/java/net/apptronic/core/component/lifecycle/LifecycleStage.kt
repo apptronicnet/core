@@ -14,7 +14,7 @@ interface LifecycleStage {
      * will be disposed
      * @param action Action to perform when stage will be entered
      */
-    fun doOnce(key: String, action: () -> Unit)
+    fun doOnce(key: String, action: () -> Unit): LifecycleSubscription
 
     /**
      * Perform some action when lifecycle will enter to this stage. This action will be executed
@@ -22,13 +22,13 @@ interface LifecycleStage {
      * Note, that is should be called before this stage entered, in other case it will not
      * have any effect.
      */
-    fun doOnEnter(callback: OnEnterHandler.() -> Unit)
+    fun doOnEnter(callback: OnEnterHandler.() -> Unit): LifecycleSubscription
 
     /**
      * Perform some action when lifecycle will exit from this stage. This action will be executed
      * each time stage entering until current active stage (at moment of this method call) exited.
      */
-    fun doOnExit(callback: OnExitHandler.() -> Unit)
+    fun doOnExit(callback: OnExitHandler.() -> Unit): LifecycleSubscription
 
     /**
      * Interface provided at the moment of [doOnEnter] subscription
@@ -39,7 +39,7 @@ interface LifecycleStage {
          * Perform some action when current stage will be exited. As this is called at the moment
          * on stage enter this will be called once and unsubscribed.
          */
-        fun onExit(callback: OnExitHandler.() -> Unit)
+        fun onExit(callback: OnExitHandler.() -> Unit): LifecycleSubscription
 
     }
 

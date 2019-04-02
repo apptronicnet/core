@@ -49,6 +49,10 @@ open class Lifecycle(
         return rootStage.lastEntered()
     }
 
+    fun isStageEntered(name: String): Boolean {
+        return rootStage.stageByName(name)?.isEntered() ?: false
+    }
+
     fun addStage(name: String): LifecycleStage {
         return rootStage.last().addStage(name)
     }
@@ -59,16 +63,6 @@ open class Lifecycle(
                 action()
             }
         } ?: run(action)
-    }
-
-    /**
-     * Called when model is terminated. Lifecycle should be immediately fully exited,
-     * all subscriptions are dropped
-     */
-    fun finish() {
-        if (!isTerminated()) {
-            rootStage.terminate()
-        }
     }
 
     fun isTerminated(): Boolean {

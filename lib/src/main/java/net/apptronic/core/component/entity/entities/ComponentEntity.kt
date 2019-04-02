@@ -10,6 +10,8 @@ abstract class ComponentEntity<T>(
     protected val workingPredicate: UpdatePredicate<T>
 ) : Predicate<T> {
 
+    private val stageWhenCreated = context.getLifecycle().getActiveStage()
+
     private var workerName: String? = null
 
     fun setWorker(workerName: String?) {

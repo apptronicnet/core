@@ -17,8 +17,14 @@ interface ComponentContext {
 }
 
 abstract class SubContext(
-    private val parent: ComponentContext
+    parent: ComponentContext
 ) : ComponentContext {
+
+    init {
+        parent.getLifecycle().getStage(Lifecycle.ROOT_STAGE)?.doOnExit {
+            getLifecycle().terminate()
+        }
+    }
 
     private val objects = DependencyProvider(this, parent.objects())
     private val workers = SubContextWorkers(parent.workers())

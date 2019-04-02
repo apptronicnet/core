@@ -116,7 +116,7 @@ open class Component(
         return BackgroundProcess(this, action).setup(setupBlock)
     }
 
-    fun terminateSelf() {
+    open fun terminate() {
         getLifecycle().terminate()
     }
 

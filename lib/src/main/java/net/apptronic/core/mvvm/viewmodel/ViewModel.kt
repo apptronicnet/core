@@ -1,38 +1,36 @@
 package net.apptronic.core.mvvm.viewmodel
 
 import net.apptronic.core.component.Component
+import net.apptronic.core.component.entity.Predicate
+import net.apptronic.core.component.entity.base.UpdateAndStorePredicate
+import net.apptronic.core.component.entity.base.UpdatePredicate
 import net.apptronic.core.component.lifecycle.LifecycleStage
-import net.apptronic.core.mvvm.lifecycle.LifecycleController
+import net.apptronic.core.mvvm.viewmodel.container.ViewModelStackContainer
 
 open class ViewModel(context: ViewModelContext) : Component(context) {
 
-    private val lifecycleController = context.lifecycleController
-
     init {
-        lifecycleController.bindTarget(this)
         context.initLifecycleLogging(this)
     }
 
-    fun getLifecycleController(): LifecycleController {
-        return lifecycleController
+    private val isCreated = stateOfStage(ViewModelLifecycle.STAGE_CREATED)
+    private val isBound = stateOfStage(ViewModelLifecycle.STAGE_BOUND)
+    private val isVisible = stateOfStage(ViewModelLifecycle.STAGE_VISIBLE)
+    private val isFocused = stateOfStage(ViewModelLifecycle.STAGE_FOCUSED)
+
+    private fun stateOfStage(stageName: String): UpdatePredicate<Boolean> {
+        val target = UpdateAndStorePredicate<Boolean>()
+        onEnterStage(stageName) {
+            target.update(true)
+        }
+        onExitStage(stageName) {
+            target.update(false)
+        }
+        return target
     }
 
-    private val innerContainers = mutableListOf<ViewModelContainer>()
-    /**
-     * Called to end lifecycle for this view model: lifecycle will be forced to be exited and
-     * all inner models will be also finished
-     */
-    fun finishLifecycle() {
-        innerContainers.forEach {
-            it.finishAll()
-        }
-        getLifecycle().finish()
-    }
-
-    fun subModelContainer(): ViewModelContainer {
-        return ViewModelContainer(this).also {
-            innerContainers.add(it)
-        }
+    fun stackOfInnerModels(): ViewModelStackContainer {
+        return ViewModelStackContainer(this)
     }
 
     internal fun onAddedToContainer(parent: ViewModelParent) {
@@ -51,6 +49,57 @@ open class ViewModel(context: ViewModelContext) : Component(context) {
 
     fun onDetachFromParent() {
         this.parent = null
+    }
+
+    fun isCreated() = getLifecycle().isStageEntered(ViewModelLifecycle.STAGE_CREATED)
+
+    fun observeCreated(): Predicate<Boolean> = isCreated
+
+    fun isBound() = getLifecycle().isStageEntered(ViewModelLifecycle.STAGE_BOUND)
+
+    fun observeBound(): Predicate<Boolean> = isBound
+
+    fun isVisible() = getLifecycle().isStageEntered(ViewModelLifecycle.STAGE_VISIBLE)
+
+    fun observeVisible(): Predicate<Boolean> = isVisible
+
+    fun isFocused() = getLifecycle().isStageEntered(ViewModelLifecycle.STAGE_FOCUSED)
+
+    fun observeFocused(): Predicate<Boolean> = isFocused
+
+    /**
+     * Check is current state is exactly on state created
+     */
+    fun isStateCreated(): Boolean {
+        return isCreated() && !isBound()
+    }
+
+    /**
+     * Check is current state is exactly on state bound
+     */
+    fun isStateBound(): Boolean {
+        return isBound() && !isVisible()
+    }
+
+    /**
+     * Check is current state is exactly on state visible
+     */
+    fun isStateVisible(): Boolean {
+        return isVisible() && !isFocused()
+    }
+
+    /**
+     * Check is current state is exactly on state focused
+     */
+    fun isStateFocused(): Boolean {
+        return isFocused()
+    }
+
+    /**
+     * Check is current [ViewModel] and it's [ViewModelLifecycle] is terminated
+     */
+    fun isTerminated(): Boolean {
+        return getLifecycle().isTerminated()
     }
 
     /**

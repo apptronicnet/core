@@ -11,7 +11,7 @@ import net.apptronic.test.commons_sample_app.registration.RegistrationViewModelC
 
 class ApplicationScreenViewModel(context: ViewModelContext) : ViewModel(context) {
 
-    val rootScreen = subModelContainer()
+    val rootScreen = stackOfInnerModels()
 
     init {
         val loginContext = LoginViewModelContext(

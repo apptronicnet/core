@@ -30,6 +30,10 @@ internal class LifecycleStageImpl(val parent: LifecycleStageParent, val name: St
      */
     private val inStageCallbacks = LinkedList<EventCallback>()
 
+    fun isEntered(): Boolean {
+        return isEntered.get()
+    }
+
     fun terminate() {
         childStage.perform {
             get()?.terminate()
@@ -112,24 +116,31 @@ internal class LifecycleStageImpl(val parent: LifecycleStageParent, val name: St
         doOnce("", action)
     }
 
-    override fun doOnce(key: String, action: () -> Unit) {
+    override fun doOnce(key: String, action: () -> Unit): LifecycleSubscription {
         if (isTerminated.get()) {
-            return
+            return LifecycleSubscription()
         }
         if (isEntered.get()) {
             action()
+            return LifecycleSubscription()
         } else {
             whenEnteredActions[key] = action
+            return LifecycleSubscription {
+                whenEnteredActions.remove(key)
+            }
         }
     }
 
-    override fun doOnEnter(callback: LifecycleStage.OnEnterHandler.() -> Unit) {
+    override fun doOnEnter(callback: LifecycleStage.OnEnterHandler.() -> Unit): LifecycleSubscription {
         if (isEntered.get() || isTerminated.get()) {
-            return
+            return LifecycleSubscription()
         }
         val eventCallback = subscribeEnter(callback)
         enterCallback.add(eventCallback)
         cancelOnExitFromActiveStage(eventCallback)
+        return LifecycleSubscription {
+            enterCallback.cancel(eventCallback)
+        }
     }
 
     private fun subscribeExit(callback: LifecycleStage.OnExitHandler.() -> Unit): EventCallback {
@@ -138,19 +149,22 @@ internal class LifecycleStageImpl(val parent: LifecycleStageParent, val name: St
         }
     }
 
-    override fun doOnExit(callback: LifecycleStage.OnExitHandler.() -> Unit) {
+    override fun doOnExit(callback: LifecycleStage.OnExitHandler.() -> Unit): LifecycleSubscription {
         if (isTerminated.get()) {
-            return
+            return LifecycleSubscription()
         }
         val eventCallback = subscribeExit(callback)
         exitCallback.add(eventCallback)
         cancelOnExitFromActiveStage(eventCallback)
+        return LifecycleSubscription {
+            exitCallback.cancel(eventCallback)
+        }
     }
 
     private inner class OnEnterHandlerImpl : LifecycleStage.OnEnterHandler {
 
-        override fun onExit(callback: LifecycleStage.OnExitHandler.() -> Unit) {
-            doOnExit(callback)
+        override fun onExit(callback: LifecycleStage.OnExitHandler.() -> Unit): LifecycleSubscription {
+            return doOnExit(callback)
         }
 
     }

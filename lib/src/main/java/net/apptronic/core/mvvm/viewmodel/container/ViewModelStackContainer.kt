@@ -1,16 +1,23 @@
-package net.apptronic.core.mvvm.viewmodel
+package net.apptronic.core.mvvm.viewmodel.container
 
-import net.apptronic.core.component.context.ComponentContext
 import net.apptronic.core.component.entity.base.DistinctUntilChangedStorePredicate
 import net.apptronic.core.component.entity.entities.Property
+import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.mvvm.viewmodel.ViewModelParent
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelAdapter
 
-class ViewModelContainer(
-    context: ComponentContext
+class ViewModelStackContainer(
+    private val parent: ViewModel
 ) : Property<ViewModel?>(
-    context,
+    parent,
     DistinctUntilChangedStorePredicate()
 ), ViewModelParent {
+
+    init {
+        parent.doOnTerminate {
+            finishAll()
+        }
+    }
 
     override fun isSet(): Boolean {
         return true
@@ -31,12 +38,12 @@ class ViewModelContainer(
      * Get currently active model in stack
      */
     fun getActiveModel(): ViewModel? {
-        return stack.lastOrNull()
+        return getCurrentItem()?.viewModel
     }
 
     private var adapter: ViewModelAdapter? = null
 
-    private val stack = mutableListOf<ViewModel>()
+    private val stack = mutableListOf<ViewModelContainerItem>()
 
     /**
      * Get size of stack
@@ -45,50 +52,51 @@ class ViewModelContainer(
         return stack.size
     }
 
+    private fun getCurrentItem(): ViewModelContainerItem? = stack.lastOrNull()
+
     /**
      * Set [ViewModelAdapter] to create view controllers for [ViewModel]s
      */
     fun setAdapter(adapter: ViewModelAdapter?) {
+        val currentItem = getCurrentItem()
+        if (this.adapter != null && currentItem != null) {
+            onUnbind(currentItem)
+        }
         this.adapter = adapter
         if (adapter != null) {
             invalidate(
-                oldModel = null, newModel = getOrNull(), transitionInfo = null
+                oldItem = null, newItem = getCurrentItem(), transitionInfo = null
             )
-        } else {
-            val currentModel = getOrNull()
-            if (currentModel != null) {
-                onUnbind(currentModel)
-            }
         }
     }
 
-    private fun onBind(viewModel: ViewModel) {
-        viewModel.getLifecycleController().setBound(true)
-        viewModel.getLifecycleController().setVisible(true)
-        viewModel.getLifecycleController().setFocused(true)
+    private fun onBind(item: ViewModelContainerItem) {
+        item.setBound(true)
+        item.setVisible(true)
+        item.setFocused(true)
     }
 
-    private fun onUnbind(viewModel: ViewModel) {
-        viewModel.getLifecycleController().setBound(false)
-        viewModel.getLifecycleController().setVisible(false)
-        viewModel.getLifecycleController().setFocused(false)
+    private fun onUnbind(item: ViewModelContainerItem) {
+        item.setBound(false)
+        item.setVisible(false)
+        item.setFocused(false)
     }
 
     private fun invalidate(
-        oldModel: ViewModel?,
-        newModel: ViewModel?,
+        oldItem: ViewModelContainerItem?,
+        newItem: ViewModelContainerItem?,
         transitionInfo: Any?
     ) {
         adapter?.apply {
-            if (oldModel != null) {
-                onUnbind(oldModel)
+            if (oldItem != null) {
+                onUnbind(oldItem)
             }
-            if (newModel != null) {
-                onBind(newModel)
+            if (newItem != null) {
+                onBind(newItem)
             }
             onInvalidate(
-                oldModel,
-                newModel,
+                oldItem?.viewModel,
+                newItem?.viewModel,
                 transitionInfo
             )
         }
@@ -102,15 +110,15 @@ class ViewModelContainer(
      * Clear all [ViewModel]s from stack
      */
     fun clear(transitionInfo: Any? = null) {
-        val activeModel = getOrNull()
+        val activeModel = getCurrentItem()
         stack.forEach {
-            it.finishLifecycle()
+            it.terminate()
             onRemoved(it)
         }
         stack.clear()
         invalidate(
-            oldModel = activeModel,
-            newModel = null,
+            oldItem = activeModel,
+            newItem = null,
             transitionInfo = transitionInfo
         )
         updateFromGet()
@@ -120,12 +128,13 @@ class ViewModelContainer(
      * Add [ViewModel] to stack
      */
     fun add(viewModel: ViewModel, transitionInfo: Any? = null) {
-        val activeModel = getOrNull()
-        stack.add(viewModel)
-        onAdded(viewModel)
+        val activeModel = getCurrentItem()
+        val newItem = ViewModelContainerItem(viewModel, parent)
+        stack.add(newItem)
+        onAdded(newItem)
         invalidate(
-            oldModel = activeModel,
-            newModel = viewModel,
+            oldItem = activeModel,
+            newItem = newItem,
             transitionInfo = transitionInfo
         )
         updateFromGet()
@@ -135,17 +144,17 @@ class ViewModelContainer(
      * Replace last [ViewModel] in stack
      */
     fun replace(viewModel: ViewModel, transitionInfo: Any? = null) {
-        val activeModel = getOrNull()
-        activeModel?.also {
+        val currentItem = getCurrentItem()
+        currentItem?.also {
             stack.remove(it)
             onRemoved(it)
-            activeModel.finishLifecycle()
         }
-        stack.add(viewModel)
-        onAdded(viewModel)
+        val newItem = ViewModelContainerItem(viewModel, parent)
+        stack.add(newItem)
+        onAdded(newItem)
         invalidate(
-            oldModel = activeModel,
-            newModel = viewModel,
+            oldItem = currentItem,
+            newItem = newItem,
             transitionInfo = transitionInfo
         )
         updateFromGet()
@@ -157,18 +166,22 @@ class ViewModelContainer(
      */
     fun remove(viewModel: ViewModel, transitionInfo: Any? = null) {
         val activeModel = getOrNull()
-        viewModel.finishLifecycle()
-        stack.remove(viewModel)
-        onRemoved(viewModel)
-        if (viewModel == activeModel) {
-            val newActiveModel = getOrNull()
-            invalidate(
-                oldModel = viewModel,
-                newModel = newActiveModel,
-                transitionInfo = transitionInfo
-            )
+        val currentBox = stack.lastOrNull {
+            it.viewModel == viewModel
         }
-        updateFromGet()
+        if (currentBox != null) {
+            stack.remove(currentBox)
+            onRemoved(currentBox)
+            if (viewModel == activeModel) {
+                val newActiveBox = getCurrentItem()
+                invalidate(
+                    oldItem = currentBox,
+                    newItem = newActiveBox,
+                    transitionInfo = transitionInfo
+                )
+            }
+            updateFromGet()
+        }
     }
 
     /**
@@ -213,17 +226,16 @@ class ViewModelContainer(
      * @return true if anything is removed from stack
      */
     fun popBackStackTo(viewModel: ViewModel, transitionInfo: Any? = null): Boolean {
-        return if (stack.contains(viewModel) && stack.last() != viewModel) {
-            val activeModel = getOrNull()
-            while (stack.last() != viewModel) {
+        return if (stack.any { it.viewModel == viewModel } && stack.lastOrNull()?.viewModel != viewModel) {
+            val activeBeforePop = getCurrentItem()
+            while (stack.lastOrNull()?.viewModel != viewModel) {
                 stack.removeAt(stack.size - 1).apply {
-                    finishLifecycle()
                     onRemoved(this)
                 }
             }
             invalidate(
-                oldModel = activeModel,
-                newModel = viewModel,
+                oldItem = activeBeforePop,
+                newItem = getCurrentItem(),
                 transitionInfo = transitionInfo
             )
             workingPredicate.update(getOrNull())
@@ -233,21 +245,20 @@ class ViewModelContainer(
         }
     }
 
-    fun finishAll() {
+    private fun finishAll() {
         stack.forEach {
-            it.finishLifecycle()
+            it.terminate()
         }
     }
 
-    private fun onAdded(viewModel: ViewModel) {
-        viewModel.onAttachToParent(this)
-        viewModel.getLifecycleController().setCreated(true)
+    private fun onAdded(item: ViewModelContainerItem) {
+        item.viewModel.onAttachToParent(this)
+        item.setCreated(true)
     }
 
-    private fun onRemoved(viewModel: ViewModel) {
-        viewModel.onDetachFromParent()
-        viewModel.getLifecycleController().setCreated(false)
-        viewModel.terminateSelf()
+    private fun onRemoved(item: ViewModelContainerItem) {
+        item.viewModel.onDetachFromParent()
+        item.terminate()
     }
 
     override fun requestCloseSelf(viewModel: ViewModel, transitionInfo: Any?) {

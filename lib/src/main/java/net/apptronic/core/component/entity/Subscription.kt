@@ -1,7 +1,9 @@
 package net.apptronic.core.component.entity
 
-interface Subscription {
+import net.apptronic.core.base.SubscriptionHolder
 
-    fun unsubscribe()
+interface Subscription : SubscriptionHolder {
+
+    override fun unsubscribe()
 
 }

@@ -9,11 +9,11 @@ import net.apptronic.core.component.lifecycle.Lifecycle
 import net.apptronic.core.component.lifecycle.enterStage
 import net.apptronic.core.component.lifecycle.exitStage
 import net.apptronic.core.mvvm.viewmodel.ViewModel
-import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 import net.apptronic.core.mvvm.viewmodel.ViewModelLifecycle
 
 class LifecycleController(
-    private val parentContext: ComponentContext
+    private val parentContext: ComponentContext,
+    private val parent: LifecycleController?
 ) {
 
     private val createdLocal = Value<Boolean>(parentContext).apply { set(false) }
@@ -59,12 +59,11 @@ class LifecycleController(
     private val isFocused = Value<Boolean>(parentContext)
 
     init {
-        if (parentContext is ViewModelContext) {
-            val parent = parentContext.lifecycleController
+        if (parent != null) {
             isCreated.setAs(isCreated() and parent.isCreated())
             isBound.setAs(isBound() and parent.isBound())
-            isVisible.setAs(parent.isVisible() and parent.isVisible())
-            isFocused.setAs(parent.isFocused() and parent.isFocused())
+            isVisible.setAs(isVisible() and parent.isVisible())
+            isFocused.setAs(isFocused() and parent.isFocused())
         } else {
             isCreated.setAs(isCreated())
             isBound.setAs(isBound())
@@ -79,7 +78,7 @@ class LifecycleController(
         bindStage(viewModel, ViewModelLifecycle.STAGE_VISIBLE, isVisible)
         bindStage(viewModel, ViewModelLifecycle.STAGE_FOCUSED, isFocused)
         parentContext.getLifecycle().getStage(Lifecycle.ROOT_STAGE)?.doOnExit {
-            viewModel.terminateSelf()
+            viewModel.terminate()
         }
     }
 

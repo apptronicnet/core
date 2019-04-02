@@ -5,15 +5,12 @@ import net.apptronic.core.component.context.ComponentContext
 import net.apptronic.core.component.context.SubContext
 import net.apptronic.core.component.lifecycle.Lifecycle
 import net.apptronic.core.component.lifecycle.LifecycleStage
-import net.apptronic.core.mvvm.lifecycle.LifecycleController
 
 open class ViewModelContext(parent: ComponentContext) : SubContext(parent) {
 
     private val logger = parent.objects().get(ComponentLoggerDescriptor)
 
     private val lifecycle = ViewModelLifecycle(workers())
-
-    val lifecycleController = LifecycleController(parent)
 
     override fun getLifecycle(): Lifecycle {
         return lifecycle

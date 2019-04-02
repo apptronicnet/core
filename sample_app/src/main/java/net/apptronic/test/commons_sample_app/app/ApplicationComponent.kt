@@ -23,7 +23,7 @@ class ApplicationComponent(context: ComponentContext) : Component(context) {
     }
 
     fun applicationScreenClosed() {
-        appScreen?.terminateSelf()
+        appScreen?.terminate()
         appScreen = null
     }
 
