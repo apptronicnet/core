@@ -1,16 +1,26 @@
 package net.apptronic.core.mvvm.viewmodel
 
+import net.apptronic.core.base.ComponentLoggerDescriptor
 import net.apptronic.core.component.Component
 import net.apptronic.core.component.entity.Predicate
 import net.apptronic.core.component.entity.base.UpdateAndStorePredicate
 import net.apptronic.core.component.entity.base.UpdatePredicate
+import net.apptronic.core.component.lifecycle.Lifecycle
 import net.apptronic.core.component.lifecycle.LifecycleStage
 import net.apptronic.core.mvvm.viewmodel.container.ViewModelStackContainer
 
 open class ViewModel(context: ViewModelContext) : Component(context) {
 
+    private val logger = objects().get(ComponentLoggerDescriptor)
+
+
     init {
-        context.initLifecycleLogging(this)
+        getLifecycle().getStage(Lifecycle.ROOT_STAGE)?.doOnce {
+            logger.log("ViewModelLifecycle: $this initialized")
+        }
+        doOnTerminate {
+            logger.log("ViewModelLifecycle: ${this@ViewModel} terminated")
+        }
     }
 
     private val isCreated = stateOfStage(ViewModelLifecycle.STAGE_CREATED)
@@ -21,10 +31,12 @@ open class ViewModel(context: ViewModelContext) : Component(context) {
     private fun stateOfStage(stageName: String): UpdatePredicate<Boolean> {
         val target = UpdateAndStorePredicate<Boolean>()
         onEnterStage(stageName) {
+            logger.log("ViewModelLifecycle: ${this@ViewModel} entered stage$stageName")
             target.update(true)
         }
         onExitStage(stageName) {
             target.update(false)
+            logger.log("ViewModelLifecycle: ${this@ViewModel} exited stage$stageName")
         }
         return target
     }

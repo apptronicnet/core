@@ -15,16 +15,16 @@ class BindProviderTest {
 
         class Impl : One, Two
 
-        val OneDescriptor = createDescriptor<Two>()
+        val OneDescriptor = createDescriptor<One>()
         val TwoDescriptor = createDescriptor<Two>()
 
         val module = declareModule {
 
-            factory(OneDescriptor) {
+            factory<One>(OneDescriptor) {
                 Impl()
             }
 
-            bind(OneDescriptor alsoAs TwoDescriptor)
+            bind<Two>(OneDescriptor alsoAs TwoDescriptor)
 
         }
     }

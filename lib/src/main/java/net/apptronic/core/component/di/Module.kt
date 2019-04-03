@@ -146,7 +146,7 @@ class ModuleDefinition internal constructor() {
         bindDefinition: BindDefinition<To>
     ): ProviderDefinition<To> {
         return addDefinition {
-            bindProvider<To>(bindDefinition.from)
+            bindProvider<To>(bindDefinition.to)
         }
     }
 
