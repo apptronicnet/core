@@ -11,18 +11,18 @@ import net.apptronic.test.commons_sample_app.registration.RegistrationViewModelC
 
 class ApplicationScreenViewModel(context: ViewModelContext) : ViewModel(context) {
 
-    val rootScreen = stackOfInnerModels()
+    val rootPage = stackNavigator()
 
     init {
         val loginContext = LoginViewModelContext(
             this,
             ApplicationScreenLoginRouter(this)
         )
-        rootScreen.set(LoginViewModel(loginContext))
+        rootPage.set(LoginViewModel(loginContext))
     }
 
     fun onBackPressed(actionIfEmpty: () -> Unit) {
-        rootScreen.navigateBack(BasicTransition.Back, actionIfEmpty)
+        rootPage.navigateBack(BasicTransition.Back, actionIfEmpty)
     }
 
 }
@@ -33,7 +33,7 @@ class ApplicationScreenLoginRouter(
 
     override fun openRegistrationScreen() {
         val registrationContext = RegistrationViewModelContext(viewModel)
-        viewModel.rootScreen.add(
+        viewModel.rootPage.add(
             RegistrationViewModel(registrationContext),
             BasicTransition.Forward
         )

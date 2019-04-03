@@ -1,7 +1,7 @@
 package net.apptronic.core.component.lifecycle
 
-import net.apptronic.core.component.context.ComponentContext
+import net.apptronic.core.component.context.Context
 
-class DefaultApplicationLifecycle(context: ComponentContext) : Lifecycle(context.workers()) {
+class DefaultApplicationLifecycle(context: Context) : Lifecycle(context.getWorkers()) {
 
 }

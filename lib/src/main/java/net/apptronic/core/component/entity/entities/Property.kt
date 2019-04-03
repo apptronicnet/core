@@ -1,11 +1,11 @@
 package net.apptronic.core.component.entity.entities
 
-import net.apptronic.core.component.context.ComponentContext
+import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.Predicate
 import net.apptronic.core.component.entity.base.UpdatePredicate
 
 abstract class Property<T>(
-    context: ComponentContext,
+    context: Context,
     predicate: UpdatePredicate<T>
 ) : ComponentEntity<T>(
     context,

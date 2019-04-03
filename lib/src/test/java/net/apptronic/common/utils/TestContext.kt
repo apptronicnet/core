@@ -2,19 +2,19 @@ package net.apptronic.common.utils
 
 import net.apptronic.core.base.ComponentLogger
 import net.apptronic.core.base.ComponentLoggerDescriptor
-import net.apptronic.core.component.context.ComponentContext
+import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.di.DependencyProvider
 import net.apptronic.core.component.lifecycle.Lifecycle
 import net.apptronic.core.component.threading.ContextWorkers
 
-open class TestContext : ComponentContext {
+open class TestContext : Context {
 
     private val workers = TestWorkers()
     private val lifecycle = TestLifecycle(workers)
     private val diContext = DependencyProvider(this, null)
 
     init {
-        objects().addInstance(ComponentLoggerDescriptor, ComponentLogger().apply {
+        getProvider().addInstance(ComponentLoggerDescriptor, ComponentLogger().apply {
             logMethod = {
                 System.out.println(it)
             }
@@ -25,11 +25,11 @@ open class TestContext : ComponentContext {
         return lifecycle
     }
 
-    override fun workers(): ContextWorkers {
+    override fun getWorkers(): ContextWorkers {
         return workers
     }
 
-    override fun objects(): DependencyProvider {
+    override fun getProvider(): DependencyProvider {
         return diContext
     }
 

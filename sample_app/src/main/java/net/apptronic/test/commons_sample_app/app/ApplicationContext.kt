@@ -1,6 +1,6 @@
 package net.apptronic.test.commons_sample_app.app
 
-import net.apptronic.core.component.context.CoreComponentContext
+import net.apptronic.core.component.context.CoreContext
 import net.apptronic.core.component.di.createDescriptor
 import net.apptronic.core.component.di.declareModule
 import net.apptronic.test.commons_sample_app.app.ApplicationContext.Companion.HttpClientDescriptor
@@ -9,7 +9,7 @@ import net.apptronic.test.commons_sample_app.app.ApplicationContext.Companion.Ht
 class ApplicationContext(
     httpClientFactory: HttpClientFactory,
     platform: Platform
-) : CoreComponentContext() {
+) : CoreContext() {
 
     companion object {
         val HttpClientFactoryDescriptor = createDescriptor<HttpClientFactory>()
@@ -18,17 +18,17 @@ class ApplicationContext(
     }
 
     init {
-        objects().addInstance(HttpClientFactoryDescriptor, httpClientFactory)
-        objects().addInstance(PlatformDescriptor, platform)
-        objects().addModule(coreModule)
+        getProvider().addInstance(HttpClientFactoryDescriptor, httpClientFactory)
+        getProvider().addInstance(PlatformDescriptor, platform)
+        getProvider().addModule(coreModule)
     }
 
 }
 
 val coreModule = declareModule {
 
-    single(HttpClientDescriptor) {
-        this.inject(HttpClientFactoryDescriptor).createHttpClient()
+    factory(HttpClientDescriptor) {
+        inject(HttpClientFactoryDescriptor).createHttpClient()
     }
 
 }

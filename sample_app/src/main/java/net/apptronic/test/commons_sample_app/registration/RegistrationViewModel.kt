@@ -14,8 +14,8 @@ class RegistrationViewModel(context: ViewModelContext) : ViewModel(context) {
     val password = value("")
     val passwordConfirmation = value("")
 
-    private val httpClient = objects().get(ApplicationContext.HttpClientDescriptor)
-    private val platform = objects().get(ApplicationContext.PlatformDescriptor)
+    private val httpClient = getProvider().inject(ApplicationContext.HttpClientDescriptor)
+    private val platform = getProvider().inject(ApplicationContext.PlatformDescriptor)
 
     private val confirmedPassword = value<String?>().setAs(
         whenever(password isEqualsTo passwordConfirmation) then (password.toNullable() orElse nullValue())

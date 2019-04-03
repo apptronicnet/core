@@ -1,11 +1,11 @@
 package net.apptronic.core.component.entity.behavior
 
-import net.apptronic.core.component.context.ComponentContext
+import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.Predicate
 
-fun <T> Predicate<T>.switchWorker(context: ComponentContext, workerName: String): Predicate<T> {
+fun <T> Predicate<T>.switchWorker(context: Context, workerName: String): Predicate<T> {
     return WorkerSwitchPredicate(
-        this, context.workers(), workerName
+        this, context.getWorkers(), workerName
     )
 }
 

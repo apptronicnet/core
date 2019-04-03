@@ -49,17 +49,17 @@ class BasicProvidersTest {
 
     private class TestComponent : BaseTestComponent(
         contextInitializer = {
-            objects().addModule(sampleModule)
+            getProvider().addModule(sampleModule)
         }
     ) {
 
-        val manyInstances1: ManyInstances = objects().get()
-        val manyInstances2: ManyInstances = objects().get()
-        val manyInstances3: ManyInstances = objects().get()
+        val manyInstances1: ManyInstances = getProvider().inject()
+        val manyInstances2: ManyInstances = getProvider().inject()
+        val manyInstances3: ManyInstances = getProvider().inject()
 
-        val singleInstance1: SingleInstance = objects().get()
-        val singleInstance2: SingleInstance = objects().get()
-        val singleInstance3: SingleInstance = objects().get()
+        val singleInstance1: SingleInstance = getProvider().inject()
+        val singleInstance2: SingleInstance = getProvider().inject()
+        val singleInstance3: SingleInstance = getProvider().inject()
 
     }
 

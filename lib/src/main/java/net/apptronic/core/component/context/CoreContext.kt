@@ -8,7 +8,7 @@ import net.apptronic.core.component.lifecycle.Lifecycle
 import net.apptronic.core.component.threading.ContextWorkers
 import net.apptronic.core.component.threading.DefaultContextWorkers
 
-open class CoreComponentContext : ComponentContext {
+open class CoreContext : Context {
 
     private val workers = DefaultContextWorkers()
     private val lifecycle = DefaultApplicationLifecycle(this)
@@ -24,11 +24,11 @@ open class CoreComponentContext : ComponentContext {
         return lifecycle
     }
 
-    override fun workers(): ContextWorkers {
+    override fun getWorkers(): ContextWorkers {
         return workers
     }
 
-    override fun objects(): DependencyProvider {
+    override fun getProvider(): DependencyProvider {
         return diContext
     }
 

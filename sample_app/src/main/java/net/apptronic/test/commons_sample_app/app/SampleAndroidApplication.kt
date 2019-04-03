@@ -16,7 +16,7 @@ class SampleAndroidApplication : Application() {
         },
         Platform.Android
     ).apply {
-        setLogging { Log.i("ComponentContext", it) }
+        setLogging { Log.i("Context", it) }
     }
     val appComponent by lazy {
         ApplicationComponent(coreContext)
@@ -24,11 +24,11 @@ class SampleAndroidApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        coreContext.workers().assignWorker(
+        coreContext.getWorkers().assignWorker(
             ContextWorkers.UI,
             AndroidMainThreadWorker
         )
-        coreContext.workers().assignWorker(
+        coreContext.getWorkers().assignWorker(
             ContextWorkers.DEFAULT,
             AndroidMainThreadWorker
         )

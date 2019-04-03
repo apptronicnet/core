@@ -7,12 +7,16 @@ import net.apptronic.core.component.entity.base.UpdateAndStorePredicate
 import net.apptronic.core.component.entity.base.UpdatePredicate
 import net.apptronic.core.component.lifecycle.Lifecycle
 import net.apptronic.core.component.lifecycle.LifecycleStage
-import net.apptronic.core.mvvm.viewmodel.container.ViewModelStackContainer
+import net.apptronic.core.component.threading.ContextWorkers
+import net.apptronic.core.mvvm.viewmodel.container.ViewModelStackNavigator
 
 open class ViewModel(context: ViewModelContext) : Component(context) {
 
-    private val logger = objects().get(ComponentLoggerDescriptor)
+    private val logger = getProvider().inject(ComponentLoggerDescriptor)
 
+    override fun getDefaultWorker(): String {
+        return ContextWorkers.UI
+    }
 
     init {
         getLifecycle().getStage(Lifecycle.ROOT_STAGE)?.doOnce {
@@ -41,8 +45,8 @@ open class ViewModel(context: ViewModelContext) : Component(context) {
         return target
     }
 
-    fun stackOfInnerModels(): ViewModelStackContainer {
-        return ViewModelStackContainer(this)
+    fun stackNavigator(): ViewModelStackNavigator {
+        return ViewModelStackNavigator(this)
     }
 
     internal fun onAddedToContainer(parent: ViewModelParent) {
@@ -120,7 +124,7 @@ open class ViewModel(context: ViewModelContext) : Component(context) {
      */
     fun closeSelf(transitionInfo: Any? = null): Boolean {
         return parent?.let {
-            workers().execute(context.workers().getDefaultWorker()) {
+            getWorkers().execute(context.getWorkers().getDefaultWorker()) {
                 it.requestCloseSelf(this, transitionInfo)
             }
             true

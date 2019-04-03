@@ -48,13 +48,13 @@ class FactoryContext(
     internal fun <ObjectType> inject(
         objectKey: ObjectKey
     ): ObjectType {
-        return parameters.get(objectKey) ?: context.get(objectKey)
+        return parameters.get(objectKey) ?: context.inject(objectKey)
     }
 
     internal fun <ObjectType> injectLazy(
         objectKey: ObjectKey
     ): Lazy<ObjectType> {
-        return parameters.get(objectKey) ?: context.lazy(objectKey)
+        return parameters.get(objectKey) ?: context.injectLazy(objectKey)
     }
 
 }

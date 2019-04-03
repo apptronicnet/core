@@ -1,11 +1,11 @@
 package net.apptronic.core.component.entity.entities
 
-import net.apptronic.core.component.context.ComponentContext
+import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.base.UpdateAndStorePredicate
 import net.apptronic.core.component.entity.base.ValueHolder
 
 class MutableValue<T>(
-    context: ComponentContext
+    context: Context
 ) : Property<T>(
     context,
     UpdateAndStorePredicate()

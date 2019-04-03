@@ -1,6 +1,6 @@
 package net.apptronic.core.component
 
-import net.apptronic.core.component.context.ComponentContext
+import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.Predicate
 import net.apptronic.core.component.entity.entities.*
 import net.apptronic.core.component.entity.setup
@@ -13,8 +13,8 @@ import net.apptronic.core.component.threading.ContextWorkers
 import net.apptronic.core.mvvm.viewmodel.ComponentRegistry
 
 open class Component(
-    val context: ComponentContext
-) : ComponentContext by context {
+    val context: Context
+) : Context by context {
 
     private val id: Long = ComponentRegistry.nextId()
 
@@ -98,7 +98,7 @@ open class Component(
     abstract class SubModel(parent: Component) : Component(parent)
 
     fun update(block: () -> Unit) {
-        workers().execute(ContextWorkers.DEFAULT, block)
+        getWorkers().execute(ContextWorkers.DEFAULT, block)
     }
 
     fun <T, R> backgroundProcess(

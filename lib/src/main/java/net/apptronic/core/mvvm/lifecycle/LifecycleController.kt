@@ -1,6 +1,6 @@
 package net.apptronic.core.mvvm.lifecycle
 
-import net.apptronic.core.component.context.ComponentContext
+import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.Predicate
 import net.apptronic.core.component.entity.entities.Value
 import net.apptronic.core.component.entity.entities.setAs
@@ -12,7 +12,7 @@ import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelLifecycle
 
 class LifecycleController(
-    private val parentContext: ComponentContext,
+    private val parentContext: Context,
     private val parent: LifecycleController?
 ) {
 

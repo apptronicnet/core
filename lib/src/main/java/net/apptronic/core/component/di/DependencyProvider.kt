@@ -1,6 +1,6 @@
 package net.apptronic.core.component.di
 
-import net.apptronic.core.component.context.ComponentContext
+import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.lifecycle.LifecycleStage
 import kotlin.reflect.KClass
 
@@ -8,7 +8,7 @@ import kotlin.reflect.KClass
  * Class for providing dependencies
  */
 class DependencyProvider(
-    private val context: ComponentContext,
+    private val context: Context,
     private val parent: DependencyProvider?
 ) {
 
@@ -58,19 +58,19 @@ class DependencyProvider(
         modules.add(moduleDefinition.buildInstance(this))
     }
 
-    inline fun <reified TypeDeclaration : Any> get(
+    inline fun <reified TypeDeclaration : Any> inject(
         params: Parameters = emptyParameters()
     ): TypeDeclaration {
-        return get(TypeDeclaration::class, params)
+        return inject(TypeDeclaration::class, params)
     }
 
-    inline fun <reified TypeDeclaration : Any> lazy(
+    inline fun <reified TypeDeclaration : Any> injectLazy(
         params: Parameters = emptyParameters()
     ): Lazy<TypeDeclaration> {
-        return lazy(TypeDeclaration::class, params)
+        return injectLazy(TypeDeclaration::class, params)
     }
 
-    fun <TypeDeclaration : Any> get(
+    fun <TypeDeclaration : Any> inject(
         clazz: KClass<TypeDeclaration>,
         params: Parameters = emptyParameters()
     ): TypeDeclaration {
@@ -78,7 +78,7 @@ class DependencyProvider(
         return getInstanceInternal(key, params)
     }
 
-    fun <TypeDeclaration : Any> lazy(
+    fun <TypeDeclaration : Any> injectLazy(
         clazz: KClass<TypeDeclaration>,
         params: Parameters = emptyParameters()
     ): Lazy<TypeDeclaration> {
@@ -86,7 +86,7 @@ class DependencyProvider(
         return getLazyInstanceInternal(key, params)
     }
 
-    fun <TypeDeclaration> get(
+    fun <TypeDeclaration> inject(
         descriptor: Descriptor<TypeDeclaration>,
         params: Parameters = emptyParameters()
     ): TypeDeclaration {
@@ -94,7 +94,7 @@ class DependencyProvider(
         return getInstanceInternal(key, params)
     }
 
-    fun <TypeDeclaration> lazy(
+    fun <TypeDeclaration> injectLazy(
         descriptor: Descriptor<TypeDeclaration>,
         params: Parameters = emptyParameters()
     ): Lazy<TypeDeclaration> {
@@ -102,14 +102,14 @@ class DependencyProvider(
         return getLazyInstanceInternal(key, params)
     }
 
-    internal fun <TypeDeclaration> get(
+    internal fun <TypeDeclaration> inject(
         objectKey: ObjectKey,
         params: Parameters = parameters { }
     ): TypeDeclaration {
         return getInstanceInternal(objectKey, params)
     }
 
-    internal fun <TypeDeclaration> lazy(
+    internal fun <TypeDeclaration> injectLazy(
         objectKey: ObjectKey,
         params: Parameters = parameters { }
     ): Lazy<TypeDeclaration> {

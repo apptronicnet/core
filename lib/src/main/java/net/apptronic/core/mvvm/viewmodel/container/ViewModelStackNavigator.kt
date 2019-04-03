@@ -6,7 +6,7 @@ import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelParent
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelAdapter
 
-class ViewModelStackContainer(
+class ViewModelStackNavigator(
     private val parent: ViewModel
 ) : Property<ViewModel?>(
     parent,

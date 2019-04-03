@@ -2,7 +2,6 @@ package net.apptronic.common.core.di
 
 import net.apptronic.common.utils.TestContext
 import net.apptronic.core.component.context.BasicContext
-import net.apptronic.core.component.context.ComponentContext
 import net.apptronic.core.component.di.ObjectNotFoundException
 import net.apptronic.core.component.di.createDescriptor
 import net.apptronic.core.component.di.declareModule
@@ -50,13 +49,14 @@ class ParentContextProviderTest {
 
     private class Context : TestContext() {
         init {
-            objects().addModule(parentModule)
+            getProvider().addModule(parentModule)
         }
     }
 
-    private class ChildContext(parent: ComponentContext) : BasicContext(parent) {
+    private class ChildContext(parent: net.apptronic.core.component.context.Context) :
+        BasicContext(parent) {
         init {
-            objects().addModule(childModule)
+            getProvider().addModule(childModule)
         }
     }
 
@@ -65,21 +65,21 @@ class ParentContextProviderTest {
 
     @Test
     fun parentShouldHave() {
-        val one = parent.objects().get(OneDescriptor)
-        val two = parent.objects().get(TwoDescriptor)
+        val one = parent.getProvider().inject(OneDescriptor)
+        val two = parent.getProvider().inject(TwoDescriptor)
     }
 
     @Test
     fun childShouldHave() {
-        val one = child.objects().get(OneDescriptor)
-        val two = child.objects().get(TwoDescriptor)
-        val three = child.objects().get(ThreeDescriptor)
+        val one = child.getProvider().inject(OneDescriptor)
+        val two = child.getProvider().inject(TwoDescriptor)
+        val three = child.getProvider().inject(ThreeDescriptor)
         assert(one is OneChild)
     }
 
     @Test(expected = ObjectNotFoundException::class)
     fun parentShouldNotHave() {
-        val three = parent.objects().get(ThreeDescriptor)
+        val three = parent.getProvider().inject(ThreeDescriptor)
     }
 
 }

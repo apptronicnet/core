@@ -7,8 +7,8 @@ import net.apptronic.test.commons_sample_app.login.LoginViewModelContext.Compani
 
 class LoginViewModel(context: ViewModelContext) : ViewModel(context) {
 
-    private val loginRouter = objects().get(LoginRouterDescriptor)
-    private val loginAction = objects().get(LoginActionDescriptor)
+    private val loginRouter = getProvider().inject(LoginRouterDescriptor)
+    private val loginAction = getProvider().inject(LoginActionDescriptor)
 
     val login = value("")
 

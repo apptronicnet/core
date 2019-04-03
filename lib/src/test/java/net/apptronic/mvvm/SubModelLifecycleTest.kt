@@ -1,6 +1,6 @@
 package net.apptronic.mvvm
 
-import net.apptronic.core.component.context.ComponentContext
+import net.apptronic.core.component.context.Context
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 import net.apptronic.core.mvvm.viewmodel.container.ViewModelLifecycleController
@@ -10,7 +10,7 @@ class SubModelLifecycleTest {
 
     private class ParentModel : LifecycleTestViewModel(TestViewModelContext()) {
 
-        val children = stackOfInnerModels()
+        val children = stackNavigator()
 
         private val adapter = SampleViewModelAdapter()
 
@@ -24,10 +24,10 @@ class SubModelLifecycleTest {
 
     }
 
-    private class ChildModel(root: ComponentContext) :
+    private class ChildModel(root: Context) :
         LifecycleTestViewModel(ViewModelContext(root)) {
 
-        val children = stackOfInnerModels()
+        val children = stackNavigator()
 
         private val adapter = SampleViewModelAdapter()
 

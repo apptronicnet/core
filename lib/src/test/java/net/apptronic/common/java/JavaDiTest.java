@@ -35,22 +35,22 @@
 //        }
 //    });
 //
-//    private class TestComponent extends BaseTestComponent {
+//    private class Test extends BaseTestComponent {
 //
-//        TestComponent(TestContext testContext) {
+//        Test(TestContext testContext) {
 //            super(testContext);
 //        }
 //
-//        final JavaInterface instance = objects().get(JavaInterface.class);
+//        final JavaInterface instance = getProvider().inject(JavaInterface.class);
 //
 //    }
 //
 //    private final TestContext testContext = new TestContext() {
 //        {
-//            objects().addModule(module);
+//            getProvider().addModule(module);
 //        }
 //    };
-//    private final TestComponent testComponent = new TestComponent(testContext);
+//    private final Test testComponent = new Test(testContext);
 //
 //    @Test
 //    public void testJava() {

@@ -1,6 +1,6 @@
 package net.apptronic.core.component.lifecycle
 
-import net.apptronic.core.component.context.ComponentContext
+import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.threading.ContextWorkers
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -83,10 +83,10 @@ open class Lifecycle(
 
 }
 
-fun enterStage(context: ComponentContext?, name: String) {
+fun enterStage(context: Context?, name: String) {
     context?.getLifecycle()?.enterStage(name)
 }
 
-fun exitStage(context: ComponentContext?, name: String) {
+fun exitStage(context: Context?, name: String) {
     context?.getLifecycle()?.exitStage(name)
 }

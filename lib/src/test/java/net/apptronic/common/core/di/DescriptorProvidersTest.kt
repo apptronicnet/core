@@ -58,27 +58,27 @@ class DescriptorProvidersTest {
 
     private class TestComponent : BaseTestComponent(
         contextInitializer = {
-            objects().addModule(sampleModule)
+            getProvider().addModule(sampleModule)
         }
     ) {
 
-        val multiBase_1 = objects().get<MultiInterface>()
-        val multiBase_2 = objects().get<MultiInterface>()
+        val multiBase_1 = getProvider().inject<MultiInterface>()
+        val multiBase_2 = getProvider().inject<MultiInterface>()
 
-        val multiOne_1 = objects().get(MultiOneDescriptor)
-        val multiOne_2 = objects().get(MultiOneDescriptor)
+        val multiOne_1 = getProvider().inject(MultiOneDescriptor)
+        val multiOne_2 = getProvider().inject(MultiOneDescriptor)
 
-        val multiTwo_1 = objects().get(MultiTwoDescriptor)
-        val multiTwo_2 = objects().get(MultiTwoDescriptor)
+        val multiTwo_1 = getProvider().inject(MultiTwoDescriptor)
+        val multiTwo_2 = getProvider().inject(MultiTwoDescriptor)
 
-        val singleBase_1 = objects().get<SingleInterface>()
-        val singleBase_2 = objects().get<SingleInterface>()
+        val singleBase_1 = getProvider().inject<SingleInterface>()
+        val singleBase_2 = getProvider().inject<SingleInterface>()
 
-        val singleOne_1 = objects().get(SingleOneDescriptor)
-        val singleOne_2 = objects().get(SingleOneDescriptor)
+        val singleOne_1 = getProvider().inject(SingleOneDescriptor)
+        val singleOne_2 = getProvider().inject(SingleOneDescriptor)
 
-        val singleTwo_1 = objects().get(SingleTwoDescriptor)
-        val singleTwo_2 = objects().get(SingleTwoDescriptor)
+        val singleTwo_1 = getProvider().inject(SingleTwoDescriptor)
+        val singleTwo_2 = getProvider().inject(SingleTwoDescriptor)
 
     }
 

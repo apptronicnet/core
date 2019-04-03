@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         lifecycleController.setCreated(true)
         setContentView(R.layout.activity_main)
-        viewModel.rootScreen.setAdapter(MainModelAdapter(container))
+        viewModel.rootPage.setAdapter(MainModelAdapter(container))
         lifecycleController.setBound(true)
     }
 
@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         lifecycleController.setBound(false)
-        viewModel.rootScreen.setAdapter(null)
+        viewModel.rootPage.setAdapter(null)
         if (isFinishing) {
             lifecycleController.setCreated(false)
             appComponent.applicationScreenClosed()

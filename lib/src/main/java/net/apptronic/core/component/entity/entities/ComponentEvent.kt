@@ -1,10 +1,10 @@
 package net.apptronic.core.component.entity.entities
 
-import net.apptronic.core.component.context.ComponentContext
+import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.base.UpdatePredicate
 
 abstract class ComponentEvent<T>(
-    context: ComponentContext
+    context: Context
 ) : ComponentEntity<T>(context, UpdatePredicate()) {
 
     fun sendEvent(event: T) {
@@ -13,7 +13,7 @@ abstract class ComponentEvent<T>(
 
 }
 
-class ComponentGenericEvent(context: ComponentContext) : ComponentEvent<Unit>(context) {
+class ComponentGenericEvent(context: Context) : ComponentEvent<Unit>(context) {
 
     fun sendEvent() {
         sendEvent(Unit)
@@ -21,7 +21,7 @@ class ComponentGenericEvent(context: ComponentContext) : ComponentEvent<Unit>(co
 
 }
 
-class ComponentTypedEvent<T>(context: ComponentContext) : ComponentEvent<T>(context) {
+class ComponentTypedEvent<T>(context: Context) : ComponentEvent<T>(context) {
 
     fun send(event: T) {
         sendEvent(event)

@@ -1,10 +1,10 @@
 package net.apptronic.core.component.entity.entities
 
-import net.apptronic.core.component.context.ComponentContext
+import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.base.DistinctUntilChangedStorePredicate
 import net.apptronic.core.component.entity.base.ValueHolder
 
-class Value<T>(context: ComponentContext) : Property<T>(
+class Value<T>(context: Context) : Property<T>(
     context,
     DistinctUntilChangedStorePredicate()
 ) {

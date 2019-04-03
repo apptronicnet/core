@@ -6,19 +6,19 @@ import net.apptronic.core.component.threading.ContextWorkers
 import net.apptronic.core.component.threading.DefaultContextWorkers
 import net.apptronic.core.component.threading.SubContextWorkers
 
-interface ComponentContext {
+interface Context {
 
     fun getLifecycle(): Lifecycle
 
-    fun workers(): ContextWorkers
+    fun getWorkers(): ContextWorkers
 
-    fun objects(): DependencyProvider
+    fun getProvider(): DependencyProvider
 
 }
 
 abstract class SubContext(
-    parent: ComponentContext
-) : ComponentContext {
+    parent: Context
+) : Context {
 
     init {
         parent.getLifecycle().getStage(Lifecycle.ROOT_STAGE)?.doOnExit {
@@ -26,24 +26,24 @@ abstract class SubContext(
         }
     }
 
-    private val objects = DependencyProvider(this, parent.objects())
-    private val workers = SubContextWorkers(parent.workers())
+    private val objects = DependencyProvider(this, parent.getProvider())
+    private val workers = SubContextWorkers(parent.getWorkers())
 
-    override fun workers(): ContextWorkers {
+    override fun getWorkers(): ContextWorkers {
         return workers
     }
 
-    override fun objects(): DependencyProvider {
+    override fun getProvider(): DependencyProvider {
         return objects
     }
 
 }
 
 open class BasicContext(
-    parent: ComponentContext
+    parent: Context
 ) : SubContext(parent) {
 
-    private val lifecycle = Lifecycle(workers())
+    private val lifecycle = Lifecycle(getWorkers())
 
     override fun getLifecycle(): Lifecycle {
         return this.lifecycle
@@ -51,7 +51,7 @@ open class BasicContext(
 
 }
 
-class EmptyContext : ComponentContext {
+class EmptyContext : Context {
 
     private val workers = DefaultContextWorkers()
     private val lifecycle = Lifecycle(workers)
@@ -61,11 +61,11 @@ class EmptyContext : ComponentContext {
         return lifecycle
     }
 
-    override fun workers(): ContextWorkers {
+    override fun getWorkers(): ContextWorkers {
         return workers
     }
 
-    override fun objects(): DependencyProvider {
+    override fun getProvider(): DependencyProvider {
         return diContext
     }
 
