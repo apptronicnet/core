@@ -31,3 +31,15 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+task assembleLib() {
+    dependsOn ':lib:jar'
+    doLast {
+        def destDir = new File("out")
+        destDir.mkdir()
+        for (def item : destDir.listFiles()) {
+            item.delete()
+        }
+        file("lib/build/libs/lib.jar").renameTo("out/net.apptronic.core.jar")
+    }
+}
