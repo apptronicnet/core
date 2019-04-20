@@ -17,7 +17,7 @@ class BackgroundProcess<T, R>(
 
     private val idsInProgress = parent.valueSet<Long>()
 
-    private val isInProgress = parent.function(idsInProgress.map { isNotEmpty() })
+    private val isInProgress = parent.function(idsInProgress.map { it.isNotEmpty() })
 
     private val requestEvent = parent.typedEvent<T>().setup {
         subscribe {

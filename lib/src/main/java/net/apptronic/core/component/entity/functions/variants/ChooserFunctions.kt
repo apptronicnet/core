@@ -30,7 +30,7 @@ infix fun <T> Whenever.then(predicate: Predicate<T>): Predicate<T> {
         .filter {
             it.first
         }.map {
-            second
+            it.second
         }
 }
 

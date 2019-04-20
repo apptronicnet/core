@@ -4,9 +4,9 @@ import net.apptronic.core.component.entity.Predicate
 import net.apptronic.core.component.entity.base.ConstantPredicate
 import net.apptronic.core.component.entity.functions.predicateFunction
 
-fun <T, R> Predicate<T>.map(map: T.() -> R): Predicate<R> =
+fun <T, R> Predicate<T>.map(map: (T) -> R): Predicate<R> =
     predicateFunction(this) {
-        it.map()
+        map(it)
     }
 
 fun <T> Predicate<T?>.ifNull(value: T): Predicate<T> =
