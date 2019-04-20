@@ -14,7 +14,7 @@ fun <T> Predicate<T>.filter(filterFunction: (T) -> Boolean): Predicate<T> {
     return FilterPredicate(this, filterFunction)
 }
 
-fun <T> Predicate<T?>.filterNotNull(filterFunction: (T) -> Boolean): Predicate<T> {
+fun <T> Predicate<T?>.filterNotNull(): Predicate<T> {
     return filter { it != null }.map { it!! }
 }
 
