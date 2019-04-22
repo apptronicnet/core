@@ -9,6 +9,16 @@ fun <T, R> Predicate<T>.map(map: (T) -> R): Predicate<R> =
         map(it)
     }
 
+fun <T, R> Predicate<T?>.mapOrNull(map: (T) -> R): Predicate<R?> =
+    map {
+        if (it != null) (map.invoke(it)) else null
+    }
+
+fun <T, R> Predicate<T?>.mapOr(ifNull: R, map: (T) -> R): Predicate<R> =
+    map {
+        if (it != null) (map.invoke(it)) else ifNull
+    }
+
 fun <T> Predicate<T?>.ifNull(value: T): Predicate<T> =
     predicateFunction(this) {
         it ?: value

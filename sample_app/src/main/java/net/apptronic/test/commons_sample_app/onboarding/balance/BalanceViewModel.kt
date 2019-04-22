@@ -2,6 +2,7 @@ package net.apptronic.test.commons_sample_app.onboarding.balance
 
 import net.apptronic.core.component.entity.entities.setAs
 import net.apptronic.core.component.entity.functions.variants.map
+import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.test.commons_sample_app.app.ApplicationContext
 import net.apptronic.test.commons_sample_app.onboarding.OnboardingContext
@@ -17,7 +18,7 @@ class BalanceViewModel(context: BalanceViewModelContext) : ViewModel(context) {
     val isError = value(false).setAs(
         balance.map {
             try {
-                toDouble()
+                it.toDouble()
                 false
             } catch (e: NumberFormatException) {
                 true
@@ -28,7 +29,7 @@ class BalanceViewModel(context: BalanceViewModelContext) : ViewModel(context) {
     private val balanceParsed = value<Double?>().setAs(
         balance.map {
             try {
-                toDouble()
+                it.toDouble()
             } catch (e: NumberFormatException) {
                 null
             }
