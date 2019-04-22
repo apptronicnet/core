@@ -8,6 +8,7 @@ import android.widget.TextView
 import net.apptronic.core.component.entity.Predicate
 import net.apptronic.core.component.entity.entities.ComponentEvent
 import net.apptronic.core.component.entity.entities.Property
+import net.apptronic.core.component.entity.subscribe
 
 fun EditText.bindTo(property: Property<String>) {
     property.subscribe {
