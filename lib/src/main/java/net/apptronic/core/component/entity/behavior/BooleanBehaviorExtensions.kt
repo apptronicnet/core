@@ -2,6 +2,7 @@ package net.apptronic.core.component.entity.behavior
 
 import net.apptronic.core.component.entity.Predicate
 import net.apptronic.core.component.entity.functions.variants.map
+import net.apptronic.core.component.entity.subscribe
 
 
 fun Predicate<Boolean>.whenTrue(): Predicate<Unit> {

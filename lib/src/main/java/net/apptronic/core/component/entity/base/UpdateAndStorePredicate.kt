@@ -1,5 +1,6 @@
 package net.apptronic.core.component.entity.base
 
+import net.apptronic.core.component.entity.PredicateObserver
 import net.apptronic.core.component.entity.Subscription
 
 /**
@@ -15,9 +16,9 @@ open class UpdateAndStorePredicate<T> : UpdatePredicate<T>() {
         super.update(value)
     }
 
-    override fun subscribe(observer: (T) -> Unit): Subscription {
+    override fun subscribe(observer: PredicateObserver<T>): Subscription {
         valueHolder?.let {
-            observer.invoke(it.value)
+            observer.notify(it.value)
         }
         return super.subscribe(observer)
     }

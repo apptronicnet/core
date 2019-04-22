@@ -5,6 +5,7 @@ package net.apptronic.core.component.entity
  */
 interface Predicate<T> {
 
-    fun subscribe(observer: (T) -> Unit): Subscription
+    fun subscribe(observer: PredicateObserver<T>): Subscription
 
 }
+

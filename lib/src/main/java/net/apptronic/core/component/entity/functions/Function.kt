@@ -3,6 +3,7 @@ package net.apptronic.core.component.entity.functions
 import net.apptronic.core.component.entity.Predicate
 import net.apptronic.core.component.entity.base.DistinctUntilChangedStorePredicate
 import net.apptronic.core.component.entity.base.ValueHolder
+import net.apptronic.core.component.entity.subscribe
 
 abstract class Function<T> : DistinctUntilChangedStorePredicate<T>()
 

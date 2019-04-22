@@ -1,6 +1,7 @@
 package net.apptronic.core.component.entity.base
 
 import net.apptronic.core.component.entity.Predicate
+import net.apptronic.core.component.entity.PredicateObserver
 import net.apptronic.core.component.entity.Subscription
 
 /**
@@ -12,18 +13,18 @@ open class UpdatePredicate<T> : Predicate<T> {
 
     open fun update(value: T) {
         subscriptions.toTypedArray().forEach {
-            it.observer.invoke(value)
+            it.observer.notify(value)
         }
     }
 
-    override fun subscribe(observer: (T) -> Unit): Subscription {
+    override fun subscribe(observer: PredicateObserver<T>): Subscription {
         val subscription = SubscriptionImpl(observer)
         subscriptions.add(subscription)
         return subscription
     }
 
     private inner class SubscriptionImpl(
-        val observer: (T) -> Unit
+        val observer: PredicateObserver<T>
     ) : Subscription {
 
         override fun unsubscribe() {

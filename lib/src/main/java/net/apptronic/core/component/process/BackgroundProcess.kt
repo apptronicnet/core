@@ -5,6 +5,7 @@ import net.apptronic.core.component.Component
 import net.apptronic.core.component.entity.Predicate
 import net.apptronic.core.component.entity.functions.variants.map
 import net.apptronic.core.component.entity.setup
+import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.component.threading.ContextWorkers
 
 class BackgroundProcess<T, R>(

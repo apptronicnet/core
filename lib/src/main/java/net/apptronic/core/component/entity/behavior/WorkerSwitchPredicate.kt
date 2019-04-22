@@ -1,7 +1,9 @@
 package net.apptronic.core.component.entity.behavior
 
 import net.apptronic.core.component.entity.Predicate
+import net.apptronic.core.component.entity.PredicateObserver
 import net.apptronic.core.component.entity.Subscription
+import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.component.threading.ContextWorkers
 
 class WorkerSwitchPredicate<T>(
@@ -10,10 +12,10 @@ class WorkerSwitchPredicate<T>(
     private val workerName: String
 ) : Predicate<T> {
 
-    override fun subscribe(observer: (T) -> Unit): Subscription {
+    override fun subscribe(observer: PredicateObserver<T>): Subscription {
         return target.subscribe { value ->
             contextWorkers.execute(workerName) {
-                observer.invoke(value)
+                observer.notify(value)
             }
         }
     }

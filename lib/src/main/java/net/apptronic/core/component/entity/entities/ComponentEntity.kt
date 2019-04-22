@@ -2,8 +2,10 @@ package net.apptronic.core.component.entity.entities
 
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.Predicate
+import net.apptronic.core.component.entity.PredicateObserver
 import net.apptronic.core.component.entity.Subscription
 import net.apptronic.core.component.entity.base.UpdatePredicate
+import net.apptronic.core.component.entity.subscribe
 
 abstract class ComponentEntity<T>(
     private val context: Context,
@@ -18,11 +20,11 @@ abstract class ComponentEntity<T>(
         this.workerName = workerName
     }
 
-    override fun subscribe(observer: (T) -> Unit): Subscription {
+    override fun subscribe(observer: PredicateObserver<T>): Subscription {
         val subscription = workingPredicate.subscribe { value ->
             val workerToUse = workerName ?: context.getWorkers().getDefaultWorker()
             context.getWorkers().execute(workerToUse) {
-                observer.invoke(value)
+                observer.notify(value)
             }
         }
         context.getLifecycle().onExitFromActiveStage {

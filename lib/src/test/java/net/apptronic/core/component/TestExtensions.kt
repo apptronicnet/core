@@ -1,6 +1,7 @@
 package net.apptronic.core.component
 
 import net.apptronic.core.component.entity.Predicate
+import net.apptronic.core.component.entity.subscribe
 import kotlin.test.assertNull
 
 private fun <T : Any> Predicate<T>.value(): T {

@@ -3,6 +3,7 @@ package net.apptronic.core.component
 import net.apptronic.common.utils.BaseTestComponent
 import net.apptronic.common.utils.TestLifecycle
 import net.apptronic.core.component.entity.entities.PropertyNotSetException
+import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.mvvm.viewmodel.extensions.asFunctionOf
 import net.apptronic.core.mvvm.viewmodel.extensions.copyValueFrom
 import org.junit.Test

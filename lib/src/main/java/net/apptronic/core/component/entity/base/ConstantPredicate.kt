@@ -1,6 +1,7 @@
 package net.apptronic.core.component.entity.base
 
 import net.apptronic.core.component.entity.Predicate
+import net.apptronic.core.component.entity.PredicateObserver
 import net.apptronic.core.component.entity.Subscription
 
 /**
@@ -10,8 +11,8 @@ class ConstantPredicate<T>(
     private val value: T
 ) : Predicate<T> {
 
-    override fun subscribe(observer: (T) -> Unit): Subscription {
-        observer.invoke(value)
+    override fun subscribe(observer: PredicateObserver<T>): Subscription {
+        observer.notify(value)
         return StubSubscription()
     }
 

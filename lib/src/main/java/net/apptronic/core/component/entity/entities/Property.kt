@@ -3,9 +3,10 @@ package net.apptronic.core.component.entity.entities
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.Predicate
 import net.apptronic.core.component.entity.base.UpdatePredicate
+import net.apptronic.core.component.entity.subscribe
 
 abstract class Property<T>(
-    context: Context,
+    internal val context: Context,
     predicate: UpdatePredicate<T>
 ) : ComponentEntity<T>(
     context,
@@ -63,7 +64,7 @@ abstract class Property<T>(
  * Subscribe to updates of [source] and set all new values automatically
  */
 fun <E : Property<T>, T> E.setAs(predicate: Predicate<T>): E {
-    predicate.subscribe {
+    predicate.subscribe(context) {
         set(it)
     }
     return this
