@@ -16,7 +16,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.3.2'
+        classpath 'com.android.tools.build:gradle:3.4.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -42,6 +42,6 @@ task assembleLib() {
             item.delete()
         }
         file("lib/build/libs/lib.jar").renameTo("out/net.apptronic.core.jar")
-        file("lib_android/build/outputs/aar/lib_android.aar").renameTo("out/net.apptronic.android.aar")
+        file("lib_android/build/outputs/aar/lib_android-debug.aar").renameTo("out/net.apptronic.android.aar")
     }
 }

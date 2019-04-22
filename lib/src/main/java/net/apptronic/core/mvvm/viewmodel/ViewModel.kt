@@ -10,7 +10,17 @@ import net.apptronic.core.component.lifecycle.LifecycleStage
 import net.apptronic.core.component.threading.ContextWorkers
 import net.apptronic.core.mvvm.viewmodel.container.ViewModelStackNavigator
 
-open class ViewModel(context: ViewModelContext) : Component(context) {
+open class ViewModel : Component {
+
+    private val viewModelContext: ViewModelContext
+
+    constructor(context: ViewModelContext) : super(context) {
+        viewModelContext = context
+    }
+
+    constructor(parent: ViewModel) : super(parent.viewModelContext) {
+        viewModelContext = parent.viewModelContext
+    }
 
     private val logger = getProvider().inject(ComponentLoggerDescriptor)
 
