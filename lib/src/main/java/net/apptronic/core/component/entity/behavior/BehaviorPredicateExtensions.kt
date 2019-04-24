@@ -10,6 +10,12 @@ fun <T> Predicate<T>.switchWorker(context: Context, workerName: String): Predica
     )
 }
 
+fun <T> Predicate<T>.switchContext(context: Context): Predicate<T> {
+    return ContextSwitchPredicate(
+        this, context
+    )
+}
+
 fun <T> Predicate<T>.filter(filterFunction: (T) -> Boolean): Predicate<T> {
     return FilterPredicate(this, filterFunction)
 }

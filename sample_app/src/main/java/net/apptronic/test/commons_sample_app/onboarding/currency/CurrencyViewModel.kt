@@ -1,5 +1,6 @@
 package net.apptronic.test.commons_sample_app.onboarding.currency
 
+import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.test.commons_sample_app.onboarding.OnboardingContext
 
