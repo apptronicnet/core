@@ -16,7 +16,7 @@ fun <T, A> predicateFunction(
 
 fun <T> predicateArrayFunction(
     source: Array<Predicate<*>>,
-    method: (Array<Any>) -> T
+    method: (Array<Any?>) -> T
 ): Function<T> {
     return ArrayFunction(source, method)
 }
@@ -122,7 +122,7 @@ private class DoubleFunction<T, A, B>(
 
 private class ArrayFunction<T>(
     private val sources: Array<Predicate<*>>,
-    private val method: (Array<Any>) -> T
+    private val method: (Array<Any?>) -> T
 ) : Function<T>() {
 
     private val sourceValues = arrayOfNulls<ValueHolder<*>>(sources.size)
@@ -142,8 +142,8 @@ private class ArrayFunction<T>(
     private fun calculate() {
         val sourceValues = this.sourceValues.clone()
         if (sourceValues.all { it != null }) {
-            val params = sourceValues.map { it!!.value }
-            val result = method(arrayOf(params))
+            val params = sourceValues.map { it!!.value }.toTypedArray<Any?>()
+            val result = method(params)
             update(result)
         }
     }

@@ -4,4 +4,6 @@ interface NavigationRouter {
 
     fun openLoginDemo()
 
+    fun openConverterDemo()
+
 }

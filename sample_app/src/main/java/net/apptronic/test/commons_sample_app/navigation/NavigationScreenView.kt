@@ -19,6 +19,9 @@ class NavigationScreenView(viewModel: NavigationScreenViewModel) :
             loginScreenDemo.setOnClickListener {
                 viewModel.onClickLoginDemo()
             }
+            converterScreenDemo.setOnClickListener {
+                viewModel.onClickConverterDemo()
+            }
         }
     }
 

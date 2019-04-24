@@ -11,4 +11,8 @@ class NavigationScreenViewModel(context: ViewModelContext) : ViewModel(context) 
         router.openLoginDemo()
     }
 
+    fun onClickConverterDemo() {
+        router.openConverterDemo()
+    }
+
 }

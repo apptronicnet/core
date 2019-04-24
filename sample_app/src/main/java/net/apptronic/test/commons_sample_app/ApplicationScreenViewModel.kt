@@ -3,6 +3,7 @@ package net.apptronic.test.commons_sample_app
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 import net.apptronic.core.mvvm.viewmodel.adapter.BasicTransition
+import net.apptronic.test.commons_sample_app.convert.ConvertScreenViewModel
 import net.apptronic.test.commons_sample_app.login.LoginRouter
 import net.apptronic.test.commons_sample_app.login.LoginViewModel
 import net.apptronic.test.commons_sample_app.login.LoginViewModelContext
@@ -31,27 +32,34 @@ class ApplicationScreenViewModel(context: ViewModelContext) : ViewModel(context)
 }
 
 class ApplicationScreenNavigationRouterImpl(
-    private val viewModel: ApplicationScreenViewModel
+    private val parent: ApplicationScreenViewModel
 ) : NavigationRouter {
 
     override fun openLoginDemo() {
         val loginContext = LoginViewModelContext(
-            viewModel,
-            ApplicationScreenLoginRouterImpl(viewModel)
+            parent,
+            ApplicationScreenLoginRouterImpl(parent)
         )
-        viewModel.rootPage.add(LoginViewModel(loginContext), BasicTransition.Forward)
+        parent.rootPage.add(LoginViewModel(loginContext), BasicTransition.Forward)
+    }
+
+    override fun openConverterDemo() {
+        parent.rootPage.add(
+            ConvertScreenViewModel(ViewModelContext(parent)),
+            BasicTransition.Forward
+        )
     }
 
 }
 
 class ApplicationScreenLoginRouterImpl(
-    private val viewModel: ApplicationScreenViewModel
+    private val parent: ApplicationScreenViewModel
 ) : LoginRouter {
 
     override fun openRegistrationScreen(listener: RegistrationListener) {
-        val router = ApplicationScreenRegistrationRouterImpl(viewModel, listener)
-        val registrationContext = RegistrationViewModelContext(viewModel, router)
-        viewModel.rootPage.add(
+        val router = ApplicationScreenRegistrationRouterImpl(parent, listener)
+        val registrationContext = RegistrationViewModelContext(parent, router)
+        parent.rootPage.add(
             RegistrationViewModel(registrationContext),
             BasicTransition.Forward
         )
@@ -60,13 +68,13 @@ class ApplicationScreenLoginRouterImpl(
 }
 
 class ApplicationScreenRegistrationRouterImpl(
-    private val viewModel: ApplicationScreenViewModel,
+    private val parent: ApplicationScreenViewModel,
     private val listener: RegistrationListener
 ) : RegistrationRouter {
 
     override fun backToLogin(preFilledLogin: String) {
         listener.onRegistrationDone(preFilledLogin)
-        viewModel.rootPage.popBackStack(BasicTransition.Back)
+        parent.rootPage.popBackStack(BasicTransition.Back)
     }
 
 }

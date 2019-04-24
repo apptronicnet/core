@@ -6,5 +6,6 @@
 
     <color name="redText">#f00</color>
     <color name="blueText">#00f</color>
+    <color name="selection">#40008577</color>
 
 </resources>
