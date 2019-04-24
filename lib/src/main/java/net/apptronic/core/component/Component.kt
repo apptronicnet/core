@@ -95,6 +95,14 @@ open class Component(
         return ComponentTypedEvent(context)
     }
 
+    fun <T> toggle(target: Property<T>, vararg values: T): Toggle<T> {
+        return Toggle(target, *values)
+    }
+
+    fun toggle(target: Property<Boolean>): Toggle<Boolean> {
+        return Toggle(target, false, true)
+    }
+
     abstract class SubModel(parent: Component) : Component(parent)
 
     fun update(block: () -> Unit) {
