@@ -15,4 +15,12 @@ class NavigationScreenViewModel(context: ViewModelContext) : ViewModel(context) 
         router.openConverterDemo()
     }
 
+    init {
+        doOnVisible {
+            doOnCreate {
+
+            }
+        }
+    }
+
 }

@@ -8,19 +8,31 @@ import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 
 class ConvertScreenViewModel(context: ViewModelContext) : ViewModel(context) {
 
+    /**
+     * Input field with user text of distance
+     */
     val inputDistance = value<String>("10")
 
     private val distanceValue = inputDistance.map {
         it.toFloatOrNull()
     }
 
+    /**
+     * Input field with user text of cost
+     */
     val inputCost = value<String>("1")
 
     private val costValue = inputCost.map {
         it.toFloatOrNull()
     }
 
+    /**
+     * Selector for unit
+     */
     val unit = value(MeasurementUnit.Km)
+    /**
+     * Selector for currency
+     */
     val currency = value(Currency.USD)
 
     private val distanceInUnit = merge(distanceValue, unit) { km, unit ->
@@ -42,8 +54,18 @@ class ConvertScreenViewModel(context: ViewModelContext) : ViewModel(context) {
     }
 
     private val costInUnitTextValue = costPerUnitInCurrency.mapOrNull { "%.4f".format(it) }
-    private val totalCostTextValue = totalCost.mapOrNull { "%.4f".format(it) }
-    private val distanceTextValue = distanceInUnit.mapOrNull { "%.4f".format(it) }
+//    private val totalCostTextValue = totalCost.mapOrNull { "%.4f".format(it) }
+//    private val distanceTextValue = distanceInUnit.mapOrNull { "%.4f".format(it) }
+
+    val costResult =
+        merge(costPerUnitInCurrency, totalCost, currency, unit) { cost, distance, currency, unit ->
+            CostResult(
+                unit = unit,
+                currency = currency,
+                totalCost = cost,
+                distance = distance
+            )
+        }
 
     val distanceCostText =
         merge(unit, costInUnitTextValue, currency) { unit, cost, currency ->
@@ -52,16 +74,16 @@ class ConvertScreenViewModel(context: ViewModelContext) : ViewModel(context) {
             } else "-- Incorrect data --"
         }
 
-    val totalCostText =
-        merge(
-            totalCostTextValue,
-            currency,
-            distanceTextValue,
-            unit
-        ) { total, currency, distance, unit ->
-            if (total != null && distance != null) {
-                "Total cost: $total ${currency.currencyName} per $distance ${unit.unitName}s"
-            } else "-- Incorrect data --"
-        }
+//    val totalCostText =
+//        merge(
+//            totalCostTextValue,
+//            currency,
+//            distanceTextValue,
+//            unit
+//        ) { total, currency, distance, unit ->
+//            if (total != null && distance != null) {
+//                "Total cost: $total ${currency.currencyName} per $distance ${unit.unitName}s"
+//            } else "-- Incorrect data --"
+//        }
 
 }

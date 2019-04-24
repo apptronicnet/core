@@ -1,7 +1,7 @@
 package net.apptronic.core.component.entity
 
 /**
- * Predicate is basic subscribtion provider
+ * Predicate is basic subscription provider
  */
 interface Predicate<T> {
 

@@ -31,8 +31,14 @@ class ConvertScreenView(viewModel: ConvertScreenViewModel) :
             currencyEUR.bindAsSelector(viewModel.currency, Currency.EUR)
             currencyGBP.bindAsSelector(viewModel.currency, Currency.GBP)
 
+            viewModel.distanceCostText.subscribe {
+                costPerKm.text = it
+            }
+            viewModel.costResult.subscribe {
+                totalCost.text = it.toString()
+            }
             costPerKm.bindTo(viewModel.distanceCostText)
-            totalCost.bindTo(viewModel.totalCostText)
+//            totalCost.bindTo(viewModel.totalCostText)
         }
     }
 
