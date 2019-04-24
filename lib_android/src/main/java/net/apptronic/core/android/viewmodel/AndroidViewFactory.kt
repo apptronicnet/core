@@ -8,7 +8,7 @@ class AndroidViewFactory {
     private val builderMap = mutableMapOf<KClass<*>, AndroidViewBuilder<*>>()
 
     private class AndroidViewBuilder<T : ViewModel>(val builder: (T) -> AndroidView<T>) {
-        fun build(viewModel: ViewModel): AndroidView<*> {
+        fun build(viewModel: ViewModel): AndroidView<T> {
             return builder.invoke(viewModel as T)
         }
     }
