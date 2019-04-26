@@ -11,7 +11,7 @@ abstract class Property<T>(
 ) : ComponentEntity<T>(
     context,
     predicate
-), Predicate<T> {
+) {
 
     fun set(value: T) {
         onSetValue(value)
@@ -64,8 +64,11 @@ abstract class Property<T>(
  * Subscribe to updates of [source] and set all new values automatically
  */
 fun <E : Property<T>, T> E.setAs(predicate: Predicate<T>): E {
-    predicate.subscribe(context) {
+    val subscription = predicate.subscribe(context) {
         set(it)
+    }
+    this.context.getLifecycle().onExitFromActiveStage {
+        subscription.unsubscribe()
     }
     return this
 }

@@ -23,8 +23,12 @@ abstract class AndroidView<T : ViewModel> {
         } ?: throw IllegalStateException("[layoutResId] is not specified for $this")
     }
 
+    internal fun getViewModel(): ViewModel {
+        return viewModel ?: throw IllegalStateException("No viewModel bound for $this")
+    }
+
     internal fun getView(): View {
-        return view ?: throw IllegalStateException("No view boudn for $this")
+        return view ?: throw IllegalStateException("No view bound for $this")
     }
 
     internal fun bindView(view: View, viewModel: ViewModel) {

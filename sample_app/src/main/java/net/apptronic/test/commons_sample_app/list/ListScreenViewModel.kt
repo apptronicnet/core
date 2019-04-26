@@ -1,5 +1,6 @@
 package net.apptronic.test.commons_sample_app.list
 
+import net.apptronic.core.component.entity.behavior.merge
 import net.apptronic.core.component.entity.functions.variants.map
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
@@ -9,7 +10,13 @@ class ListScreenViewModel(context: ViewModelContext) : ViewModel(context), ListC
 
     val listNavigator = ViewModelListNavigator(this)
     private val itemNames = mutableValue(mutableListOf<String>())
-    val title = itemNames.map {
+    val title = merge(listNavigator, itemNames) { viewModels, names ->
+        viewModels.filter { viewModel ->
+            viewModel is ListItemBaseViewModel && names.contains(viewModel.getName())
+        }.map {
+            (it as ListItemBaseViewModel).getName()
+        }
+    }.map {
         it.joinToString(separator = " ")
     }
 

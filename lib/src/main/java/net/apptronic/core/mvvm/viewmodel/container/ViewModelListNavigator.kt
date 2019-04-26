@@ -4,23 +4,29 @@ import net.apptronic.core.component.entity.base.UpdateAndStorePredicate
 import net.apptronic.core.component.entity.entities.Property
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelParent
-import net.apptronic.core.mvvm.viewmodel.adapter.RangeChangedListener
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelListAdapter
 
 class ViewModelListNavigator(
     private val parent: ViewModel
-) : Property<List<ViewModel>>(parent, UpdateAndStorePredicate()), ViewModelParent {
+) : Property<List<ViewModel>>(parent, UpdateAndStorePredicate()), ViewModelParent,
+    ViewModelListAdapter.SourceNavigator {
 
     private var adapter: ViewModelListAdapter? = null
 
-    private val items = mutableListOf<ViewModelContainerItem>()
+    private var items: List<ViewModel> = emptyList()
+
+    private val containers = mutableMapOf<Long, ViewModelContainerItem>()
 
     override fun isSet(): Boolean {
         return true
     }
 
     override fun onGetValue(): List<ViewModel> {
-        return items.map { it.viewModel }
+        return items
+    }
+
+    private fun ViewModel.getContainer(): ViewModelContainerItem? {
+        return containers[getId()]
     }
 
     fun update(action: (MutableList<ViewModel>) -> Unit) {
@@ -29,38 +35,30 @@ class ViewModelListNavigator(
         set(list)
     }
 
-    private fun ViewModel.container(): ViewModelContainerItem? {
-        return items.firstOrNull {
-            it.viewModel == this
-        }
-    }
-
     override fun onSetValue(value: List<ViewModel>) {
         val diff = getDiff(get(), value)
-        diff.removed
-            .mapNotNull { it.container() }
-            .forEach {
-                onRemoved(it)
-            }
-        items.clear()
-        items.addAll(value.map { ViewModelContainerItem(it, parent) })
-        diff.added
-            .mapNotNull { it.container() }
-            .forEach {
-                onAdded(it)
-            }
-        adapter?.updateDataSet(get())
-        adapter?.requestVisibleRange()
+        diff.removed.forEach {
+            onRemoved(it)
+        }
+        items = value
+        diff.added.forEach {
+            onAdded(it)
+        }
+        adapter?.onDataChanged(get())
     }
 
-    private fun onAdded(item: ViewModelContainerItem) {
-        item.viewModel.onAttachToParent(this)
-        item.setCreated(true)
+    private fun onAdded(viewModel: ViewModel) {
+        val container = ViewModelContainerItem(viewModel, parent)
+        containers[viewModel.getId()] = container
+        container.viewModel.onAttachToParent(this)
+        container.setCreated(true)
     }
 
-    private fun onRemoved(item: ViewModelContainerItem) {
-        item.viewModel.onDetachFromParent()
-        item.terminate()
+    private fun onRemoved(viewModel: ViewModel) {
+        viewModel.getContainer()?.let { container ->
+            container.viewModel.onDetachFromParent()
+            container.terminate()
+        }
     }
 
     override fun requestCloseSelf(
@@ -70,30 +68,23 @@ class ViewModelListNavigator(
         // ignore
     }
 
-    private val rangeChangedListener = object :
-        RangeChangedListener {
-
-        override fun onVisibleRangeChanged(start: Int, end: Int) {
-            items.forEachIndexed { index, item ->
-                val isInVisibleRange = index in start until end
-                item.setBound(isInVisibleRange)
-                item.setVisible(isInVisibleRange)
-                item.setFocused(isInVisibleRange)
-            }
+    override fun setBound(viewModel: ViewModel, isBound: Boolean) {
+        viewModel.getContainer()?.let {
+            it.setBound(isBound)
+            it.setVisible(isBound)
+            it.setFocused(isBound)
         }
-
     }
 
     fun setAdapter(adapter: ViewModelListAdapter) {
-        this.adapter?.let {
-            it.setRangeChangedListener(null)
-        }
         this.adapter = adapter
-        adapter.setRangeChangedListener(rangeChangedListener)
-        adapter.updateDataSet(get())
-        adapter.requestVisibleRange()
+        adapter.onDataChanged(get())
+        adapter.setNavigator(this)
         parent.getLifecycle().onExitFromActiveStage {
-            adapter.setRangeChangedListener(null)
+            items.forEach {
+                setBound(it, false)
+            }
+            adapter.setNavigator(null)
             this.adapter = null
         }
     }

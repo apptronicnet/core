@@ -46,6 +46,8 @@ dependencies {
     implementation(kotlin("reflect:$kotlinVersion"))
 
     "implementation"(project(":lib"))
-    "implementation"("androidx.core:core:1.0.1")
-    "implementation"("androidx.appcompat:appcompat:1.0.2")
+
+    compileOnly("androidx.core:core:1.0.1")
+    compileOnly("androidx.appcompat:appcompat:1.0.2")
+    compileOnly("com.google.android.material:material:1.0.0")
 }

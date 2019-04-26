@@ -2,55 +2,47 @@ package net.apptronic.core.mvvm.viewmodel.adapter
 
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 
-abstract class ViewModelListAdapter(
-    private val viewController: ViewController
-) {
+abstract class ViewModelListAdapter {
 
-    interface ViewController {
+    private val listeners = mutableListOf<() -> Unit>()
+    private var items: List<ViewModel> = emptyList()
+    private var navigator: SourceNavigator? = null
 
-        fun onDataSetChanged(items: List<ViewModel>)
+    fun addListener(listener: () -> Unit) {
+        listeners.add(listener)
+    }
 
-        fun onRequestedVisibleRange()
+    fun getItems(): List<ViewModel> {
+        return items
+    }
+
+    fun getSize(): Int {
+        return items.size
+    }
+
+    fun getItemAt(position: Int): ViewModel {
+        return items[position]
+    }
+
+    fun setNavigator(navigator: SourceNavigator?) {
+        this.navigator = navigator
+    }
+
+    interface SourceNavigator {
+
+        fun setBound(viewModel: ViewModel, isBound: Boolean)
 
     }
 
-    private var rangeChangedListener: RangeChangedListener? = null
-    private var isRequestedForceUpdate = false
-    private var start = 0
-    private var end = 0
-
-    fun notifyListRecreated() {
-        updateVisibleRange(0, 0)
-    }
-
-    fun updateVisibleRange(start: Int, end: Int) {
-        val changed = this.start != start || this.end != end
-        if (changed || isRequestedForceUpdate) {
-            this.start = start
-            this.end = end
-            rangeChangedListener?.onVisibleRangeChanged(start, end)
-            isRequestedForceUpdate = false
+    fun onDataChanged(items: List<ViewModel>) {
+        this.items = items
+        listeners.forEach {
+            it.invoke()
         }
     }
 
-    fun updateDataSet(items: List<ViewModel>) {
-        viewController.onDataSetChanged(items)
-        requestVisibleRange()
+    protected fun setBound(viewModel: ViewModel, isBound: Boolean) {
+        navigator?.setBound(viewModel, isBound)
     }
-
-    fun requestVisibleRange() {
-        isRequestedForceUpdate = true
-        viewController.onRequestedVisibleRange()
-    }
-
-    internal fun setRangeChangedListener(listener: RangeChangedListener?) {
-        this.rangeChangedListener = listener
-    }
-
-}
-
-internal interface RangeChangedListener {
-
-    fun onVisibleRangeChanged(start: Int, end: Int)
 
 }
