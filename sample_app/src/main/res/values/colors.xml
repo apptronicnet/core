@@ -6,6 +6,12 @@
 
     <color name="redText">#f00</color>
     <color name="blueText">#00f</color>
+    <color name="blackText">#000</color>
     <color name="selection">#40008577</color>
+
+    <color name="textListItem">#282</color>
+    <color name="imageListItem1">#c40</color>
+    <color name="imageListItem2">#26c</color>
+    <color name="imageListItem3">#a0a</color>
 
 </resources>

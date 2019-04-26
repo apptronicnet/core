@@ -4,6 +4,8 @@ import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 import net.apptronic.core.mvvm.viewmodel.adapter.BasicTransition
 import net.apptronic.test.commons_sample_app.convert.ConvertScreenViewModel
+import net.apptronic.test.commons_sample_app.list.ListContext
+import net.apptronic.test.commons_sample_app.list.ListScreenViewModel
 import net.apptronic.test.commons_sample_app.login.LoginRouter
 import net.apptronic.test.commons_sample_app.login.LoginViewModel
 import net.apptronic.test.commons_sample_app.login.LoginViewModelContext
@@ -46,6 +48,13 @@ class ApplicationScreenNavigationRouterImpl(
     override fun openConverterDemo() {
         parent.rootPage.add(
             ConvertScreenViewModel(ViewModelContext(parent)),
+            BasicTransition.Forward
+        )
+    }
+
+    override fun openListDemo() {
+        parent.rootPage.add(
+            ListScreenViewModel(ListContext(parent)),
             BasicTransition.Forward
         )
     }

@@ -42,7 +42,8 @@ class SubModelLifecycleTest {
     }
 
     private val root = ParentModel()
-    private val controller = ViewModelLifecycleController(root)
+    private val controller =
+        ViewModelLifecycleController(root)
 
     @Test
     fun shouldRunLifecycle() {

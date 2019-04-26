@@ -4,7 +4,7 @@ import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.base.UpdateAndStorePredicate
 import net.apptronic.core.component.entity.base.ValueHolder
 
-class MutableValue<T>(
+open class MutableValue<T>(
     context: Context
 ) : Property<T>(
     context,
@@ -27,9 +27,9 @@ class MutableValue<T>(
         } ?: throw PropertyNotSetException()
     }
 
-    fun update(action: T.() -> Unit) {
+    fun update(action: (T) -> Unit) {
         valueHolder?.let {
-            it.value.action()
+            action.invoke(it.value)
             workingPredicate.update(it.value)
         }
     }

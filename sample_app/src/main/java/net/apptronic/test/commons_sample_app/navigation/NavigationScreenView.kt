@@ -1,26 +1,27 @@
 package net.apptronic.test.commons_sample_app.navigation
 
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import kotlinx.android.synthetic.main.screen_navigation.view.*
 import net.apptronic.core.android.viewmodel.AndroidView
+import net.apptronic.core.android.viewmodel.ViewModelBinding
+import net.apptronic.core.android.viewmodel.bindings.ClickActionBinding
 import net.apptronic.test.commons_sample_app.R
 
-class NavigationScreenView(viewModel: NavigationScreenViewModel) :
-    AndroidView<NavigationScreenViewModel>(viewModel) {
+class NavigationScreenView : AndroidView<NavigationScreenViewModel>() {
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {
-        return inflater.inflate(R.layout.screen_navigation, container, false);
+    init {
+        layoutResId = R.layout.screen_navigation
     }
 
-    override fun onBindView() {
-        with(getView()) {
-            loginScreenDemo.setOnClickListener {
-                viewModel.onClickLoginDemo()
-            }
-            converterScreenDemo.setOnClickListener {
-                viewModel.onClickConverterDemo()
+    override fun onCreateBinding(
+        view: View,
+        viewModel: NavigationScreenViewModel
+    ): ViewModelBinding<NavigationScreenViewModel> {
+        return createBinding(view, viewModel) {
+            with(view) {
+                loginScreenDemo.bindTo(ClickActionBinding(), viewModel::onClickLoginDemo)
+                converterScreenDemo.bindTo(ClickActionBinding(), viewModel::onClickConverterDemo)
+                listScreenDemo.bindTo(ClickActionBinding(), viewModel::onClickListDemo)
             }
         }
     }

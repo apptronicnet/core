@@ -170,6 +170,7 @@ class DependencyProvider(
             if (providerSearch != null) {
                 val provider = providerSearch as ObjectProvider<TypeDeclaration>
                 val factoryContext = FactoryContext(
+                    context,
                     this,
                     params,
                     localLifecycleStage,

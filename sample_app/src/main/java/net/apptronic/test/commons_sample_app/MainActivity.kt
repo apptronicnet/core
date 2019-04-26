@@ -13,7 +13,7 @@ class MainActivity : AppCompatActivity() {
         appComponent.getApplicationScreenModel()
     }
     private val lifecycleController by lazy {
-        ActivityViewModelLifecycleController(MainActivityView(viewModel)) {
+        ActivityViewModelLifecycleController(MainActivityView(), viewModel) {
             container
         }
     }
@@ -54,7 +54,6 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         lifecycleController.setBound(false)
-        viewModel.rootPage.setAdapter(null)
         if (isFinishing) {
             lifecycleController.setCreated(false)
             appComponent.applicationScreenClosed()

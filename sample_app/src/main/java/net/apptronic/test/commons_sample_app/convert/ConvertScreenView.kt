@@ -1,58 +1,65 @@
 package net.apptronic.test.commons_sample_app.convert
 
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.screen_convert.view.*
 import net.apptronic.core.android.viewmodel.AndroidView
-import net.apptronic.core.android.viewmodel.bindTo
+import net.apptronic.core.android.viewmodel.ViewModelBinding
+import net.apptronic.core.android.viewmodel.ViewToPredicateBinding
+import net.apptronic.core.android.viewmodel.bindings.InputFieldBinding
+import net.apptronic.core.android.viewmodel.bindings.TextBinding
 import net.apptronic.core.component.entity.entities.Property
 import net.apptronic.core.component.entity.functions.variants.map
 import net.apptronic.core.component.entity.subscribe
 import net.apptronic.test.commons_sample_app.R
 
-class ConvertScreenView(viewModel: ConvertScreenViewModel) :
-    AndroidView<ConvertScreenViewModel>(viewModel) {
+class ConvertScreenView : AndroidView<ConvertScreenViewModel>() {
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {
-        return inflater.inflate(R.layout.screen_convert, container, false)
+    init {
+        layoutResId = R.layout.screen_convert
     }
 
-    override fun onBindView() {
-        with(getView()) {
-            inputDistanceInKm.bindTo(viewModel.inputDistance)
-            inputCostPerKmInUsd.bindTo(viewModel.inputCost)
+    override fun onCreateBinding(
+        view: View,
+        viewModel: ConvertScreenViewModel
+    ): ViewModelBinding<ConvertScreenViewModel> {
+        return createBinding(view, viewModel) {
+            with(view) {
+                inputDistanceInKm.bindTo(InputFieldBinding(), viewModel.inputDistance)
+                inputCostPerKmInUsd.bindTo(InputFieldBinding(), viewModel.inputCost)
 
-            unitKM.bindAsSelector(viewModel.unit, MeasurementUnit.Km)
-            unitMiles.bindAsSelector(viewModel.unit, MeasurementUnit.Miles)
+                unitKM.bindTo(SelectorBinding(MeasurementUnit.Km), viewModel.unit)
+                unitMiles.bindTo(SelectorBinding(MeasurementUnit.Miles), viewModel.unit)
 
-            currencyUSD.bindAsSelector(viewModel.currency, Currency.USD)
-            currencyEUR.bindAsSelector(viewModel.currency, Currency.EUR)
-            currencyGBP.bindAsSelector(viewModel.currency, Currency.GBP)
+                currencyUSD.bindTo(SelectorBinding(Currency.USD), viewModel.currency)
+                currencyEUR.bindTo(SelectorBinding(Currency.EUR), viewModel.currency)
+                currencyGBP.bindTo(SelectorBinding(Currency.GBP), viewModel.currency)
 
-            viewModel.distanceCostText.subscribe {
-                costPerKm.text = it
+                costPerKm.bindTo(TextBinding(), viewModel.distanceCostText)
+                totalCost.bindTo(TextBinding(), viewModel.costResult.map { it.toString() })
             }
-            viewModel.costResult.subscribe {
-                totalCost.text = it.toString()
-            }
-            costPerKm.bindTo(viewModel.distanceCostText)
-//            totalCost.bindTo(viewModel.totalCostText)
         }
     }
 
-    private fun <T> View.bindAsSelector(property: Property<T>, value: T) {
-        setOnClickListener {
-            property.set(value)
-        }
-        property.map { it == value }.subscribe {
-            if (it) {
-                setBackgroundColor(ContextCompat.getColor(context, R.color.selection))
-            } else {
-                background = null
+    private class SelectorBinding<T>(val value: T) :
+        ViewToPredicateBinding<View, T, Property<T>> {
+
+        override fun performBinding(binding: ViewModelBinding<*>, view: View, target: Property<T>) {
+            target.map { it == value }.subscribe {
+                if (it) {
+                    view.setBackgroundColor(ContextCompat.getColor(view.context, R.color.selection))
+                } else {
+                    view.background = null
+                }
+            }
+            view.setOnClickListener {
+                target.set(value)
+            }
+            binding.doOnUnbind {
+                view.setOnClickListener(null)
             }
         }
+
     }
 
 }

@@ -6,4 +6,6 @@ interface NavigationRouter {
 
     fun openConverterDemo()
 
+    fun openListDemo()
+
 }

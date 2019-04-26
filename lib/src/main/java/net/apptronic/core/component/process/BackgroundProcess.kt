@@ -65,14 +65,14 @@ class BackgroundProcess<T, R>(
     private fun doProcess(request: T) {
         parent.getWorkers().getWorker(workerName).run {
             val id = idGenerator.nextId()
-            idsInProgress.update { add(id) }
+            idsInProgress.update { it.add(id) }
             try {
                 val result = action.execute(request)
                 successEvent.sendEvent(result)
             } catch (e: Exception) {
                 failedEvent.sendEvent(e)
             } finally {
-                idsInProgress.update { remove(id) }
+                idsInProgress.update { it.remove(id) }
             }
         }
     }

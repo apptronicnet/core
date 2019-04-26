@@ -17,23 +17,23 @@ open class ViewModelLifecycleController(
         }
     }
 
-    fun setCreated(value: Boolean) {
+    open fun setCreated(value: Boolean) {
         setStage(value, ViewModelLifecycle.STAGE_CREATED)
     }
 
-    fun setBound(value: Boolean) {
+    open fun setBound(value: Boolean) {
         setStage(value, ViewModelLifecycle.STAGE_BOUND)
     }
 
-    fun setVisible(value: Boolean) {
+    open fun setVisible(value: Boolean) {
         setStage(value, ViewModelLifecycle.STAGE_VISIBLE)
     }
 
-    fun setFocused(value: Boolean) {
+    open fun setFocused(value: Boolean) {
         setStage(value, ViewModelLifecycle.STAGE_FOCUSED)
     }
 
-    fun terminate() {
+    open fun terminate() {
         viewModel.terminate()
     }
 

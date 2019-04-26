@@ -1,22 +1,31 @@
 package net.apptronic.test.commons_sample_app.login
 
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import net.apptronic.core.android.viewmodel.*
+import kotlinx.android.synthetic.main.screen_login.view.*
+import net.apptronic.core.android.viewmodel.AndroidView
+import net.apptronic.core.android.viewmodel.ViewModelBinding
+import net.apptronic.core.android.viewmodel.bindings.ClickEventBinding
+import net.apptronic.core.android.viewmodel.bindings.InputFieldBinding
 import net.apptronic.test.commons_sample_app.R
 
-class LoginScreenView(viewModel: LoginViewModel) : AndroidView<LoginViewModel>(viewModel) {
+class LoginScreenView : AndroidView<LoginViewModel>() {
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {
-        return inflater.inflate(R.layout.screen_login, container, false)
+    init {
+        layoutResId = R.layout.screen_login
     }
 
-    override fun onBindView() {
-        editText(R.id.loginField).bindTo(viewModel.login)
-        editText(R.id.passwordField).bindTo(viewModel.password)
-        view(R.id.loginButton).bindOnClickListener(viewModel.loginClick)
-        view(R.id.registerNewAccount).bindOnClickListener(viewModel.registerClick)
+    override fun onCreateBinding(
+        view: View,
+        viewModel: LoginViewModel
+    ): ViewModelBinding<LoginViewModel> {
+        return createBinding(view, viewModel) {
+            with(view) {
+                loginField.bindTo(InputFieldBinding(), viewModel.login)
+                passwordField.bindTo(InputFieldBinding(), viewModel.password)
+                loginButton.bindTo(ClickEventBinding(), viewModel.loginClick)
+                registerNewAccount.bindTo(ClickEventBinding(), viewModel.registerClick)
+            }
+        }
     }
 
 }

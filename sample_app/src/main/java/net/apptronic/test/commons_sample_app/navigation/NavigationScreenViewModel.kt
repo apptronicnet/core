@@ -15,6 +15,10 @@ class NavigationScreenViewModel(context: ViewModelContext) : ViewModel(context) 
         router.openConverterDemo()
     }
 
+    fun onClickListDemo() {
+        router.openListDemo()
+    }
+
     init {
         doOnVisible {
             doOnCreate {

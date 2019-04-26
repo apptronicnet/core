@@ -1,5 +1,6 @@
 package net.apptronic.core.component.di
 
+import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.lifecycle.LifecycleStage
 import kotlin.reflect.KClass
 
@@ -7,7 +8,8 @@ import kotlin.reflect.KClass
  * Context of creating methods in module definition
  */
 class FactoryContext(
-    private val context: DependencyProvider,
+    private val context: Context,
+    private val dependencyProvider: DependencyProvider,
     private val parameters: Parameters,
     internal val localLifecycleStage: LifecycleStage,
     internal val callerLifecycleStage: LifecycleStage
@@ -45,16 +47,20 @@ class FactoryContext(
         return injectLazy(objectKey(descriptor))
     }
 
+    fun inject(): Context {
+        return context
+    }
+
     internal fun <ObjectType> inject(
         objectKey: ObjectKey
     ): ObjectType {
-        return parameters.get(objectKey) ?: context.inject(objectKey)
+        return parameters.get(objectKey) ?: dependencyProvider.inject(objectKey)
     }
 
     internal fun <ObjectType> injectLazy(
         objectKey: ObjectKey
     ): Lazy<ObjectType> {
-        return parameters.get(objectKey) ?: context.injectLazy(objectKey)
+        return parameters.get(objectKey) ?: dependencyProvider.injectLazy(objectKey)
     }
 
 }

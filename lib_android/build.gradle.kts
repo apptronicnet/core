@@ -21,7 +21,7 @@ configure<LibraryExtension> {
     defaultConfig {
         versionCode = 1
         versionName = "1.0"
-        minSdkVersion(17)
+        minSdkVersion(21)
         targetSdkVersion(28)
 
         testApplicationId = "net.apptronic.core.android.test"

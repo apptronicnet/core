@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/listItemImgRoot"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/listItemImgIndex"
+        android:layout_width="64dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/blackText"
+        android:textSize="24dp"
+        tools:text="1." />
+
+    <ImageView
+        android:id="@+id/listItemImgContent"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_weight="1"
+        android:textColor="@color/textListItem"
+        android:textSize="24dp"
+        tools:src="@drawable/ic_list_item_1"
+        tools:tint="@color/imageListItem1" />
+
+    <ImageView
+        android:id="@+id/listItemImgRemove"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:src="@drawable/ic_clear"
+        android:textColor="@color/textListItem"
+        tools:text="Some text" />
+
+</LinearLayout>

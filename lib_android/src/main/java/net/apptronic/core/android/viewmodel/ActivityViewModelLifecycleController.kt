@@ -1,17 +1,18 @@
 package net.apptronic.core.android.viewmodel
 
 import android.view.View
+import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.container.ViewModelLifecycleController
 
-class ActivityViewModelLifecycleController(
-    private val activityView: AndroidActivityView<*>,
+class ActivityViewModelLifecycleController<T : ViewModel>(
+    private val activityView: AndroidView<T>,
+    private val viewModel: T,
     private val contentViewProvider: () -> View
-) :
-    ViewModelLifecycleController(activityView.viewModel) {
+) : ViewModelLifecycleController(viewModel) {
 
     init {
-        activityView.viewModel.doOnBind {
-            activityView.bindView(contentViewProvider.invoke())
+        viewModel.doOnBind {
+            activityView.requestBinding(contentViewProvider.invoke(), viewModel)
         }
     }
 

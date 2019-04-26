@@ -7,39 +7,38 @@ import net.apptronic.core.mvvm.viewmodel.adapter.BasicTransition
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelAdapter
 
 open class AndroidViewModelAdapter(
-    private val container: ViewGroup
+    private val container: ViewGroup,
+    private val viewBindingFactory: ViewBindingFactory = ViewBindingFactory()
 ) : ViewModelAdapter() {
 
     private var animationTime =
         container.resources.getInteger(android.R.integer.config_mediumAnimTime)
 
-    private var viewFactory = AndroidViewFactory()
-
-    fun setBindingFactory(viewFactory: AndroidViewFactory) {
-        this.viewFactory = viewFactory
+    fun bindings(setup: ViewBindingFactory.() -> Unit) {
+        setup.invoke(viewBindingFactory)
     }
 
-    fun bindings(setup: AndroidViewFactory.() -> Unit) {
-        setup.invoke(viewFactory)
-    }
-
-    private var currentView: AndroidView<*>? = null
+    private var currentBinding: ViewModelBinding<*>? = null
 
     override fun onInvalidate(oldModel: ViewModel?, newModel: ViewModel?, transitionInfo: Any?) {
-        val newAndroidView = if (newModel != null) viewFactory.build(newModel) else null
-        newAndroidView?.bindView(container)
-        setView(newAndroidView, transitionInfo)
+        val newAndroidView =
+            if (newModel != null) viewBindingFactory.getAndroidView(newModel) else null
+        val binding = if (newAndroidView != null && newModel != null) {
+            val view = newAndroidView.onCreateView(container)
+            newAndroidView.requestBinding(view, newModel)
+        } else null
+        setView(binding, transitionInfo)
     }
 
-    fun setView(newView: AndroidView<*>?, transitionInfo: Any?) {
-        val oldView = currentView
-        currentView = newView
-        if (oldView != null && newView != null) {
-            onReplace(container, oldView.getView(), newView.getView(), transitionInfo)
-        } else if (newView != null) {
-            onAdd(container, newView.getView(), transitionInfo)
-        } else if (oldView != null) {
-            onRemove(container, oldView.getView(), transitionInfo)
+    private fun setView(newBinding: ViewModelBinding<*>?, transitionInfo: Any?) {
+        val oldBinding = currentBinding
+        currentBinding = newBinding
+        if (oldBinding != null && newBinding != null) {
+            onReplace(container, oldBinding.view, newBinding.view, transitionInfo)
+        } else if (newBinding != null) {
+            onAdd(container, newBinding.view, transitionInfo)
+        } else if (oldBinding != null) {
+            onRemove(container, oldBinding.view, transitionInfo)
         }
     }
 

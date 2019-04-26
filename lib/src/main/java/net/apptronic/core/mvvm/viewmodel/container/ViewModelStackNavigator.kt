@@ -57,16 +57,17 @@ class ViewModelStackNavigator(
     /**
      * Set [ViewModelAdapter] to create view controllers for [ViewModel]s
      */
-    fun setAdapter(adapter: ViewModelAdapter?) {
+    fun setAdapter(adapter: ViewModelAdapter) {
         val currentItem = getCurrentItem()
-        if (this.adapter != null && currentItem != null) {
-            onUnbind(currentItem)
-        }
         this.adapter = adapter
-        if (adapter != null) {
-            invalidate(
-                oldItem = null, newItem = getCurrentItem(), transitionInfo = null
-            )
+        invalidate(
+            oldItem = null, newItem = getCurrentItem(), transitionInfo = null
+        )
+        parent.getLifecycle().onExitFromActiveStage {
+            if (currentItem != null) {
+                onUnbind(currentItem)
+            }
+            this.adapter = null
         }
     }
 
@@ -129,7 +130,8 @@ class ViewModelStackNavigator(
      */
     fun add(viewModel: ViewModel, transitionInfo: Any? = null) {
         val activeModel = getCurrentItem()
-        val newItem = ViewModelContainerItem(viewModel, parent)
+        val newItem =
+            ViewModelContainerItem(viewModel, parent)
         stack.add(newItem)
         onAdded(newItem)
         invalidate(
@@ -149,7 +151,8 @@ class ViewModelStackNavigator(
             stack.remove(it)
             onRemoved(it)
         }
-        val newItem = ViewModelContainerItem(viewModel, parent)
+        val newItem =
+            ViewModelContainerItem(viewModel, parent)
         stack.add(newItem)
         onAdded(newItem)
         invalidate(
