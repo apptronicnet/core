@@ -6,9 +6,8 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.screen_list.view.*
 import net.apptronic.core.android.viewmodel.AndroidView
 import net.apptronic.core.android.viewmodel.AndroidViewModelListAdapter
-import net.apptronic.core.android.viewmodel.ViewModelBinding
-import net.apptronic.core.android.viewmodel.bindings.ClickActionBinding
-import net.apptronic.core.android.viewmodel.bindings.TextBinding
+import net.apptronic.core.android.viewmodel.bindings.sendClicksTo
+import net.apptronic.core.android.viewmodel.bindings.setTextFrom
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelListAdapter
 import net.apptronic.test.commons_sample_app.MainModelFactory
@@ -20,30 +19,24 @@ class ListScreenView : AndroidView<ListScreenViewModel>() {
         layoutResId = R.layout.screen_list
     }
 
-    override fun onCreateBinding(
-        view: View,
-        viewModel: ListScreenViewModel
-    ): ViewModelBinding<ListScreenViewModel> {
-        return createBinding(view, viewModel) {
-            with(view) {
-                listTitle.bindTo(TextBinding(), viewModel.title)
+    override fun onBindView(view: View, viewModel: ListScreenViewModel) {
+        with(view) {
+            +(listTitle setTextFrom viewModel.title)
 
-                val controller = ViewControllerImpl(listOfItems)
-                val viewModelAdapter = AndroidViewModelListAdapter(controller, MainModelFactory)
-                controller.listAdapter = RecyclerAdapter(viewModelAdapter)
-                controller.viewModelAdapter = viewModelAdapter
-                listOfItems.adapter = controller.listAdapter
-                viewModel.listNavigator.setAdapter(viewModelAdapter)
+            val controller = ViewControllerImpl(listOfItems)
+            val viewModelAdapter = AndroidViewModelListAdapter(controller, MainModelFactory)
+            controller.listAdapter = RecyclerAdapter(viewModelAdapter)
+            controller.viewModelAdapter = viewModelAdapter
+            listOfItems.adapter = controller.listAdapter
+            viewModel.listNavigator.setAdapter(viewModelAdapter)
 
-                addTextTop.bindTo(ClickActionBinding(), viewModel::onClickAddTextToStart)
-                addTextMiddle.bindTo(ClickActionBinding(), viewModel::onClickAddTextToMiddle)
-                addTextBottom.bindTo(ClickActionBinding(), viewModel::onClickAddTextToEnd)
+            +(addTextTop sendClicksTo viewModel::onClickAddTextToStart)
+            +(addTextMiddle sendClicksTo viewModel::onClickAddTextToMiddle)
+            +(addTextBottom sendClicksTo viewModel::onClickAddTextToEnd)
 
-                addImageTop.bindTo(ClickActionBinding(), viewModel::onClickAddImageToStart)
-                addImageMiddle.bindTo(ClickActionBinding(), viewModel::onClickAddImageToMiddle)
-                addImageBottom.bindTo(ClickActionBinding(), viewModel::onClickAddImageToEnd)
-
-            }
+            +(addImageTop sendClicksTo viewModel::onClickAddImageToStart)
+            +(addImageMiddle sendClicksTo viewModel::onClickAddImageToMiddle)
+            +(addImageBottom sendClicksTo viewModel::onClickAddImageToEnd)
         }
     }
 

@@ -12,7 +12,7 @@ class ActivityViewModelLifecycleController<T : ViewModel>(
 
     init {
         viewModel.doOnBind {
-            activityView.requestBinding(contentViewProvider.invoke(), viewModel)
+            activityView.bindView(contentViewProvider.invoke(), viewModel)
         }
     }
 

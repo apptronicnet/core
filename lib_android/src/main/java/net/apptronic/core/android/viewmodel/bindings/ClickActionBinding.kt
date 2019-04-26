@@ -1,16 +1,22 @@
 package net.apptronic.core.android.viewmodel.bindings
 
 import android.view.View
-import net.apptronic.core.android.viewmodel.ViewModelBinding
-import net.apptronic.core.android.viewmodel.ViewToGenericActionBinding
+import net.apptronic.core.android.viewmodel.Binding
 
-class ClickActionBinding : ViewToGenericActionBinding<View>() {
+infix fun View.sendClicksTo(target: () -> Unit): ClickActionBinding {
+    return ClickActionBinding(this, target)
+}
 
-    override fun onPerformBinding(binding: ViewModelBinding<*>, view: View, target: () -> Unit) {
+class ClickActionBinding(
+    private val view: View,
+    private val target: () -> Unit
+) : Binding() {
+
+    override fun onBind() {
         view.setOnClickListener {
             target.invoke()
         }
-        binding.doOnUnbind {
+        onUnbind {
             view.setOnClickListener(null)
         }
     }

@@ -14,36 +14,48 @@ class ViewBindingFactory {
     private val views = mutableMapOf<KClass<*>, ViewSpec>()
 
     private data class ViewSpec(
-        val androidView: AndroidView<*>,
-        val typeId: Int
-    )
+        val builder: () -> AndroidView<*>,
+        val typeId: Int,
+        val layoutResId: Int?
+    ) {
+
+        fun build(): AndroidView<*> {
+            return builder.invoke()
+        }
+
+    }
 
     inline fun <reified ViewModelType : ViewModel> addBinding(
-        androidView: AndroidView<ViewModelType>,
+        noinline builder: () -> AndroidView<ViewModelType>,
         @LayoutRes layoutResId: Int? = null
     ) {
-        addBinding(ViewModelType::class, androidView, layoutResId)
+        addBinding(
+            clazz = ViewModelType::class,
+            builder = builder,
+            layoutResId = layoutResId
+        )
     }
 
     fun <ViewModelType : ViewModel> addBinding(
         clazz: KClass<ViewModelType>,
-        androidView: AndroidView<ViewModelType>,
+        builder: () -> AndroidView<ViewModelType>,
         @LayoutRes layoutResId: Int? = null
     ) {
-        if (layoutResId != null) {
-            androidView.layoutResId = layoutResId
-        }
-        views[clazz] = ViewSpec(androidView, indexGenerator++)
+        views[clazz] = ViewSpec(
+            builder = builder,
+            typeId = indexGenerator++,
+            layoutResId = layoutResId
+        )
     }
 
     fun getAndroidView(typeId: Int): AndroidView<*> {
-        return views.values.firstOrNull { it.typeId == typeId }?.androidView
-            ?: throw IllegalArgumentException("Not registered")
+        return views.values.firstOrNull { it.typeId == typeId }?.builder?.invoke()
+            ?: throw IllegalArgumentException("Not registered for typeId=$typeId")
     }
 
     fun getAndroidView(viewModel: ViewModel): AndroidView<*> {
-        return views[viewModel::class]?.androidView
-            ?: throw IllegalArgumentException("Not registered $viewModel")
+        return views[viewModel::class]?.builder?.invoke()
+            ?: throw IllegalArgumentException("Not registered for $viewModel")
     }
 
     fun getType(viewModel: ViewModel): Int {

@@ -3,18 +3,20 @@ package net.apptronic.core.android.viewmodel.bindings
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.EditText
-import net.apptronic.core.android.viewmodel.ViewModelBinding
-import net.apptronic.core.android.viewmodel.ViewToPredicateBinding
+import net.apptronic.core.android.viewmodel.Binding
 import net.apptronic.core.component.entity.entities.Property
 import net.apptronic.core.component.entity.subscribe
 
-class InputFieldBinding : ViewToPredicateBinding<EditText, String, Property<String>> {
+infix fun EditText.asInputFor(target: Property<String>): InputFieldBinding {
+    return InputFieldBinding(this, target)
+}
 
-    override fun performBinding(
-        binding: ViewModelBinding<*>,
-        view: EditText,
-        target: Property<String>
-    ) {
+class InputFieldBinding(
+    private val view: EditText,
+    private val target: Property<String>
+) : Binding() {
+
+    override fun onBind() {
         target.subscribe {
             if (it != view.text.toString()) {
                 view.setText(it)
@@ -40,7 +42,7 @@ class InputFieldBinding : ViewToPredicateBinding<EditText, String, Property<Stri
             }
         }
         view.addTextChangedListener(textWatcher)
-        binding.doOnUnbind {
+        onUnbind {
             view.removeTextChangedListener(textWatcher)
 
         }

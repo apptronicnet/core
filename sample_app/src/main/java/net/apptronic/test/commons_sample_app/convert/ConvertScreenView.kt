@@ -4,10 +4,9 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.screen_convert.view.*
 import net.apptronic.core.android.viewmodel.AndroidView
-import net.apptronic.core.android.viewmodel.ViewModelBinding
-import net.apptronic.core.android.viewmodel.ViewToPredicateBinding
-import net.apptronic.core.android.viewmodel.bindings.InputFieldBinding
-import net.apptronic.core.android.viewmodel.bindings.TextBinding
+import net.apptronic.core.android.viewmodel.Binding
+import net.apptronic.core.android.viewmodel.bindings.asInputFor
+import net.apptronic.core.android.viewmodel.bindings.setTextFrom
 import net.apptronic.core.component.entity.entities.Property
 import net.apptronic.core.component.entity.functions.variants.map
 import net.apptronic.core.component.entity.subscribe
@@ -19,32 +18,30 @@ class ConvertScreenView : AndroidView<ConvertScreenViewModel>() {
         layoutResId = R.layout.screen_convert
     }
 
-    override fun onCreateBinding(
-        view: View,
-        viewModel: ConvertScreenViewModel
-    ): ViewModelBinding<ConvertScreenViewModel> {
-        return createBinding(view, viewModel) {
-            with(view) {
-                inputDistanceInKm.bindTo(InputFieldBinding(), viewModel.inputDistance)
-                inputCostPerKmInUsd.bindTo(InputFieldBinding(), viewModel.inputCost)
+    override fun onBindView(view: View, viewModel: ConvertScreenViewModel) {
+        with(view) {
+            +(inputDistanceInKm asInputFor viewModel.inputDistance)
+            +(inputCostPerKmInUsd asInputFor viewModel.inputCost)
 
-                unitKM.bindTo(SelectorBinding(MeasurementUnit.Km), viewModel.unit)
-                unitMiles.bindTo(SelectorBinding(MeasurementUnit.Miles), viewModel.unit)
+            +SelectorBinding(unitKM, MeasurementUnit.Km, viewModel.unit)
+            +SelectorBinding(unitMiles, MeasurementUnit.Miles, viewModel.unit)
 
-                currencyUSD.bindTo(SelectorBinding(Currency.USD), viewModel.currency)
-                currencyEUR.bindTo(SelectorBinding(Currency.EUR), viewModel.currency)
-                currencyGBP.bindTo(SelectorBinding(Currency.GBP), viewModel.currency)
+            +SelectorBinding(currencyUSD, Currency.USD, viewModel.currency)
+            +SelectorBinding(currencyEUR, Currency.EUR, viewModel.currency)
+            +SelectorBinding(currencyGBP, Currency.GBP, viewModel.currency)
 
-                costPerKm.bindTo(TextBinding(), viewModel.distanceCostText)
-                totalCost.bindTo(TextBinding(), viewModel.costResult.map { it.toString() })
-            }
+            +(costPerKm setTextFrom viewModel.distanceCostText)
+            +(totalCost setTextFrom viewModel.costResult.map { it.toString() })
         }
     }
 
-    private class SelectorBinding<T>(val value: T) :
-        ViewToPredicateBinding<View, T, Property<T>> {
+    private class SelectorBinding<T>(
+        private val view: View,
+        private val value: T,
+        private val target: Property<T>
+    ) : Binding() {
 
-        override fun performBinding(binding: ViewModelBinding<*>, view: View, target: Property<T>) {
+        override fun onBind() {
             target.map { it == value }.subscribe {
                 if (it) {
                     view.setBackgroundColor(ContextCompat.getColor(view.context, R.color.selection))
@@ -55,7 +52,7 @@ class ConvertScreenView : AndroidView<ConvertScreenViewModel>() {
             view.setOnClickListener {
                 target.set(value)
             }
-            binding.doOnUnbind {
+            onUnbind {
                 view.setOnClickListener(null)
             }
         }

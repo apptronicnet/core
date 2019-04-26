@@ -1,19 +1,24 @@
 package net.apptronic.core.android.viewmodel.bindings
 
 import android.view.View
-import net.apptronic.core.android.viewmodel.ViewModelBinding
-import net.apptronic.core.android.viewmodel.ViewToPredicateBinding
+import net.apptronic.core.android.viewmodel.Binding
 import net.apptronic.core.component.entity.entities.ComponentEvent
 
-class ClickEventBinding : ViewToPredicateBinding<View, Unit, ComponentEvent<Unit>> {
+infix fun View.sendClicksTo(target: ComponentEvent<Unit>): ClickEventBinding {
+    return ClickEventBinding(this, target)
+}
 
-    override fun performBinding(
-        binding: ViewModelBinding<*>,
-        view: View,
-        target: ComponentEvent<Unit>
-    ) {
+class ClickEventBinding(
+    private val view: View,
+    private val target: ComponentEvent<Unit>
+) : Binding() {
+
+    override fun onBind() {
         view.setOnClickListener {
             target.sendEvent(Unit)
+        }
+        onUnbind {
+            view.setOnClickListener(null)
         }
     }
 

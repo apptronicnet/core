@@ -10,11 +10,11 @@ import net.apptronic.test.commons_sample_app.navigation.NavigationScreenView
 import net.apptronic.test.commons_sample_app.registration.RegistrationScreenView
 
 val MainModelFactory = viewBindingFactory {
-    addBinding(LoginScreenView())
-    addBinding(RegistrationScreenView())
-    addBinding(NavigationScreenView())
-    addBinding(ConvertScreenView())
-    addBinding(ListScreenView())
-    addBinding(ListItemTextView())
-    addBinding(ListItemImageView())
+    addBinding(::LoginScreenView)
+    addBinding(::RegistrationScreenView)
+    addBinding(::NavigationScreenView)
+    addBinding(::ConvertScreenView)
+    addBinding(::ListScreenView)
+    addBinding(::ListItemTextView, R.layout.list_item_text)
+    addBinding(::ListItemImageView, R.layout.list_item_image)
 }

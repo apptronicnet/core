@@ -1,19 +1,21 @@
 package net.apptronic.core.android.viewmodel.bindings
 
 import android.view.View
-import android.widget.TextView
-import net.apptronic.core.android.viewmodel.ViewModelBinding
-import net.apptronic.core.android.viewmodel.ViewToPredicateBinding
+import net.apptronic.core.android.viewmodel.Binding
 import net.apptronic.core.component.entity.Predicate
 import net.apptronic.core.component.entity.subscribe
 
-class VisibleInvisibleBinding : ViewToPredicateBinding<TextView, Boolean, Predicate<Boolean>> {
+infix fun View.setVisibleInvisibleFrom(target: Predicate<Boolean>): VisibleInvisibleBinding {
+    return VisibleInvisibleBinding(this, target)
+}
 
-    override fun performBinding(
-        binding: ViewModelBinding<*>,
-        view: TextView,
-        target: Predicate<Boolean>
-    ) {
+class VisibleInvisibleBinding(
+    private val view: View,
+    private val target: Predicate<Boolean>
+) : Binding() {
+
+
+    override fun onBind() {
         target.subscribe { isVisible ->
             view.visibility = if (isVisible) View.VISIBLE else View.INVISIBLE
         }

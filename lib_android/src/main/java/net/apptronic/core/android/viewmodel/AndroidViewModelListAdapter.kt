@@ -28,7 +28,7 @@ class AndroidViewModelListAdapter(
 
     fun bindView(viewModel: ViewModel, view: View) {
         val androidView = viewBindingFactory.getAndroidView(viewModel)
-        androidView.requestBinding(view, viewModel)
+        androidView.bindView(view, viewModel)
     }
 
 }

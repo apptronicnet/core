@@ -1,18 +1,20 @@
 package net.apptronic.core.android.viewmodel.bindings
 
 import android.widget.ImageView
-import net.apptronic.core.android.viewmodel.ViewModelBinding
-import net.apptronic.core.android.viewmodel.ViewToPredicateBinding
+import net.apptronic.core.android.viewmodel.Binding
 import net.apptronic.core.component.entity.Predicate
 import net.apptronic.core.component.entity.subscribe
 
-class ImageResourceBinding : ViewToPredicateBinding<ImageView, Int, Predicate<Int>> {
+infix fun ImageView.setImageResourceFrom(target: Predicate<Int>): ImageResourceBinding {
+    return ImageResourceBinding(this, target)
+}
 
-    override fun performBinding(
-        binding: ViewModelBinding<*>,
-        view: ImageView,
-        target: Predicate<Int>
-    ) {
+class ImageResourceBinding(
+    private val view: ImageView,
+    private val target: Predicate<Int>
+) : Binding() {
+
+    override fun onBind() {
         target.subscribe {
             view.setImageResource(it)
         }

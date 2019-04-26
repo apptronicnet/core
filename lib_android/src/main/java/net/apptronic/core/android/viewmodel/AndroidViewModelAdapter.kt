@@ -18,27 +18,27 @@ open class AndroidViewModelAdapter(
         setup.invoke(viewBindingFactory)
     }
 
-    private var currentBinding: ViewModelBinding<*>? = null
+    private var currentView: AndroidView<*>? = null
 
     override fun onInvalidate(oldModel: ViewModel?, newModel: ViewModel?, transitionInfo: Any?) {
         val newAndroidView =
             if (newModel != null) viewBindingFactory.getAndroidView(newModel) else null
-        val binding = if (newAndroidView != null && newModel != null) {
+        if (newAndroidView != null && newModel != null) {
             val view = newAndroidView.onCreateView(container)
-            newAndroidView.requestBinding(view, newModel)
-        } else null
-        setView(binding, transitionInfo)
+            newAndroidView.bindView(view, newModel)
+        }
+        setView(newAndroidView, transitionInfo)
     }
 
-    private fun setView(newBinding: ViewModelBinding<*>?, transitionInfo: Any?) {
-        val oldBinding = currentBinding
-        currentBinding = newBinding
-        if (oldBinding != null && newBinding != null) {
-            onReplace(container, oldBinding.view, newBinding.view, transitionInfo)
-        } else if (newBinding != null) {
-            onAdd(container, newBinding.view, transitionInfo)
-        } else if (oldBinding != null) {
-            onRemove(container, oldBinding.view, transitionInfo)
+    private fun setView(newAndroidView: AndroidView<*>?, transitionInfo: Any?) {
+        val oldAndroidView = currentView
+        currentView = newAndroidView
+        if (oldAndroidView != null && newAndroidView != null) {
+            onReplace(container, oldAndroidView.getView(), newAndroidView.getView(), transitionInfo)
+        } else if (newAndroidView != null) {
+            onAdd(container, newAndroidView.getView(), transitionInfo)
+        } else if (oldAndroidView != null) {
+            onRemove(container, oldAndroidView.getView(), transitionInfo)
         }
     }
 
