@@ -27,7 +27,7 @@ abstract class SubContext(
     }
 
     private val objects = DependencyProvider(this, parent.getProvider())
-    private val workers = SubContextWorkers(parent.getWorkers())
+    protected val workers = SubContextWorkers(parent.getWorkers())
 
     override fun getWorkers(): ContextWorkers {
         return workers

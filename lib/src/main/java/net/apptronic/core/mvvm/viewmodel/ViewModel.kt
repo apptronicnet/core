@@ -28,6 +28,10 @@ open class ViewModel : Component {
         return ContextWorkers.UI
     }
 
+    override fun getLifecycle(): ViewModelLifecycle {
+        return super.getLifecycle() as ViewModelLifecycle
+    }
+
     init {
         getLifecycle().getStage(Lifecycle.ROOT_STAGE)?.doOnce {
             logger.log("ViewModelLifecycle: $this initialized")
