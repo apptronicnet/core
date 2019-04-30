@@ -21,7 +21,7 @@ abstract class SubContext(
 ) : Context {
 
     init {
-        parent.getLifecycle().getStage(Lifecycle.ROOT_STAGE)?.doOnExit {
+        parent.getLifecycle().doOnTerminate {
             getLifecycle().terminate()
         }
     }

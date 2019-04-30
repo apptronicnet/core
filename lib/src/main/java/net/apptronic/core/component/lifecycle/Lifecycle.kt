@@ -65,6 +65,16 @@ open class Lifecycle(
         } ?: run(action)
     }
 
+    fun doOnTerminate(action: () -> Unit) {
+        if (rootStage.isEntered()) {
+            rootStage.doOnExit {
+                action.invoke()
+            }
+        } else {
+            action.invoke()
+        }
+    }
+
     fun isTerminated(): Boolean {
         return isTerminated.get()
     }
