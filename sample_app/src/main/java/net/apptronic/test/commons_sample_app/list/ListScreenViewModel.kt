@@ -4,11 +4,10 @@ import net.apptronic.core.component.entity.behavior.merge
 import net.apptronic.core.component.entity.functions.variants.map
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
-import net.apptronic.core.mvvm.viewmodel.container.ViewModelListNavigator
 
 class ListScreenViewModel(context: ViewModelContext) : ViewModel(context), ListController {
 
-    val listNavigator = ViewModelListNavigator(this)
+    val listNavigator = listNavigator()
     private val itemNames = mutableValue(mutableListOf<String>())
     val title = merge(listNavigator, itemNames) { viewModels, names ->
         viewModels.filter { viewModel ->

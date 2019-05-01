@@ -8,6 +8,7 @@ import net.apptronic.core.component.entity.base.UpdatePredicate
 import net.apptronic.core.component.lifecycle.Lifecycle
 import net.apptronic.core.component.lifecycle.LifecycleStage
 import net.apptronic.core.component.threading.ContextWorkers
+import net.apptronic.core.mvvm.viewmodel.container.ViewModelListNavigator
 import net.apptronic.core.mvvm.viewmodel.container.ViewModelStackNavigator
 
 open class ViewModel : Component {
@@ -61,6 +62,10 @@ open class ViewModel : Component {
 
     fun stackNavigator(): ViewModelStackNavigator {
         return ViewModelStackNavigator(this)
+    }
+
+    fun listNavigator(): ViewModelListNavigator {
+        return ViewModelListNavigator(this)
     }
 
     internal fun onAddedToContainer(parent: ViewModelParent) {
