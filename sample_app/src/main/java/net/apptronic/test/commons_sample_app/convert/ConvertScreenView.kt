@@ -10,6 +10,7 @@ import net.apptronic.core.android.viewmodel.bindings.setTextFrom
 import net.apptronic.core.component.entity.entities.Property
 import net.apptronic.core.component.entity.functions.variants.map
 import net.apptronic.core.component.entity.subscribe
+import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.test.commons_sample_app.R
 
 class ConvertScreenView : AndroidView<ConvertScreenViewModel>() {
@@ -41,7 +42,7 @@ class ConvertScreenView : AndroidView<ConvertScreenViewModel>() {
         private val target: Property<T>
     ) : Binding() {
 
-        override fun onBind() {
+        override fun onBind(viewModel: ViewModel, androidView: AndroidView<*>) {
             target.map { it == value }.subscribe {
                 if (it) {
                     view.setBackgroundColor(ContextCompat.getColor(view.context, R.color.selection))

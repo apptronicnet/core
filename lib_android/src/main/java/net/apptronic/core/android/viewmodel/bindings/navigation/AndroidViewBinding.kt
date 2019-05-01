@@ -50,25 +50,25 @@ fun androidViewBinding(
 
 class AndroidViewBinding(
     private val view: View,
-    private val viewModel: ViewModel,
+    private val targetViewModel: ViewModel,
     private val factory: (ViewModel) -> AndroidView<*>,
     private val bindingType: BindingType
 ) : Binding() {
 
-    override fun onBind() {
-        val androidView = factory.invoke(viewModel)
+    override fun onBind(viewModel: ViewModel, androidView: AndroidView<*>) {
+        val targetAndroidView = factory.invoke(targetViewModel)
         if (bindingType.detectAndCreate) {
             val container = view as? ViewGroup
             if (container != null && container.childCount == 0) {
-                androidView.onAttachView(container)
+                targetAndroidView.onAttachView(container)
             }
         }
         if (bindingType.createLayout) {
             val container = view as ViewGroup
             container.removeAllViews()
-            androidView.onAttachView(container)
+            targetAndroidView.onAttachView(container)
         }
-        androidView.bindView(view, viewModel)
+        targetAndroidView.bindView(view, targetViewModel)
         onUnbind {
             if (bindingType.clearLayout) {
                 val container = view as ViewGroup

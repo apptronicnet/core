@@ -60,14 +60,13 @@ abstract class AndroidView<T : ViewModel> {
 
     abstract fun onBindView(view: View, viewModel: T)
 
-    infix fun AndroidView<*>.add(binding: Binding) {
+    infix fun add(binding: Binding) {
         bindingList.add(binding)
-        binding.onBind()
+        binding.onBind(getViewModel(), this)
     }
 
     operator fun Binding.unaryPlus() {
-        bindingList.add(this)
-        this.onBind()
+        this@AndroidView.add(this)
     }
 
 }
