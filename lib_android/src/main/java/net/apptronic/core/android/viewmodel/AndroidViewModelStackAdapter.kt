@@ -4,25 +4,25 @@ import android.view.View
 import android.view.ViewGroup
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.adapter.BasicTransition
-import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelAdapter
+import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelStackAdapter
 
 open class AndroidViewModelStackAdapter(
     private val container: ViewGroup,
-    private val viewBindingFactory: ViewBindingFactory = ViewBindingFactory()
-) : ViewModelAdapter() {
+    private val androidViewFactory: AndroidViewFactory = AndroidViewFactory()
+) : ViewModelStackAdapter() {
 
     private var animationTime =
         container.resources.getInteger(android.R.integer.config_mediumAnimTime)
 
-    fun bindings(setup: ViewBindingFactory.() -> Unit) {
-        setup.invoke(viewBindingFactory)
+    fun bindings(setup: AndroidViewFactory.() -> Unit) {
+        setup.invoke(androidViewFactory)
     }
 
     private var currentView: AndroidView<*>? = null
 
     override fun onInvalidate(oldModel: ViewModel?, newModel: ViewModel?, transitionInfo: Any?) {
         val newAndroidView =
-            if (newModel != null) viewBindingFactory.getAndroidView(newModel) else null
+            if (newModel != null) androidViewFactory.getAndroidView(newModel) else null
         if (newAndroidView != null && newModel != null) {
             val view = newAndroidView.onCreateView(container)
             newAndroidView.bindView(view, newModel)

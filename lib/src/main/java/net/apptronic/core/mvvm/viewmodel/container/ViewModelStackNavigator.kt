@@ -4,7 +4,7 @@ import net.apptronic.core.component.entity.base.DistinctUntilChangedStorePredica
 import net.apptronic.core.component.entity.entities.Property
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelParent
-import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelAdapter
+import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelStackAdapter
 
 class ViewModelStackNavigator(
     private val parent: ViewModel
@@ -41,7 +41,7 @@ class ViewModelStackNavigator(
         return getCurrentItem()?.viewModel
     }
 
-    private var adapter: ViewModelAdapter? = null
+    private var adapter: ViewModelStackAdapter? = null
 
     private val stack = mutableListOf<ViewModelContainerItem>()
 
@@ -55,9 +55,9 @@ class ViewModelStackNavigator(
     private fun getCurrentItem(): ViewModelContainerItem? = stack.lastOrNull()
 
     /**
-     * Set [ViewModelAdapter] to create view controllers for [ViewModel]s
+     * Set [ViewModelStackAdapter] to create view controllers for [ViewModel]s
      */
-    fun setAdapter(adapter: ViewModelAdapter) {
+    fun setAdapter(adapter: ViewModelStackAdapter) {
         val currentItem = getCurrentItem()
         this.adapter = adapter
         invalidate(

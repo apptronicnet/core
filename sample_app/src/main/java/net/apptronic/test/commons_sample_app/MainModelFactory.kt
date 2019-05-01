@@ -1,6 +1,6 @@
 package net.apptronic.test.commons_sample_app
 
-import net.apptronic.core.android.viewmodel.viewBindingFactory
+import net.apptronic.core.android.viewmodel.androidViewFactory
 import net.apptronic.test.commons_sample_app.convert.ConvertScreenView
 import net.apptronic.test.commons_sample_app.list.ListItemImageView
 import net.apptronic.test.commons_sample_app.list.ListItemTextView
@@ -12,7 +12,7 @@ import net.apptronic.test.commons_sample_app.pager.pages.ImagePageView
 import net.apptronic.test.commons_sample_app.pager.pages.TextPageView
 import net.apptronic.test.commons_sample_app.registration.RegistrationScreenView
 
-val MainModelFactory = viewBindingFactory {
+val AppViewFactory = androidViewFactory {
     addBinding(::LoginScreenView)
     addBinding(::RegistrationScreenView)
     addBinding(::NavigationScreenView)

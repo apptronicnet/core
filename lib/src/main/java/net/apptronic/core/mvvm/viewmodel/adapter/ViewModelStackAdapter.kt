@@ -6,7 +6,7 @@ import net.apptronic.core.mvvm.viewmodel.ViewModel
  * View model adapter is a class which reflects creates view controller
  * for corresponding viewModel instance
  */
-abstract class ViewModelAdapter {
+abstract class ViewModelStackAdapter {
 
     /**
      * Called when active viewModel for specific [ViewModelContainer] is changed

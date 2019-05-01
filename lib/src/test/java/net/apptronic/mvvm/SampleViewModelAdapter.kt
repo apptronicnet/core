@@ -1,9 +1,9 @@
 package net.apptronic.mvvm
 
 import net.apptronic.core.mvvm.viewmodel.ViewModel
-import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelAdapter
+import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelStackAdapter
 
-class SampleViewModelAdapter : ViewModelAdapter() {
+class SampleViewModelAdapter : ViewModelStackAdapter() {
 
     var actualModel: ViewModel? = null
 

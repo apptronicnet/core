@@ -4,11 +4,11 @@ import androidx.annotation.LayoutRes
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import kotlin.reflect.KClass
 
-fun viewBindingFactory(initializer: ViewBindingFactory.() -> Unit): ViewBindingFactory {
-    return ViewBindingFactory().apply(initializer)
+fun androidViewFactory(initializer: AndroidViewFactory.() -> Unit): AndroidViewFactory {
+    return AndroidViewFactory().apply(initializer)
 }
 
-class ViewBindingFactory {
+class AndroidViewFactory {
 
     private var indexGenerator = 1
     private val views = mutableMapOf<KClass<*>, ViewSpec>()

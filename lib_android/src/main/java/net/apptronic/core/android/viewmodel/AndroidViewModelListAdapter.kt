@@ -6,29 +6,29 @@ import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelListAdapter
 
 class AndroidViewModelListAdapter(
-    private val viewBindingFactory: ViewBindingFactory = ViewBindingFactory()
+    private val androidViewFactory: AndroidViewFactory = AndroidViewFactory()
 ) : ViewModelListAdapter() {
 
     private val boundViews = mutableListOf<AndroidView<*>>()
 
-    fun bindings(setup: ViewBindingFactory.() -> Unit) {
-        setup.invoke(viewBindingFactory)
+    fun bindings(setup: AndroidViewFactory.() -> Unit) {
+        setup.invoke(androidViewFactory)
     }
 
     fun createView(typeId: Int, container: ViewGroup): View {
-        return viewBindingFactory.getAndroidView(typeId).onCreateView(container)
+        return androidViewFactory.getAndroidView(typeId).onCreateView(container)
     }
 
     fun createView(viewModel: ViewModel, container: ViewGroup): View {
-        return viewBindingFactory.getAndroidView(viewModel).onCreateView(container)
+        return androidViewFactory.getAndroidView(viewModel).onCreateView(container)
     }
 
     fun getViewType(position: Int): Int {
-        return viewBindingFactory.getType(getItemAt(position))
+        return androidViewFactory.getType(getItemAt(position))
     }
 
     fun getViewType(viewModel: ViewModel): Int {
-        return viewBindingFactory.getType(viewModel)
+        return androidViewFactory.getType(viewModel)
     }
 
     fun bindView(viewModel: ViewModel, view: View): AndroidView<*> {
@@ -37,7 +37,7 @@ class AndroidViewModelListAdapter(
         }.forEach {
             unbindView(it)
         }
-        val androidView = viewBindingFactory.getAndroidView(viewModel)
+        val androidView = androidViewFactory.getAndroidView(viewModel)
         setBound(viewModel, true)
         androidView.bindView(view, viewModel)
         boundViews.add(androidView)
