@@ -6,7 +6,7 @@ import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.adapter.BasicTransition
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelAdapter
 
-open class AndroidViewModelAdapter(
+open class AndroidViewModelStackAdapter(
     private val container: ViewGroup,
     private val viewBindingFactory: ViewBindingFactory = ViewBindingFactory()
 ) : ViewModelAdapter() {

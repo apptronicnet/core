@@ -24,6 +24,10 @@ abstract class ViewModelListAdapter {
         return items[position]
     }
 
+    fun indexOf(viewModel: ViewModel): Int {
+        return items.indexOf(viewModel)
+    }
+
     fun setNavigator(navigator: SourceNavigator?) {
         this.navigator = navigator
     }

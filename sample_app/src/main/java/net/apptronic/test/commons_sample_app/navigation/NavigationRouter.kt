@@ -8,4 +8,6 @@ interface NavigationRouter {
 
     fun openListDemo()
 
+    fun openPagerDemo();
+
 }

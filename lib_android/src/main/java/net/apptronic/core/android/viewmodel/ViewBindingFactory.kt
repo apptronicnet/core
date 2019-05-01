@@ -50,12 +50,12 @@ class ViewBindingFactory {
 
     fun getAndroidView(typeId: Int): AndroidView<*> {
         return views.values.firstOrNull { it.typeId == typeId }?.builder?.invoke()
-            ?: throw IllegalArgumentException("Not registered for typeId=$typeId")
+            ?: throw IllegalArgumentException("AndroidView is registered for typeId=$typeId")
     }
 
     fun getAndroidView(viewModel: ViewModel): AndroidView<*> {
         return views[viewModel::class]?.builder?.invoke()
-            ?: throw IllegalArgumentException("Not registered for $viewModel")
+            ?: throw IllegalArgumentException("AndroidView is not registered for $viewModel")
     }
 
     fun getType(viewModel: ViewModel): Int {

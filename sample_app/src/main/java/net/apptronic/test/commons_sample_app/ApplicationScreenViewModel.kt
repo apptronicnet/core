@@ -13,6 +13,7 @@ import net.apptronic.test.commons_sample_app.login.RegistrationListener
 import net.apptronic.test.commons_sample_app.navigation.NavigationContext
 import net.apptronic.test.commons_sample_app.navigation.NavigationRouter
 import net.apptronic.test.commons_sample_app.navigation.NavigationScreenViewModel
+import net.apptronic.test.commons_sample_app.pager.createPagerViewModel
 import net.apptronic.test.commons_sample_app.registration.RegistrationRouter
 import net.apptronic.test.commons_sample_app.registration.RegistrationViewModel
 import net.apptronic.test.commons_sample_app.registration.RegistrationViewModelContext
@@ -56,6 +57,12 @@ class ApplicationScreenNavigationRouterImpl(
         parent.rootPage.add(
             ListScreenViewModel(ListContext(parent)),
             BasicTransition.Forward
+        )
+    }
+
+    override fun openPagerDemo() {
+        parent.rootPage.add(
+            createPagerViewModel(parent)
         )
     }
 

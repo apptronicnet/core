@@ -19,6 +19,10 @@ class NavigationScreenViewModel(context: ViewModelContext) : ViewModel(context) 
         router.openListDemo()
     }
 
+    fun onClickPagerDemo() {
+        router.openPagerDemo()
+    }
+
     init {
         doOnVisible {
             doOnCreate {

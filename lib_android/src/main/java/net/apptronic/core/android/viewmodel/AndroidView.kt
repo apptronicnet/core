@@ -1,5 +1,6 @@
 package net.apptronic.core.android.viewmodel
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,6 +26,14 @@ abstract class AndroidView<T : ViewModel> {
 
     open fun onAttachView(container: ViewGroup) {
         container.addView(onCreateView(container))
+    }
+
+    fun requestTitle(context: Context, viewModel: ViewModel): String {
+        return getTitle(context, viewModel as T)
+    }
+
+    open fun getTitle(context: Context, viewModel: T): String {
+        return ""
     }
 
     internal fun getViewModel(): ViewModel {
