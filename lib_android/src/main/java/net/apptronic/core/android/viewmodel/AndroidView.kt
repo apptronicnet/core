@@ -70,35 +70,5 @@ abstract class AndroidView<T : ViewModel> {
         this.onBind()
     }
 
-    enum class BindingType(internal val createLayout: Boolean, internal val clearLayout: Boolean) {
-        BIND_ONLY(false, false),
-        CREATE_CONTENT(true, false),
-        CREATE_CONTENT_AND_CLEAR(true, true)
-    }
-
-    class AndroidViewBinding(
-        private val view: View,
-        private val viewModel: ViewModel,
-        private val androidView: AndroidView<*>,
-        private val bindingType: BindingType = BindingType.BIND_ONLY
-    ) : Binding() {
-
-        override fun onBind() {
-            if (bindingType.createLayout) {
-                val container = view as ViewGroup
-                container.removeAllViews()
-                androidView.onAttachView(container)
-            }
-            androidView.bindView(view, viewModel)
-            onUnbind {
-                if (bindingType.clearLayout) {
-                    val container = view as ViewGroup
-                    container.removeAllViews()
-                }
-            }
-        }
-
-    }
-
 }
 
