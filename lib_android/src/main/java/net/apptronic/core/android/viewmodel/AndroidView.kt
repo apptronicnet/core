@@ -55,7 +55,7 @@ abstract class AndroidView<T : ViewModel> {
         this.view = view
         this.viewModel = viewModel
         onBindView(view, viewModel as T)
-        viewModel.getLifecycle().onExitFromActiveStage {
+        viewModel.doOnUnbind {
             onUnbindActions.forEach { it.invoke() }
             onUnbindActions.clear()
             bindingList.forEach {
