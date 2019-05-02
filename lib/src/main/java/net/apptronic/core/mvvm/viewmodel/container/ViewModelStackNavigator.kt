@@ -71,6 +71,10 @@ class ViewModelStackNavigator(
         }
     }
 
+    fun getItemAt(index: Int): ViewModel {
+        return stack[index].viewModel
+    }
+
     private fun onBind(item: ViewModelContainerItem) {
         item.setBound(true)
         item.setVisible(true)
@@ -111,15 +115,32 @@ class ViewModelStackNavigator(
      * Clear all [ViewModel]s from stack
      */
     fun clear(transitionInfo: Any? = null) {
+        clearAndSet(null, transitionInfo)
+    }
+
+    /**
+     * Replace current [ViewModel] and all [ViewModel]s from stack by new [viewModel]
+     */
+    fun replaceAll(viewModel: ViewModel, transitionInfo: Any? = null) {
+        clearAndSet(viewModel, transitionInfo)
+    }
+
+    private fun clearAndSet(viewModel: ViewModel?, transitionInfo: Any? = null) {
         val activeModel = getCurrentItem()
         stack.forEach {
             it.terminate()
             onRemoved(it)
         }
         stack.clear()
+        val newItem = viewModel?.let {
+            val item = ViewModelContainerItem(it, parent)
+            stack.add(item)
+            onAdded(item)
+            item
+        }
         invalidate(
             oldItem = activeModel,
-            newItem = null,
+            newItem = newItem,
             transitionInfo = transitionInfo
         )
         updateFromGet()
@@ -130,8 +151,7 @@ class ViewModelStackNavigator(
      */
     fun add(viewModel: ViewModel, transitionInfo: Any? = null) {
         val activeModel = getCurrentItem()
-        val newItem =
-            ViewModelContainerItem(viewModel, parent)
+        val newItem = ViewModelContainerItem(viewModel, parent)
         stack.add(newItem)
         onAdded(newItem)
         invalidate(
@@ -151,8 +171,7 @@ class ViewModelStackNavigator(
             stack.remove(it)
             onRemoved(it)
         }
-        val newItem =
-            ViewModelContainerItem(viewModel, parent)
+        val newItem = ViewModelContainerItem(viewModel, parent)
         stack.add(newItem)
         onAdded(newItem)
         invalidate(
