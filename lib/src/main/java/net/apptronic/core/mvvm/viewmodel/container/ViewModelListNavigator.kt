@@ -71,7 +71,17 @@ class ViewModelListNavigator(
     override fun setBound(viewModel: ViewModel, isBound: Boolean) {
         viewModel.getContainer()?.let {
             it.setBound(isBound)
+        }
+    }
+
+    override fun setVisible(viewModel: ViewModel, isBound: Boolean) {
+        viewModel.getContainer()?.let {
             it.setVisible(isBound)
+        }
+    }
+
+    override fun setFocused(viewModel: ViewModel, isBound: Boolean) {
+        viewModel.getContainer()?.let {
             it.setFocused(isBound)
         }
     }

@@ -35,6 +35,8 @@ abstract class ViewModelListAdapter {
     interface SourceNavigator {
 
         fun setBound(viewModel: ViewModel, isBound: Boolean)
+        fun setVisible(viewModel: ViewModel, isBound: Boolean)
+        fun setFocused(viewModel: ViewModel, isBound: Boolean)
 
     }
 
@@ -47,6 +49,14 @@ abstract class ViewModelListAdapter {
 
     protected fun setBound(viewModel: ViewModel, isBound: Boolean) {
         navigator?.setBound(viewModel, isBound)
+    }
+
+    protected fun setVisible(viewModel: ViewModel, isBound: Boolean) {
+        navigator?.setVisible(viewModel, isBound)
+    }
+
+    protected fun setFocused(viewModel: ViewModel, isBound: Boolean) {
+        navigator?.setFocused(viewModel, isBound)
     }
 
 }

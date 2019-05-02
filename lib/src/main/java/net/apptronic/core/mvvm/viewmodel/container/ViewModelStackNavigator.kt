@@ -72,12 +72,6 @@ class ViewModelStackNavigator(
         return stack[index].viewModel
     }
 
-    private fun onBind(item: ViewModelContainerItem) {
-        item.setBound(true)
-        item.setVisible(true)
-        item.setFocused(true)
-    }
-
     private fun onUnbind(item: ViewModelContainerItem) {
         item.setBound(false)
         item.setVisible(false)
@@ -91,16 +85,25 @@ class ViewModelStackNavigator(
     ) {
         adapter?.apply {
             if (oldItem != null) {
-                onUnbind(oldItem)
+                oldItem.setFocused(false)
+                oldItem.setVisible(false)
+                oldItem.setBound(false)
             }
             if (newItem != null) {
-                onBind(newItem)
+                newItem.setBound(true)
             }
             onInvalidate(
                 oldItem?.viewModel,
                 newItem?.viewModel,
                 transitionInfo
             )
+            if (newItem != null) {
+                newItem.setVisible(true)
+                newItem.setFocused(true)
+            }
+            if (oldItem != null) {
+                onUnbind(oldItem)
+            }
         }
     }
 
