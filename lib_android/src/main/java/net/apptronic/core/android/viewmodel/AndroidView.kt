@@ -54,15 +54,17 @@ abstract class AndroidView<T : ViewModel> {
     internal fun bindView(view: View, viewModel: ViewModel) {
         this.view = view
         this.viewModel = viewModel
-        onBindView(view, viewModel as T)
-        viewModel.getLifecycle().onExitFromActiveStage {
-            onUnbindActions.forEach { it.invoke() }
-            onUnbindActions.clear()
-            bindingList.forEach {
-                it.unbind()
+        viewModel.doOnBind {
+            onExit {
+                onUnbindActions.forEach { it.invoke() }
+                onUnbindActions.clear()
+                bindingList.forEach {
+                    it.unbind()
+                }
+                bindingList.clear()
             }
-            bindingList.clear()
         }
+        onBindView(view, viewModel as T)
     }
 
     abstract fun onBindView(view: View, viewModel: T)
