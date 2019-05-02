@@ -24,10 +24,7 @@ class ViewModelStackNavigator(
     }
 
     override fun onSetValue(value: ViewModel?) {
-        clear()
-        if (value != null) {
-            add(value)
-        }
+        clearAndSet(value)
     }
 
     override fun onGetValue(): ViewModel? {

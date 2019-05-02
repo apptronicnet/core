@@ -8,6 +8,14 @@ fun androidViewFactory(initializer: AndroidViewFactory.() -> Unit): AndroidViewF
     return AndroidViewFactory().apply(initializer)
 }
 
+inline fun <reified ViewModelType : ViewModel> androidView(
+    noinline builder: () -> AndroidView<ViewModelType>
+): AndroidViewFactory {
+    return androidViewFactory {
+        addBinding(builder)
+    }
+}
+
 class AndroidViewFactory {
 
     private var indexGenerator = 1

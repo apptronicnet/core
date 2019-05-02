@@ -2,8 +2,7 @@ package net.apptronic.test.commons_sample_app
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.android.synthetic.main.activity_main.*
-import net.apptronic.core.android.viewmodel.ActivityViewModelLifecycleController
+import net.apptronic.core.android.viewmodel.activityLifecycleController
 import net.apptronic.test.commons_sample_app.app.lazyApplicationComponent
 
 class MainActivity : AppCompatActivity() {
@@ -13,9 +12,7 @@ class MainActivity : AppCompatActivity() {
         appComponent.getApplicationScreenModel()
     }
     private val lifecycleController by lazy {
-        ActivityViewModelLifecycleController(MainActivityView(), viewModel) {
-            container
-        }
+        activityLifecycleController(viewModel, AppViewFactory, this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

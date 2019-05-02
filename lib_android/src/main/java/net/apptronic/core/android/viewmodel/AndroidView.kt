@@ -1,5 +1,6 @@
 package net.apptronic.core.android.viewmodel
 
+import android.app.Activity
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -26,6 +27,12 @@ abstract class AndroidView<T : ViewModel> {
 
     open fun onAttachView(container: ViewGroup) {
         container.addView(onCreateView(container))
+    }
+
+    open fun onCreateActivityView(activity: Activity): View {
+        val layoutResId = this.layoutResId
+            ?: throw IllegalStateException("[layoutResId] is not specified for $this")
+        return activity.layoutInflater.inflate(layoutResId, null)
     }
 
     fun requestTitle(context: Context, viewModel: ViewModel): String {

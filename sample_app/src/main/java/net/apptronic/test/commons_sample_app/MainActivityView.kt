@@ -7,6 +7,10 @@ import net.apptronic.core.android.viewmodel.bindings.navigation.stackNavigatorBi
 
 class MainActivityView : AndroidView<ApplicationScreenViewModel>() {
 
+    init {
+        layoutResId = R.layout.activity_main
+    }
+
     override fun onBindView(view: View, viewModel: ApplicationScreenViewModel) {
         with(view) {
             +stackNavigatorBinding(container, viewModel.rootPage, AppViewFactory)

@@ -62,7 +62,8 @@ class ApplicationScreenNavigationRouterImpl(
 
     override fun openPagerDemo() {
         parent.rootPage.add(
-            createPagerViewModel(parent)
+            createPagerViewModel(parent),
+            BasicTransition.Forward
         )
     }
 

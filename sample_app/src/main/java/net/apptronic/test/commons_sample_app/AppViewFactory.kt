@@ -13,6 +13,7 @@ import net.apptronic.test.commons_sample_app.pager.pages.TextPageView
 import net.apptronic.test.commons_sample_app.registration.RegistrationScreenView
 
 val AppViewFactory = androidViewFactory {
+    addBinding(::MainActivityView)
     addBinding(::LoginScreenView)
     addBinding(::RegistrationScreenView)
     addBinding(::NavigationScreenView)
