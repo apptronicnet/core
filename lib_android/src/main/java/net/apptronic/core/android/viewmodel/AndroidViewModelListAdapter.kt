@@ -31,27 +31,34 @@ class AndroidViewModelListAdapter(
         return androidViewFactory.getType(viewModel)
     }
 
-    fun bindView(viewModel: ViewModel, view: View): AndroidView<*> {
-        boundViews.filter {
-            it.getView() == view
-        }.forEach {
-            unbindView(it)
-        }
+    fun bindView(
+        viewModel: ViewModel,
+        view: View,
+        oldBoundView: AndroidView<*>? = null
+    ): AndroidView<*> {
         val androidView = androidViewFactory.getAndroidView(viewModel)
+        if (oldBoundView != null) {
+            if (oldBoundView != androidView) {
+                unbindView(oldBoundView)
+                performNewBinding(viewModel, view, androidView)
+            }
+        } else {
+            performNewBinding(viewModel, view, androidView)
+        }
+        return androidView
+    }
+
+    private fun performNewBinding(viewModel: ViewModel, view: View, androidView: AndroidView<*>) {
         setBound(viewModel, true)
         androidView.bindView(view, viewModel)
         setVisible(viewModel, true)
         setFocused(viewModel, true)
-        boundViews.add(androidView)
-        return androidView
     }
 
     fun unbindView(androidView: AndroidView<*>) {
-        if (boundViews.remove(androidView)) {
-            setFocused(androidView.getViewModel(), false)
-            setVisible(androidView.getViewModel(), false)
-            setBound(androidView.getViewModel(), false)
-        }
+        setFocused(androidView.getViewModel(), false)
+        setVisible(androidView.getViewModel(), false)
+        setBound(androidView.getViewModel(), false)
     }
 
 }

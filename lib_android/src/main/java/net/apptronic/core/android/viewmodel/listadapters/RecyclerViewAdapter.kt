@@ -11,9 +11,14 @@ class RecyclerViewAdapter(
 ) : RecyclerView.Adapter<RecyclerViewAdapter.ViewModelHolder>() {
 
     init {
+        setHasStableIds(true)
         viewModelAdapter.addListener {
             notifyDataSetChanged()
         }
+    }
+
+    override fun getItemId(position: Int): Long {
+        return viewModelAdapter.getItemAt(position).getId()
     }
 
     override fun getItemCount(): Int {
@@ -30,9 +35,6 @@ class RecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: ViewModelHolder, position: Int) {
         val viewModel = viewModelAdapter.getItemAt(position)
-        holder.androidView?.let {
-            viewModelAdapter.unbindView(it)
-        }
         holder.androidView = viewModelAdapter.bindView(viewModel, holder.itemView)
     }
 
