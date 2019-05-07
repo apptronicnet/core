@@ -2,8 +2,10 @@ package net.apptronic.core.component
 
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.Predicate
+import net.apptronic.core.component.entity.PredicateObserver
 import net.apptronic.core.component.entity.entities.*
 import net.apptronic.core.component.entity.setup
+import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.component.lifecycle.Lifecycle
 import net.apptronic.core.component.lifecycle.LifecycleStage
 import net.apptronic.core.component.process.BackgroundAction
@@ -88,11 +90,37 @@ open class Component(
         return ComponentGenericEvent(this)
     }
 
+    fun genericEvent(observer: PredicateObserver<Unit>): ComponentGenericEvent {
+        return ComponentGenericEvent(this).apply {
+            subscribe(observer)
+        }
+    }
+
+    fun genericEvent(callback: () -> Unit): ComponentGenericEvent {
+        return ComponentGenericEvent(this).apply {
+            subscribe {
+                callback.invoke()
+            }
+        }
+    }
+
     /**
      * User action on screen
      */
     fun <T> typedEvent(): ComponentEvent<T> {
         return ComponentTypedEvent(context)
+    }
+
+    fun <T> typedEvent(observer: PredicateObserver<T>): ComponentEvent<T> {
+        return ComponentTypedEvent<T>(context).apply {
+            subscribe(observer)
+        }
+    }
+
+    fun <T> typedEvent(callback: (T) -> Unit): ComponentEvent<T> {
+        return ComponentTypedEvent<T>(context).apply {
+            subscribe(callback)
+        }
     }
 
     fun <T> toggle(target: Property<T>, vararg values: T): Toggle<T> {
