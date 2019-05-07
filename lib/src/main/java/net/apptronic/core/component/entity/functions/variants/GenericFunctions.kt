@@ -4,6 +4,12 @@ import net.apptronic.core.component.entity.Predicate
 import net.apptronic.core.component.entity.base.ConstantPredicate
 import net.apptronic.core.component.entity.functions.predicateFunction
 
+fun <T> Predicate<T>.onNext(action: (T) -> Unit): Predicate<T> =
+    map {
+        action.invoke(it)
+        it
+    }
+
 fun <T, R> Predicate<T>.map(map: (T) -> R): Predicate<R> =
     predicateFunction(this) {
         map(it)

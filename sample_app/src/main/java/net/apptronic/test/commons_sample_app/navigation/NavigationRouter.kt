@@ -8,6 +8,8 @@ interface NavigationRouter {
 
     fun openListDemo()
 
-    fun openPagerDemo();
+    fun openPagerDemo()
+
+    fun openDebounceDemo()
 
 }

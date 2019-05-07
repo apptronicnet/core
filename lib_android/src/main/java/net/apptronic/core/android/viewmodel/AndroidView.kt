@@ -58,9 +58,7 @@ abstract class AndroidView<T : ViewModel> {
         viewModel.doOnUnbind {
             onUnbindActions.forEach { it.invoke() }
             onUnbindActions.clear()
-            bindingList.forEach {
-                it.unbind()
-            }
+            bindingList.forEach { it.unbind() }
             bindingList.clear()
         }
     }
@@ -74,6 +72,10 @@ abstract class AndroidView<T : ViewModel> {
 
     operator fun Binding.unaryPlus() {
         this@AndroidView.add(this)
+    }
+
+    fun onUnbind(action: () -> Unit) {
+        onUnbindActions.add(action)
     }
 
 }

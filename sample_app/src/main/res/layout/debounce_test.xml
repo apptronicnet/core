@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <Button
+        android:id="@+id/btnEmitNextItem"
+        android:text="Emit next item" />
+
+    <TextView
+        android:layout_marginTop="24dp"
+        android:text="Current source item:"
+        android:textColor="#999"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/source"
+        android:gravity="center"
+        android:text="-"
+        android:textColor="#222"
+        android:textSize="20sp" />
+
+    <LinearLayout
+        android:layout_marginTop="24dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Processing item:"
+            android:textColor="#999"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="-"
+            android:textColor="#999"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/processing"
+        android:gravity="center"
+        android:text="-"
+        android:textColor="#222"
+        android:textSize="20sp" />
+
+    <TextView
+        android:layout_marginTop="24dp"
+        android:text="Result item:"
+        android:textColor="#999"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/result"
+        android:gravity="center"
+        android:text="-"
+        android:textColor="#222"
+        android:textSize="20sp" />
+
+</TableLayout>

@@ -72,3 +72,11 @@ fun <E : Property<T>, T> E.setAs(predicate: Predicate<T>): E {
     }
     return this
 }
+
+/**
+ * Subscribe to updates of [source] and set all new values automatically
+ */
+fun <T> Predicate<T>.setTo(entity: Property<T>): Predicate<T> {
+    entity.setAs(this)
+    return this
+}

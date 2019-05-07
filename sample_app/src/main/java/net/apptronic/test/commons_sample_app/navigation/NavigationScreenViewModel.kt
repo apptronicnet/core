@@ -23,6 +23,10 @@ class NavigationScreenViewModel(context: ViewModelContext) : ViewModel(context) 
         router.openPagerDemo()
     }
 
+    fun onClickDebounceDemo() {
+        router.openDebounceDemo()
+    }
+
     init {
         doOnVisible {
             doOnCreate {
