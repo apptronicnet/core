@@ -3,11 +3,11 @@ package net.apptronic.core.component.di
 /**
  * Method to create instance of Object in provider
  */
-internal class BuilderMethod<TypeDeclaration>(
-    private val builder: FactoryContext.() -> TypeDeclaration
+internal class BuilderMethod<TypeDeclaration, BuilderContext : ObjectBuilderContext>(
+    private val builder: BuilderContext.() -> TypeDeclaration
 ) {
 
-    fun invoke(context: FactoryContext): TypeDeclaration {
+    fun invoke(context: BuilderContext): TypeDeclaration {
         return builder.invoke(context)
     }
 

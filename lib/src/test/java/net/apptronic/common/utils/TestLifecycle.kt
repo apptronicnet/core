@@ -1,9 +1,8 @@
 package net.apptronic.common.utils
 
 import net.apptronic.core.component.lifecycle.Lifecycle
-import net.apptronic.core.component.threading.ContextWorkers
 
-class TestLifecycle(workers: ContextWorkers) : Lifecycle(workers) {
+class TestLifecycle : Lifecycle() {
 
     companion object {
         const val STAGE_CREATED = "test_created";

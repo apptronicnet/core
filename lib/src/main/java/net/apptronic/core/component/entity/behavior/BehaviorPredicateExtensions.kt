@@ -3,11 +3,19 @@ package net.apptronic.core.component.entity.behavior
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.Predicate
 import net.apptronic.core.component.entity.functions.variants.map
+import net.apptronic.core.threading.Worker
+import net.apptronic.core.threading.WorkerDefinition
 
-fun <T> Predicate<T>.switchWorker(context: Context, workerName: String): Predicate<T> {
-    return WorkerSwitchPredicate(
-        this, context.getWorkers(), workerName
-    )
+fun <T> Predicate<T>.switchWorker(worker: Worker): Predicate<T> {
+    return WorkerSwitchPredicate(this, worker)
+}
+
+fun <T> Predicate<T>.switchWorker(
+    context: Context,
+    workerDefinition: WorkerDefinition
+): Predicate<T> {
+    val worker = context.getScheduler().getWorker(workerDefinition)
+    return WorkerSwitchPredicate(this, worker)
 }
 
 fun <T> Predicate<T>.switchContext(context: Context): Predicate<T> {

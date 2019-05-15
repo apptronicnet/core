@@ -1,7 +1,7 @@
 package net.apptronic.core.threading
 
 fun serialWorker(): Worker {
-    return SerialWorker()
+    return SerialWorker(1)
 }
 
 fun synchronousWorker(): Worker {
@@ -12,7 +12,7 @@ fun synchronousWorker(): Worker {
  * Worker which executes actions in single thread.
  */
 fun singleWorker(): Worker {
-    return SerialWorker(1)
+    return SerialWorker()
 }
 
 fun parallelWorker(): Worker {

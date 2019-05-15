@@ -6,6 +6,7 @@ import net.apptronic.core.component.entity.PredicateObserver
 import net.apptronic.core.component.entity.Subscription
 import net.apptronic.core.component.entity.base.UpdatePredicate
 import net.apptronic.core.component.entity.subscribe
+import net.apptronic.core.threading.WorkerDefinition
 
 abstract class ComponentEntity<T>(
     private val context: Context,
@@ -14,16 +15,16 @@ abstract class ComponentEntity<T>(
 
     private val stageWhenCreated = context.getLifecycle().getActiveStage()
 
-    private var workerName: String? = null
+    private var workerDefinition: WorkerDefinition? = null
 
-    fun setWorker(workerName: String?) {
-        this.workerName = workerName
+    fun setWorker(workerDefinition: WorkerDefinition?) {
+        this.workerDefinition = workerDefinition
     }
 
     override fun subscribe(observer: PredicateObserver<T>): Subscription {
         val subscription = workingPredicate.subscribe { value ->
-            val workerToUse = workerName ?: context.getWorkers().getDefaultWorker()
-            context.getWorkers().execute(workerToUse) {
+            val workerToUse = workerDefinition ?: context.getScheduler().getDefaultWorker()
+            context.getScheduler().execute(workerToUse) {
                 observer.notify(value)
             }
         }

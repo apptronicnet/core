@@ -1,8 +1,8 @@
 package net.apptronic.core.component.di
 
 import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.lifecycle.LifecycleStage
 import kotlin.reflect.KClass
+import kotlin.system.measureNanoTime
 
 /**
  * Class for providing dependencies
@@ -14,6 +14,7 @@ class DependencyProvider(
 
     private val externalInstances = mutableMapOf<ObjectKey, Any>()
     private val modules = mutableListOf<Module>()
+    private val logger = context.getLogger()
 
     /**
      * Add external instance to this provider.
@@ -55,7 +56,7 @@ class DependencyProvider(
     }
 
     fun addModule(moduleDefinition: ModuleDefinition) {
-        modules.add(moduleDefinition.buildInstance(this))
+        modules.add(moduleDefinition.buildInstance())
     }
 
     inline fun <reified TypeDeclaration : Any> inject(
@@ -120,63 +121,70 @@ class DependencyProvider(
         key: ObjectKey,
         params: Parameters
     ): TypeDeclaration {
-        val localLifecycleStage = context.getLifecycle().getActiveStage()
-            ?: throw IllegalStateException("Lifecycle was terminated")
-        return searchInstance(localLifecycleStage, key, params)
+        return performInject(SearchSpec(context, key, params))
     }
 
     private fun <TypeDeclaration> getLazyInstanceInternal(
         key: ObjectKey,
         params: Parameters
     ): Lazy<TypeDeclaration> {
-        val localLifecycleStage = context.getLifecycle().getActiveStage()
-            ?: throw IllegalStateException("Lifecycle was terminated")
         return lazy {
-            searchInstance<TypeDeclaration>(localLifecycleStage, key, params)
+            getInstanceInternal<TypeDeclaration>(key, params)
         }
+    }
+
+    internal fun getInstanceNames(): List<String> {
+        return externalInstances.entries.map {
+            "${it.key} = ${it.value}}"
+        }
+    }
+
+    internal fun getModuleNames(): List<String> {
+        return modules.map { it.name }
+    }
+
+    private fun <TypeDeclaration> performInject(searchSpec: SearchSpec): TypeDeclaration {
+        var result: TypeDeclaration? = null
+        val time = measureNanoTime {
+            result = searchInstance(searchSpec)
+        }
+        val timeFormatted = "%.6f".format(time.toFloat() / 1000000F)
+        logger.log("Injected ${searchSpec.key} using ${searchSpec.context} in $timeFormatted ms")
+        return result
+            ?: throw ObjectNotFoundException("Object ${searchSpec.key} is not found:\n${searchSpec.getSearchPath()}")
+    }
+
+    private fun <TypeDeclaration> tryInject(searchSpec: SearchSpec): TypeDeclaration? {
+        return searchInstance(searchSpec)
     }
 
     private fun <TypeDeclaration> searchInstance(
-        callerLifecycleStage: LifecycleStage,
-        key: ObjectKey,
-        params: Parameters
-    ): TypeDeclaration {
-        val localLifecycleStage = context.getLifecycle().getActiveStage()
-            ?: throw IllegalStateException("Lifecycle was terminated")
-        val local: TypeDeclaration? =
-            obtainLocalInstance(callerLifecycleStage, localLifecycleStage, key, params)
+        searchSpec: SearchSpec
+    ): TypeDeclaration? {
+        searchSpec.addContextToChain(context)
+        val local: TypeDeclaration? = obtainLocalInstance(searchSpec)
         if (local != null) {
             return local
         }
-        val parental: TypeDeclaration? = parent?.searchInstance(callerLifecycleStage, key, params)
+        val parental: TypeDeclaration? = parent?.searchInstance(searchSpec)
         if (parental != null) {
             return parental
         }
-        throw ObjectNotFoundException("Object $key or it's factory/cast is not found in current context and all parental contexts")
+        return null
     }
 
     private fun <TypeDeclaration> obtainLocalInstance(
-        callerLifecycleStage: LifecycleStage,
-        localLifecycleStage: LifecycleStage,
-        objectKey: ObjectKey,
-        params: Parameters
+        searchSpec: SearchSpec
     ): TypeDeclaration? {
-        val obj = externalInstances[objectKey]
+        val obj = externalInstances[searchSpec.key]
         if (obj != null) {
             return obj as TypeDeclaration
         }
         modules.forEach { module ->
-            val providerSearch = module.getProvider(objectKey)
+            val providerSearch = module.getProvider(searchSpec.key)
             if (providerSearch != null) {
                 val provider = providerSearch as ObjectProvider<TypeDeclaration>
-                val factoryContext = FactoryContext(
-                    context,
-                    this,
-                    params,
-                    localLifecycleStage,
-                    callerLifecycleStage
-                )
-                return@obtainLocalInstance provider.provide(factoryContext)
+                return@obtainLocalInstance provider.provide(context, this, searchSpec)
             }
         }
         return null

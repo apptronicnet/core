@@ -1,6 +1,28 @@
 package net.apptronic.core.component.di
 
 import net.apptronic.core.base.AtomicEntity
+import net.apptronic.core.component.context.Context
+
+enum class RecycleOn {
+
+    OnTerminate {
+        override fun registerRecycle(context: Context, recycle: () -> Unit) {
+            context.getLifecycle().doOnTerminate(recycle)
+        }
+    },
+    OnExitCurrentStage {
+        override fun registerRecycle(context: Context, recycle: () -> Unit) {
+            context.getLifecycle().onExitFromActiveStage(recycle)
+        }
+    };
+
+    internal abstract fun registerRecycle(context: Context, recycle: () -> Unit)
+
+    companion object {
+        val DEFAULT = OnExitCurrentStage
+    }
+
+}
 
 internal abstract class ObjectProvider<TypeDeclaration>(
     objectKey: ObjectKey
@@ -21,7 +43,11 @@ internal abstract class ObjectProvider<TypeDeclaration>(
         return objectKeys.any { it == key }
     }
 
-    abstract fun provide(context: FactoryContext): TypeDeclaration
+    abstract fun provide(
+        definitionContext: Context,
+        provider: DependencyProvider,
+        searchSpec: SearchSpec
+    ): TypeDeclaration
 
     protected fun recycle(instance: TypeDeclaration) {
         recyclers.forEach { it.invoke(instance) }
@@ -32,25 +58,28 @@ internal abstract class ObjectProvider<TypeDeclaration>(
 
 }
 
-internal abstract class ObjectBuilderProvider<TypeDeclaration> internal constructor(
+internal abstract class ObjectBuilderProvider<TypeDeclaration, BuilderContext : ObjectBuilderContext> internal constructor(
     objectKey: ObjectKey,
-    internal val builder: BuilderMethod<TypeDeclaration>
+    internal val builder: BuilderMethod<TypeDeclaration, BuilderContext>,
+    val recycleOn: RecycleOn
 ) : ObjectProvider<TypeDeclaration>(objectKey) {
 
 }
 
 internal fun <TypeDeclaration> singleProvider(
     objectKey: ObjectKey,
-    builder: BuilderMethod<TypeDeclaration>
+    builder: BuilderMethod<TypeDeclaration, SingleContext>,
+    recycleOn: RecycleOn
 ): ObjectProvider<TypeDeclaration> {
-    return SingleProvider(objectKey, builder)
+    return SingleProvider(objectKey, builder, recycleOn)
 }
 
 internal fun <TypeDeclaration> factoryProvider(
     objectKey: ObjectKey,
-    builder: BuilderMethod<TypeDeclaration>
+    builder: BuilderMethod<TypeDeclaration, FactoryContext>,
+    recycleOn: RecycleOn
 ): ObjectProvider<TypeDeclaration> {
-    return FactoryProvider(objectKey, builder)
+    return FactoryProvider(objectKey, builder, recycleOn)
 }
 
 internal fun <TypeDeclaration> bindProvider(
@@ -61,20 +90,26 @@ internal fun <TypeDeclaration> bindProvider(
 
 private class SingleProvider<TypeDeclaration>(
     objectKey: ObjectKey,
-    builder: BuilderMethod<TypeDeclaration>
-) : ObjectBuilderProvider<TypeDeclaration>(objectKey, builder) {
+    builder: BuilderMethod<TypeDeclaration, SingleContext>,
+    recycleOn: RecycleOn
+) : ObjectBuilderProvider<TypeDeclaration, SingleContext>(objectKey, builder, recycleOn) {
 
     private val entity = AtomicEntity<TypeDeclaration?>(null)
 
-    override fun provide(context: FactoryContext): TypeDeclaration {
+    override fun provide(
+        definitionContext: Context,
+        provider: DependencyProvider,
+        searchSpec: SearchSpec
+    ): TypeDeclaration {
+        val singleContext = SingleContext(definitionContext, provider, searchSpec.params)
         return entity.perform {
             if (get() == null) {
-                val created = builder.invoke(context)
+                val created = builder.invoke(singleContext)
                 set(created)
                 /**
                  * Single instance recycled on exit declared context stage
                  */
-                context.localLifecycleStage.doOnExit {
+                recycleOn.registerRecycle(definitionContext) {
                     perform {
                         // make instance null. It will be recreated when called again
                         recycle(created)
@@ -91,15 +126,22 @@ private class SingleProvider<TypeDeclaration>(
 
 private class FactoryProvider<TypeDeclaration>(
     objectKey: ObjectKey,
-    builder: BuilderMethod<TypeDeclaration>
-) : ObjectBuilderProvider<TypeDeclaration>(objectKey, builder) {
+    builder: BuilderMethod<TypeDeclaration, FactoryContext>,
+    recycleOn: RecycleOn
+) : ObjectBuilderProvider<TypeDeclaration, FactoryContext>(objectKey, builder, recycleOn) {
 
-    override fun provide(context: FactoryContext): TypeDeclaration {
-        val instance = builder.invoke(context)
+    override fun provide(
+        definitionContext: Context,
+        provider: DependencyProvider,
+        searchSpec: SearchSpec
+    ): TypeDeclaration {
+        val factoryContext =
+            FactoryContext(definitionContext, searchSpec.context, provider, searchSpec.params)
+        val instance = builder.invoke(factoryContext)
         /**
          * Factory instance recycled when on exit from caller stage
          */
-        context.callerLifecycleStage.doOnExit {
+        recycleOn.registerRecycle(searchSpec.context) {
             recycle(instance)
         }
         return instance
@@ -111,11 +153,12 @@ private class BindProvider<TypeDeclaration>(
     private val objectKey: ObjectKey
 ) : ObjectProvider<TypeDeclaration>(objectKey) {
 
-    override fun provide(context: FactoryContext): TypeDeclaration {
-        /**
-         * Cast instance is not recycling as it will be recycled by real provider when required
-         */
-        return context.inject(objectKey) as TypeDeclaration
+    override fun provide(
+        definitionContext: Context,
+        provider: DependencyProvider,
+        searchSpec: SearchSpec
+    ): TypeDeclaration {
+        return provider.inject(objectKey) as TypeDeclaration
     }
 
 }

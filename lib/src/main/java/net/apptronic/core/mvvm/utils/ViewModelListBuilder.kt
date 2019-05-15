@@ -4,6 +4,7 @@ import net.apptronic.core.component.entity.Predicate
 import net.apptronic.core.component.entity.PredicateObserver
 import net.apptronic.core.component.entity.Subscription
 import net.apptronic.core.component.entity.base.UpdateAndStorePredicate
+import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 
 /**
@@ -42,6 +43,13 @@ abstract class ViewModelListBuilder<T, Id, VM : ViewModel> : Predicate<List<View
      * Update already existing [ViewModel] for item
      */
     protected abstract fun onUpdateViewModel(viewModel: VM, newItem: T)
+
+    /**
+     * Update list of [ViewModel]s automatically from given [Predicate]
+     */
+    fun updateFrom(predicate: Predicate<out List<T>>) {
+        predicate.subscribe { update(it) }
+    }
 
     /**
      * Update list of [ViewModel]s with new items.

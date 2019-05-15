@@ -1,39 +1,37 @@
 package net.apptronic.core.component.context
 
-import net.apptronic.core.base.ComponentLogger
-import net.apptronic.core.base.ComponentLoggerDescriptor
+import net.apptronic.core.base.Logger
 import net.apptronic.core.component.di.DependencyProvider
-import net.apptronic.core.component.lifecycle.DefaultApplicationLifecycle
 import net.apptronic.core.component.lifecycle.Lifecycle
-import net.apptronic.core.component.threading.ContextWorkers
-import net.apptronic.core.component.threading.DefaultContextWorkers
+import net.apptronic.core.threading.Scheduler
+import net.apptronic.core.threading.createCoreScheduler
 
-open class CoreContext : Context {
+open class CoreContext(
+    private val lifecycle: Lifecycle = Lifecycle()
+) : Context {
 
-    private val workers = DefaultContextWorkers()
-    private val lifecycle = DefaultApplicationLifecycle(this)
-    private val diContext = DependencyProvider(this, null)
+    private val logger = Logger()
+    private val scheduler = createCoreScheduler()
+    private val dependencyProvider = DependencyProvider(this, null)
 
-    private val componentLogger = ComponentLogger()
-
-    init {
-        diContext.addInstance(ComponentLoggerDescriptor, componentLogger)
+    override fun getLogger(): Logger {
+        return logger
     }
 
     override fun getLifecycle(): Lifecycle {
         return lifecycle
     }
 
-    override fun getWorkers(): ContextWorkers {
-        return workers
+    override fun getScheduler(): Scheduler {
+        return scheduler
     }
 
     override fun getProvider(): DependencyProvider {
-        return diContext
+        return dependencyProvider
     }
 
     fun setLogging(logMethod: (String) -> Unit) {
-        componentLogger.logMethod = logMethod
+        logger.setupLogging(logMethod)
     }
 
 }

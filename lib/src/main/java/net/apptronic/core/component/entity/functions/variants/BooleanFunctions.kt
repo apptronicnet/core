@@ -13,6 +13,11 @@ fun <T> Predicate<T>.isNotNull(): Predicate<Boolean> =
         it != null
     }
 
+fun <T> Predicate<T>.anyValue(): Predicate<Boolean> =
+    predicateFunction(this) {
+        true
+    }
+
 fun Predicate<Boolean>.isTrue(): Predicate<Boolean> =
     predicateFunction(this) {
         it

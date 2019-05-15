@@ -3,13 +3,15 @@ package net.apptronic.core.component.di
 import net.apptronic.core.base.AtomicEntity
 import kotlin.reflect.KClass
 
-abstract class Descriptor<T> {
+sealed class Descriptor<T>(
+    internal val whereCreated: String
+) {
 
     private companion object {
         val id = AtomicEntity<Int>(0)
     }
 
-    private val descriptorId: Int = id.let {
+    internal val descriptorId: Int = id.let {
         val value = it.get()
         it.set(value + 1)
         value
@@ -23,39 +25,45 @@ abstract class Descriptor<T> {
         return this === other
     }
 
-    abstract fun toObjectKey(): ObjectKey
-
+    fun toObjectKey(): ObjectKey {
+        return objectKey(this)
+    }
 }
 
 private class KotlinClassDescriptor<T : Any>(
-    private val clazz: KClass<T>
-) : Descriptor<T>() {
+    private val clazz: KClass<T>,
+    whereCreated: String
+) : Descriptor<T>(whereCreated) {
 
-    override fun toObjectKey(): ObjectKey {
-        return objectKey(clazz)
+    override fun toString(): String {
+        return "Descriptor#$descriptorId/class:${clazz.qualifiedName}@$whereCreated"
     }
 
 }
 
 private class NamedDescriptor<T>(
-    private val name: String
-) : Descriptor<T>() {
+    private val name: String,
+    whereCreated: String
+) : Descriptor<T>(whereCreated) {
 
-    override fun toObjectKey(): ObjectKey {
-        return objectKey(name)
+    override fun toString(): String {
+        return "Descriptor#$descriptorId/name:$name@$whereCreated"
     }
 
 }
 
 
-fun <T : Any> createDescriptor(clazz: KClass<T>): Descriptor<T> {
-    return KotlinClassDescriptor(clazz)
+fun <T : Any> createDescriptor(clazz: KClass<T>, whereCreated: String? = null): Descriptor<T> {
+    val resultWhereCreated = whereCreated ?: Exception().stackTrace[1].toString()
+    return KotlinClassDescriptor(clazz, resultWhereCreated)
 }
 
 inline fun <reified T : Any> createDescriptor(): Descriptor<T> {
-    return createDescriptor(T::class)
+    val whereCreated = Exception().stackTrace[2].toString()
+    return createDescriptor(T::class, whereCreated)
 }
 
 fun <T> classDescriptor(clazz: Class<T>): Descriptor<T> {
-    return NamedDescriptor("platform:" + clazz.canonicalName)
+    val whereCreated = Exception().stackTrace[1].toString()
+    return NamedDescriptor("platform:" + clazz.canonicalName, whereCreated)
 }

@@ -11,8 +11,9 @@ import net.apptronic.core.component.lifecycle.LifecycleStage
 import net.apptronic.core.component.process.BackgroundAction
 import net.apptronic.core.component.process.BackgroundProcess
 import net.apptronic.core.component.process.setup
-import net.apptronic.core.component.threading.ContextWorkers
 import net.apptronic.core.mvvm.viewmodel.ComponentRegistry
+import net.apptronic.core.threading.Scheduler
+import net.apptronic.core.threading.WorkerDefinition
 
 open class Component(
     val context: Context
@@ -20,7 +21,7 @@ open class Component(
 
     private val id: Long = ComponentRegistry.nextId()
 
-    open fun getDefaultWorker() = ContextWorkers.SYNCHRONOUS
+    open fun getDefaultWorker(): WorkerDefinition = Scheduler.SYNCHRONOUS
 
     fun getId(): Long = id
 
@@ -134,15 +135,15 @@ open class Component(
     abstract class SubModel(parent: Component) : Component(parent)
 
     fun update(block: () -> Unit) {
-        getWorkers().execute(ContextWorkers.DEFAULT, block)
+        getScheduler().execute(Scheduler.DEFAULT, block)
     }
 
     fun <T, R> backgroundProcess(
-        workerName: String,
+        workerDefinition: WorkerDefinition,
         action: BackgroundAction<T, R>,
         setupBlock: BackgroundProcess<T, R>.() -> Unit = {}
     ): BackgroundProcess<T, R> {
-        return BackgroundProcess(this, action, workerName).setup(setupBlock)
+        return BackgroundProcess(this, action, workerDefinition).setup(setupBlock)
     }
 
     fun <T, R> backgroundProcess(

@@ -3,8 +3,8 @@ package net.apptronic.test.commons_sample_app.app
 import android.app.Application
 import android.content.Context
 import android.util.Log
-import net.apptronic.core.android.component.AndroidMainThreadWorker
-import net.apptronic.core.component.threading.ContextWorkers
+import net.apptronic.core.android.component.AndroidMainThreadWorkerProvider
+import net.apptronic.core.threading.Scheduler
 
 class SampleAndroidApplication : Application() {
 
@@ -24,13 +24,13 @@ class SampleAndroidApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        coreContext.getWorkers().assignWorker(
-            ContextWorkers.UI,
-            AndroidMainThreadWorker
+        coreContext.getScheduler().assignWorker(
+            Scheduler.UI,
+            AndroidMainThreadWorkerProvider
         )
-        coreContext.getWorkers().assignWorker(
-            ContextWorkers.DEFAULT,
-            AndroidMainThreadWorker
+        coreContext.getScheduler().assignWorker(
+            Scheduler.DEFAULT,
+            AndroidMainThreadWorkerProvider
         )
     }
 

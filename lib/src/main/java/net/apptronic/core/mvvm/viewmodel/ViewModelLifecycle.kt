@@ -1,9 +1,8 @@
 package net.apptronic.core.mvvm.viewmodel
 
 import net.apptronic.core.component.lifecycle.Lifecycle
-import net.apptronic.core.component.threading.ContextWorkers
 
-class ViewModelLifecycle(workers: ContextWorkers) : Lifecycle(workers) {
+class ViewModelLifecycle : Lifecycle() {
 
     companion object {
         /**

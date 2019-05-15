@@ -6,12 +6,13 @@ import net.apptronic.core.component.entity.Predicate
 import net.apptronic.core.component.entity.functions.variants.map
 import net.apptronic.core.component.entity.setup
 import net.apptronic.core.component.entity.subscribe
-import net.apptronic.core.component.threading.ContextWorkers
+import net.apptronic.core.threading.Scheduler
+import net.apptronic.core.threading.WorkerDefinition
 
 class BackgroundProcess<T, R>(
     private val parent: Component,
     private val action: BackgroundAction<T, R>,
-    private val workerName: String = ContextWorkers.PARALLEL_BACKGROUND
+    private val workerDefinition: WorkerDefinition = Scheduler.BACKGROUND_PARALLEL_INDIVIDUAL
 ) {
 
     private val idGenerator = SerialIdGenerator()
@@ -63,7 +64,7 @@ class BackgroundProcess<T, R>(
     }
 
     private fun doProcess(request: T) {
-        parent.getWorkers().getWorker(workerName).run {
+        parent.getScheduler().getWorker(workerDefinition).execute {
             val id = idGenerator.nextId()
             idsInProgress.update { it.add(id) }
             try {

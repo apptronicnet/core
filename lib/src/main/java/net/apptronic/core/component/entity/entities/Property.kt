@@ -80,3 +80,25 @@ fun <T> Predicate<T>.setTo(entity: Property<T>): Predicate<T> {
     entity.setAs(this)
     return this
 }
+
+fun <T> Predicate<T>.mirrorValue(context: Context): ComponentEntity<T> {
+    val result = MutableValue<T>(context)
+    result.setAs(this)
+    return result
+}
+
+fun <T> Predicate<T>.mirrorTypedEvent(context: Context): ComponentEntity<T> {
+    val result = ComponentTypedEvent<T>(context)
+    subscribe {
+        result.send(it)
+    }
+    return result
+}
+
+fun Predicate<*>.mirrorGenericEvent(context: Context): ComponentEntity<Unit> {
+    val result = ComponentTypedEvent<Unit>(context)
+    subscribe {
+        result.send(Unit)
+    }
+    return result
+}

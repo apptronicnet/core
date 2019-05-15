@@ -58,7 +58,7 @@ class AndroidViewFactory {
 
     fun getAndroidView(typeId: Int): AndroidView<*> {
         return views.values.firstOrNull { it.typeId == typeId }?.builder?.invoke()
-            ?: throw IllegalArgumentException("AndroidView is registered for typeId=$typeId")
+            ?: throw IllegalArgumentException("AndroidView is not registered for typeId=$typeId")
     }
 
     fun getAndroidView(viewModel: ViewModel): AndroidView<*> {

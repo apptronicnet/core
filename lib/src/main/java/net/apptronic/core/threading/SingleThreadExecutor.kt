@@ -18,7 +18,7 @@ internal class SerialWorker(
 
     private val actions = mutableListOf<() -> Unit>()
 
-    override fun run(action: () -> Unit) {
+    override fun execute(action: () -> Unit) {
         isRunning.perform {
             actions.add(action)
             if (maxCount > 0) {

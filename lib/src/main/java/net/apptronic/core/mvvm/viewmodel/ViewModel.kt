@@ -1,15 +1,15 @@
 package net.apptronic.core.mvvm.viewmodel
 
-import net.apptronic.core.base.ComponentLoggerDescriptor
 import net.apptronic.core.component.Component
 import net.apptronic.core.component.entity.Predicate
 import net.apptronic.core.component.entity.base.UpdateAndStorePredicate
 import net.apptronic.core.component.entity.base.UpdatePredicate
 import net.apptronic.core.component.lifecycle.Lifecycle
 import net.apptronic.core.component.lifecycle.LifecycleStage
-import net.apptronic.core.component.threading.ContextWorkers
 import net.apptronic.core.mvvm.viewmodel.container.ViewModelListNavigator
 import net.apptronic.core.mvvm.viewmodel.container.ViewModelStackNavigator
+import net.apptronic.core.threading.Scheduler
+import net.apptronic.core.threading.WorkerDefinition
 
 open class ViewModel : Component {
 
@@ -23,10 +23,8 @@ open class ViewModel : Component {
         viewModelContext = parent.viewModelContext
     }
 
-    private val logger = getProvider().inject(ComponentLoggerDescriptor)
-
-    override fun getDefaultWorker(): String {
-        return ContextWorkers.UI
+    override fun getDefaultWorker(): WorkerDefinition {
+        return Scheduler.UI
     }
 
     override fun getLifecycle(): ViewModelLifecycle {
@@ -35,10 +33,10 @@ open class ViewModel : Component {
 
     init {
         getLifecycle().getStage(Lifecycle.ROOT_STAGE)?.doOnce {
-            logger.log("ViewModelLifecycle: $this initialized")
+            getLogger().log("ViewModelLifecycle: $this initialized")
         }
         doOnTerminate {
-            logger.log("ViewModelLifecycle: ${this@ViewModel} terminated")
+            getLogger().log("ViewModelLifecycle: ${this@ViewModel} terminated")
         }
     }
 
@@ -50,12 +48,12 @@ open class ViewModel : Component {
     private fun stateOfStage(stageName: String): UpdatePredicate<Boolean> {
         val target = UpdateAndStorePredicate<Boolean>()
         onEnterStage(stageName) {
-            logger.log("ViewModelLifecycle: ${this@ViewModel} entered stage$stageName")
+            getLogger().log("ViewModelLifecycle: ${this@ViewModel} entered stage$stageName")
             target.update(true)
         }
         onExitStage(stageName) {
             target.update(false)
-            logger.log("ViewModelLifecycle: ${this@ViewModel} exited stage$stageName")
+            getLogger().log("ViewModelLifecycle: ${this@ViewModel} exited stage$stageName")
         }
         return target
     }
@@ -143,7 +141,7 @@ open class ViewModel : Component {
      */
     fun closeSelf(transitionInfo: Any? = null): Boolean {
         return parent?.let {
-            getWorkers().execute(context.getWorkers().getDefaultWorker()) {
+            getScheduler().execute(context.getScheduler().getDefaultWorker()) {
                 it.requestCloseSelf(this, transitionInfo)
             }
             true

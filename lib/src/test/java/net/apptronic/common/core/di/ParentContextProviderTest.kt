@@ -1,7 +1,7 @@
 package net.apptronic.common.core.di
 
 import net.apptronic.common.utils.TestContext
-import net.apptronic.core.component.context.BasicContext
+import net.apptronic.core.component.context.SubContext
 import net.apptronic.core.component.di.ObjectNotFoundException
 import net.apptronic.core.component.di.createDescriptor
 import net.apptronic.core.component.di.declareModule
@@ -54,7 +54,7 @@ class ParentContextProviderTest {
     }
 
     private class ChildContext(parent: net.apptronic.core.component.context.Context) :
-        BasicContext(parent) {
+        SubContext(parent) {
         init {
             getProvider().addModule(childModule)
         }
