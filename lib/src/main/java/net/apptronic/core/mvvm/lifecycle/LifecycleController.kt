@@ -1,11 +1,11 @@
 package net.apptronic.core.mvvm.lifecycle
 
+import net.apptronic.core.base.observable.subscribe
 import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.entity.Predicate
+import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.entities.Value
 import net.apptronic.core.component.entity.entities.setAs
 import net.apptronic.core.component.entity.functions.variants.and
-import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.component.lifecycle.Lifecycle
 import net.apptronic.core.component.lifecycle.enterStage
 import net.apptronic.core.component.lifecycle.exitStage
@@ -38,19 +38,19 @@ class LifecycleController(
         focusedLocal.set(value)
     }
 
-    private fun isCreated(): Predicate<Boolean> {
+    private fun isCreated(): Entity<Boolean> {
         return createdLocal
     }
 
-    private fun isBound(): Predicate<Boolean> {
+    private fun isBound(): Entity<Boolean> {
         return isCreated() and boundLocal
     }
 
-    private fun isVisible(): Predicate<Boolean> {
+    private fun isVisible(): Entity<Boolean> {
         return isBound() and visibleLocal
     }
 
-    private fun isFocused(): Predicate<Boolean> {
+    private fun isFocused(): Entity<Boolean> {
         return isVisible() and focusedLocal
     }
 
@@ -83,8 +83,8 @@ class LifecycleController(
         }
     }
 
-    private fun bindStage(viewModel: ViewModel, stageName: String, predicate: Predicate<Boolean>) {
-        predicate.subscribe {
+    private fun bindStage(viewModel: ViewModel, stageName: String, entity: Entity<Boolean>) {
+        entity.subscribe {
             if (it) {
                 enterStage(viewModel, stageName)
             } else {

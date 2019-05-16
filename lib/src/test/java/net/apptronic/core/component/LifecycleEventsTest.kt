@@ -2,7 +2,7 @@ package net.apptronic.core.component
 
 import net.apptronic.common.utils.BaseTestComponent
 import net.apptronic.common.utils.TestLifecycle
-import net.apptronic.core.component.entity.subscribe
+import net.apptronic.core.base.observable.subscribe
 import org.junit.Test
 
 class LifecycleEventsTest {

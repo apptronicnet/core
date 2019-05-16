@@ -1,54 +1,54 @@
 package net.apptronic.core.component.entity.functions.variants
 
-import net.apptronic.core.component.entity.Predicate
-import net.apptronic.core.component.entity.functions.predicateFunction
+import net.apptronic.core.component.entity.Entity
+import net.apptronic.core.component.entity.functions.entityFunction
 
-fun Predicate<Number>.toByte(): Predicate<Byte> =
-    predicateFunction(this) {
+fun Entity<Number>.toByte(): Entity<Byte> =
+    entityFunction(this) {
         it.toByte()
     }
 
-fun Predicate<Number>.toShort(): Predicate<Short> =
-    predicateFunction(this) {
+fun Entity<Number>.toShort(): Entity<Short> =
+    entityFunction(this) {
         it.toShort()
     }
 
-fun Predicate<Number>.toInt(): Predicate<Int> =
-    predicateFunction(this) {
+fun Entity<Number>.toInt(): Entity<Int> =
+    entityFunction(this) {
         it.toInt()
     }
 
-fun Predicate<Number>.toLong(): Predicate<Long> =
-    predicateFunction(this) {
+fun Entity<Number>.toLong(): Entity<Long> =
+    entityFunction(this) {
         it.toLong()
     }
 
-fun Predicate<Number>.toFloat(): Predicate<Float> =
-    predicateFunction(this) {
+fun Entity<Number>.toFloat(): Entity<Float> =
+    entityFunction(this) {
         it.toFloat()
     }
 
-fun Predicate<Number>.toDouble(): Predicate<Double> =
-    predicateFunction(this) {
+fun Entity<Number>.toDouble(): Entity<Double> =
+    entityFunction(this) {
         it.toDouble()
     }
 
-infix fun <T : Number> Predicate<T>.plus(another: Predicate<T>): Predicate<T> =
-    predicateFunction(this, another) { left, right ->
+infix fun <T : Number> Entity<T>.plus(another: Entity<T>): Entity<T> =
+    entityFunction(this, another) { left, right ->
         left plus right
     }
 
-infix fun <T : Number> Predicate<T>.minus(another: Predicate<T>): Predicate<T> =
-    predicateFunction(this, another) { left, right ->
+infix fun <T : Number> Entity<T>.minus(another: Entity<T>): Entity<T> =
+    entityFunction(this, another) { left, right ->
         left minus right
     }
 
-infix fun <T : Number> Predicate<T>.mult(another: Predicate<T>): Predicate<T> =
-    predicateFunction(this, another) { left, right ->
+infix fun <T : Number> Entity<T>.mult(another: Entity<T>): Entity<T> =
+    entityFunction(this, another) { left, right ->
         left mutliply right
     }
 
-infix fun <T : Number> Predicate<T>.div(another: Predicate<T>): Predicate<T> =
-    predicateFunction(this, another) { left, right ->
+infix fun <T : Number> Entity<T>.div(another: Entity<T>): Entity<T> =
+    entityFunction(this, another) { left, right ->
         left divide right
     }

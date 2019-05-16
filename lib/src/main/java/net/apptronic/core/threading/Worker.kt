@@ -2,6 +2,6 @@ package net.apptronic.core.threading
 
 interface Worker {
 
-    fun execute(action: () -> Unit)
+    fun execute(action: Action)
 
 }

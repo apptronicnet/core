@@ -1,58 +1,56 @@
 package net.apptronic.core.component.entity.functions.variants
 
-import net.apptronic.core.component.entity.Predicate
-import net.apptronic.core.component.entity.base.ConstantPredicate
-import net.apptronic.core.component.entity.functions.predicateFunction
+import net.apptronic.core.component.context.Context
+import net.apptronic.core.component.entity.Entity
+import net.apptronic.core.component.entity.base.ConstantEntity
+import net.apptronic.core.component.entity.functions.entityFunction
 
-fun <T> Predicate<T>.onNext(action: (T) -> Unit): Predicate<T> =
+fun <T> Entity<T>.onNext(action: (T) -> Unit): Entity<T> =
     map {
         action.invoke(it)
         it
     }
 
-fun <T, R> Predicate<T>.map(map: (T) -> R): Predicate<R> =
-    predicateFunction(this) {
+fun <T, R> Entity<T>.map(map: (T) -> R): Entity<R> =
+    entityFunction(this) {
         map(it)
     }
 
-fun <T, R> Predicate<T?>.mapOrNull(map: (T) -> R): Predicate<R?> =
+fun <T, R> Entity<T?>.mapOrNull(map: (T) -> R): Entity<R?> =
     map {
         if (it != null) (map.invoke(it)) else null
     }
 
-fun <T, R> Predicate<T?>.mapOr(ifNull: R, map: (T) -> R): Predicate<R> =
+fun <T, R> Entity<T?>.mapOr(ifNull: R, map: (T) -> R): Entity<R> =
     map {
         if (it != null) (map.invoke(it)) else ifNull
     }
 
-fun <T> Predicate<T?>.ifNull(value: T): Predicate<T> =
-    predicateFunction(this) {
+fun <T> Entity<T?>.ifNull(value: T): Entity<T> =
+    entityFunction(this) {
         it ?: value
     }
 
-fun <T> Predicate<T?>.ifNull(predicate: Predicate<T>): Predicate<T> =
-    predicateFunction(this, predicate) { value, ifNull ->
+fun <T> Entity<T?>.ifNull(entity: Entity<T>): Entity<T> =
+    entityFunction(this, entity) { value, ifNull ->
         value ?: ifNull
     }
 
-fun <T> nullValue(): Predicate<T?> =
-    ConstantPredicate<T?>(null)
+fun <T> Context.nullValue(): Entity<T?> =
+    ConstantEntity<T?>(this, null)
 
-fun <T> ofValue(value: T): Predicate<T> =
-    ConstantPredicate(value)
+fun <T> Context.ofValue(value: T): Entity<T> =
+    ConstantEntity(this, value)
 
-fun <T> T.asValue(): Predicate<T> =
-    ConstantPredicate(this)
-
-fun <T> Predicate<T>.isTrueThat(test: T.() -> Boolean): Predicate<Boolean> =
-    predicateFunction(this) {
+fun <T> Entity<T>.isTrueThat(test: T.() -> Boolean): Entity<Boolean> =
+    entityFunction(this) {
         it.test()
     }
 
-fun <T> Predicate<T>.isFalseThat(test: T.() -> Boolean): Predicate<Boolean> =
+fun <T> Entity<T>.isFalseThat(test: T.() -> Boolean): Entity<Boolean> =
     isTrueThat(test).not()
 
-fun <T> Predicate<T>.toNullable(): Predicate<T?> =
-    predicateFunction(this) {
+fun <T> Entity<T>.toNullable(): Entity<T?> =
+    entityFunction(this) {
         it
     }

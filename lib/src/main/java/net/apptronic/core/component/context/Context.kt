@@ -13,6 +13,14 @@ import net.apptronic.core.threading.Scheduler
 interface Context {
 
     /**
+     * User for cases when thing is used as only context wrapper. Returns core instance
+     * of context for direct usage and comparison when needed.
+     */
+    fun getToken(): Context {
+        return this
+    }
+
+    /**
      * Logger is for logging internals of context
      */
     fun getLogger(): Logger

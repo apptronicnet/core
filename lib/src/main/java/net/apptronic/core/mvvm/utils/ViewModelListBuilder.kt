@@ -1,10 +1,12 @@
 package net.apptronic.core.mvvm.utils
 
-import net.apptronic.core.component.entity.Predicate
-import net.apptronic.core.component.entity.PredicateObserver
-import net.apptronic.core.component.entity.Subscription
-import net.apptronic.core.component.entity.base.UpdateAndStorePredicate
-import net.apptronic.core.component.entity.subscribe
+import net.apptronic.core.base.observable.Observer
+import net.apptronic.core.base.observable.subject.BehaviorSubject
+import net.apptronic.core.base.observable.subscribe
+import net.apptronic.core.component.context.Context
+import net.apptronic.core.component.entity.Entity
+import net.apptronic.core.component.entity.EntitySubscription
+import net.apptronic.core.component.entity.bindContext
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 
 /**
@@ -14,7 +16,9 @@ import net.apptronic.core.mvvm.viewmodel.ViewModel
  * for item in updated list already exists - it will not create new [ViewModel] but update
  * existing [ViewModel] and place it in updates list at required place.
  */
-abstract class ViewModelListBuilder<T, Id, VM : ViewModel> : Predicate<List<ViewModel>> {
+abstract class ViewModelListBuilder<T, Id, VM : ViewModel>(
+    private val context: Context
+) : Entity<List<ViewModel>> {
 
     private inner class ViewModelHolder(
         val id: Id,
@@ -23,10 +27,15 @@ abstract class ViewModelListBuilder<T, Id, VM : ViewModel> : Predicate<List<View
 
     private val viewModelHolders = arrayListOf<ViewModelHolder>()
 
-    private val predicate = UpdateAndStorePredicate<List<ViewModel>>()
+    private val predicate =
+        BehaviorSubject<List<ViewModel>>()
 
     init {
         predicate.update(emptyList())
+    }
+
+    override fun getContext(): Context {
+        return context
     }
 
     /**
@@ -37,7 +46,7 @@ abstract class ViewModelListBuilder<T, Id, VM : ViewModel> : Predicate<List<View
     /**
      * Create [ViewModel] fro item
      */
-    protected abstract fun onCreateViewModel(item: T): VM
+    protected abstract fun onCreateViewModel(parent: Context, item: T): VM
 
     /**
      * Update already existing [ViewModel] for item
@@ -45,10 +54,10 @@ abstract class ViewModelListBuilder<T, Id, VM : ViewModel> : Predicate<List<View
     protected abstract fun onUpdateViewModel(viewModel: VM, newItem: T)
 
     /**
-     * Update list of [ViewModel]s automatically from given [Predicate]
+     * Update list of [ViewModel]s automatically from given [Entity]
      */
-    fun updateFrom(predicate: Predicate<out List<T>>) {
-        predicate.subscribe { update(it) }
+    fun updateFrom(entity: Entity<out List<T>>) {
+        entity.subscribe { update(it) }
     }
 
     /**
@@ -89,7 +98,7 @@ abstract class ViewModelListBuilder<T, Id, VM : ViewModel> : Predicate<List<View
         }
         addedItems.forEach { item ->
             val id = getId(item)
-            val viewModel = onCreateViewModel(item)
+            val viewModel = onCreateViewModel(context, item)
             viewModelHolders.add(ViewModelHolder(id, viewModel))
         }
         viewModelHolders.sortWith(PostArrangeComparator(newList))
@@ -97,8 +106,8 @@ abstract class ViewModelListBuilder<T, Id, VM : ViewModel> : Predicate<List<View
         predicate.update(result)
     }
 
-    override fun subscribe(observer: PredicateObserver<List<ViewModel>>): Subscription {
-        return predicate.subscribe(observer)
+    override fun subscribe(observer: Observer<List<ViewModel>>): EntitySubscription {
+        return predicate.subscribe(observer).bindContext(getContext())
     }
 
     private inner class PostArrangeComparator(items: List<T>) :

@@ -4,9 +4,9 @@ import kotlin.concurrent.thread
 
 internal class ParallelWorker : Worker {
 
-    override fun execute(action: () -> Unit) {
+    override fun execute(action: Action) {
         thread(start = true) {
-            action.invoke()
+            action.execute()
         }
     }
 

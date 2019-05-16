@@ -1,39 +1,39 @@
 package net.apptronic.core.component.entity.behavior
 
 import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.entity.Predicate
+import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.functions.variants.map
 import net.apptronic.core.threading.Worker
 import net.apptronic.core.threading.WorkerDefinition
 
-fun <T> Predicate<T>.switchWorker(worker: Worker): Predicate<T> {
-    return WorkerSwitchPredicate(this, worker)
+fun <T> Entity<T>.switchWorker(worker: Worker): Entity<T> {
+    return WorkerSwitchEntity(this, worker)
 }
 
-fun <T> Predicate<T>.switchWorker(
+fun <T> Entity<T>.switchWorker(
     context: Context,
     workerDefinition: WorkerDefinition
-): Predicate<T> {
+): Entity<T> {
     val worker = context.getScheduler().getWorker(workerDefinition)
-    return WorkerSwitchPredicate(this, worker)
+    return WorkerSwitchEntity(this, worker)
 }
 
-fun <T> Predicate<T>.switchContext(context: Context): Predicate<T> {
-    return ContextSwitchPredicate(
+fun <T> Entity<T>.switchContext(context: Context): Entity<T> {
+    return ContextSwitchEntity(
         this, context
     )
 }
 
-fun <T> Predicate<T>.filter(filterFunction: (T) -> Boolean): Predicate<T> {
-    return FilterPredicate(this, filterFunction)
+fun <T> Entity<T>.filter(filterFunction: (T) -> Boolean): Entity<T> {
+    return FilterEntity(this, filterFunction)
 }
 
-fun <T> Predicate<T?>.filterNotNull(): Predicate<T> {
+fun <T> Entity<T?>.filterNotNull(): Entity<T> {
     return filter { it != null }.map { it!! }
 }
 
-fun <T> Predicate<T>.filterNot(filterNotFunction: (T) -> Boolean): Predicate<T> {
-    return FilterPredicate(this) {
+fun <T> Entity<T>.filterNot(filterNotFunction: (T) -> Boolean): Entity<T> {
+    return FilterEntity(this) {
         filterNotFunction(it).not()
     }
 }

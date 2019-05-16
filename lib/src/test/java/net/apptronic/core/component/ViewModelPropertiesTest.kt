@@ -2,8 +2,8 @@ package net.apptronic.core.component
 
 import net.apptronic.common.utils.BaseTestComponent
 import net.apptronic.common.utils.TestLifecycle
-import net.apptronic.core.component.entity.entities.PropertyNotSetException
-import net.apptronic.core.component.entity.subscribe
+import net.apptronic.core.base.observable.subscribe
+import net.apptronic.core.component.entity.ValueNotSetException
 import net.apptronic.core.mvvm.viewmodel.extensions.asFunctionOf
 import net.apptronic.core.mvvm.viewmodel.extensions.copyValueFrom
 import org.junit.Test
@@ -117,10 +117,10 @@ class ViewModelPropertiesTest {
         component.compositeStringInt.subscribe { compositeStringInt = it }
         assert(compositeValue == null)
         assert(compositeStringInt == null)
-        assertFailsWith<PropertyNotSetException> {
+        assertFailsWith<ValueNotSetException> {
             component.compositeValue.get()
         }
-        assertFailsWith<PropertyNotSetException> {
+        assertFailsWith<ValueNotSetException> {
             component.compositeStringInt.get()
         }
 
@@ -131,7 +131,7 @@ class ViewModelPropertiesTest {
         assert(compositeValue == "Changed-Another")
 
         assert(compositeStringInt == null)
-        assertFailsWith<PropertyNotSetException> { component.compositeStringInt.get() }
+        assertFailsWith<ValueNotSetException> { component.compositeStringInt.get() }
 
         component.intValue.set(1)
         assert(compositeStringInt == "Changed-1")
@@ -146,7 +146,7 @@ class ViewModelPropertiesTest {
     @Test
     fun shouldCopy() {
         assert(component.copyOfString.get() == "Default")
-        assertFailsWith<PropertyNotSetException> { component.copyOfInt.get() }
+        assertFailsWith<ValueNotSetException> { component.copyOfInt.get() }
 
         component.intValue.set(1)
         assert(component.copyOfInt.get() == 1)
@@ -164,7 +164,7 @@ class ViewModelPropertiesTest {
     fun checkNullables() {
         lifecycle.enterStage(TestLifecycle.STAGE_CREATED)
 
-        assertFailsWith<PropertyNotSetException> { component.nullableString.get() }
+        assertFailsWith<ValueNotSetException> { component.nullableString.get() }
         assert(component.nullableStringDefaultNull.get() == null)
 
         component.nullableStringDefaultNull.set("Value")

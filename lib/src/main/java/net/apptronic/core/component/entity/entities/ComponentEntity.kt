@@ -1,37 +1,43 @@
 package net.apptronic.core.component.entity.entities
 
+import net.apptronic.core.base.observable.Observable
+import net.apptronic.core.base.observable.Observer
+import net.apptronic.core.base.observable.subscribe
 import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.entity.Predicate
-import net.apptronic.core.component.entity.PredicateObserver
-import net.apptronic.core.component.entity.Subscription
-import net.apptronic.core.component.entity.base.UpdatePredicate
-import net.apptronic.core.component.entity.subscribe
+import net.apptronic.core.component.entity.Entity
+import net.apptronic.core.component.entity.EntitySubscription
+import net.apptronic.core.component.entity.bindContext
+import net.apptronic.core.threading.Scheduler
+import net.apptronic.core.threading.Worker
 import net.apptronic.core.threading.WorkerDefinition
+import net.apptronic.core.threading.execute
 
 abstract class ComponentEntity<T>(
-    private val context: Context,
-    protected val workingPredicate: UpdatePredicate<T>
-) : Predicate<T> {
+    private val context: Context
+) : Entity<T> {
 
-    private val stageWhenCreated = context.getLifecycle().getActiveStage()
+    private var worker: Worker = context.getScheduler().getWorker(Scheduler.DEFAULT)
 
-    private var workerDefinition: WorkerDefinition? = null
-
-    fun setWorker(workerDefinition: WorkerDefinition?) {
-        this.workerDefinition = workerDefinition
+    fun setWorker(workerDefinition: WorkerDefinition) {
+        worker = context.getScheduler().getWorker(workerDefinition)
     }
 
-    override fun subscribe(observer: PredicateObserver<T>): Subscription {
-        val subscription = workingPredicate.subscribe { value ->
-            val workerToUse = workerDefinition ?: context.getScheduler().getDefaultWorker()
-            context.getScheduler().execute(workerToUse) {
+    override fun getContext(): Context {
+        return context
+    }
+
+    protected abstract fun getObservable(): Observable<T>
+
+    override fun subscribe(observer: Observer<T>): EntitySubscription {
+        val subscription = getObservable().subscribe { value ->
+            worker.execute {
                 observer.notify(value)
             }
         }
         context.getLifecycle().onExitFromActiveStage {
             subscription.unsubscribe()
         }
-        return subscription
+        return subscription.bindContext(context)
     }
 
 }

@@ -1,4 +1,4 @@
-package net.apptronic.core.component.entity
+package net.apptronic.core.base.observable
 
 import net.apptronic.core.base.SubscriptionHolder
 

@@ -1,11 +1,10 @@
 package net.apptronic.core.component
 
+import net.apptronic.core.base.observable.Observer
+import net.apptronic.core.base.observable.subscribe
 import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.entity.Predicate
-import net.apptronic.core.component.entity.PredicateObserver
 import net.apptronic.core.component.entity.entities.*
-import net.apptronic.core.component.entity.setup
-import net.apptronic.core.component.entity.subscribe
+import net.apptronic.core.component.entity.extensions.setup
 import net.apptronic.core.component.lifecycle.Lifecycle
 import net.apptronic.core.component.lifecycle.LifecycleStage
 import net.apptronic.core.component.process.BackgroundAction
@@ -18,6 +17,10 @@ import net.apptronic.core.threading.WorkerDefinition
 open class Component(
     val context: Context
 ) : Context by context {
+
+    override fun getToken(): Context {
+        return context
+    }
 
     private val id: Long = ComponentRegistry.nextId()
 
@@ -78,27 +81,20 @@ open class Component(
     fun <T> valueList() = mutableValue<MutableList<T>>(mutableListOf<T>())
 
     /**
-     * Property of view
-     */
-    fun <T> function(predicate: Predicate<T>): Property<T> {
-        return value<T>().setup { setAs(predicate) }
-    }
-
-    /**
      * User action on screen
      */
-    fun genericEvent(): ComponentGenericEvent {
-        return ComponentGenericEvent(this)
+    fun genericEvent(): GenericEvent {
+        return GenericEvent(context)
     }
 
-    fun genericEvent(observer: PredicateObserver<Unit>): ComponentGenericEvent {
-        return ComponentGenericEvent(this).apply {
+    fun genericEvent(observer: Observer<Unit>): GenericEvent {
+        return GenericEvent(context).apply {
             subscribe(observer)
         }
     }
 
-    fun genericEvent(callback: () -> Unit): ComponentGenericEvent {
-        return ComponentGenericEvent(this).apply {
+    fun genericEvent(callback: () -> Unit): GenericEvent {
+        return GenericEvent(this).apply {
             subscribe {
                 callback.invoke()
             }
@@ -108,18 +104,18 @@ open class Component(
     /**
      * User action on screen
      */
-    fun <T> typedEvent(): ComponentEvent<T> {
-        return ComponentTypedEvent(context)
+    fun <T> typedEvent(): Event<T> {
+        return TypedEvent(context)
     }
 
-    fun <T> typedEvent(observer: PredicateObserver<T>): ComponentEvent<T> {
-        return ComponentTypedEvent<T>(context).apply {
+    fun <T> typedEvent(observer: Observer<T>): Event<T> {
+        return TypedEvent<T>(context).apply {
             subscribe(observer)
         }
     }
 
-    fun <T> typedEvent(callback: (T) -> Unit): ComponentEvent<T> {
-        return ComponentTypedEvent<T>(context).apply {
+    fun <T> typedEvent(callback: (T) -> Unit): Event<T> {
+        return TypedEvent<T>(context).apply {
             subscribe(callback)
         }
     }

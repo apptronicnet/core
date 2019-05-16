@@ -20,13 +20,7 @@ fun createCoreScheduler(): Scheduler {
 }
 
 fun createSubScheduler(parent: Scheduler): Scheduler {
-    val scheduler = ContextScheduler(parent)
-    with(scheduler) {
-        assignWorker(Scheduler.BACKGROUND_SINGLE_SHARED, InstanceWorkerProvider(singleWorker()))
-        assignWorker(Scheduler.BACKGROUND_PARALLEL_SHARED, InstanceWorkerProvider(parallelWorker()))
-        assignWorker(Scheduler.BACKGROUND_SERIAL, FactoryWorkerProvider { serialWorker() })
-    }
-    return scheduler
+    return ContextScheduler(parent)
 }
 
 

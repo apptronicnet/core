@@ -11,10 +11,10 @@ class IntPredicatesTest {
         val left = value<Int>()
         val right = value<Int>()
 
-        val sum = function(left plus right)
-        val subs = function(left minus right)
-        val mult = function(left mult right)
-        val div = function(left div right)
+        val sum = left plus right
+        val subs = left minus right
+        val mult = left mult right
+        val div = left div right
 
     }
 

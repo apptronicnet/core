@@ -1,9 +1,8 @@
 package net.apptronic.core.mvvm.viewmodel
 
+import net.apptronic.core.base.observable.Observable
+import net.apptronic.core.base.observable.subject.BehaviorSubject
 import net.apptronic.core.component.Component
-import net.apptronic.core.component.entity.Predicate
-import net.apptronic.core.component.entity.base.UpdateAndStorePredicate
-import net.apptronic.core.component.entity.base.UpdatePredicate
 import net.apptronic.core.component.lifecycle.Lifecycle
 import net.apptronic.core.component.lifecycle.LifecycleStage
 import net.apptronic.core.mvvm.viewmodel.container.ViewModelListNavigator
@@ -45,8 +44,8 @@ open class ViewModel : Component {
     private val isVisible = stateOfStage(ViewModelLifecycle.STAGE_VISIBLE)
     private val isFocused = stateOfStage(ViewModelLifecycle.STAGE_FOCUSED)
 
-    private fun stateOfStage(stageName: String): UpdatePredicate<Boolean> {
-        val target = UpdateAndStorePredicate<Boolean>()
+    private fun stateOfStage(stageName: String): Observable<Boolean> {
+        val target = BehaviorSubject<Boolean>()
         onEnterStage(stageName) {
             getLogger().log("ViewModelLifecycle: ${this@ViewModel} entered stage$stageName")
             target.update(true)
@@ -86,19 +85,19 @@ open class ViewModel : Component {
 
     fun isCreated() = getLifecycle().isStageEntered(ViewModelLifecycle.STAGE_CREATED)
 
-    fun observeCreated(): Predicate<Boolean> = isCreated
+    fun observeCreated(): Observable<Boolean> = isCreated
 
     fun isBound() = getLifecycle().isStageEntered(ViewModelLifecycle.STAGE_BOUND)
 
-    fun observeBound(): Predicate<Boolean> = isBound
+    fun observeBound(): Observable<Boolean> = isBound
 
     fun isVisible() = getLifecycle().isStageEntered(ViewModelLifecycle.STAGE_VISIBLE)
 
-    fun observeVisible(): Predicate<Boolean> = isVisible
+    fun observeVisible(): Observable<Boolean> = isVisible
 
     fun isFocused() = getLifecycle().isStageEntered(ViewModelLifecycle.STAGE_FOCUSED)
 
-    fun observeFocused(): Predicate<Boolean> = isFocused
+    fun observeFocused(): Observable<Boolean> = isFocused
 
     /**
      * Check is current state is exactly on state created

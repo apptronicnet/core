@@ -1,7 +1,7 @@
 package net.apptronic.core.component
 
 import net.apptronic.common.utils.BaseTestComponent
-import net.apptronic.core.component.entity.doWhen
+import net.apptronic.core.component.entity.extensions.doWhen
 import net.apptronic.core.component.entity.functions.variants.and
 import net.apptronic.core.component.entity.functions.variants.not
 import net.apptronic.core.component.entity.functions.variants.or
@@ -15,10 +15,10 @@ class BooleanPredicatesTest {
         val left = value<Boolean>()
         val right = value<Boolean>()
 
-        val and = function(left and right)
-        val or = function(left or right)
-        val xor = function(left xor right)
-        val notLeft = function(left.not())
+        val and = left and right
+        val or = left or right
+        val xor = left xor right
+        val notLeft = left.not()
 
         val login = value("")
         val password = value("")

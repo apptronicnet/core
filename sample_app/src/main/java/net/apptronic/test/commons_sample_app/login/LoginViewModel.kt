@@ -1,6 +1,6 @@
 package net.apptronic.test.commons_sample_app.login
 
-import net.apptronic.core.component.entity.subscribe
+import net.apptronic.core.base.observable.subscribe
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 import net.apptronic.test.commons_sample_app.login.LoginViewModelContext.Companion.LoginActionDescriptor

@@ -16,9 +16,9 @@ internal class SerialWorker(
 
     private val isRunning = AtomicEntity(false)
 
-    private val actions = mutableListOf<() -> Unit>()
+    private val actions = mutableListOf<Action>()
 
-    override fun execute(action: () -> Unit) {
+    override fun execute(action: Action) {
         isRunning.perform {
             actions.add(action)
             if (maxCount > 0) {
@@ -36,7 +36,7 @@ internal class SerialWorker(
     }
 
     private fun executeQueue() {
-        var next: (() -> Unit)? = null
+        var next: Action? = null
         do {
             isRunning.perform {
                 next = if (actions.isNotEmpty()) actions.removeAt(0) else null
@@ -44,7 +44,7 @@ internal class SerialWorker(
                     set(false)
                 }
             }
-            next?.invoke()
+            next?.execute()
         } while (next != null)
     }
 

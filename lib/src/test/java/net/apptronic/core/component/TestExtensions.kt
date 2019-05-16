@@ -1,10 +1,10 @@
 package net.apptronic.core.component
 
-import net.apptronic.core.component.entity.Predicate
-import net.apptronic.core.component.entity.subscribe
+import net.apptronic.core.base.observable.subscribe
+import net.apptronic.core.component.entity.Entity
 import kotlin.test.assertNull
 
-private fun <T : Any> Predicate<T>.value(): T {
+private fun <T : Any> Entity<T>.value(): T {
     lateinit var value: T
     subscribe {
         value = it
@@ -12,18 +12,18 @@ private fun <T : Any> Predicate<T>.value(): T {
     return value
 }
 
-fun assert(predicate: Predicate<Boolean>) {
-    assert(predicate.value())
+fun assert(entity: Entity<Boolean>) {
+    assert(entity.value())
 }
 
-fun Predicate<Boolean>.assertTrue() {
+fun Entity<Boolean>.assertTrue() {
     assert(value())
 }
 
-fun Predicate<Boolean>.assertFalse() {
+fun Entity<Boolean>.assertFalse() {
     assert(value().not())
 }
 
-fun Predicate<Boolean>.assertNull() {
+fun Entity<Boolean>.assertNull() {
     assertNull(value())
 }
