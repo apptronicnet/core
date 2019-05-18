@@ -16,7 +16,7 @@ fun <Source, Result> Entity<Source>.debounce(
     subscribeWith: WorkerDefinition = WorkerDefinition.DEFAULT,
     debouncedTransformation: (Entity<Source>) -> Entity<Result>
 ): Entity<Result> {
-    return DebounceEntity(
+    return DebounceTransformationEntity(
         this,
         transformWith,
         subscribeWith,
@@ -24,7 +24,7 @@ fun <Source, Result> Entity<Source>.debounce(
     )
 }
 
-private class DebounceEntity<Source, Result>(
+private class DebounceTransformationEntity<Source, Result>(
     private val sourceEntity: Entity<Source>,
     private val transformWorkerDefinition: WorkerDefinition,
     private val subscribeWorkerDefinition: WorkerDefinition,
@@ -45,7 +45,7 @@ private class DebounceEntity<Source, Result>(
             takeNext()
         }
         val sourceEntity = sourceObservable.bindContext(sourceEntity.getContext())
-            .switchWorker(getContext(), transformWorkerDefinition)
+            .switchWorker(transformWorkerDefinition)
         debouncedTransformation.invoke(sourceEntity).subscribe { nextResult ->
             resultObservable.update(nextResult)
             awaitingValue.perform {
@@ -72,7 +72,7 @@ private class DebounceEntity<Source, Result>(
 
     override fun subscribe(observer: Observer<Result>): EntitySubscription {
         return resultObservable.bindContext(sourceEntity.getContext())
-            .switchWorker(getContext(), subscribeWorkerDefinition)
+            .switchWorker(subscribeWorkerDefinition)
             .subscribe(observer)
     }
 

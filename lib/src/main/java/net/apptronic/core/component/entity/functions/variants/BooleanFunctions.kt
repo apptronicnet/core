@@ -1,6 +1,7 @@
 package net.apptronic.core.component.entity.functions.variants
 
 import net.apptronic.core.component.entity.Entity
+import net.apptronic.core.component.entity.functions.entityArrayFunction
 import net.apptronic.core.component.entity.functions.entityFunction
 
 fun <T> Entity<T>.isNull(): Entity<Boolean> =
@@ -92,3 +93,69 @@ fun <T : CharSequence> Entity<T>.isNotBlank() =
     entityFunction(this) {
         it.isNotBlank()
     }
+
+fun <T> allOf(
+    vararg entity: Entity<out T>,
+    transformation: (Entity<out T>) -> Entity<Boolean>
+): Entity<Boolean> {
+    val sources = entity.map {
+        transformation.invoke(it)
+    }.toTypedArray<Entity<*>>()
+    return entityArrayFunction(sources) { args ->
+        args.all { it as Boolean }
+    }
+}
+
+fun <T> allOfValues(
+    vararg entity: Entity<out T>,
+    transformation: (T) -> Boolean
+): Entity<Boolean> {
+    val sources = entity.map { it as Entity<*> }.toTypedArray()
+    return entityArrayFunction(sources) { args ->
+        args.all { transformation.invoke(it as T) }
+    }
+}
+
+fun <T> anyOf(
+    vararg entity: Entity<out T>,
+    transformation: (Entity<out T>) -> Entity<Boolean>
+): Entity<Boolean> {
+    val sources = entity.map {
+        transformation.invoke(it)
+    }.toTypedArray<Entity<*>>()
+    return entityArrayFunction(sources) { args ->
+        args.any { it as Boolean }
+    }
+}
+
+fun <T> anyOfValues(
+    vararg entity: Entity<out T>,
+    transformation: (T) -> Boolean
+): Entity<Boolean> {
+    val sources = entity.map { it as Entity<*> }.toTypedArray()
+    return entityArrayFunction(sources) { args ->
+        args.any { transformation.invoke(it as T) }
+    }
+}
+
+fun <T> noneOf(
+    vararg entity: Entity<out T>,
+    transformation: (Entity<out T>) -> Entity<Boolean>
+): Entity<Boolean> {
+    val sources = entity.map {
+        transformation.invoke(it)
+    }.toTypedArray<Entity<*>>()
+    return entityArrayFunction(sources) { args ->
+        args.none { it as Boolean }
+    }
+}
+
+fun <T> noneOfValues(
+    vararg entity: Entity<out T>,
+    transformation: (T) -> Boolean
+): Entity<Boolean> {
+    val sources = entity.map { it as Entity<*> }.toTypedArray()
+    return entityArrayFunction(sources) { args ->
+        args.none { transformation.invoke(it as T) }
+    }
+}

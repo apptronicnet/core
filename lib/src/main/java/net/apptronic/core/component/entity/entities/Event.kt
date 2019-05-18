@@ -2,10 +2,10 @@ package net.apptronic.core.component.entity.entities
 
 import net.apptronic.core.base.observable.Observable
 import net.apptronic.core.base.observable.subject.PublishSubject
-import net.apptronic.core.base.observable.subject.Subject
 import net.apptronic.core.component.context.Context
+import net.apptronic.core.component.entity.UpdateEntity
 
-abstract class Event<T>(context: Context) : ComponentEntity<T>(context), Subject<T> {
+abstract class Event<T>(context: Context) : ComponentEntity<T>(context), UpdateEntity<T> {
 
     private val subject = PublishSubject<T>()
 

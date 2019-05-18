@@ -1,16 +1,12 @@
 package net.apptronic.core.component.entity.entities
 
 import net.apptronic.core.base.observable.subject.BehaviorSubject
-import net.apptronic.core.base.observable.subject.Subject
 import net.apptronic.core.base.observable.subject.ValueHolder
 import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.entity.Entity
-import net.apptronic.core.component.entity.EntityValue
-import net.apptronic.core.component.entity.ValueNotSetException
-import net.apptronic.core.component.entity.subscribe
+import net.apptronic.core.component.entity.*
 
 abstract class Property<T>(context: Context) : ComponentEntity<T>(context), EntityValue<T>,
-    Subject<T> {
+    UpdateEntity<T> {
 
     protected val subject = BehaviorSubject<T>()
 
@@ -49,9 +45,9 @@ abstract class Property<T>(context: Context) : ComponentEntity<T>(context), Enti
 /**
  * Subscribe to updates of [source] and set all new values automatically
  */
-fun <E : Property<T>, T> E.setAs(source: Entity<T>): E {
-    val subscription = source.subscribe(getContext()) {
-        set(it)
+fun <E : UpdateEntity<T>, T> E.setAs(source: Entity<T>): E {
+    source.subscribe(getContext()) {
+        update(it)
     }
     return this
 }
@@ -59,8 +55,8 @@ fun <E : Property<T>, T> E.setAs(source: Entity<T>): E {
 /**
  * Subscribe to updates of [source] and set all new values automatically
  */
-fun <T> Entity<T>.setTo(source: Property<T>): Entity<T> {
-    source.setAs(this)
+fun <T> Entity<T>.setTo(target: UpdateEntity<T>): Entity<T> {
+    target.setAs(this)
     return this
 }
 

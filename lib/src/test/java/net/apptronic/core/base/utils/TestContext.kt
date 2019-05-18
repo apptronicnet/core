@@ -4,6 +4,7 @@ import net.apptronic.core.base.Logger
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.di.DependencyProvider
 import net.apptronic.core.component.lifecycle.Lifecycle
+import net.apptronic.core.component.platform.PlatformHandler
 import net.apptronic.core.threading.Scheduler
 
 open class TestContext : Context {
@@ -31,6 +32,10 @@ open class TestContext : Context {
 
     override fun getProvider(): DependencyProvider {
         return dependencyProvider
+    }
+
+    override fun getPlatformHandler(): PlatformHandler {
+        throw NotImplementedError("Not used for tests")
     }
 
 }

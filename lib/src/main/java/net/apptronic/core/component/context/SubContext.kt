@@ -3,11 +3,12 @@ package net.apptronic.core.component.context
 import net.apptronic.core.base.Logger
 import net.apptronic.core.component.di.DependencyProvider
 import net.apptronic.core.component.lifecycle.Lifecycle
+import net.apptronic.core.component.platform.PlatformHandler
 import net.apptronic.core.threading.Scheduler
 import net.apptronic.core.threading.createSubScheduler
 
 open class SubContext(
-    parent: Context,
+    private val parent: Context,
     private val lifecycle: Lifecycle = Lifecycle()
 ) : Context {
 
@@ -36,6 +37,10 @@ open class SubContext(
 
     override fun getLifecycle(): Lifecycle {
         return lifecycle
+    }
+
+    override fun getPlatformHandler(): PlatformHandler {
+        return parent.getPlatformHandler()
     }
 
 }

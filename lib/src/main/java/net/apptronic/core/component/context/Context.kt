@@ -3,6 +3,7 @@ package net.apptronic.core.component.context
 import net.apptronic.core.base.Logger
 import net.apptronic.core.component.di.DependencyProvider
 import net.apptronic.core.component.lifecycle.Lifecycle
+import net.apptronic.core.component.platform.PlatformHandler
 import net.apptronic.core.threading.Scheduler
 
 /**
@@ -39,5 +40,10 @@ interface Context {
      * Get [DependencyProvider] for current [Context]
      */
     fun getProvider(): DependencyProvider
+
+    /**
+     * Get [PlatformHandler] instance
+     */
+    fun getPlatformHandler(): PlatformHandler
 
 }

@@ -7,8 +7,21 @@ import net.apptronic.core.component.entity.EntitySubscription
 import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.threading.Action
 import net.apptronic.core.threading.Worker
+import net.apptronic.core.threading.WorkerDefinition
 
-class WorkerSwitchEntity<T>(
+fun <T> Entity<T>.switchWorker(worker: Worker): Entity<T> {
+    return WorkerSwitchEntity(this, worker)
+}
+
+fun <T> Entity<T>.switchWorker(
+    workerDefinition: WorkerDefinition
+): Entity<T> {
+    val worker = getContext().getScheduler().getWorker(workerDefinition)
+    return WorkerSwitchEntity(this, worker)
+}
+
+
+private class WorkerSwitchEntity<T>(
     private val target: Entity<T>,
     private val worker: Worker
 ) : Entity<T> {

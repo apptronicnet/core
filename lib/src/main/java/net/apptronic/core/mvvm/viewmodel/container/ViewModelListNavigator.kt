@@ -75,7 +75,9 @@ class ViewModelListNavigator(
         viewModel: ViewModel,
         transitionInfo: Any?
     ) {
-        // ignore
+        update {
+            it.remove(viewModel)
+        }
     }
 
     override fun setBound(viewModel: ViewModel, isBound: Boolean) {

@@ -38,4 +38,8 @@ open class CoreContext(
         return dependencyProvider
     }
 
+    override fun getPlatformHandler(): PlatformHandler {
+        return platformHandler
+    }
+
 }
