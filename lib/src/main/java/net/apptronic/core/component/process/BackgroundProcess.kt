@@ -1,24 +1,27 @@
 package net.apptronic.core.component.process
 
 import net.apptronic.core.base.SerialIdGenerator
+import net.apptronic.core.base.observable.subscribe
 import net.apptronic.core.component.Component
-import net.apptronic.core.component.entity.Predicate
+import net.apptronic.core.component.entity.Entity
+import net.apptronic.core.component.entity.extensions.setup
 import net.apptronic.core.component.entity.functions.variants.map
-import net.apptronic.core.component.entity.setup
-import net.apptronic.core.component.entity.subscribe
-import net.apptronic.core.component.threading.ContextWorkers
+import net.apptronic.core.threading.Action
+import net.apptronic.core.threading.WorkerDefinition
 
 class BackgroundProcess<T, R>(
     private val parent: Component,
     private val action: BackgroundAction<T, R>,
-    private val workerName: String = ContextWorkers.PARALLEL_BACKGROUND
+    private val workerDefinition: WorkerDefinition = WorkerDefinition.BACKGROUND_PARALLEL_INDIVIDUAL
 ) {
+
+    private val worker = parent.getScheduler().getWorker(workerDefinition)
 
     private val idGenerator = SerialIdGenerator()
 
     private val idsInProgress = parent.valueSet<Long>()
 
-    private val isInProgress = parent.function(idsInProgress.map { it.isNotEmpty() })
+    private val isInProgress = idsInProgress.map { it.isNotEmpty() }
 
     private val requestEvent = parent.typedEvent<T>().setup {
         subscribe {
@@ -30,7 +33,7 @@ class BackgroundProcess<T, R>(
 
     private val failedEvent = parent.typedEvent<Exception>()
 
-    fun onProgress(): Predicate<Boolean> = isInProgress
+    fun onProgress(): Entity<Boolean> = isInProgress
 
     fun onProgress(action: (Boolean) -> Unit) {
         onProgress().subscribe(action)
@@ -44,26 +47,32 @@ class BackgroundProcess<T, R>(
         onProgress().subscribe { if (it.not()) action() }
     }
 
-    fun onRequest(): Predicate<T> = requestEvent
+    fun onRequest(): Entity<T> = requestEvent
 
     fun onRequest(action: (T) -> Unit) {
         onRequest().subscribe(action)
     }
 
-    fun onSuccess(): Predicate<R> = successEvent
+    fun onSuccess(): Entity<R> = successEvent
 
     fun onSuccess(action: (R) -> Unit) {
         onSuccess().subscribe(action)
     }
 
-    fun onError(): Predicate<Exception> = failedEvent
+    fun onError(): Entity<Exception> = failedEvent
 
     fun onError(action: (Exception) -> Unit) {
         onError().subscribe(action)
     }
 
     private fun doProcess(request: T) {
-        parent.getWorkers().getWorker(workerName).run {
+        worker.execute(ProcessAction(request))
+    }
+
+    private inner class ProcessAction(
+        private val request: T
+    ) : Action {
+        override fun execute() {
             val id = idGenerator.nextId()
             idsInProgress.update { it.add(id) }
             try {

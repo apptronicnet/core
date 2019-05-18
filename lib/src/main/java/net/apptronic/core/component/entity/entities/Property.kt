@@ -1,28 +1,35 @@
 package net.apptronic.core.component.entity.entities
 
+import net.apptronic.core.base.observable.subject.BehaviorSubject
+import net.apptronic.core.base.observable.subject.Subject
+import net.apptronic.core.base.observable.subject.ValueHolder
 import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.entity.Predicate
-import net.apptronic.core.component.entity.base.UpdatePredicate
+import net.apptronic.core.component.entity.Entity
+import net.apptronic.core.component.entity.EntityValue
+import net.apptronic.core.component.entity.ValueNotSetException
 import net.apptronic.core.component.entity.subscribe
 
-abstract class Property<T>(
-    internal val context: Context,
-    predicate: UpdatePredicate<T>
-) : ComponentEntity<T>(
-    context,
-    predicate
-) {
+abstract class Property<T>(context: Context) : ComponentEntity<T>(context), EntityValue<T>,
+    Subject<T> {
 
-    fun set(value: T) {
-        onSetValue(value)
-        workingPredicate.update(value)
+    protected val subject = BehaviorSubject<T>()
+
+    override fun getValueHolder(): ValueHolder<T>? {
+        return subject.getValue()
     }
 
-    abstract fun isSet(): Boolean
+    fun set(value: T) {
+        subject.update(value)
+    }
 
-    protected abstract fun onSetValue(value: T)
+    override fun update(value: T) {
+        set(value)
+    }
 
-    protected abstract fun onGetValue(): T
+    override fun toString(): String {
+        val valueHolder = subject.getValue()
+        return super.toString() + if (valueHolder == null) "/not-set" else "=$valueHolder"
+    }
 
     /**
      * Set current value from given [source]
@@ -32,28 +39,7 @@ abstract class Property<T>(
         return try {
             set(source.get())
             true
-        } catch (e: PropertyNotSetException) {
-            false
-        }
-    }
-
-    fun get(): T {
-        return onGetValue()
-    }
-
-    fun getOrNull(): T? {
-        return try {
-            get()
-        } catch (e: PropertyNotSetException) {
-            null
-        }
-    }
-
-    fun doIfSet(action: (T) -> Unit): Boolean {
-        return try {
-            action(get())
-            true
-        } catch (e: PropertyNotSetException) {
+        } catch (e: ValueNotSetException) {
             false
         }
     }
@@ -63,20 +49,39 @@ abstract class Property<T>(
 /**
  * Subscribe to updates of [source] and set all new values automatically
  */
-fun <E : Property<T>, T> E.setAs(predicate: Predicate<T>): E {
-    val subscription = predicate.subscribe(context) {
+fun <E : Property<T>, T> E.setAs(source: Entity<T>): E {
+    val subscription = source.subscribe(getContext()) {
         set(it)
     }
-    this.context.getLifecycle().onExitFromActiveStage {
-        subscription.unsubscribe()
-    }
     return this
 }
 
 /**
  * Subscribe to updates of [source] and set all new values automatically
  */
-fun <T> Predicate<T>.setTo(entity: Property<T>): Predicate<T> {
-    entity.setAs(this)
+fun <T> Entity<T>.setTo(source: Property<T>): Entity<T> {
+    source.setAs(this)
     return this
+}
+
+fun <T> Entity<T>.mirrorProperty(context: Context): Property<T> {
+    val result = MutableValue<T>(context)
+    result.setAs(this)
+    return result
+}
+
+fun <T> Entity<T>.mirrorEvent(context: Context): Event<T> {
+    val result = TypedEvent<T>(context)
+    subscribe {
+        result.send(it)
+    }
+    return result
+}
+
+fun Entity<*>.mirrorGenericEvent(context: Context): Event<Unit> {
+    val result = TypedEvent<Unit>(context)
+    subscribe {
+        result.send(Unit)
+    }
+    return result
 }

@@ -1,15 +1,16 @@
 package net.apptronic.core.mvvm.viewmodel
 
-import net.apptronic.core.base.ComponentLoggerDescriptor
+import net.apptronic.core.base.observable.Observable
+import net.apptronic.core.base.observable.subject.BehaviorSubject
 import net.apptronic.core.component.Component
-import net.apptronic.core.component.entity.Predicate
-import net.apptronic.core.component.entity.base.UpdateAndStorePredicate
-import net.apptronic.core.component.entity.base.UpdatePredicate
+import net.apptronic.core.component.entity.Entity
+import net.apptronic.core.component.entity.extensions.setup
+import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.component.lifecycle.Lifecycle
 import net.apptronic.core.component.lifecycle.LifecycleStage
-import net.apptronic.core.component.threading.ContextWorkers
 import net.apptronic.core.mvvm.viewmodel.container.ViewModelListNavigator
 import net.apptronic.core.mvvm.viewmodel.container.ViewModelStackNavigator
+import net.apptronic.core.threading.WorkerDefinition
 
 open class ViewModel : Component {
 
@@ -23,10 +24,8 @@ open class ViewModel : Component {
         viewModelContext = parent.viewModelContext
     }
 
-    private val logger = getProvider().inject(ComponentLoggerDescriptor)
-
-    override fun getDefaultWorker(): String {
-        return ContextWorkers.UI
+    override fun getDefaultWorker(): WorkerDefinition {
+        return WorkerDefinition.UI
     }
 
     override fun getLifecycle(): ViewModelLifecycle {
@@ -35,10 +34,10 @@ open class ViewModel : Component {
 
     init {
         getLifecycle().getStage(Lifecycle.ROOT_STAGE)?.doOnce {
-            logger.log("ViewModelLifecycle: $this initialized")
+            getLogger().log("ViewModelLifecycle: $this initialized")
         }
         doOnTerminate {
-            logger.log("ViewModelLifecycle: ${this@ViewModel} terminated")
+            getLogger().log("ViewModelLifecycle: ${this@ViewModel} terminated")
         }
     }
 
@@ -47,15 +46,15 @@ open class ViewModel : Component {
     private val isVisible = stateOfStage(ViewModelLifecycle.STAGE_VISIBLE)
     private val isFocused = stateOfStage(ViewModelLifecycle.STAGE_FOCUSED)
 
-    private fun stateOfStage(stageName: String): UpdatePredicate<Boolean> {
-        val target = UpdateAndStorePredicate<Boolean>()
+    private fun stateOfStage(stageName: String): Observable<Boolean> {
+        val target = BehaviorSubject<Boolean>()
         onEnterStage(stageName) {
-            logger.log("ViewModelLifecycle: ${this@ViewModel} entered stage$stageName")
+            getLogger().log("ViewModelLifecycle: ${this@ViewModel} entered stage$stageName")
             target.update(true)
         }
         onExitStage(stageName) {
             target.update(false)
-            logger.log("ViewModelLifecycle: ${this@ViewModel} exited stage$stageName")
+            getLogger().log("ViewModelLifecycle: ${this@ViewModel} exited stage$stageName")
         }
         return target
     }
@@ -64,8 +63,24 @@ open class ViewModel : Component {
         return ViewModelStackNavigator(this)
     }
 
+    fun stackNavigator(source: Entity<ViewModel>): ViewModelStackNavigator {
+        return ViewModelStackNavigator(this).setup {
+            source.subscribe {
+                set(it)
+            }
+        }
+    }
+
     fun listNavigator(): ViewModelListNavigator {
         return ViewModelListNavigator(this)
+    }
+
+    fun listNavigator(source: Entity<List<ViewModel>>): ViewModelListNavigator {
+        return ViewModelListNavigator(this).setup {
+            source.subscribe {
+                set(it)
+            }
+        }
     }
 
     internal fun onAddedToContainer(parent: ViewModelParent) {
@@ -88,19 +103,19 @@ open class ViewModel : Component {
 
     fun isCreated() = getLifecycle().isStageEntered(ViewModelLifecycle.STAGE_CREATED)
 
-    fun observeCreated(): Predicate<Boolean> = isCreated
+    fun observeCreated(): Observable<Boolean> = isCreated
 
     fun isBound() = getLifecycle().isStageEntered(ViewModelLifecycle.STAGE_BOUND)
 
-    fun observeBound(): Predicate<Boolean> = isBound
+    fun observeBound(): Observable<Boolean> = isBound
 
     fun isVisible() = getLifecycle().isStageEntered(ViewModelLifecycle.STAGE_VISIBLE)
 
-    fun observeVisible(): Predicate<Boolean> = isVisible
+    fun observeVisible(): Observable<Boolean> = isVisible
 
     fun isFocused() = getLifecycle().isStageEntered(ViewModelLifecycle.STAGE_FOCUSED)
 
-    fun observeFocused(): Predicate<Boolean> = isFocused
+    fun observeFocused(): Observable<Boolean> = isFocused
 
     /**
      * Check is current state is exactly on state created
@@ -143,7 +158,7 @@ open class ViewModel : Component {
      */
     fun closeSelf(transitionInfo: Any? = null): Boolean {
         return parent?.let {
-            getWorkers().execute(context.getWorkers().getDefaultWorker()) {
+            getScheduler().execute(context.getScheduler().getDefaultWorker()) {
                 it.requestCloseSelf(this, transitionInfo)
             }
             true

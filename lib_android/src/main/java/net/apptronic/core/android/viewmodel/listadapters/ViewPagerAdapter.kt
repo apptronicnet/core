@@ -10,6 +10,8 @@ class ViewPagerAdapter(
     private val viewModelAdapter: AndroidViewModelListAdapter
 ) : PagerAdapter() {
 
+    var titleProvider: TitleProvider? = null
+
     init {
         viewModelAdapter.addListener {
             notifyDataSetChanged()
@@ -45,8 +47,7 @@ class ViewPagerAdapter(
 
     override fun getPageTitle(position: Int): CharSequence? {
         val viewModel = viewModelAdapter.getItemAt(position)
-        val androidView = androidViews[viewModel.getId()]
-        return androidView?.let { it.requestTitle(it.getView().context, viewModel) } ?: ""
+        return titleProvider?.getItemTitle(viewModel, position) ?: ""
     }
 
     override fun getItemPosition(obj: Any): Int {

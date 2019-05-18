@@ -17,11 +17,17 @@ class Parameters {
         descriptor: Descriptor<ObjectType>,
         instance: ObjectType
     ) {
-        instances[objectKey(descriptor)] = instance
+        instances[descriptor.toObjectKey()] = instance
     }
 
     internal fun <ObjectType> get(objectKey: ObjectKey): ObjectType? {
         return instances[objectKey] as? ObjectType
+    }
+
+    internal fun getInstanceNames(): List<String> {
+        return instances.entries.map {
+            "${it.key}=${it.value}}"
+        }
     }
 
 }

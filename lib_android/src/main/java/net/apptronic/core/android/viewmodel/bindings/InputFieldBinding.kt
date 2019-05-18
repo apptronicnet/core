@@ -5,8 +5,8 @@ import android.text.TextWatcher
 import android.widget.EditText
 import net.apptronic.core.android.viewmodel.AndroidView
 import net.apptronic.core.android.viewmodel.Binding
+import net.apptronic.core.base.observable.subscribe
 import net.apptronic.core.component.entity.entities.Property
-import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 
 infix fun EditText.asInputFor(target: Property<String>): InputFieldBinding {

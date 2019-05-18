@@ -1,42 +1,51 @@
 package net.apptronic.core.mvvm.viewmodel.container
 
-import net.apptronic.core.component.entity.base.UpdateAndStorePredicate
-import net.apptronic.core.component.entity.entities.Property
+import net.apptronic.core.base.observable.Observable
+import net.apptronic.core.base.observable.subject.BehaviorSubject
 import net.apptronic.core.mvvm.viewmodel.ViewModel
-import net.apptronic.core.mvvm.viewmodel.ViewModelParent
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelListAdapter
 
 class ViewModelListNavigator(
     private val parent: ViewModel
-) : Property<List<ViewModel>>(parent, UpdateAndStorePredicate()), ViewModelParent,
+) : Navigator<List<ViewModel>>(parent),
     ViewModelListAdapter.SourceNavigator {
+
+    private val subject = BehaviorSubject<List<ViewModel>>()
+
+    private fun updateSubject() {
+        subject.update(items)
+    }
+
+    override fun getObservable(): Observable<List<ViewModel>> {
+        return subject
+    }
 
     private var adapter: ViewModelListAdapter? = null
 
     private var items: List<ViewModel> = emptyList()
 
+    override fun get(): List<ViewModel> {
+        return ArrayList(items)
+    }
+
+    override fun getOrNull(): List<ViewModel>? {
+        return ArrayList(items)
+    }
+
     private val containers = mutableMapOf<Long, ViewModelContainerItem>()
-
-    override fun isSet(): Boolean {
-        return true
-    }
-
-    override fun onGetValue(): List<ViewModel> {
-        return items
-    }
 
     private fun ViewModel.getContainer(): ViewModelContainerItem? {
         return containers[getId()]
     }
 
     fun update(action: (MutableList<ViewModel>) -> Unit) {
-        val list = get().toMutableList()
+        val list = items.toMutableList()
         action.invoke(list)
         set(list)
     }
 
-    override fun onSetValue(value: List<ViewModel>) {
-        val diff = getDiff(get(), value)
+    fun set(value: List<ViewModel>) {
+        val diff = getDiff(items, value)
         diff.removed.forEach {
             onRemoved(it)
         }
@@ -44,7 +53,8 @@ class ViewModelListNavigator(
         diff.added.forEach {
             onAdded(it)
         }
-        adapter?.onDataChanged(get())
+        adapter?.onDataChanged(items)
+        updateSubject()
     }
 
     private fun onAdded(viewModel: ViewModel) {
@@ -69,26 +79,20 @@ class ViewModelListNavigator(
     }
 
     override fun setBound(viewModel: ViewModel, isBound: Boolean) {
-        viewModel.getContainer()?.let {
-            it.setBound(isBound)
-        }
+        viewModel.getContainer()?.setBound(isBound)
     }
 
     override fun setVisible(viewModel: ViewModel, isBound: Boolean) {
-        viewModel.getContainer()?.let {
-            it.setVisible(isBound)
-        }
+        viewModel.getContainer()?.setVisible(isBound)
     }
 
     override fun setFocused(viewModel: ViewModel, isBound: Boolean) {
-        viewModel.getContainer()?.let {
-            it.setFocused(isBound)
-        }
+        viewModel.getContainer()?.setFocused(isBound)
     }
 
     fun setAdapter(adapter: ViewModelListAdapter) {
         this.adapter = adapter
-        adapter.onDataChanged(get())
+        adapter.onDataChanged(items)
         adapter.setNavigator(this)
         parent.getLifecycle().onExitFromActiveStage {
             items.forEach {

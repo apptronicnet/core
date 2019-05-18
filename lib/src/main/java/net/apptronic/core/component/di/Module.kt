@@ -9,7 +9,7 @@ internal class ObjectDefinition<TypeDeclaration>(
     private var recyclers = mutableListOf<RecyclerMethod<TypeDeclaration>>()
     private var mappings = mutableListOf<ObjectKey>()
 
-    internal fun getProvider(context: DependencyProvider): ObjectProvider<TypeDeclaration> {
+    internal fun getProvider(): ObjectProvider<TypeDeclaration> {
         return providerFactory.invoke().also {
             it.recyclers.addAll(this.recyclers)
             it.addMapping(mappings)
@@ -69,62 +69,70 @@ infix fun <To : Any> KClass<*>.alsoAs(to: Descriptor<To>) =
 infix fun <To : Any> Descriptor<*>.alsoAs(to: Descriptor<To>) =
     BindDefinition<To>(objectKey(this), objectKey(to))
 
-class ModuleDefinition internal constructor() {
+class ModuleDefinition internal constructor(
+    val name: String
+) {
 
     private val definitions = mutableListOf<ObjectDefinition<*>>()
 
-    internal fun buildInstance(context: DependencyProvider): Module {
+    internal fun buildInstance(): Module {
         val providers: List<ObjectProvider<*>> = definitions.map {
-            it.getProvider(context)
+            it.getProvider()
         }
-        return Module(providers)
+        return Module(name, providers)
     }
 
     inline fun <reified TypeDeclaration : Any> factory(
+        recycleOn: RecycleOn = RecycleOn.DEFAULT,
         noinline builder: FactoryContext.() -> TypeDeclaration
     ): ProviderDefinition<TypeDeclaration> {
-        return factory(TypeDeclaration::class, builder)
+        return factory(TypeDeclaration::class, recycleOn, builder)
     }
 
     inline fun <reified TypeDeclaration : Any> single(
-        noinline builder: FactoryContext.() -> TypeDeclaration
+        recycleOn: RecycleOn = RecycleOn.DEFAULT,
+        noinline builder: SingleContext.() -> TypeDeclaration
     ): ProviderDefinition<TypeDeclaration> {
-        return single(TypeDeclaration::class, builder)
+        return single(TypeDeclaration::class, recycleOn, builder)
     }
 
     fun <TypeDeclaration : Any> factory(
         clazz: KClass<TypeDeclaration>,
+        recycleOn: RecycleOn = RecycleOn.DEFAULT,
         builder: FactoryContext.() -> TypeDeclaration
     ): ProviderDefinition<TypeDeclaration> {
         return addDefinition {
-            factoryProvider(objectKey(clazz), BuilderMethod(builder))
+            factoryProvider(objectKey(clazz), BuilderMethod(builder), recycleOn)
         }
     }
 
     fun <TypeDeclaration : Any> factory(
         descriptor: Descriptor<TypeDeclaration>,
+        recycleOn: RecycleOn = RecycleOn.DEFAULT,
         builder: FactoryContext.() -> TypeDeclaration
     ): ProviderDefinition<TypeDeclaration> {
         return addDefinition {
-            factoryProvider(objectKey(descriptor), BuilderMethod(builder))
+            factoryProvider(objectKey(descriptor), BuilderMethod(builder), recycleOn)
         }
     }
 
     fun <TypeDeclaration : Any> single(
         clazz: KClass<TypeDeclaration>,
-        builder: FactoryContext.() -> TypeDeclaration
+        recycleOn: RecycleOn = RecycleOn.DEFAULT,
+        builder: SingleContext.() -> TypeDeclaration
     ): ProviderDefinition<TypeDeclaration> {
         return addDefinition {
-            singleProvider(objectKey(clazz), BuilderMethod(builder))
+            singleProvider(objectKey(clazz), BuilderMethod(builder), recycleOn)
         }
     }
 
     fun <TypeDeclaration : Any> single(
         descriptor: Descriptor<TypeDeclaration>,
-        builder: FactoryContext.() -> TypeDeclaration
+        recycleOn: RecycleOn = RecycleOn.DEFAULT,
+        builder: SingleContext.() -> TypeDeclaration
     ): ProviderDefinition<TypeDeclaration> {
         return addDefinition {
-            singleProvider(objectKey(descriptor), BuilderMethod(builder))
+            singleProvider(objectKey(descriptor), BuilderMethod(builder), recycleOn)
         }
     }
 
@@ -150,77 +158,6 @@ class ModuleDefinition internal constructor() {
         }
     }
 
-//    /**
-//     * Java version of [factory]
-//     */
-//    fun <TypeDeclaration> declareFactory(
-//        clazz: Class<TypeDeclaration>,
-//        builder: ObjectBuilder<TypeDeclaration>
-//    ): ProviderDefinition<TypeDeclaration> {
-//        return declareFactory(clazz, null, builder)
-//    }
-//
-//    /**
-//     * Java version of [factory]
-//     */
-//    fun <TypeDeclaration> declareFactory(
-//        clazz: Class<TypeDeclaration>,
-//        descriptor: Descriptor<TypeDeclaration>? = null,
-//        builder: ObjectBuilder<TypeDeclaration>
-//    ): ProviderDefinition<TypeDeclaration> {
-//        return addDefinition {
-//            factoryProvider(objectKey(clazz), BuilderMethod {
-//                builder.build(this)
-//            })
-//        }
-//    }
-//
-//    /**
-//     * Java version of [single]
-//     */
-//    fun <TypeDeclaration> declareSingle(
-//        clazz: Class<TypeDeclaration>,
-//        builder: ObjectBuilder<TypeDeclaration>
-//    ): ProviderDefinition<TypeDeclaration> {
-//        return declareSingle(clazz, null, builder)
-//    }
-//
-//    /**
-//     * Java version of [single]
-//     */
-//    fun <TypeDeclaration> declareSingle(
-//        clazz: Class<TypeDeclaration>,
-//        descriptor: Descriptor<TypeDeclaration>? = null,
-//        builder: ObjectBuilder<TypeDeclaration>
-//    ): ProviderDefinition<TypeDeclaration> {
-//        return addDefinition {
-//            singleProvider(objectKey(clazz), BuilderMethod {
-//                builder.build(this)
-//            })
-//        }
-//    }
-//
-//    /**
-//     * Java version of [cast]
-//     */
-//    fun <TypeDeclaration> declareCast(
-//        clazz: Class<TypeDeclaration>
-//    ): ProviderDefinition<TypeDeclaration> {
-//        return declareCast(clazz, null)
-//    }
-//
-//    /**
-//     * Java version of [cast]
-//     */
-//    fun <TypeDeclaration> declareCast(
-//        clazz: Class<TypeDeclaration>,
-//        descriptor: Descriptor<TypeDeclaration>?
-//    ): ProviderDefinition<TypeDeclaration> {
-//        return addDefinition {
-//            bindProvider<TypeDeclaration>(objectKey(clazz, descriptor))
-//        }
-//    }
-
     private fun <TypeDeclaration> addDefinition(
         providerFactory: () -> ObjectProvider<TypeDeclaration>
     ): ProviderDefinition<TypeDeclaration> {
@@ -232,6 +169,7 @@ class ModuleDefinition internal constructor() {
 }
 
 internal class Module constructor(
+    val name: String,
     private val providers: List<ObjectProvider<*>>
 ) {
 
@@ -243,24 +181,24 @@ internal class Module constructor(
 
 }
 
-fun declareModule(initializer: ModuleDefinition.() -> Unit): ModuleDefinition {
-    return ModuleDefinition().apply(initializer)
+private fun getModuleNameFromTrace(): String {
+    val stackTrace = Throwable().stackTrace
+    val element = stackTrace[2]
+    return element.toString()
 }
 
-fun declareModule(initializer: ModuleBuilder): ModuleDefinition {
-    return ModuleDefinition().apply {
-        initializer.build(this)
+fun declareModule(initializer: ModuleDefinition.() -> Unit): ModuleDefinition {
+    return ModuleDefinition(getModuleNameFromTrace()).apply(initializer)
+}
+
+fun declareModule(builder: ModuleBuilder): ModuleDefinition {
+    return ModuleDefinition(builder::class.qualifiedName ?: getModuleNameFromTrace()).apply {
+        builder.build(this)
     }
 }
 
 interface ModuleBuilder {
 
     fun build(definition: ModuleDefinition)
-
-}
-
-interface ObjectBuilder<T> {
-
-    fun build(context: FactoryContext): T
 
 }

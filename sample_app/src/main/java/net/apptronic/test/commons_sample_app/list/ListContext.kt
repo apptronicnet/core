@@ -37,12 +37,12 @@ private val listModule = declareModule {
 
     factory(ListItemTextViewModelDescriptor) {
         val index = inject(GenerateNextListItemIndexDescriptor)
-        ListItemTextViewModel(index, inject())
+        ListItemTextViewModel(index, providedContext())
     }
 
     factory(ListItemImageViewModelDescriptor) {
         val index = inject(GenerateNextListItemIndexDescriptor)
-        ListItemImageViewModel(index, inject())
+        ListItemImageViewModel(index, providedContext())
     }
 
 }

@@ -1,8 +1,9 @@
 package net.apptronic.core.component.di
 
+import net.apptronic.core.base.observable.subject.ValueHolder
 import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.lifecycle.LifecycleStage
 import kotlin.reflect.KClass
+import kotlin.system.measureNanoTime
 
 /**
  * Class for providing dependencies
@@ -12,8 +13,9 @@ class DependencyProvider(
     private val parent: DependencyProvider?
 ) {
 
-    private val externalInstances = mutableMapOf<ObjectKey, Any>()
+    private val externalInstances = mutableMapOf<ObjectKey, ValueHolder<*>>()
     private val modules = mutableListOf<Module>()
+    private val logger = context.getLogger()
 
     /**
      * Add external instance to this provider.
@@ -37,7 +39,7 @@ class DependencyProvider(
         instance: TypeDeclaration
     ) {
         val key = objectKey(clazz)
-        externalInstances[key] = instance
+        externalInstances[key] = ValueHolder(instance)
     }
 
     /**
@@ -51,11 +53,25 @@ class DependencyProvider(
         instance: TypeDeclaration
     ) {
         val key = objectKey(descriptor)
-        externalInstances[key] = instance
+        externalInstances[key] = ValueHolder(instance)
+    }
+
+    /**
+     * Add external instance to this provider.
+     * @param instance instance which can be injected using this [DependencyProvider]
+     * @param clazz optional class for this instance
+     * @param name optional name for instance
+     */
+    fun <TypeDeclaration : Any> addNullableInstance(
+        descriptor: Descriptor<TypeDeclaration?>,
+        instance: TypeDeclaration?
+    ) {
+        val key = objectKey(descriptor)
+        externalInstances[key] = ValueHolder(instance)
     }
 
     fun addModule(moduleDefinition: ModuleDefinition) {
-        modules.add(moduleDefinition.buildInstance(this))
+        modules.add(moduleDefinition.buildInstance())
     }
 
     inline fun <reified TypeDeclaration : Any> inject(
@@ -120,63 +136,67 @@ class DependencyProvider(
         key: ObjectKey,
         params: Parameters
     ): TypeDeclaration {
-        val localLifecycleStage = context.getLifecycle().getActiveStage()
-            ?: throw IllegalStateException("Lifecycle was terminated")
-        return searchInstance(localLifecycleStage, key, params)
+        return performInject<TypeDeclaration>(SearchSpec(context, key, params)).value
     }
 
     private fun <TypeDeclaration> getLazyInstanceInternal(
         key: ObjectKey,
         params: Parameters
     ): Lazy<TypeDeclaration> {
-        val localLifecycleStage = context.getLifecycle().getActiveStage()
-            ?: throw IllegalStateException("Lifecycle was terminated")
         return lazy {
-            searchInstance<TypeDeclaration>(localLifecycleStage, key, params)
+            getInstanceInternal<TypeDeclaration>(key, params)
         }
+    }
+
+    internal fun getInstanceNames(): List<String> {
+        return externalInstances.entries.map {
+            "${it.key} = ${it.value}}"
+        }
+    }
+
+    internal fun getModuleNames(): List<String> {
+        return modules.map { it.name }
+    }
+
+    private fun <TypeDeclaration> performInject(searchSpec: SearchSpec): ValueHolder<TypeDeclaration> {
+        var result: ValueHolder<TypeDeclaration>? = null
+        val time = measureNanoTime {
+            result = searchInstance(searchSpec)
+        }
+        val timeFormatted = "%.6f".format(time.toFloat() / 1000000F)
+        logger.log("Injected ${searchSpec.key} using ${searchSpec.context} in $timeFormatted ms")
+        return result
+            ?: throw InjectionFailedException("Object ${searchSpec.key} is not found:\n${searchSpec.getSearchPath()}")
     }
 
     private fun <TypeDeclaration> searchInstance(
-        callerLifecycleStage: LifecycleStage,
-        key: ObjectKey,
-        params: Parameters
-    ): TypeDeclaration {
-        val localLifecycleStage = context.getLifecycle().getActiveStage()
-            ?: throw IllegalStateException("Lifecycle was terminated")
-        val local: TypeDeclaration? =
-            obtainLocalInstance(callerLifecycleStage, localLifecycleStage, key, params)
+        searchSpec: SearchSpec
+    ): ValueHolder<TypeDeclaration>? {
+        searchSpec.addContextToChain(context)
+        val local: ValueHolder<TypeDeclaration>? = obtainLocalInstance(searchSpec)
         if (local != null) {
             return local
         }
-        val parental: TypeDeclaration? = parent?.searchInstance(callerLifecycleStage, key, params)
+        val parental: ValueHolder<TypeDeclaration>? = parent?.searchInstance(searchSpec)
         if (parental != null) {
             return parental
         }
-        throw ObjectNotFoundException("Object $key or it's factory/cast is not found in current context and all parental contexts")
+        return null
     }
 
     private fun <TypeDeclaration> obtainLocalInstance(
-        callerLifecycleStage: LifecycleStage,
-        localLifecycleStage: LifecycleStage,
-        objectKey: ObjectKey,
-        params: Parameters
-    ): TypeDeclaration? {
-        val obj = externalInstances[objectKey]
+        searchSpec: SearchSpec
+    ): ValueHolder<TypeDeclaration>? {
+        val obj = externalInstances[searchSpec.key]
         if (obj != null) {
-            return obj as TypeDeclaration
+            return obj as ValueHolder<TypeDeclaration>
         }
         modules.forEach { module ->
-            val providerSearch = module.getProvider(objectKey)
+            val providerSearch = module.getProvider(searchSpec.key)
             if (providerSearch != null) {
                 val provider = providerSearch as ObjectProvider<TypeDeclaration>
-                val factoryContext = FactoryContext(
-                    context,
-                    this,
-                    params,
-                    localLifecycleStage,
-                    callerLifecycleStage
-                )
-                return@obtainLocalInstance provider.provide(factoryContext)
+                val instance = provider.provide(context, this, searchSpec)
+                return@obtainLocalInstance ValueHolder(instance)
             }
         }
         return null

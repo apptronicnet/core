@@ -1,33 +1,15 @@
 package net.apptronic.core.component.entity.entities
 
+import net.apptronic.core.base.observable.Observable
+import net.apptronic.core.base.observable.distinctUntilChanged
 import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.entity.base.DistinctUntilChangedStorePredicate
-import net.apptronic.core.component.entity.base.ValueHolder
 
-class Value<T>(context: Context) : Property<T>(
-    context,
-    DistinctUntilChangedStorePredicate()
-) {
+class Value<T>(context: Context) : Property<T>(context) {
 
-    internal var valueHolder: ValueHolder<T>? = null
+    private val observable = subject.distinctUntilChanged()
 
-    override fun isSet(): Boolean {
-        return valueHolder != null
+    override fun getObservable(): Observable<T> {
+        return observable
     }
-
-    override fun onSetValue(value: T) {
-        this.valueHolder = ValueHolder(value)
-    }
-
-    override fun onGetValue(): T {
-        valueHolder?.let {
-            return it.value
-        } ?: throw PropertyNotSetException()
-    }
-
-    override fun toString(): String {
-        return super.toString() + if (valueHolder == null) "/not-set" else "=$valueHolder"
-    }
-
 }
 

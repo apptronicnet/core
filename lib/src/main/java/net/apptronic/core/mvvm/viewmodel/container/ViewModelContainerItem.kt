@@ -2,10 +2,11 @@ package net.apptronic.core.mvvm.viewmodel.container
 
 import net.apptronic.core.base.SubscriptionHolders
 import net.apptronic.core.base.addTo
-import net.apptronic.core.component.entity.Predicate
+import net.apptronic.core.base.observable.Observable
+import net.apptronic.core.base.observable.subscribe
+import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.entities.Value
 import net.apptronic.core.component.entity.functions.variants.and
-import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.component.lifecycle.enterStage
 import net.apptronic.core.component.lifecycle.exitStage
 import net.apptronic.core.mvvm.viewmodel.ViewModel
@@ -33,7 +34,7 @@ class ViewModelContainerItem(
     private val isVisible = visibleLocal and visibleParent
     private val isFocused = focusedLocal and focusedParent
 
-    private fun from(parent: Predicate<Boolean>): Predicate<Boolean> {
+    private fun from(parent: Observable<Boolean>): Entity<Boolean> {
         val property = Value<Boolean>(viewModel).apply { set(false) }
         parent.subscribe {
             property.set(it)
@@ -67,8 +68,8 @@ class ViewModelContainerItem(
         }
     }
 
-    private fun bindStage(viewModel: ViewModel, stageName: String, predicate: Predicate<Boolean>) {
-        predicate.subscribe {
+    private fun bindStage(viewModel: ViewModel, stageName: String, entity: Entity<Boolean>) {
+        entity.subscribe {
             if (it) {
                 enterStage(viewModel, stageName)
             } else {

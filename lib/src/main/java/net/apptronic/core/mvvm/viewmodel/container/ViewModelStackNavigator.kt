@@ -1,17 +1,27 @@
 package net.apptronic.core.mvvm.viewmodel.container
 
-import net.apptronic.core.component.entity.base.DistinctUntilChangedStorePredicate
-import net.apptronic.core.component.entity.entities.Property
+import net.apptronic.core.base.observable.Observable
+import net.apptronic.core.base.observable.distinctUntilChanged
+import net.apptronic.core.base.observable.subject.BehaviorSubject
 import net.apptronic.core.mvvm.viewmodel.ViewModel
-import net.apptronic.core.mvvm.viewmodel.ViewModelParent
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelStackAdapter
 
 class ViewModelStackNavigator(
     private val parent: ViewModel
-) : Property<ViewModel?>(
-    parent,
-    DistinctUntilChangedStorePredicate()
-), ViewModelParent {
+) : Navigator<ViewModel?>(
+    parent
+) {
+
+    private val subject = BehaviorSubject<ViewModel?>()
+    private val observable = subject.distinctUntilChanged()
+
+    private fun updateSubject() {
+        subject.update(getActiveModel())
+    }
+
+    override fun getObservable(): Observable<ViewModel?> {
+        return observable
+    }
 
     init {
         parent.doOnTerminate {
@@ -19,15 +29,19 @@ class ViewModelStackNavigator(
         }
     }
 
-    override fun isSet(): Boolean {
-        return true
-    }
-
-    override fun onSetValue(value: ViewModel?) {
+    fun set(value: ViewModel?) {
         clearAndSet(value)
     }
 
-    override fun onGetValue(): ViewModel? {
+    override fun get(): ViewModel? {
+        return getActiveModel()
+    }
+
+    override fun getOrNull(): ViewModel? {
+        return getActiveModel()
+    }
+
+    fun getCurrency(): ViewModel? {
         return getActiveModel()
     }
 
@@ -107,10 +121,6 @@ class ViewModelStackNavigator(
         }
     }
 
-    private fun updateFromGet() {
-        workingPredicate.update(getOrNull())
-    }
-
     /**
      * Clear all [ViewModel]s from stack
      */
@@ -143,7 +153,7 @@ class ViewModelStackNavigator(
             newItem = newItem,
             transitionInfo = transitionInfo
         )
-        updateFromGet()
+        updateSubject()
     }
 
     /**
@@ -159,7 +169,7 @@ class ViewModelStackNavigator(
             newItem = newItem,
             transitionInfo = transitionInfo
         )
-        updateFromGet()
+        updateSubject()
     }
 
     /**
@@ -179,7 +189,7 @@ class ViewModelStackNavigator(
             newItem = newItem,
             transitionInfo = transitionInfo
         )
-        updateFromGet()
+        updateSubject()
     }
 
     /**
@@ -187,7 +197,7 @@ class ViewModelStackNavigator(
      * @param transitionInfo will be used only if this [ViewModel] is now active
      */
     fun remove(viewModel: ViewModel, transitionInfo: Any? = null) {
-        val activeModel = getOrNull()
+        val activeModel = getActiveModel()
         val currentBox = stack.lastOrNull {
             it.viewModel == viewModel
         }
@@ -202,7 +212,7 @@ class ViewModelStackNavigator(
                     transitionInfo = transitionInfo
                 )
             }
-            updateFromGet()
+            updateSubject()
         }
     }
 
@@ -212,10 +222,10 @@ class ViewModelStackNavigator(
      * @return true if last model removed from stack
      */
     fun popBackStack(transitionInfo: Any? = null): Boolean {
-        val activeModel = getOrNull()
+        val activeModel = getActiveModel()
         return if (activeModel != null) {
             remove(activeModel, transitionInfo)
-            workingPredicate.update(getOrNull())
+            updateSubject()
             true
         } else {
             false
@@ -260,7 +270,7 @@ class ViewModelStackNavigator(
                 newItem = getCurrentItem(),
                 transitionInfo = transitionInfo
             )
-            workingPredicate.update(getOrNull())
+            subject.update(getActiveModel())
             true
         } else {
             false

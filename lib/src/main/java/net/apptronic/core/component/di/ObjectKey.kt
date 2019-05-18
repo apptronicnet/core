@@ -8,7 +8,17 @@ import kotlin.reflect.KClass
 data class ObjectKey internal constructor(
     val className: String,
     val descriptor: Descriptor<*>?
-)
+) {
+
+    override fun toString(): String {
+        return if (descriptor != null) {
+            descriptor.toString()
+        } else {
+            "Class=$className"
+        }
+    }
+
+}
 
 fun objectKey(
     name: String

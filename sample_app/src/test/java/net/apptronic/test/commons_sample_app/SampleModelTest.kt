@@ -1,7 +1,6 @@
 package net.apptronic.test.commons_sample_app
 
-import net.apptronic.core.component.threading.ContextWorkers
-import net.apptronic.test.commons_sample_app.models.StartScreenModel
+import net.apptronic.core.threading.Scheduler
 import org.junit.Test
 import kotlin.test.assertEquals
 
@@ -11,7 +10,7 @@ class SampleModelTest : LifecycleHolder<FragmentLifecycle> {
 
     override fun localLifecycle() = lifecycle
 
-    override fun threadExecutor(): ContextWorkers = SynchronousExecutor()
+    override fun threadExecutor(): Scheduler = SynchronousExecutor()
 
     val model = StartScreenModel(this)
 

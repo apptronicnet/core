@@ -1,72 +1,43 @@
 package net.apptronic.core.component.context
 
+import net.apptronic.core.base.Logger
 import net.apptronic.core.component.di.DependencyProvider
 import net.apptronic.core.component.lifecycle.Lifecycle
-import net.apptronic.core.component.threading.ContextWorkers
-import net.apptronic.core.component.threading.DefaultContextWorkers
-import net.apptronic.core.component.threading.SubContextWorkers
+import net.apptronic.core.threading.Scheduler
 
+/**
+ * Base instance for working with framework [Context] represents logical process in application.
+ * All application using framework should be built as tree of [Context] instances. Each context
+ * contains [Lifecycle], specifies own [Scheduler] and provides [DependencyProvider]
+ */
 interface Context {
 
+    /**
+     * User for cases when thing is used as only context wrapper. Returns core instance
+     * of context for direct usage and comparison when needed.
+     */
+    fun getToken(): Context {
+        return this
+    }
+
+    /**
+     * Logger is for logging internals of context
+     */
+    fun getLogger(): Logger
+
+    /**
+     * Get [Lifecycle] of current [Context]
+     */
     fun getLifecycle(): Lifecycle
 
-    fun getWorkers(): ContextWorkers
+    /**
+     * Get [Scheduler] for current [Context]
+     */
+    fun getScheduler(): Scheduler
 
+    /**
+     * Get [DependencyProvider] for current [Context]
+     */
     fun getProvider(): DependencyProvider
-
-}
-
-abstract class SubContext(
-    parent: Context
-) : Context {
-
-    init {
-        parent.getLifecycle().doOnTerminate {
-            getLifecycle().terminate()
-        }
-    }
-
-    private val objects = DependencyProvider(this, parent.getProvider())
-    protected val workers = SubContextWorkers(parent.getWorkers())
-
-    override fun getWorkers(): ContextWorkers {
-        return workers
-    }
-
-    override fun getProvider(): DependencyProvider {
-        return objects
-    }
-
-}
-
-open class BasicContext(
-    parent: Context
-) : SubContext(parent) {
-
-    private val lifecycle = Lifecycle(getWorkers())
-
-    override fun getLifecycle(): Lifecycle {
-        return this.lifecycle
-    }
-
-}
-
-class EmptyContext : Context {
-
-    private val workers = DefaultContextWorkers()
-    private val lifecycle = Lifecycle(workers)
-    private val diContext = DependencyProvider(this, null)
-
-    override fun getLifecycle(): Lifecycle {
-        return lifecycle
-    }
-
-    override fun getWorkers(): ContextWorkers {
-        return workers
-    }
-
-    override fun getProvider(): DependencyProvider {
-        return diContext
-    }
 
 }

@@ -1,15 +1,12 @@
 package net.apptronic.core.component.lifecycle
 
 import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.threading.ContextWorkers
 import java.util.concurrent.atomic.AtomicBoolean
 
 /**
  * Def
  */
-open class Lifecycle(
-    private val workers: ContextWorkers
-) : ContextWorkers by workers {
+open class Lifecycle {
 
     private val baseParent = object : LifecycleStageParent {
 

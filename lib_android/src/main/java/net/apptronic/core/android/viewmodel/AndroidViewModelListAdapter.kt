@@ -9,8 +9,6 @@ class AndroidViewModelListAdapter(
     private val androidViewFactory: AndroidViewFactory = AndroidViewFactory()
 ) : ViewModelListAdapter() {
 
-    private val boundViews = mutableListOf<AndroidView<*>>()
-
     fun bindings(setup: AndroidViewFactory.() -> Unit) {
         setup.invoke(androidViewFactory)
     }
@@ -36,23 +34,25 @@ class AndroidViewModelListAdapter(
         view: View,
         oldBoundView: AndroidView<*>? = null
     ): AndroidView<*> {
-        val androidView = androidViewFactory.getAndroidView(viewModel)
-        if (oldBoundView != null) {
-            if (oldBoundView != androidView) {
+        return if (oldBoundView != null) {
+            if (oldBoundView.getViewModel() != viewModel) {
                 unbindView(oldBoundView)
-                performNewBinding(viewModel, view, androidView)
+                performNewBinding(viewModel, view)
+            } else {
+                oldBoundView
             }
         } else {
-            performNewBinding(viewModel, view, androidView)
+            performNewBinding(viewModel, view)
         }
-        return androidView
     }
 
-    private fun performNewBinding(viewModel: ViewModel, view: View, androidView: AndroidView<*>) {
+    private fun performNewBinding(viewModel: ViewModel, view: View): AndroidView<*> {
+        val androidView = androidViewFactory.getAndroidView(viewModel)
         setBound(viewModel, true)
         androidView.bindView(view, viewModel)
         setVisible(viewModel, true)
         setFocused(viewModel, true)
+        return androidView
     }
 
     fun unbindView(androidView: AndroidView<*>) {

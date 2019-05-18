@@ -1,7 +1,7 @@
 package net.apptronic.core.component.entity.entities
 
-import net.apptronic.core.component.entity.base.ValueHolder
-import net.apptronic.core.component.entity.subscribe
+import net.apptronic.core.base.observable.subject.ValueHolder
+import net.apptronic.core.base.observable.subscribe
 
 class Toggle<T>(
     private val target: Property<T>,

@@ -2,8 +2,8 @@ package net.apptronic.core.threading
 
 class SynchronousWorker : Worker {
 
-    override fun run(action: () -> Unit) {
-        action()
+    override fun execute(action: Action) {
+        action.execute()
     }
 
 }

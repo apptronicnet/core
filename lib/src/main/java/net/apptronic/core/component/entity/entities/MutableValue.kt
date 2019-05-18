@@ -1,42 +1,19 @@
 package net.apptronic.core.component.entity.entities
 
+import net.apptronic.core.base.observable.Observable
 import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.entity.base.UpdateAndStorePredicate
-import net.apptronic.core.component.entity.base.ValueHolder
 
-open class MutableValue<T>(
-    context: Context
-) : Property<T>(
-    context,
-    UpdateAndStorePredicate()
-) {
+open class MutableValue<T>(context: Context) : Property<T>(context) {
 
-    internal var valueHolder: ValueHolder<T>? = null
-
-    override fun isSet(): Boolean {
-        return valueHolder != null
-    }
-
-    override fun onSetValue(value: T) {
-        this.valueHolder = ValueHolder(value)
-    }
-
-    override fun onGetValue(): T {
-        valueHolder?.let {
-            return it.value
-        } ?: throw PropertyNotSetException()
+    override fun getObservable(): Observable<T> {
+        return subject
     }
 
     fun update(action: (T) -> Unit) {
-        valueHolder?.let {
+        subject.getValue()?.let {
             action.invoke(it.value)
-            workingPredicate.update(it.value)
+            subject.update(it.value)
         }
     }
-
-    override fun toString(): String {
-        return super.toString() + if (valueHolder == null) "/not-set" else "=$valueHolder"
-    }
-
 }
 

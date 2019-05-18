@@ -1,7 +1,6 @@
 package net.apptronic.core.android.viewmodel
 
 import android.app.Activity
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,14 +32,6 @@ abstract class AndroidView<T : ViewModel> {
         val layoutResId = this.layoutResId
             ?: throw IllegalStateException("[layoutResId] is not specified for $this")
         return activity.layoutInflater.inflate(layoutResId, null)
-    }
-
-    fun requestTitle(context: Context, viewModel: ViewModel): String {
-        return getTitle(context, viewModel as T)
-    }
-
-    open fun getTitle(context: Context, viewModel: T): String {
-        return ""
     }
 
     internal fun getViewModel(): ViewModel {
