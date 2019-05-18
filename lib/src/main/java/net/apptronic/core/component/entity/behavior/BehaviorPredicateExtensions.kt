@@ -19,9 +19,13 @@ fun <T> Entity<T>.switchWorker(
 }
 
 fun <T> Entity<T>.switchContext(context: Context): Entity<T> {
-    return ContextSwitchEntity(
-        this, context
-    )
+    return if (getContext().getToken() != context.getToken()) {
+        ContextSwitchEntity(
+            this, context
+        )
+    } else {
+        this
+    }
 }
 
 fun <T> Entity<T>.filter(filterFunction: (T) -> Boolean): Entity<T> {

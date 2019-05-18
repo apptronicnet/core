@@ -1,6 +1,6 @@
-package net.apptronic.common.core.di
+package net.apptronic.core.base.core.di
 
-import net.apptronic.common.utils.BaseTestComponent
+import net.apptronic.core.base.utils.BaseTestComponent
 import net.apptronic.core.component.di.declareModule
 import org.junit.Test
 

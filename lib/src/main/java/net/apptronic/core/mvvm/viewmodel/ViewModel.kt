@@ -3,11 +3,13 @@ package net.apptronic.core.mvvm.viewmodel
 import net.apptronic.core.base.observable.Observable
 import net.apptronic.core.base.observable.subject.BehaviorSubject
 import net.apptronic.core.component.Component
+import net.apptronic.core.component.entity.Entity
+import net.apptronic.core.component.entity.extensions.setup
+import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.component.lifecycle.Lifecycle
 import net.apptronic.core.component.lifecycle.LifecycleStage
 import net.apptronic.core.mvvm.viewmodel.container.ViewModelListNavigator
 import net.apptronic.core.mvvm.viewmodel.container.ViewModelStackNavigator
-import net.apptronic.core.threading.Scheduler
 import net.apptronic.core.threading.WorkerDefinition
 
 open class ViewModel : Component {
@@ -23,7 +25,7 @@ open class ViewModel : Component {
     }
 
     override fun getDefaultWorker(): WorkerDefinition {
-        return Scheduler.UI
+        return WorkerDefinition.UI
     }
 
     override fun getLifecycle(): ViewModelLifecycle {
@@ -61,8 +63,24 @@ open class ViewModel : Component {
         return ViewModelStackNavigator(this)
     }
 
+    fun stackNavigator(source: Entity<ViewModel>): ViewModelStackNavigator {
+        return ViewModelStackNavigator(this).setup {
+            source.subscribe {
+                set(it)
+            }
+        }
+    }
+
     fun listNavigator(): ViewModelListNavigator {
         return ViewModelListNavigator(this)
+    }
+
+    fun listNavigator(source: Entity<List<ViewModel>>): ViewModelListNavigator {
+        return ViewModelListNavigator(this).setup {
+            source.subscribe {
+                set(it)
+            }
+        }
     }
 
     internal fun onAddedToContainer(parent: ViewModelParent) {

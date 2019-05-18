@@ -3,14 +3,12 @@ package net.apptronic.test.commons_sample_app.debounce
 import net.apptronic.core.base.AtomicEntity
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.behavior.debounce
-import net.apptronic.core.component.entity.behavior.switchWorker
 import net.apptronic.core.component.entity.entities.setTo
 import net.apptronic.core.component.entity.functions.variants.map
 import net.apptronic.core.component.entity.functions.variants.mapOr
 import net.apptronic.core.component.entity.functions.variants.onNext
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
-import net.apptronic.core.threading.Scheduler
 
 fun createDebounceSampleViewModel(parent: Context): DebounceSampleViewModel {
     return DebounceSampleViewModel(ViewModelContext(parent))
@@ -43,7 +41,6 @@ class DebounceSampleViewModel(context: ViewModelContext) : ViewModel(context) {
     init {
         currentItemIndex.debounce { source ->
             source.onNext { processingItemIndex.set(Processing(it.index)) }
-                .switchWorker(this, Scheduler.BACKGROUND_PARALLEL_SHARED)
                 .map {
                     var remaining = 10
                     while (remaining > 0) {
@@ -53,8 +50,7 @@ class DebounceSampleViewModel(context: ViewModelContext) : ViewModel(context) {
                     }
                     processingTimer.set(null)
                     Result(it.index)
-                }.switchWorker(this, Scheduler.UI)
-                .onNext {
+                }.onNext {
                     processingItemIndex.set(null)
                 }
         }.setTo(resultItemIndex)

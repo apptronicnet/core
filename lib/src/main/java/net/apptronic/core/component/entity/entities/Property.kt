@@ -2,20 +2,24 @@ package net.apptronic.core.component.entity.entities
 
 import net.apptronic.core.base.observable.subject.BehaviorSubject
 import net.apptronic.core.base.observable.subject.Subject
+import net.apptronic.core.base.observable.subject.ValueHolder
 import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.entity.*
+import net.apptronic.core.component.entity.Entity
+import net.apptronic.core.component.entity.EntityValue
+import net.apptronic.core.component.entity.ValueNotSetException
+import net.apptronic.core.component.entity.subscribe
 
 abstract class Property<T>(context: Context) : ComponentEntity<T>(context), EntityValue<T>,
     Subject<T> {
 
     protected val subject = BehaviorSubject<T>()
 
-    fun set(value: T) {
-        subject.update(value)
+    override fun getValueHolder(): ValueHolder<T>? {
+        return subject.getValue()
     }
 
-    fun isSet(): Boolean {
-        return subject.getValue() != null
+    fun set(value: T) {
+        subject.update(value)
     }
 
     override fun update(value: T) {
@@ -34,23 +38,6 @@ abstract class Property<T>(context: Context) : ComponentEntity<T>(context), Enti
     fun setFrom(source: Property<T>): Boolean {
         return try {
             set(source.get())
-            true
-        } catch (e: ValueNotSetException) {
-            false
-        }
-    }
-
-    override fun get(): T {
-        return subject.getValue().get()
-    }
-
-    override fun getOrNull(): T? {
-        return subject.getValue().getOrNull()
-    }
-
-    fun doIfSet(action: (T) -> Unit): Boolean {
-        return try {
-            action(get())
             true
         } catch (e: ValueNotSetException) {
             false

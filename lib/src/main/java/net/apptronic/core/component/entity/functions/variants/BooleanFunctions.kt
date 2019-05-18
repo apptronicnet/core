@@ -58,6 +58,11 @@ infix fun <A, B> Entity<A>.isNotEqualsTo(another: Entity<B>) =
         left != right
     }
 
+infix fun <A, B> Entity<A>.isNotEqualsTo(another: B) =
+    entityFunction(this) {
+        it != another
+    }
+
 infix fun Entity<Boolean>.and(another: Entity<Boolean>) =
     entityFunction(this, another) { left, right ->
         left and right

@@ -1,9 +1,9 @@
-package net.apptronic.common.core.di
+package net.apptronic.core.base.core.di
 
-import net.apptronic.common.utils.TestContext
+import net.apptronic.core.base.utils.TestContext
 import net.apptronic.core.component.Component
 import net.apptronic.core.component.context.SubContext
-import net.apptronic.core.component.di.ObjectNotFoundException
+import net.apptronic.core.component.di.InjectionFailedException
 import net.apptronic.core.component.di.createDescriptor
 import net.apptronic.core.component.di.declareModule
 import org.junit.Before
@@ -50,7 +50,7 @@ class ProvidingTest {
         component.getProvider().addInstance(SomeThingTextDescriptor, EXPECTED_TEXT)
     }
 
-    @Test(expected = ObjectNotFoundException::class)
+    @Test(expected = InjectionFailedException::class)
     fun shouldFailToFindText() {
         component.getProvider().inject(SomeThingDescriptor)
     }

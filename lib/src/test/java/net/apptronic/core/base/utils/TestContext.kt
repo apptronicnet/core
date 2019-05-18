@@ -1,4 +1,4 @@
-package net.apptronic.common.utils
+package net.apptronic.core.base.utils
 
 import net.apptronic.core.base.Logger
 import net.apptronic.core.component.context.Context

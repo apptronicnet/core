@@ -1,8 +1,8 @@
-package net.apptronic.common.core.di
+package net.apptronic.core.base.core.di
 
-import net.apptronic.common.utils.TestContext
+import net.apptronic.core.base.utils.TestContext
 import net.apptronic.core.component.context.SubContext
-import net.apptronic.core.component.di.ObjectNotFoundException
+import net.apptronic.core.component.di.InjectionFailedException
 import net.apptronic.core.component.di.createDescriptor
 import net.apptronic.core.component.di.declareModule
 import org.junit.Test
@@ -77,7 +77,7 @@ class ParentContextProviderTest {
         assert(one is OneChild)
     }
 
-    @Test(expected = ObjectNotFoundException::class)
+    @Test(expected = InjectionFailedException::class)
     fun parentShouldNotHave() {
         val three = parent.getProvider().inject(ThreeDescriptor)
     }

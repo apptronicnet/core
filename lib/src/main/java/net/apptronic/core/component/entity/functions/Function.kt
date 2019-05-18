@@ -6,12 +6,23 @@ import net.apptronic.core.base.observable.subject.BehaviorSubject
 import net.apptronic.core.base.observable.subject.ValueHolder
 import net.apptronic.core.base.observable.subscribe
 import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.entity.*
+import net.apptronic.core.component.entity.Entity
+import net.apptronic.core.component.entity.EntitySubscription
+import net.apptronic.core.component.entity.EntityValue
+import net.apptronic.core.component.entity.bindContext
+import net.apptronic.core.threading.Worker
+import net.apptronic.core.threading.WorkerDefinition
 
 abstract class Function<T> : EntityValue<T> {
 
     private val subject = BehaviorSubject<T>()
     private val observable = subject.distinctUntilChanged()
+    protected abstract val functionContext: Context
+    protected abstract var worker: Worker
+
+    override fun getValueHolder(): ValueHolder<T>? {
+        return subject.getValue()
+    }
 
     internal fun update(value: T) {
         subject.update(value)
@@ -21,12 +32,18 @@ abstract class Function<T> : EntityValue<T> {
         return observable.subscribe(observer).bindContext(getContext())
     }
 
-    override fun get(): T {
-        return subject.getValue().get()
+    /**
+     * Set worker to be user for calculation of function and notificatitons to observers. In case
+     * if worker is not set  function calculation and update will be called synchronously
+     * by source value.
+     */
+    fun usingWorker(workerDefinition: WorkerDefinition): Function<T> {
+        worker = getContext().getScheduler().getWorker(workerDefinition)
+        return this
     }
 
-    override fun getOrNull(): T? {
-        return subject.getValue().getOrNull()
+    override fun getContext(): Context {
+        return functionContext
     }
 
 }
@@ -95,10 +112,8 @@ private class SingleFunction<T, X>(
 ) : Function<T>() {
 
     private var sourceSubject = BehaviorSubject<X>()
-
-    override fun getContext(): Context {
-        return sourceEntity.getContext()
-    }
+    override val functionContext = sourceEntity.getContext()
+    override var worker = functionContext.getScheduler().getWorker(WorkerDefinition.SYNCHRONOUS)
 
     init {
         sourceEntity.subscribe {
@@ -114,6 +129,7 @@ private class SingleFunction<T, X>(
             update(result)
         }
     }
+
 
 }
 
@@ -135,7 +151,8 @@ private class DoubleFunction<T, A, B>(
 
     private var leftValue = BehaviorSubject<A>()
     private var rightValue = BehaviorSubject<B>()
-    private val context = collectContext(left, right)
+    override val functionContext = collectContext(left, right)
+    override var worker = functionContext.getScheduler().getWorker(WorkerDefinition.SYNCHRONOUS)
 
     init {
         left.subscribe {
@@ -146,10 +163,6 @@ private class DoubleFunction<T, A, B>(
             rightValue.update(it)
             calculate()
         }
-    }
-
-    override fun getContext(): Context {
-        return context
     }
 
     private fun calculate() {
@@ -168,7 +181,8 @@ private class ArrayFunction<T>(
     private val method: (Array<Any?>) -> T
 ) : Function<T>() {
 
-    private val context = collectContext(*sources)
+    override val functionContext = collectContext(*sources)
+    override var worker = functionContext.getScheduler().getWorker(WorkerDefinition.SYNCHRONOUS)
     private val sourceValues: List<BehaviorSubject<Any?>> =
         sources.map { BehaviorSubject<Any?>() }
 
@@ -179,10 +193,6 @@ private class ArrayFunction<T>(
                 calculate()
             }
         }
-    }
-
-    override fun getContext(): Context {
-        return context
     }
 
     private fun calculate() {

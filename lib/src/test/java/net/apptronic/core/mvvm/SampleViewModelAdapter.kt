@@ -1,4 +1,4 @@
-package net.apptronic.mvvm
+package net.apptronic.core.mvvm
 
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelStackAdapter

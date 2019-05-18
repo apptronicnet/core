@@ -1,6 +1,6 @@
 package net.apptronic.core.component
 
-import net.apptronic.common.utils.BaseTestComponent
+import net.apptronic.core.base.utils.BaseTestComponent
 import net.apptronic.core.component.entity.functions.variants.*
 import org.junit.Test
 

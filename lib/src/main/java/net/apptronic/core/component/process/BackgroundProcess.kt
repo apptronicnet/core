@@ -7,13 +7,12 @@ import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.extensions.setup
 import net.apptronic.core.component.entity.functions.variants.map
 import net.apptronic.core.threading.Action
-import net.apptronic.core.threading.Scheduler
 import net.apptronic.core.threading.WorkerDefinition
 
 class BackgroundProcess<T, R>(
     private val parent: Component,
     private val action: BackgroundAction<T, R>,
-    private val workerDefinition: WorkerDefinition = Scheduler.BACKGROUND_PARALLEL_INDIVIDUAL
+    private val workerDefinition: WorkerDefinition = WorkerDefinition.BACKGROUND_PARALLEL_INDIVIDUAL
 ) {
 
     private val worker = parent.getScheduler().getWorker(workerDefinition)

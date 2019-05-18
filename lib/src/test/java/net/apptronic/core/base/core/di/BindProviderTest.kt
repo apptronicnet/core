@@ -1,6 +1,6 @@
-package net.apptronic.common.core.di
+package net.apptronic.core.base.core.di
 
-import net.apptronic.common.utils.TestContext
+import net.apptronic.core.base.utils.TestContext
 import net.apptronic.core.component.di.alsoAs
 import net.apptronic.core.component.di.createDescriptor
 import net.apptronic.core.component.di.declareModule

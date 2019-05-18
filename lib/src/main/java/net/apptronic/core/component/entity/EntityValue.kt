@@ -1,16 +1,44 @@
 package net.apptronic.core.component.entity
 
-import net.apptronic.core.base.observable.Observable
+import net.apptronic.core.base.observable.subject.ValueHolder
 
 /**
- * Entity is [Observable] which is bound to context
+ * Type of [Entity] which holds value.
  */
 interface EntityValue<T> : Entity<T> {
 
-    @Throws(ValueNotSetException::class)
-    fun get(): T
+    fun getValueHolder(): ValueHolder<T>?
 
-    fun getOrNull(): T?
+    /**
+     * Get value
+     * @throws [ValueNotSetException] is value is not set
+     */
+    @Throws(ValueNotSetException::class)
+    fun get(): T {
+        return getValueHolder().get()
+    }
+
+    /**
+     * Get value or return null if value is not set
+     */
+    fun getOrNull(): T? {
+        return getValueHolder().getOrNull()
+    }
+
+    /**
+     * Check is value is set
+     */
+    fun isSet(): Boolean {
+        return getValueHolder().isSet()
+    }
+
+    /**
+     * Do [action] with value if it is set
+     * @return true if action performed, false if value is not set
+     */
+    fun doIfSet(action: (T) -> Unit): Boolean {
+        return getValueHolder().doIfSet(action)
+    }
 
 }
 

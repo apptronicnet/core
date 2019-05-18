@@ -41,6 +41,17 @@ private class KotlinClassDescriptor<T : Any>(
 
 }
 
+private class KotlinNullableClassDescriptor<T : Any>(
+    private val clazz: KClass<T>,
+    whereCreated: String
+) : Descriptor<T?>(whereCreated) {
+
+    override fun toString(): String {
+        return "Descriptor#$descriptorId/class:${clazz.qualifiedName}@$whereCreated"
+    }
+
+}
+
 private class NamedDescriptor<T>(
     private val name: String,
     whereCreated: String
@@ -52,10 +63,17 @@ private class NamedDescriptor<T>(
 
 }
 
-
 fun <T : Any> createDescriptor(clazz: KClass<T>, whereCreated: String? = null): Descriptor<T> {
     val resultWhereCreated = whereCreated ?: Exception().stackTrace[1].toString()
     return KotlinClassDescriptor(clazz, resultWhereCreated)
+}
+
+fun <T : Any> createNullableDescriptor(
+    clazz: KClass<T>,
+    whereCreated: String? = null
+): Descriptor<T?> {
+    val resultWhereCreated = whereCreated ?: Exception().stackTrace[1].toString()
+    return KotlinNullableClassDescriptor(clazz, resultWhereCreated)
 }
 
 inline fun <reified T : Any> createDescriptor(): Descriptor<T> {
@@ -63,7 +81,12 @@ inline fun <reified T : Any> createDescriptor(): Descriptor<T> {
     return createDescriptor(T::class, whereCreated)
 }
 
+inline fun <reified T : Any> createNullableDescriptor(): Descriptor<T?> {
+    val whereCreated = Exception().stackTrace[2].toString()
+    return createNullableDescriptor(T::class, whereCreated)
+}
+
 fun <T> classDescriptor(clazz: Class<T>): Descriptor<T> {
     val whereCreated = Exception().stackTrace[1].toString()
-    return NamedDescriptor("platform:" + clazz.canonicalName, whereCreated)
+    return NamedDescriptor("Class:" + clazz.canonicalName, whereCreated)
 }

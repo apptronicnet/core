@@ -1,13 +1,11 @@
 package net.apptronic.core.threading
 
-import net.apptronic.core.threading.Scheduler.Companion.DEFAULT
-
 internal class ContextScheduler(
     private val parent: Scheduler? = null
 ) : Scheduler {
 
     private val fallbackWorker = synchronousWorker()
-    private var defaultWorker: WorkerDefinition = DEFAULT
+    private var defaultWorker: WorkerDefinition = WorkerDefinition.DEFAULT
     private val providers = mutableMapOf<WorkerDefinition, WorkerProvider>()
 
     override fun setDefaultWorker(workerDefinition: WorkerDefinition) {

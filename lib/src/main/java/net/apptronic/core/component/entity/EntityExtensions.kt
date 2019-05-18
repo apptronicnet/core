@@ -78,3 +78,14 @@ fun <T> ValueHolder<T>?.get(): T {
 fun <T> ValueHolder<T>?.getOrNull(): T? {
     return this?.value
 }
+
+fun <T> ValueHolder<T>?.isSet(): Boolean {
+    return this != null
+}
+
+fun <T> ValueHolder<T>?.doIfSet(action: (T) -> Unit): Boolean {
+    return this?.let {
+        action.invoke(it.value)
+        true
+    } ?: false
+}

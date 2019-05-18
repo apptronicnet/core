@@ -14,7 +14,7 @@ abstract class ObjectBuilderContext internal constructor(
 
     inline fun <reified ObjectType : Any> inject(): ObjectType {
         if (ObjectType::class == Context::class) {
-            throw  IllegalArgumentException("Cannot inject [Context]. Please use definitionContext() or injectionContext() instead")
+            throw  IllegalArgumentException("Cannot inject [Context]. Please use definitionContext() or providedContext() instead")
         }
         return inject(ObjectType::class)
     }
@@ -23,7 +23,7 @@ abstract class ObjectBuilderContext internal constructor(
         clazz: KClass<ObjectType>
     ): ObjectType {
         if (clazz == Context::class) {
-            throw  IllegalArgumentException("Cannot inject [Context]. Please use definitionContext() or injectionContext() instead")
+            throw  IllegalArgumentException("Cannot inject [Context]. Please use definitionContext() or providedContext() instead")
         }
         return performInjection(objectKey(clazz))
     }
@@ -65,7 +65,7 @@ class FactoryContext(
         clazz: KClass<ObjectType>
     ): ObjectType {
         if (clazz == Context::class) {
-            throw  IllegalArgumentException("Cannot inject [Context]. Please use definitionContext() or injectionContext() instead")
+            throw  IllegalArgumentException("Cannot inject [Context]. Please use definitionContext() or providedContext() instead")
         }
         return performProvide(objectKey(clazz))
     }

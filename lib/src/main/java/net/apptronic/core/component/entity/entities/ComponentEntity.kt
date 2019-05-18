@@ -7,7 +7,6 @@ import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.EntitySubscription
 import net.apptronic.core.component.entity.bindContext
-import net.apptronic.core.threading.Scheduler
 import net.apptronic.core.threading.Worker
 import net.apptronic.core.threading.WorkerDefinition
 import net.apptronic.core.threading.execute
@@ -16,7 +15,7 @@ abstract class ComponentEntity<T>(
     private val context: Context
 ) : Entity<T> {
 
-    private var worker: Worker = context.getScheduler().getWorker(Scheduler.DEFAULT)
+    private var worker: Worker = context.getScheduler().getWorker(WorkerDefinition.DEFAULT)
 
     fun setWorker(workerDefinition: WorkerDefinition) {
         worker = context.getScheduler().getWorker(workerDefinition)

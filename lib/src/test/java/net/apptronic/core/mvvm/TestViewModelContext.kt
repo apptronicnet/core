@@ -1,6 +1,6 @@
-package net.apptronic.mvvm
+package net.apptronic.core.mvvm
 
-import net.apptronic.common.utils.TestContext
+import net.apptronic.core.base.utils.TestContext
 import net.apptronic.core.component.lifecycle.enterStage
 import net.apptronic.core.component.lifecycle.exitStage
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext

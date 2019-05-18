@@ -2,12 +2,12 @@ package net.apptronic.core.mvvm.viewmodel
 
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.context.SubContext
-import net.apptronic.core.threading.Scheduler
+import net.apptronic.core.threading.WorkerDefinition
 
 open class ViewModelContext : SubContext {
 
     init {
-        getScheduler().setDefaultWorker(Scheduler.UI)
+        getScheduler().setDefaultWorker(WorkerDefinition.UI)
     }
 
     private val lifecycle: ViewModelLifecycle

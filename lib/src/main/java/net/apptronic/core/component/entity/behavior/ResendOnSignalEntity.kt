@@ -1,33 +1,46 @@
 package net.apptronic.core.component.entity.behavior
 
 import net.apptronic.core.base.observable.Observer
-import net.apptronic.core.base.observable.Subscription
+import net.apptronic.core.base.observable.subject.BehaviorSubject
 import net.apptronic.core.base.observable.subject.ValueHolder
 import net.apptronic.core.base.observable.subscribe
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.EntitySubscription
+import net.apptronic.core.component.entity.EntityValue
+import net.apptronic.core.component.entity.bindContext
 
-class ResendOnSignalEntity<T>(
+fun <T> Entity<T>.asResendable(): ResendEntity<T> {
+    return ResendOnSignalEntity(this)
+}
+
+fun <T> Entity<T>.resendWhen(vararg entities: Entity<*>): ResendEntity<T> {
+    return asResendable().signalWhen(*entities)
+}
+
+interface ResendEntity<T> : EntityValue<T> {
+
+    fun resendSignal()
+
+}
+
+private class ResendOnSignalEntity<T>(
     private val wrappedEntity: Entity<T>
-) : Entity<T> {
+) : ResendEntity<T> {
 
-    private val subscriptions = mutableListOf<SubscriptionImpl>()
-
-    private var lastValue: ValueHolder<T>? = null
+    private val subject = BehaviorSubject<T>()
 
     init {
-        wrappedEntity.subscribe {
-            lastValue = ValueHolder(it)
-        }
+        wrappedEntity.subscribe(subject)
     }
 
-    fun resendSignal() {
-        val holder = lastValue
-        if (holder != null) {
-            subscriptions.forEach {
-                it.observer.notify(holder.value)
-            }
+    override fun getValueHolder(): ValueHolder<T>? {
+        return subject.getValue()
+    }
+
+    override fun resendSignal() {
+        subject.getValue()?.let {
+            subject.update(it.value)
         }
     }
 
@@ -36,25 +49,12 @@ class ResendOnSignalEntity<T>(
     }
 
     override fun subscribe(observer: Observer<T>): EntitySubscription {
-        val parent = wrappedEntity.subscribe(observer)
-        val result = SubscriptionImpl(observer, parent)
-        subscriptions.add(result)
-        return result
-    }
-
-    private inner class SubscriptionImpl(
-        val observer: Observer<T>,
-        val wrapped: Subscription
-    ) : EntitySubscription {
-        override fun unsubscribe() {
-            wrapped.unsubscribe()
-            subscriptions.remove(this)
-        }
+        return subject.subscribe(observer).bindContext(getContext())
     }
 
 }
 
-fun <E : ResendOnSignalEntity<T>, T> E.signalWhen(vararg entities: Entity<*>): E {
+fun <E : ResendEntity<T>, T> E.signalWhen(vararg entities: Entity<*>): E {
     entities.forEach {
         it.subscribe {
             resendSignal()

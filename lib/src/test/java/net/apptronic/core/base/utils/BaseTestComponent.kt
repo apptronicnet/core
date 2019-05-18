@@ -1,4 +1,4 @@
-package net.apptronic.common.utils
+package net.apptronic.core.base.utils
 
 import net.apptronic.core.component.Component
 import net.apptronic.core.component.lifecycle.LifecycleStage

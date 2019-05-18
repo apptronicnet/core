@@ -1,6 +1,6 @@
-package net.apptronic.common.core.di
+package net.apptronic.core.base.core.di
 
-import net.apptronic.common.utils.TestContext
+import net.apptronic.core.base.utils.TestContext
 import net.apptronic.core.component.Component
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.di.AutoRecycling

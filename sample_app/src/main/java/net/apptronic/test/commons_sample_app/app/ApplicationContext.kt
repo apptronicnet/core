@@ -1,5 +1,6 @@
 package net.apptronic.test.commons_sample_app.app
 
+import net.apptronic.core.android.platform.AndroidPlatform
 import net.apptronic.core.component.context.CoreContext
 import net.apptronic.core.component.di.createDescriptor
 import net.apptronic.core.component.di.declareModule
@@ -9,7 +10,7 @@ import net.apptronic.test.commons_sample_app.app.ApplicationContext.Companion.Ht
 class ApplicationContext(
     httpClientFactory: HttpClientFactory,
     platform: Platform
-) : CoreContext() {
+) : CoreContext(AndroidPlatform()) {
 
     companion object {
         val HttpClientFactoryDescriptor = createDescriptor<HttpClientFactory>()

@@ -1,5 +1,6 @@
 package net.apptronic.core.component.di
 
+import net.apptronic.core.base.observable.subject.ValueHolder
 import net.apptronic.core.component.context.Context
 import kotlin.reflect.KClass
 import kotlin.system.measureNanoTime
@@ -12,7 +13,7 @@ class DependencyProvider(
     private val parent: DependencyProvider?
 ) {
 
-    private val externalInstances = mutableMapOf<ObjectKey, Any>()
+    private val externalInstances = mutableMapOf<ObjectKey, ValueHolder<*>>()
     private val modules = mutableListOf<Module>()
     private val logger = context.getLogger()
 
@@ -38,7 +39,7 @@ class DependencyProvider(
         instance: TypeDeclaration
     ) {
         val key = objectKey(clazz)
-        externalInstances[key] = instance
+        externalInstances[key] = ValueHolder(instance)
     }
 
     /**
@@ -52,7 +53,21 @@ class DependencyProvider(
         instance: TypeDeclaration
     ) {
         val key = objectKey(descriptor)
-        externalInstances[key] = instance
+        externalInstances[key] = ValueHolder(instance)
+    }
+
+    /**
+     * Add external instance to this provider.
+     * @param instance instance which can be injected using this [DependencyProvider]
+     * @param clazz optional class for this instance
+     * @param name optional name for instance
+     */
+    fun <TypeDeclaration : Any> addNullableInstance(
+        descriptor: Descriptor<TypeDeclaration?>,
+        instance: TypeDeclaration?
+    ) {
+        val key = objectKey(descriptor)
+        externalInstances[key] = ValueHolder(instance)
     }
 
     fun addModule(moduleDefinition: ModuleDefinition) {
@@ -121,7 +136,7 @@ class DependencyProvider(
         key: ObjectKey,
         params: Parameters
     ): TypeDeclaration {
-        return performInject(SearchSpec(context, key, params))
+        return performInject<TypeDeclaration>(SearchSpec(context, key, params)).value
     }
 
     private fun <TypeDeclaration> getLazyInstanceInternal(
@@ -143,30 +158,26 @@ class DependencyProvider(
         return modules.map { it.name }
     }
 
-    private fun <TypeDeclaration> performInject(searchSpec: SearchSpec): TypeDeclaration {
-        var result: TypeDeclaration? = null
+    private fun <TypeDeclaration> performInject(searchSpec: SearchSpec): ValueHolder<TypeDeclaration> {
+        var result: ValueHolder<TypeDeclaration>? = null
         val time = measureNanoTime {
             result = searchInstance(searchSpec)
         }
         val timeFormatted = "%.6f".format(time.toFloat() / 1000000F)
         logger.log("Injected ${searchSpec.key} using ${searchSpec.context} in $timeFormatted ms")
         return result
-            ?: throw ObjectNotFoundException("Object ${searchSpec.key} is not found:\n${searchSpec.getSearchPath()}")
-    }
-
-    private fun <TypeDeclaration> tryInject(searchSpec: SearchSpec): TypeDeclaration? {
-        return searchInstance(searchSpec)
+            ?: throw InjectionFailedException("Object ${searchSpec.key} is not found:\n${searchSpec.getSearchPath()}")
     }
 
     private fun <TypeDeclaration> searchInstance(
         searchSpec: SearchSpec
-    ): TypeDeclaration? {
+    ): ValueHolder<TypeDeclaration>? {
         searchSpec.addContextToChain(context)
-        val local: TypeDeclaration? = obtainLocalInstance(searchSpec)
+        val local: ValueHolder<TypeDeclaration>? = obtainLocalInstance(searchSpec)
         if (local != null) {
             return local
         }
-        val parental: TypeDeclaration? = parent?.searchInstance(searchSpec)
+        val parental: ValueHolder<TypeDeclaration>? = parent?.searchInstance(searchSpec)
         if (parental != null) {
             return parental
         }
@@ -175,16 +186,17 @@ class DependencyProvider(
 
     private fun <TypeDeclaration> obtainLocalInstance(
         searchSpec: SearchSpec
-    ): TypeDeclaration? {
+    ): ValueHolder<TypeDeclaration>? {
         val obj = externalInstances[searchSpec.key]
         if (obj != null) {
-            return obj as TypeDeclaration
+            return obj as ValueHolder<TypeDeclaration>
         }
         modules.forEach { module ->
             val providerSearch = module.getProvider(searchSpec.key)
             if (providerSearch != null) {
                 val provider = providerSearch as ObjectProvider<TypeDeclaration>
-                return@obtainLocalInstance provider.provide(context, this, searchSpec)
+                val instance = provider.provide(context, this, searchSpec)
+                return@obtainLocalInstance ValueHolder(instance)
             }
         }
         return null

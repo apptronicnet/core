@@ -1,20 +1,32 @@
 package net.apptronic.core.threading
 
-fun createCoreScheduler(): Scheduler {
+import net.apptronic.core.component.platform.PlatformHandler
+
+fun createCoreScheduler(
+    platformHandler: PlatformHandler
+): Scheduler {
     val scheduler = ContextScheduler()
     with(scheduler) {
-        assignWorker(Scheduler.DEFAULT, InstanceWorkerProvider(defaultWorker()))
-        assignWorker(Scheduler.UI, InstanceWorkerProvider(defaultWorker()))
-        assignWorker(Scheduler.SYNCHRONOUS, InstanceWorkerProvider(defaultWorker()))
-        assignWorker(Scheduler.BACKGROUND_SINGLE_SHARED, InstanceWorkerProvider(singleWorker()))
+        assignWorker(WorkerDefinition.DEFAULT, platformHandler.defaultWorkerProvider())
+        assignWorker(WorkerDefinition.UI, platformHandler.uiWorkerProvider())
+        assignWorker(WorkerDefinition.SYNCHRONOUS, InstanceWorkerProvider(synchronousWorker()))
         assignWorker(
-            Scheduler.BACKGROUND_SINGLE_INDIVIDUAL,
-            FactoryWorkerProvider { singleWorker() })
-        assignWorker(Scheduler.BACKGROUND_PARALLEL_SHARED, InstanceWorkerProvider(parallelWorker()))
+            WorkerDefinition.BACKGROUND_SINGLE_SHARED,
+            InstanceWorkerProvider(singleThreadWorker(platformHandler))
+        )
         assignWorker(
-            Scheduler.BACKGROUND_PARALLEL_INDIVIDUAL,
-            FactoryWorkerProvider { parallelWorker() })
-        assignWorker(Scheduler.BACKGROUND_SERIAL, FactoryWorkerProvider { serialWorker() })
+            WorkerDefinition.BACKGROUND_SINGLE_INDIVIDUAL,
+            FactoryWorkerProvider { singleThreadWorker(platformHandler) })
+        assignWorker(
+            WorkerDefinition.BACKGROUND_PARALLEL_SHARED,
+            InstanceWorkerProvider(parallelWorker(platformHandler))
+        )
+        assignWorker(
+            WorkerDefinition.BACKGROUND_PARALLEL_INDIVIDUAL,
+            FactoryWorkerProvider { parallelWorker(platformHandler) })
+        assignWorker(
+            WorkerDefinition.BACKGROUND_SERIAL,
+            FactoryWorkerProvider { serialWorker(platformHandler) })
     }
     return scheduler
 }
@@ -25,17 +37,6 @@ fun createSubScheduler(parent: Scheduler): Scheduler {
 
 
 interface Scheduler {
-
-    companion object {
-        val DEFAULT = defineWorker("DEFAULT")
-        val SYNCHRONOUS = defineWorker("SYNCHRONOUS")
-        val UI = defineWorker("UI")
-        val BACKGROUND_SINGLE_SHARED = defineWorker("BACKGROUND_SINGLE_SHARED")
-        val BACKGROUND_SINGLE_INDIVIDUAL = defineWorker("BACKGROUND_SINGLE_INDIVIDUAL")
-        val BACKGROUND_PARALLEL_SHARED = defineWorker("BACKGROUND_PARALLEL_SHARED")
-        val BACKGROUND_PARALLEL_INDIVIDUAL = defineWorker("BACKGROUND_PARALLEL_INDIVIDUAL")
-        val BACKGROUND_SERIAL = defineWorker("SERIAL_BACKGROUND")
-    }
 
     fun getDefaultWorker(): WorkerDefinition
 

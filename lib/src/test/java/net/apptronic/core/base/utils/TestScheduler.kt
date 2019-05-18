@@ -1,14 +1,13 @@
-package net.apptronic.common.utils
+package net.apptronic.core.base.utils
 
 import net.apptronic.core.threading.*
-import net.apptronic.core.threading.Scheduler.Companion.DEFAULT
 
 class TestScheduler : Scheduler {
 
     private val synchronousWorker = synchronousWorker()
 
     override fun getDefaultWorker(): WorkerDefinition {
-        return DEFAULT
+        return WorkerDefinition.DEFAULT
     }
 
     override fun setDefaultWorker(workerDefinition: WorkerDefinition) {
