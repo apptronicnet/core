@@ -10,6 +10,7 @@ class PlatformHandler(
     private val platformLogging = platform.platformLogging()
     private val defaultWorkerProvider = platformThreading.defaultWorkerProvider()
     private val uiWorkerProvider = platformThreading.uiWorkerProvider()
+    private val uiAsyncWorkerProvider = platformThreading.uiAsyncWorkerProvider()
 
     fun defaultWorkerProvider(): WorkerProvider {
         return defaultWorkerProvider
@@ -17,6 +18,10 @@ class PlatformHandler(
 
     fun uiWorkerProvider(): WorkerProvider {
         return uiWorkerProvider
+    }
+
+    fun uiAsyncWorkerProvider(): WorkerProvider {
+        return uiAsyncWorkerProvider
     }
 
     fun runInNewThread(action: () -> Unit) {

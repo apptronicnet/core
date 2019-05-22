@@ -4,6 +4,7 @@ import net.apptronic.core.base.observable.Observable
 import net.apptronic.core.base.observable.subject.BehaviorSubject
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelListAdapter
+import net.apptronic.core.threading.execute
 
 class ViewModelListNavigator(
     private val parent: ViewModel
@@ -39,22 +40,26 @@ class ViewModelListNavigator(
     }
 
     fun update(action: (MutableList<ViewModel>) -> Unit) {
-        val list = items.toMutableList()
-        action.invoke(list)
-        set(list)
+        uiWorker.execute {
+            val list = items.toMutableList()
+            action.invoke(list)
+            set(list)
+        }
     }
 
     fun set(value: List<ViewModel>) {
-        val diff = getDiff(items, value)
-        diff.removed.forEach {
-            onRemoved(it)
+        uiAsyncWorker.execute {
+            val diff = getDiff(items, value)
+            diff.removed.forEach {
+                onRemoved(it)
+            }
+            items = value
+            diff.added.forEach {
+                onAdded(it)
+            }
+            adapter?.onDataChanged(items)
+            updateSubject()
         }
-        items = value
-        diff.added.forEach {
-            onAdded(it)
-        }
-        adapter?.onDataChanged(items)
-        updateSubject()
     }
 
     private fun onAdded(viewModel: ViewModel) {
@@ -81,27 +86,35 @@ class ViewModelListNavigator(
     }
 
     override fun setBound(viewModel: ViewModel, isBound: Boolean) {
-        viewModel.getContainer()?.setBound(isBound)
+        uiWorker.execute {
+            viewModel.getContainer()?.setBound(isBound)
+        }
     }
 
     override fun setVisible(viewModel: ViewModel, isBound: Boolean) {
-        viewModel.getContainer()?.setVisible(isBound)
+        uiWorker.execute {
+            viewModel.getContainer()?.setVisible(isBound)
+        }
     }
 
     override fun setFocused(viewModel: ViewModel, isBound: Boolean) {
-        viewModel.getContainer()?.setFocused(isBound)
+        uiWorker.execute {
+            viewModel.getContainer()?.setFocused(isBound)
+        }
     }
 
     fun setAdapter(adapter: ViewModelListAdapter) {
-        this.adapter = adapter
-        adapter.onDataChanged(items)
-        adapter.setNavigator(this)
-        parent.getLifecycle().onExitFromActiveStage {
-            items.forEach {
-                setBound(it, false)
+        uiWorker.execute {
+            this.adapter = adapter
+            adapter.onDataChanged(items)
+            adapter.setNavigator(this)
+            parent.getLifecycle().onExitFromActiveStage {
+                items.forEach {
+                    setBound(it, false)
+                }
+                adapter.setNavigator(null)
+                this.adapter = null
             }
-            adapter.setNavigator(null)
-            this.adapter = null
         }
     }
 

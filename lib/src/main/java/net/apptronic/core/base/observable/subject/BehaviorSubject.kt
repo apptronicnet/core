@@ -2,11 +2,14 @@ package net.apptronic.core.base.observable.subject
 
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.base.observable.Subscription
+import net.apptronic.core.base.observable.Subscriptions
 
 /**
  * Entity which is store values
  */
-open class BehaviorSubject<T> : PublishSubject<T>() {
+open class BehaviorSubject<T> : Subject<T> {
+
+    private val subscriptions = Subscriptions<T>()
 
     @Volatile
     private var valueHolder: ValueHolder<T>? = null
@@ -17,14 +20,14 @@ open class BehaviorSubject<T> : PublishSubject<T>() {
 
     override fun update(value: T) {
         valueHolder = ValueHolder(value)
-        super.update(value)
+        subscriptions.notifyObservers(value)
     }
 
     override fun subscribe(observer: Observer<T>): Subscription {
         valueHolder?.let {
             observer.notify(it.value)
         }
-        return super.subscribe(observer)
+        return subscriptions.createSubscription(observer)
     }
 
     fun getValue(): ValueHolder<T>? {

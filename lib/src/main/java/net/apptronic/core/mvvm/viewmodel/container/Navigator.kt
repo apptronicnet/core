@@ -5,9 +5,13 @@ import net.apptronic.core.component.entity.EntityValue
 import net.apptronic.core.component.entity.entities.ComponentEntity
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelParent
+import net.apptronic.core.threading.WorkerDefinition
 
 abstract class Navigator<T>(viewModel: ViewModel) : ComponentEntity<T>(viewModel),
     EntityValue<T>, ViewModelParent {
+
+    protected val uiWorker = viewModel.getScheduler().getWorker(WorkerDefinition.UI)
+    protected val uiAsyncWorker = viewModel.getScheduler().getWorker(WorkerDefinition.UI_ASYNC)
 
     override fun getValueHolder(): ValueHolder<T>? {
         return ValueHolder(get())

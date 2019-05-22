@@ -9,6 +9,7 @@ fun createCoreScheduler(
     with(scheduler) {
         assignWorker(WorkerDefinition.DEFAULT, platformHandler.defaultWorkerProvider())
         assignWorker(WorkerDefinition.UI, platformHandler.uiWorkerProvider())
+        assignWorker(WorkerDefinition.UI_ASYNC, platformHandler.uiAsyncWorkerProvider())
         assignWorker(WorkerDefinition.SYNCHRONOUS, InstanceWorkerProvider(synchronousWorker()))
         assignWorker(
             WorkerDefinition.BACKGROUND_SINGLE_SHARED,

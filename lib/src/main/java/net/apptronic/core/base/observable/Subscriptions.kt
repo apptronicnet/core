@@ -5,13 +5,18 @@ class Subscriptions<T> {
     private val subscriptions = mutableListOf<SubscriptionImpl>()
 
     fun createSubscription(observer: Observer<T>): Subscription {
-        val subscription = SubscriptionImpl(observer)
-        subscriptions.add(subscription)
-        return subscription
+        synchronized(subscriptions) {
+            val subscription = SubscriptionImpl(observer)
+            subscriptions.add(subscription)
+            return subscription
+        }
     }
 
     fun notifyObservers(value: T) {
-        subscriptions.toTypedArray().forEach {
+        val targets = synchronized(subscriptions) {
+            subscriptions.toTypedArray()
+        }
+        targets.forEach {
             it.observer.notify(value)
         }
     }
@@ -21,7 +26,9 @@ class Subscriptions<T> {
     ) : Subscription {
 
         override fun unsubscribe() {
-            subscriptions.remove(this)
+            synchronized(subscriptions) {
+                subscriptions.remove(this)
+            }
         }
 
     }

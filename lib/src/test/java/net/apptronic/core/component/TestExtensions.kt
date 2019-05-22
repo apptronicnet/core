@@ -1,15 +1,17 @@
 package net.apptronic.core.component
 
+import net.apptronic.core.base.observable.subject.ValueHolder
 import net.apptronic.core.base.observable.subscribe
 import net.apptronic.core.component.entity.Entity
+import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
-private fun <T : Any> Entity<T>.value(): T {
-    lateinit var value: T
+private fun <T> Entity<T>.value(): T {
+    lateinit var valueHolder: ValueHolder<T>
     subscribe {
-        value = it
+        valueHolder = ValueHolder(it)
     }
-    return value
+    return valueHolder.value
 }
 
 fun assert(entity: Entity<Boolean>) {
@@ -24,6 +26,27 @@ fun Entity<Boolean>.assertFalse() {
     assert(value().not())
 }
 
-fun Entity<Boolean>.assertNull() {
-    assertNull(value())
+fun <T> Entity<T?>.assertNull() {
+    val value = value()
+    assertNull(value)
+}
+
+fun <T> Entity<T>.assertNoValue() {
+    var valueHolder: ValueHolder<T>? = null
+    subscribe {
+        valueHolder = ValueHolder(it)
+    }
+    assertNull(valueHolder)
+}
+
+fun <T> Entity<T>.assertHasValue() {
+    var valueHolder: ValueHolder<T>? = null
+    subscribe {
+        valueHolder = ValueHolder(it)
+    }
+    assertNotNull(valueHolder)
+}
+
+fun <T> Entity<T>.assert(assertion: (T) -> Boolean) {
+    assert(assertion(value()))
 }

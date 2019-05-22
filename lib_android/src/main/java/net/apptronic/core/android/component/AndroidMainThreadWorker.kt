@@ -7,18 +7,30 @@ import net.apptronic.core.threading.InstanceWorkerProvider
 import net.apptronic.core.threading.Worker
 
 val AndroidMainThreadWorkerProvider = InstanceWorkerProvider(AndroidMainThreadWorker)
+val AndroidAsyncMainThreadWorkerProvider = InstanceWorkerProvider(AndroidAsyncMainThreadWorker)
+
+private val SHARED_HANDLER = Handler(Looper.getMainLooper())
 
 private object AndroidMainThreadWorker : Worker {
-
-    private val handler = Handler(Looper.getMainLooper())
 
     override fun execute(action: Action) {
         if (Looper.myLooper() == Looper.getMainLooper()) {
             action.execute()
         } else {
-            handler.post {
+            SHARED_HANDLER.post {
                 action.execute()
             }
+        }
+    }
+
+}
+
+
+private object AndroidAsyncMainThreadWorker : Worker {
+
+    override fun execute(action: Action) {
+        SHARED_HANDLER.post {
+            action.execute()
         }
     }
 

@@ -6,6 +6,9 @@ import net.apptronic.core.component.di.DependencyProvider
 import net.apptronic.core.component.lifecycle.Lifecycle
 import net.apptronic.core.component.platform.PlatformHandler
 import net.apptronic.core.threading.Scheduler
+import net.apptronic.core.threading.WorkerDefinition
+
+val TestWorker = WorkerDefinition.DEFAULT
 
 open class TestContext : Context {
 
