@@ -1,6 +1,6 @@
 package net.apptronic.core.threading
 
-internal class ContextScheduler(
+class ContextScheduler(
     private val parent: Scheduler? = null
 ) : Scheduler {
 

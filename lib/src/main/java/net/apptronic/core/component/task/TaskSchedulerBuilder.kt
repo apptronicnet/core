@@ -1,11 +1,14 @@
 package net.apptronic.core.component.task
 
+import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.base.observable.distinctUntilChanged
 import net.apptronic.core.base.observable.subject.BehaviorSubject
 import net.apptronic.core.base.observable.subject.PublishSubject
 import net.apptronic.core.base.observable.subscribe
 import net.apptronic.core.component.context.Context
+import net.apptronic.core.component.entity.EntitySubscription
 import net.apptronic.core.component.entity.UpdateEntity
+import net.apptronic.core.component.entity.bindContext
 import net.apptronic.core.threading.Worker
 import net.apptronic.core.threading.WorkerDefinition
 import net.apptronic.core.threading.execute
@@ -57,8 +60,8 @@ private class TaskSchedulerBuilder<T>(
     private val actionsAfterRequest = mutableListOf<SchedulerActionDefinition<T>>()
     private val actionsAfterProcessing = mutableListOf<SchedulerActionDefinition<Unit>>()
 
-    private val sourceStep =
-        TaskStepElement<T, Exception>(context)
+    private val onNextSource = PublishSubject<T>()
+    private val sourceStep = TaskStepElement<T, Exception>(context)
     private val finalStep: TaskStepElement<*, *>
 
     init {
@@ -78,6 +81,7 @@ private class TaskSchedulerBuilder<T>(
         finalStep.onNextSubject.subscribe { result: Result<*, *> ->
             defaultWorker.execute {
                 tasksInProgress.remove(result.task)
+                isInProgress.update(tasksInProgress.isNotEmpty())
                 actionsAfterRequest.forEach {
                     it.invoke(result.task.requestValue as T)
                 }
@@ -87,6 +91,18 @@ private class TaskSchedulerBuilder<T>(
     }
 
     private val listOfRequests = mutableListOf<SchedulerTask<T>>()
+
+    override fun update(value: T) {
+        execute(value)
+    }
+
+    override fun getContext(): Context {
+        return context
+    }
+
+    override fun subscribe(observer: Observer<T>): EntitySubscription {
+        return onNextSource.subscribe(observer).bindContext(context)
+    }
 
     override fun execute(request: T): Task {
         val task = SchedulerTask(request)
@@ -126,11 +142,12 @@ private class TaskSchedulerBuilder<T>(
         tasksToExecute.forEach {
             executeNext(it)
         }
-        isInProgress.update(tasksInProgress.isNotEmpty())
     }
 
     private fun executeNext(task: SchedulerTask<T>) {
+        onNextSource.update(task.requestValue)
         tasksInProgress.add(task)
+        isInProgress.update(tasksInProgress.isNotEmpty())
         actionsBeforeRequest.forEach {
             it.invoke(task.requestValue)
         }
@@ -147,7 +164,7 @@ private class TaskSchedulerBuilder<T>(
             })
     }
 
-    override fun onBeforeRequest(workerDefinition: WorkerDefinition, action: (T) -> Unit) {
+    override fun onBeforeTask(workerDefinition: WorkerDefinition, action: (T) -> Unit) {
         val worker = context.getScheduler().getWorker(workerDefinition)
         actionsBeforeRequest.add(
             SchedulerActionDefinition(
@@ -158,10 +175,10 @@ private class TaskSchedulerBuilder<T>(
     }
 
     override fun onStart(workerDefinition: WorkerDefinition): TaskStep<T, Exception> {
-        return sourceStep
+        return sourceStep.switchWorker(workerDefinition)
     }
 
-    override fun onAfterRequest(workerDefinition: WorkerDefinition, action: (T) -> Unit) {
+    override fun onAfterTask(workerDefinition: WorkerDefinition, action: (T) -> Unit) {
         val worker = context.getScheduler().getWorker(workerDefinition)
         actionsAfterRequest.add(
             SchedulerActionDefinition(

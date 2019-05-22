@@ -8,9 +8,6 @@ import net.apptronic.core.component.entity.entities.*
 import net.apptronic.core.component.entity.extensions.setup
 import net.apptronic.core.component.lifecycle.Lifecycle
 import net.apptronic.core.component.lifecycle.LifecycleStage
-import net.apptronic.core.component.process.BackgroundAction
-import net.apptronic.core.component.process.BackgroundProcess
-import net.apptronic.core.component.process.setup
 import net.apptronic.core.mvvm.viewmodel.ComponentRegistry
 import net.apptronic.core.threading.WorkerDefinition
 
@@ -132,21 +129,6 @@ open class Component(
 
     fun update(block: () -> Unit) {
         getScheduler().execute(WorkerDefinition.DEFAULT, block)
-    }
-
-    fun <T, R> backgroundProcess(
-        workerDefinition: WorkerDefinition,
-        action: BackgroundAction<T, R>,
-        setupBlock: BackgroundProcess<T, R>.() -> Unit = {}
-    ): BackgroundProcess<T, R> {
-        return BackgroundProcess(this, action, workerDefinition).setup(setupBlock)
-    }
-
-    fun <T, R> backgroundProcess(
-        action: BackgroundAction<T, R>,
-        setupBlock: BackgroundProcess<T, R>.() -> Unit = {}
-    ): BackgroundProcess<T, R> {
-        return BackgroundProcess(this, action).setup(setupBlock)
     }
 
     open fun terminate() {

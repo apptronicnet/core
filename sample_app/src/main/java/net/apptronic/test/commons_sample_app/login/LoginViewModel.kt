@@ -19,8 +19,6 @@ class LoginViewModel(context: ViewModelContext) : ViewModel(context), Registrati
 
     val registerClick = genericEvent()
 
-    private val loginProcess = backgroundProcess(LoginAction)
-
     init {
         registerClick.subscribe {
             loginRouter.openRegistrationScreen(this)
