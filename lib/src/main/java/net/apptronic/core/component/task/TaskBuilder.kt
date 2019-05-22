@@ -14,7 +14,9 @@ interface TaskBuilder<T> {
         action: (T) -> Unit
     )
 
-    fun onStart(workerDefinition: WorkerDefinition = WorkerDefinition.BACKGROUND_PARALLEL_INDIVIDUAL): TaskStep<T, Exception>
+    fun onStart(
+        workerDefinition: WorkerDefinition = WorkerDefinition.BACKGROUND_PARALLEL_INDIVIDUAL
+    ): TaskStep<T, Exception>
 
     fun onAfterTask(
         workerDefinition: WorkerDefinition = WorkerDefinition.DEFAULT,

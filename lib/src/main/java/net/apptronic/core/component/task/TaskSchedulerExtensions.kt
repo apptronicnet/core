@@ -12,7 +12,11 @@ fun <T> Context.taskScheduler(
 
 fun <T> Context.newTask(
     request: T,
-    workerDefinition: WorkerDefinition = WorkerDefinition.SYNCHRONOUS
-): TaskStep<T, Exception> {
-    return newTaskStep(this, request).switchWorker(workerDefinition)
+    workerDefinition: WorkerDefinition = WorkerDefinition.SYNCHRONOUS,
+    builder: TaskStep<T, Exception>.() -> Unit
+): Task {
+    val scheduler = taskScheduler<T>(SchedulerMode.Parallel) {
+        builder.invoke(onStart(workerDefinition))
+    }
+    return scheduler.execute(request)
 }

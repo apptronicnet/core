@@ -2,18 +2,16 @@ package net.apptronic.core.component.task
 
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.base.observable.distinctUntilChanged
-import net.apptronic.core.base.observable.subject.BehaviorSubject
 import net.apptronic.core.base.observable.subject.PublishSubject
 import net.apptronic.core.base.observable.subscribe
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.EntitySubscription
-import net.apptronic.core.component.entity.UpdateEntity
 import net.apptronic.core.component.entity.bindContext
 import net.apptronic.core.threading.Worker
 import net.apptronic.core.threading.WorkerDefinition
 import net.apptronic.core.threading.execute
 
-private class SchedulerTask<T>(
+internal class SchedulerTask<T>(
     val requestValue: T
 ) : Task {
 
@@ -32,6 +30,10 @@ private class SchedulerTask<T>(
 
     override fun isInterrupted(): Boolean {
         return isInterrupted
+    }
+
+    override fun getRequest(): Any {
+        return requestValue as Any
     }
 
 }
@@ -62,15 +64,9 @@ private class TaskSchedulerBuilder<T>(
 
     private val onNextSource = PublishSubject<T>()
     private val sourceStep = TaskStepElement<T, Exception>(context)
-    private val finalStep: TaskStepElement<*, *>
 
     init {
         builder.invoke(this)
-        var nextStep: TaskStepElement<*, *> = sourceStep
-        while (nextStep.next != null) {
-            nextStep = nextStep.next!!
-        }
-        finalStep = nextStep
         isInProgress.distinctUntilChanged().subscribe { isProcessing ->
             if (isProcessing) {
                 actionsBeforeProcessing.forEach { it.invoke(Unit) }
@@ -78,12 +74,15 @@ private class TaskSchedulerBuilder<T>(
                 actionsAfterProcessing.forEach { it.invoke(Unit) }
             }
         }
-        finalStep.onNextSubject.subscribe { result: Result<*, *> ->
+        sourceStep.observeChainResult { result ->
             defaultWorker.execute {
+                if (result is TaskResult.Error && !result.isHandled) {
+                    throw TaskErrorIsNotHandledException(result.exception)
+                }
                 tasksInProgress.remove(result.task)
                 isInProgress.update(tasksInProgress.isNotEmpty())
                 actionsAfterRequest.forEach {
-                    it.invoke(result.task.requestValue as T)
+                    it.invoke(result.task.getRequest() as T)
                 }
                 next()
             }
@@ -151,7 +150,7 @@ private class TaskSchedulerBuilder<T>(
         actionsBeforeRequest.forEach {
             it.invoke(task.requestValue)
         }
-        sourceStep.next(Result.Value(task, task.requestValue))
+        sourceStep.next(TaskExecutionResult.Value(task, task.requestValue))
     }
 
     override fun onBeforeProcessing(workerDefinition: WorkerDefinition, action: () -> Unit) {
@@ -205,209 +204,6 @@ private class SchedulerActionDefinition<T>(val worker: Worker, val action: (T) -
     fun invoke(item: T) {
         worker.execute {
             action.invoke(item)
-        }
-    }
-
-}
-
-private sealed class Result<T, E : Exception>(val task: SchedulerTask<*>) {
-
-    class Value<T, E : Exception>(
-        task: SchedulerTask<*>, val value: T
-    ) : Result<T, E>(task) {
-
-        fun <R> next(value: R): Value<R, E> {
-            return Value(task, value)
-        }
-
-        override fun <TR, ER : Exception> transform(): Result<TR, ER> {
-            return Value(task, value as TR)
-        }
-
-    }
-
-    class Error<T, E : Exception>(
-        task: SchedulerTask<*>, val exception: E
-    ) : Result<T, E>(task) {
-
-        fun <R : Exception> next(exception: R): Error<T, R> {
-            return Error(task, exception)
-        }
-
-        override fun <TR, ER : Exception> transform(): Result<TR, ER> {
-            return Error(task, exception as ER)
-        }
-
-    }
-
-    class Interruption<T, E : Exception>(
-        task: SchedulerTask<*>, val interruption: TaskInterruptedException
-    ) : Result<T, E>(task) {
-
-        override fun <TR, ER : Exception> transform(): Result<TR, ER> {
-            return Interruption(task, interruption)
-        }
-
-    }
-
-    abstract fun <TR, ER : Exception> transform(): Result<TR, ER>
-
-    fun <TR, ER : Exception> error(cause: Exception): Result<TR, ER> {
-        return try {
-            if (cause is TaskInterruptedException) {
-                Interruption(task, cause)
-            } else {
-                Error(task, cause as ER)
-            }
-        } catch (e: ClassCastException) {
-            Interruption(
-                task,
-                TaskInterruptedException(e)
-            )
-        }
-    }
-
-}
-
-fun <T> newTaskStep(context: Context, request: T): TaskStep<T, Exception> {
-    val task = SchedulerTask(request)
-    return TaskStepElement<T, Exception>(context).apply {
-        onNextSubject.update(Result.Value(task, request))
-    }
-}
-
-private class TaskStepElement<T, E : Exception>(
-    private val context: Context
-) : TaskStep<T, E> {
-
-    var next: TaskStepElement<*, *>? = null
-    val onNextSubject = BehaviorSubject<Result<T, E>>()
-
-    fun next(result: Result<T, E>) {
-        onNextSubject.update(result)
-    }
-
-    private fun <TR, ER : Exception> nextStep(
-        workerDefinition: WorkerDefinition = WorkerDefinition.SYNCHRONOUS,
-        action: (Result<T, E>) -> Result<TR, ER>
-    ): TaskStepElement<TR, ER> {
-        val nextStep = TaskStepElement<TR, ER>(context)
-        next = nextStep
-        val worker = context.getScheduler().getWorker(workerDefinition)
-        onNextSubject.subscribe { nextResult ->
-            worker.execute {
-                val next = action.invoke(nextResult)
-                nextStep.next(next)
-            }
-        }
-        return nextStep
-    }
-
-    override fun switchWorker(workerDefinition: WorkerDefinition): TaskStep<T, E> {
-        return nextStep(workerDefinition) { current ->
-            current
-        }
-    }
-
-    override fun defaultWorker(): TaskStep<T, E> {
-        return switchWorker(WorkerDefinition.DEFAULT)
-    }
-
-    override fun uiWorker(): TaskStep<T, E> {
-        return switchWorker(WorkerDefinition.UI)
-    }
-
-    override fun onNext(action: Task.(T) -> Unit): TaskStep<T, E> {
-        return nextStep { current ->
-            try {
-                if (current is Result.Value) {
-                    action.invoke(current.task, current.value)
-                }
-                current
-            } catch (e: Exception) {
-                current.error<T, E>(e)
-            }
-        }
-    }
-
-    override fun <R> map(mapping: Task.(T) -> R): TaskStep<R, E> {
-        return nextStep { current ->
-            try {
-                if (current is Result.Value) {
-                    val next = mapping.invoke(current.task, current.value)
-                    current.next(next)
-                } else {
-                    current.transform<R, E>()
-                }
-            } catch (e: Exception) {
-                current.error<R, E>(e)
-            }
-        }
-    }
-
-    override fun onError(action: Task.(E) -> Unit): TaskStep<T, E> {
-        return nextStep { current ->
-            try {
-                if (current is Result.Error) {
-                    action.invoke(current.task, current.exception)
-                }
-                current
-            } catch (e: Exception) {
-                current.error<T, E>(e)
-            }
-        }
-    }
-
-    override fun <R : Exception> mapError(mapping: Task.(E) -> R): TaskStep<T, R> {
-        return nextStep { current ->
-            try {
-                if (current is Result.Error) {
-                    val next = mapping.invoke(current.task, current.exception)
-                    current.next(next)
-                } else {
-                    current.transform<T, R>()
-                }
-            } catch (e: Exception) {
-                current.error<T, R>(e)
-            }
-        }
-    }
-
-    override fun onInterrupted(action: (Task, TaskInterruptedException) -> Unit): TaskStep<T, E> {
-        return nextStep { current ->
-            try {
-                if (current is Result.Interruption) {
-                    action.invoke(current.task, current.interruption)
-                }
-                current
-            } catch (e: Exception) {
-                current.error<T, E>(e)
-            }
-        }
-    }
-
-    override fun sendResultTo(entity: UpdateEntity<in T>): TaskStep<T, E> {
-        return nextStep { current ->
-            if (current is Result.Value) {
-                entity.update(current.value)
-            }
-            current
-        }
-    }
-
-    override fun sendErrorTo(entity: UpdateEntity<in E>): TaskStep<T, E> {
-        return nextStep { current ->
-            if (current is Result.Error) {
-                entity.update(current.exception)
-            }
-            current
-        }
-    }
-
-    override fun doFinally(action: () -> Unit): TaskStep<T, E> {
-        return nextStep { current ->
-            action.invoke()
-            current
         }
     }
 

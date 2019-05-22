@@ -11,20 +11,20 @@ interface TaskStep<T, E : Exception> {
 
     fun defaultWorker(): TaskStep<T, E>
 
-    fun onNext(action: Task.(T) -> Unit): TaskStep<T, E>
+    fun onNext(action: (T) -> Unit): TaskStep<T, E>
 
-    fun <R> map(mapping: Task.(T) -> R): TaskStep<R, E>
+    fun <R> map(mapping: (T) -> R): TaskStep<R, E>
 
-    fun onError(action: Task.(E) -> Unit): TaskStep<T, E>
+    fun onError(action: (E) -> Unit): TaskStep<T, E>
 
-    fun <R : Exception> mapError(mapping: Task.(E) -> R): TaskStep<T, R>
+    fun <R : Exception> mapError(mapping: (E) -> R): TaskStep<T, R>
 
-    fun onInterrupted(action: (Task, TaskInterruptedException) -> Unit): TaskStep<T, E>
+    fun onInterrupted(action: (TaskInterruptedException) -> Unit): TaskStep<T, E>
 
     fun sendResultTo(entity: UpdateEntity<in T>): TaskStep<T, E>
 
     fun sendErrorTo(entity: UpdateEntity<in E>): TaskStep<T, E>
 
-    fun doFinally(action: () -> Unit): TaskStep<T, E>
+    fun doFinally(action: (TaskResult<T>) -> Unit): TaskStep<T, E>
 
 }

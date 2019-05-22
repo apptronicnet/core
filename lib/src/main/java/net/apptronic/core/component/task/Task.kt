@@ -9,4 +9,6 @@ interface Task {
 
     fun interrupt()
 
+    fun getRequest(): Any
+
 }
