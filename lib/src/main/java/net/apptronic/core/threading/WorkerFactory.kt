@@ -15,10 +15,10 @@ fun synchronousWorker(): Worker {
 /**
  * Worker which executes actions in single thread.
  */
-fun singleThreadWorker(platformHandler: PlatformHandler): Worker {
-    return QueueWorker(platformHandler, 1)
+fun singleThreadWorker(): Worker {
+    return QueueWorker(1)
 }
 
-fun parallelWorker(platformHandler: PlatformHandler, threads: Int = 16): Worker {
-    return QueueWorker(platformHandler, threads)
+fun parallelWorker(threads: Int = 16): Worker {
+    return QueueWorker(threads)
 }

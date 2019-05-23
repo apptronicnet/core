@@ -2,10 +2,9 @@ package net.apptronic.core.threading
 
 import net.apptronic.core.base.AtomicEntity
 import net.apptronic.core.base.collections.LinkedQueue
-import net.apptronic.core.component.platform.PlatformHandler
+import net.apptronic.core.base.runInNewThread
 
 internal class QueueWorker(
-    private val platformHandler: PlatformHandler,
     private val threadsCount: Int
 ) : Worker {
 
@@ -19,7 +18,7 @@ internal class QueueWorker(
         threadsActive.perform {
             if (get() < threadsCount) {
                 set(get() + 1)
-                platformHandler.runInNewThread {
+                runInNewThread {
                     executeQueue()
                 }
             }

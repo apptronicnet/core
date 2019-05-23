@@ -1,5 +1,6 @@
 package net.apptronic.core.base.observable
 
+import net.apptronic.core.base.AtomicReference
 import net.apptronic.core.base.observable.subject.ValueHolder
 
 fun <T> Observable<T>.subscribe(callback: (T) -> Unit): Subscription {
@@ -15,7 +16,7 @@ fun <T> Observable<T>.distinctUntilChanged(): Observable<T> {
 }
 
 private class DistinctUntilChangedObservable<T>(
-    private val source: Observable<T>
+        private val source: Observable<T>
 ) : Observable<T> {
 
     override fun subscribe(observer: Observer<T>): Subscription {
@@ -23,16 +24,15 @@ private class DistinctUntilChangedObservable<T>(
     }
 
     private class DistinctUntilChangedObserver<T>(
-        private val target: Observer<T>
+            private val target: Observer<T>
     ) : Observer<T> {
 
-        @Volatile
-        private var oldValue: ValueHolder<T>? = null
+        private var lastValue = AtomicReference<ValueHolder<T>?>(null)
 
         override fun notify(value: T) {
-            val oldValue = this.oldValue
-            if (oldValue == null || oldValue.value != value) {
-                this.oldValue = ValueHolder(value)
+            val last = this.lastValue.get()
+            if (last == null || last.value != value) {
+                this.lastValue.set(ValueHolder(value))
                 target.notify(value)
             }
         }

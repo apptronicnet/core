@@ -1,5 +1,6 @@
 package net.apptronic.core.base.observable.subject
 
+import net.apptronic.core.base.AtomicReference
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.base.observable.Subscription
 import net.apptronic.core.base.observable.Subscriptions
@@ -11,27 +12,26 @@ open class BehaviorSubject<T> : Subject<T> {
 
     private val subscriptions = Subscriptions<T>()
 
-    @Volatile
-    private var valueHolder: ValueHolder<T>? = null
+    private var valueHolder = AtomicReference<ValueHolder<T>?>(null)
 
     fun clear() {
-        valueHolder = null
+        valueHolder.set(null)
     }
 
     override fun update(value: T) {
-        valueHolder = ValueHolder(value)
+        valueHolder.set(ValueHolder(value))
         subscriptions.notifyObservers(value)
     }
 
     override fun subscribe(observer: Observer<T>): Subscription {
-        valueHolder?.let {
+        valueHolder.get()?.let {
             observer.notify(it.value)
         }
         return subscriptions.createSubscription(observer)
     }
 
     fun getValue(): ValueHolder<T>? {
-        return valueHolder
+        return valueHolder.get()
     }
 
 }

@@ -1,19 +1,22 @@
 package net.apptronic.core.base.observable
 
+import net.apptronic.core.base.Synchronized
+
 class Subscriptions<T> {
 
+    private val sync = Synchronized()
     private val subscriptions = mutableListOf<SubscriptionImpl>()
 
     fun createSubscription(observer: Observer<T>): Subscription {
-        synchronized(subscriptions) {
+        return sync.run {
             val subscription = SubscriptionImpl(observer)
             subscriptions.add(subscription)
-            return subscription
+            subscription
         }
     }
 
     fun notifyObservers(value: T) {
-        val targets = synchronized(subscriptions) {
+        val targets = sync.run {
             subscriptions.toTypedArray()
         }
         targets.forEach {
@@ -22,11 +25,11 @@ class Subscriptions<T> {
     }
 
     private inner class SubscriptionImpl(
-        val observer: Observer<T>
+            val observer: Observer<T>
     ) : Subscription {
 
         override fun unsubscribe() {
-            synchronized(subscriptions) {
+            return sync.run {
                 subscriptions.remove(this)
             }
         }

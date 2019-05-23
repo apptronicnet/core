@@ -13,18 +13,18 @@ fun createCoreScheduler(
         assignWorker(WorkerDefinition.SYNCHRONOUS, InstanceWorkerProvider(synchronousWorker()))
         assignWorker(
             WorkerDefinition.BACKGROUND_SINGLE_SHARED,
-            InstanceWorkerProvider(singleThreadWorker(platformHandler))
+                InstanceWorkerProvider(singleThreadWorker())
         )
         assignWorker(
             WorkerDefinition.BACKGROUND_SINGLE_INDIVIDUAL,
-            FactoryWorkerProvider { singleThreadWorker(platformHandler) })
+                FactoryWorkerProvider { singleThreadWorker() })
         assignWorker(
             WorkerDefinition.BACKGROUND_PARALLEL_SHARED,
-            InstanceWorkerProvider(parallelWorker(platformHandler))
+                InstanceWorkerProvider(parallelWorker())
         )
         assignWorker(
             WorkerDefinition.BACKGROUND_PARALLEL_INDIVIDUAL,
-            FactoryWorkerProvider { parallelWorker(platformHandler) })
+                FactoryWorkerProvider { parallelWorker() })
         assignWorker(
             WorkerDefinition.BACKGROUND_SERIAL,
             FactoryWorkerProvider { serialWorker(platformHandler) })

@@ -24,10 +24,6 @@ class PlatformHandler(
         return uiAsyncWorkerProvider
     }
 
-    fun runInNewThread(action: () -> Unit) {
-        platformThreading.runInNewThread(action)
-    }
-
     fun logMessage(text: String) {
         platformLogging.logMessage(text)
     }

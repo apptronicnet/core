@@ -35,7 +35,7 @@ task clean(type: Delete) {
 }
 
 task assembleLib() {
-    dependsOn ':lib:jar'
+    dependsOn ':lib:jvmJar'
     dependsOn ':lib_android:bundleDebugAar'
     doLast {
         def destDir = new File("out")
@@ -43,7 +43,7 @@ task assembleLib() {
         for (def item : destDir.listFiles()) {
             item.delete()
         }
-        file("lib/build/libs/lib.jar").renameTo("out/net.apptronic.core.jar")
+        file("lib/build/libs/lib-jvm.jar").renameTo("out/net.apptronic.core.jar")
         file("lib_android/build/outputs/aar/lib_android-debug.aar").renameTo("out/net.apptronic.android.aar")
     }
 }

@@ -7,6 +7,7 @@ class LinkedQueue<T> {
         var next: Node<T>?
     )
 
+    private var size = 0;
     private var start: Node<T>? = null
     private var end: Node<T>? = null
 
@@ -17,6 +18,7 @@ class LinkedQueue<T> {
             if (start == null) {
                 end = null
             }
+            size--
             first.value
         } else {
             null
@@ -24,6 +26,7 @@ class LinkedQueue<T> {
     }
 
     fun add(item: T) {
+        size++
         val last = end
         if (last != null) {
             val next = Node(item, null)
@@ -33,6 +36,14 @@ class LinkedQueue<T> {
             start = Node(item, null)
             end = start
         }
+    }
+
+    fun hasItems(): Boolean {
+        return start != null
+    }
+
+    fun size(): Int {
+        return size
     }
 
 }

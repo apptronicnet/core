@@ -1,5 +1,6 @@
 package net.apptronic.core.component.task
 
+import net.apptronic.core.base.collections.LinkedQueue
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.base.observable.distinctUntilChanged
 import net.apptronic.core.base.observable.subject.PublishSubject
@@ -15,7 +16,6 @@ internal class SchedulerTask<T>(
     val requestValue: T
 ) : Task {
 
-    @Volatile
     private var isInterrupted = false
 
     override fun checkInterruption() {
@@ -89,7 +89,7 @@ private class TaskSchedulerBuilder<T>(
         }
     }
 
-    private val listOfRequests = mutableListOf<SchedulerTask<T>>()
+    private val listOfRequests = LinkedQueue<SchedulerTask<T>>()
 
     override fun update(value: T) {
         execute(value)
@@ -116,25 +116,22 @@ private class TaskSchedulerBuilder<T>(
         val tasksToExecute = mutableListOf<SchedulerTask<T>>()
         when (mode) {
             SchedulerMode.Parallel -> {
-                tasksToExecute.addAll(listOfRequests)
-                listOfRequests.clear()
+                do {
+                    listOfRequests.take()?.let { tasksToExecute.add(it) }
+                } while (listOfRequests.hasItems())
 
             }
             SchedulerMode.Single -> {
-                if (tasksInProgress.isEmpty() && listOfRequests.isNotEmpty()) {
-                    val task = listOfRequests.removeAt(0)
-                    tasksToExecute.add(task)
+                if (tasksInProgress.isEmpty()) {
+                    listOfRequests.take()?.let { tasksToExecute.add(it) }
                 }
             }
             SchedulerMode.Debounce -> {
-                if (listOfRequests.size > 1) {
-                    val last = listOfRequests.get(listOfRequests.size - 1)
-                    listOfRequests.clear()
-                    listOfRequests.add(last)
+                if (listOfRequests.size() > 1) {
+                    listOfRequests.take()
                 }
-                if (tasksInProgress.isEmpty() && listOfRequests.isNotEmpty()) {
-                    val task = listOfRequests.removeAt(0)
-                    tasksToExecute.add(task)
+                if (tasksInProgress.isEmpty()) {
+                    listOfRequests.take()?.let { tasksToExecute.add(it) }
                 }
             }
         }
