@@ -181,18 +181,12 @@ internal class Module constructor(
 
 }
 
-private fun getModuleNameFromTrace(): String {
-    val stackTrace = Throwable().stackTrace
-    val element = stackTrace[2]
-    return element.toString()
-}
-
-fun declareModule(initializer: ModuleDefinition.() -> Unit): ModuleDefinition {
-    return ModuleDefinition(getModuleNameFromTrace()).apply(initializer)
+fun declareModule(name: String = "", initializer: ModuleDefinition.() -> Unit): ModuleDefinition {
+    return ModuleDefinition(name).apply(initializer)
 }
 
 fun declareModule(builder: ModuleBuilder): ModuleDefinition {
-    return ModuleDefinition(builder::class.qualifiedName ?: getModuleNameFromTrace()).apply {
+    return ModuleDefinition(builder::class.qualifiedName ?: "Unknown").apply {
         builder.build(this)
     }
 }

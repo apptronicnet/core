@@ -1,7 +1,7 @@
 package net.apptronic.core.base.observable
 
-import net.apptronic.core.base.AtomicReference
 import net.apptronic.core.base.observable.subject.ValueHolder
+import net.apptronic.core.platform.AtomicReference
 
 fun <T> Observable<T>.subscribe(callback: (T) -> Unit): Subscription {
     return subscribe(object : Observer<T> {

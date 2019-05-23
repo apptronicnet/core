@@ -27,14 +27,6 @@ fun objectKey(
 }
 
 fun objectKey(
-    clazz: Class<*>
-): ObjectKey {
-    val className = clazz.canonicalName
-        ?: throw IllegalArgumentException("Cannot work with anonymous classes")
-    return ObjectKey(className, null)
-}
-
-fun objectKey(
     clazz: KClass<*>
 ): ObjectKey {
     val className = clazz.qualifiedName

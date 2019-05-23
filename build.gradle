@@ -34,9 +34,14 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 
-task assembleLib() {
-    dependsOn ':lib:jvmJar'
-    dependsOn ':lib_android:bundleDebugAar'
+task cleanAll(dependsOn: [':lib:clean',
+                          ':lib_android:clean'])
+
+task assembleLib(dependsOn: [
+        ':cleanAll',
+        ':lib:jvmJar',
+        ':lib_android:bundleDebugAar'
+]) {
     doLast {
         def destDir = new File("out")
         destDir.mkdir()

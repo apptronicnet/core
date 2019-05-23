@@ -1,6 +1,6 @@
 package net.apptronic.core.base.observable
 
-import net.apptronic.core.base.Synchronized
+import net.apptronic.core.platform.Synchronized
 
 class Subscriptions<T> {
 

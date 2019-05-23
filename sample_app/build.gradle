@@ -20,11 +20,15 @@ android {
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
     }
+    packagingOptions {
+        exclude 'META-INF/lib.kotlin_module'
+    }
 }
 
 dependencies {
-    implementation project(path: ':lib')
-    implementation project(path: ':lib_android')
+    implementation files('libs/net.apptronic.core.jar')
+    implementation files('libs/net.apptronic.android.aar')
+    implementation project(path: ':sample_app_lib')
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 

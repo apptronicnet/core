@@ -1,9 +1,7 @@
 package net.apptronic.core.threading
 
-import net.apptronic.core.component.platform.PlatformHandler
-
-fun serialWorker(platformHandler: PlatformHandler): Worker {
-    return SerialWorker(platformHandler, 1)
+fun serialWorker(): Worker {
+    return SerialWorker(1)
 }
 
 private val synchronousWorkerInstance = SynchronousWorker()

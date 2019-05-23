@@ -13,7 +13,6 @@ interface EntityValue<T> : Entity<T> {
      * Get value
      * @throws [ValueNotSetException] is value is not set
      */
-    @Throws(ValueNotSetException::class)
     fun get(): T {
         return getValueHolder().get()
     }

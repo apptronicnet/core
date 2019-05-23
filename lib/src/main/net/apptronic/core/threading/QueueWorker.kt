@@ -2,7 +2,7 @@ package net.apptronic.core.threading
 
 import net.apptronic.core.base.AtomicEntity
 import net.apptronic.core.base.collections.LinkedQueue
-import net.apptronic.core.base.runInNewThread
+import net.apptronic.core.platform.runInNewThread
 
 internal class QueueWorker(
     private val threadsCount: Int

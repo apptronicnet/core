@@ -1,14 +1,12 @@
 package net.apptronic.core.threading
 
 import net.apptronic.core.base.AtomicEntity
-import net.apptronic.core.base.runInNewThread
-import net.apptronic.core.component.platform.PlatformHandler
+import net.apptronic.core.platform.runInNewThread
 
 /**
  * [Worker] implementation which executes actions one after another in single thread.
  */
 internal class SerialWorker(
-    private val platformHandler: PlatformHandler,
     private val maxCount: Int = NO_LIMIT
 ) : Worker {
 

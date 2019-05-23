@@ -10,6 +10,4 @@ interface PlatformThreading {
 
     fun uiAsyncWorkerProvider(): WorkerProvider
 
-    fun suspendCurrentThread(timeInMillis: Long)
-
 }

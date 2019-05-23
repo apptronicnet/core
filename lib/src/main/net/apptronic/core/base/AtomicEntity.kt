@@ -1,15 +1,34 @@
 package net.apptronic.core.base
 
-expect class AtomicEntity<T> {
+import net.apptronic.core.platform.AtomicReference
+import net.apptronic.core.platform.Synchronized
 
-    constructor(value: T)
+class AtomicEntity<T>(initialValue: T) {
 
-    fun set(value: T): T
+    private val sync = Synchronized()
+    private val value = AtomicReference<T>(initialValue)
 
-    fun get(): T
+    fun set(value: T): T {
+        return sync.run {
+            this.value.set(value)
+            value
+        }
+    }
 
-    fun <R> perform(block: AtomicEntity<T>.(T) -> R): R
+    fun get(): T {
+        return sync.run {
+            value.get()
+        }
+    }
 
-    override fun toString(): String
+    fun <R> perform(block: AtomicEntity<T>.(T) -> R): R {
+        return sync.run {
+            block(value.get())
+        }
+    }
+
+    override fun toString(): String {
+        return "${this::class}/$value"
+    }
 
 }

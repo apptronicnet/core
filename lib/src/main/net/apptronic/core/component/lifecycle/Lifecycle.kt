@@ -1,13 +1,14 @@
 package net.apptronic.core.component.lifecycle
 
 import net.apptronic.core.component.context.Context
+import net.apptronic.core.platform.AtomicReference
 
 /**
  * Def
  */
 open class Lifecycle {
 
-    private val baseParent = object : LifecycleStageParent {
+    private inner class BaseParent : LifecycleStageParent {
 
         override fun onChildEnter() {
             // ignore
@@ -20,11 +21,13 @@ open class Lifecycle {
         }
     }
 
+    private val baseParent = BaseParent()
+
     companion object {
         const val ROOT_STAGE = "_root"
     }
 
-    private val isTerminated = AtomicBoolean(false)
+    private val isTerminated = AtomicReference(false)
 
     private val rootStage: LifecycleStageImpl = LifecycleStageImpl(baseParent, ROOT_STAGE)
 

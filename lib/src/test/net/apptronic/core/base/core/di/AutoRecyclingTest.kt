@@ -53,7 +53,7 @@ class AutoRecyclingTest {
         assert((component.instance as Implementation).isRecycled.not())
 
         context.getLifecycle().terminate()
-        assert((component.instance as Implementation).isRecycled)
+        assert((component.instance).isRecycled)
     }
 
 }

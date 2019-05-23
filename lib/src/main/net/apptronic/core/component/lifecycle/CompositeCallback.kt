@@ -2,7 +2,7 @@ package net.apptronic.core.component.lifecycle
 
 internal class CompositeCallback {
 
-    private val innerCallbacks = LinkedList<EventCallback>()
+    private val innerCallbacks = mutableListOf<EventCallback>()
 
     fun execute() {
         innerCallbacks.forEach { it.execute() }

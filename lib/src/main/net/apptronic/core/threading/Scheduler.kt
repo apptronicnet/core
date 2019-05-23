@@ -3,7 +3,7 @@ package net.apptronic.core.threading
 import net.apptronic.core.component.platform.PlatformHandler
 
 fun createCoreScheduler(
-    platformHandler: PlatformHandler
+        platformHandler: PlatformHandler
 ): Scheduler {
     val scheduler = ContextScheduler()
     with(scheduler) {
@@ -12,22 +12,22 @@ fun createCoreScheduler(
         assignWorker(WorkerDefinition.UI_ASYNC, platformHandler.uiAsyncWorkerProvider())
         assignWorker(WorkerDefinition.SYNCHRONOUS, InstanceWorkerProvider(synchronousWorker()))
         assignWorker(
-            WorkerDefinition.BACKGROUND_SINGLE_SHARED,
+                WorkerDefinition.BACKGROUND_SINGLE_SHARED,
                 InstanceWorkerProvider(singleThreadWorker())
         )
         assignWorker(
-            WorkerDefinition.BACKGROUND_SINGLE_INDIVIDUAL,
+                WorkerDefinition.BACKGROUND_SINGLE_INDIVIDUAL,
                 FactoryWorkerProvider { singleThreadWorker() })
         assignWorker(
-            WorkerDefinition.BACKGROUND_PARALLEL_SHARED,
+                WorkerDefinition.BACKGROUND_PARALLEL_SHARED,
                 InstanceWorkerProvider(parallelWorker())
         )
         assignWorker(
-            WorkerDefinition.BACKGROUND_PARALLEL_INDIVIDUAL,
+                WorkerDefinition.BACKGROUND_PARALLEL_INDIVIDUAL,
                 FactoryWorkerProvider { parallelWorker() })
         assignWorker(
-            WorkerDefinition.BACKGROUND_SERIAL,
-            FactoryWorkerProvider { serialWorker(platformHandler) })
+                WorkerDefinition.BACKGROUND_SERIAL,
+                FactoryWorkerProvider { serialWorker() })
     }
     return scheduler
 }

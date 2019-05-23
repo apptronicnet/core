@@ -1,9 +1,9 @@
 package net.apptronic.core.base.observable.subject
 
-import net.apptronic.core.base.AtomicReference
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.base.observable.Subscription
 import net.apptronic.core.base.observable.Subscriptions
+import net.apptronic.core.platform.AtomicReference
 
 /**
  * Entity which is store values

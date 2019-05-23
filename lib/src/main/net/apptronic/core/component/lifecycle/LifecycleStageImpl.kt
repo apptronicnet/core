@@ -1,21 +1,22 @@
 package net.apptronic.core.component.lifecycle
 
 import net.apptronic.core.base.AtomicEntity
+import net.apptronic.core.platform.AtomicReference
 
 internal class LifecycleStageImpl(val parent: LifecycleStageParent, val name: String) :
     LifecycleStage, LifecycleStageParent {
 
     private val childStage = AtomicEntity<LifecycleStageImpl?>(null)
 
-    private val isEntered = AtomicBoolean(false)
-    private val isTerminated = AtomicBoolean(false)
+    private val isEntered = AtomicReference(false)
+    private val isTerminated = AtomicReference(false)
 
     private val enterCallback = CompositeCallback()
     private val exitCallback = CompositeCallback()
     private val whenEnteredActions = HashMap<String, (() -> Unit)>()
 
-    private val enterHandler = AtomicReference<OnEnterHandlerImpl>()
-    private val exitHandler = AtomicReference<OnExitHandlerImpl>()
+    private val enterHandler = AtomicReference<OnEnterHandlerImpl?>(null)
+    private val exitHandler = AtomicReference<OnExitHandlerImpl?>(null)
 
     override fun toString(): String {
         return super.toString() + " $name isEntered=${isEntered.get()}"
@@ -24,7 +25,7 @@ internal class LifecycleStageImpl(val parent: LifecycleStageParent, val name: St
     /**
      * This callbacks are internally created to be executed on exit stage command
      */
-    private val inStageCallbacks = LinkedList<EventCallback>()
+    private val inStageCallbacks = mutableListOf<EventCallback>()
 
     fun isEntered(): Boolean {
         return isEntered.get()

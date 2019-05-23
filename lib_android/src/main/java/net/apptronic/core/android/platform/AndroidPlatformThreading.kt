@@ -7,8 +7,6 @@ import net.apptronic.core.threading.WorkerProvider
 
 class AndroidPlatformThreading : PlatformThreading {
 
-    private val javaUtils = JavaUtils()
-
     override fun defaultWorkerProvider(): WorkerProvider {
         return AndroidMainThreadWorkerProvider
     }
@@ -19,10 +17,6 @@ class AndroidPlatformThreading : PlatformThreading {
 
     override fun uiAsyncWorkerProvider(): WorkerProvider {
         return AndroidAsyncMainThreadWorkerProvider
-    }
-
-    override fun suspendCurrentThread(timeInMillis: Long) {
-        javaUtils.suspendCurrentThread(timeInMillis)
     }
 
 }

@@ -63,30 +63,21 @@ private class NamedDescriptor<T>(
 
 }
 
-fun <T : Any> createDescriptor(clazz: KClass<T>, whereCreated: String? = null): Descriptor<T> {
-    val resultWhereCreated = whereCreated ?: Exception().stackTrace[1].toString()
-    return KotlinClassDescriptor(clazz, resultWhereCreated)
+fun <T : Any> createDescriptor(clazz: KClass<T>, name: String = ""): Descriptor<T> {
+    return KotlinClassDescriptor(clazz, name)
 }
 
 fun <T : Any> createNullableDescriptor(
-    clazz: KClass<T>,
-    whereCreated: String? = null
+        clazz: KClass<T>,
+        name: String = ""
 ): Descriptor<T?> {
-    val resultWhereCreated = whereCreated ?: Exception().stackTrace[1].toString()
-    return KotlinNullableClassDescriptor(clazz, resultWhereCreated)
+    return KotlinNullableClassDescriptor(clazz, name)
 }
 
-inline fun <reified T : Any> createDescriptor(): Descriptor<T> {
-    val whereCreated = Exception().stackTrace[2].toString()
-    return createDescriptor(T::class, whereCreated)
+inline fun <reified T : Any> createDescriptor(name: String = ""): Descriptor<T> {
+    return createDescriptor(T::class, name)
 }
 
-inline fun <reified T : Any> createNullableDescriptor(): Descriptor<T?> {
-    val whereCreated = Exception().stackTrace[2].toString()
-    return createNullableDescriptor(T::class, whereCreated)
-}
-
-fun <T> classDescriptor(clazz: Class<T>): Descriptor<T> {
-    val whereCreated = Exception().stackTrace[1].toString()
-    return NamedDescriptor("Class:" + clazz.canonicalName, whereCreated)
+inline fun <reified T : Any> createNullableDescriptor(name: String = ""): Descriptor<T?> {
+    return createNullableDescriptor(T::class, name)
 }

@@ -158,12 +158,7 @@ class DependencyProvider(
     }
 
     private fun <TypeDeclaration> performInject(searchSpec: SearchSpec): ValueHolder<TypeDeclaration> {
-        var result: ValueHolder<TypeDeclaration>? = null
-        val time = measureNanoTime {
-            result = searchInstance(searchSpec)
-        }
-        val timeFormatted = "%.6f".format(time.toFloat() / 1000000F)
-        logger.log("Injected ${searchSpec.key} using ${searchSpec.context} in $timeFormatted ms")
+        var result: ValueHolder<TypeDeclaration>? = searchInstance(searchSpec)
         return result
             ?: throw InjectionFailedException("Object ${searchSpec.key} is not found:\n${searchSpec.getSearchPath()}")
     }
