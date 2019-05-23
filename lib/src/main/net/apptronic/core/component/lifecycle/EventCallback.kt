@@ -1,7 +1,5 @@
 package net.apptronic.core.component.lifecycle
 
-import java.util.concurrent.atomic.AtomicReference
-
 internal class EventCallback(private val action: () -> Unit) {
 
     val parent = AtomicReference<CompositeCallback>()

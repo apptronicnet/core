@@ -9,12 +9,6 @@ class AndroidPlatformThreading : PlatformThreading {
 
     private val javaUtils = JavaUtils()
 
-    override fun runInNewThread(action: () -> Unit) {
-        Thread(Runnable {
-            action.invoke()
-        }).start()
-    }
-
     override fun defaultWorkerProvider(): WorkerProvider {
         return AndroidMainThreadWorkerProvider
     }

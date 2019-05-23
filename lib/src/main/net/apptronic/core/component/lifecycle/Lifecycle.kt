@@ -1,7 +1,6 @@
 package net.apptronic.core.component.lifecycle
 
 import net.apptronic.core.component.context.Context
-import java.util.concurrent.atomic.AtomicBoolean
 
 /**
  * Def

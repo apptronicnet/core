@@ -5,7 +5,7 @@ plugins {
 kotlin {
     sourceSets {
         commonMain {
-            kotlin.srcDir('src/main/java')
+            kotlin.srcDir('src/main')
             dependencies {
                 implementation kotlin('stdlib-common')
                 implementation kotlin('reflect')
@@ -27,7 +27,7 @@ kotlin {
     }
     // JVM-specific tests and their dependencies:
     jvm().compilations.test.defaultSourceSet {
-        kotlin.srcDir('src/test/java')
+        kotlin.srcDir('src/test')
         dependencies {
             implementation kotlin('test-junit')
         }

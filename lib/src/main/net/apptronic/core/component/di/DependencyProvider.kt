@@ -3,7 +3,6 @@ package net.apptronic.core.component.di
 import net.apptronic.core.base.observable.subject.ValueHolder
 import net.apptronic.core.component.context.Context
 import kotlin.reflect.KClass
-import kotlin.system.measureNanoTime
 
 /**
  * Class for providing dependencies

@@ -1,7 +1,5 @@
 package net.apptronic.core.component.lifecycle
 
-import java.util.*
-
 internal class CompositeCallback {
 
     private val innerCallbacks = LinkedList<EventCallback>()
