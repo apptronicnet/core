@@ -1,0 +1,30 @@
+plugins {
+    id "com.android.library"
+    id "kotlin-android"
+}
+
+android {
+
+    compileSdkVersion 28
+
+    defaultConfig {
+        versionCode = 1
+        versionName = "1.0"
+        minSdkVersion 21
+        targetSdkVersion 28
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        resConfigs "en"
+    }
+
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+
+    implementation project(path: ':lib')
+
+    compileOnly "androidx.core:core:1.0.2"
+    compileOnly "androidx.appcompat:appcompat:1.0.2"
+    compileOnly "com.google.android.material:material:1.0.0"
+}
