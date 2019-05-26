@@ -8,7 +8,7 @@ import net.apptronic.core.threading.WorkerDefinition
 import net.apptronic.core.threading.execute
 
 internal class TaskStepElement<T, E : Exception>(
-    private val context: Context
+        private val context: Context
 ) : TaskStep<T, E> {
 
     private var next: TaskStepElement<*, *>? = null
@@ -36,9 +36,9 @@ internal class TaskStepElement<T, E : Exception>(
     }
 
     private fun <TR, ER : Exception> nextStep(
-        workerDefinition: WorkerDefinition = WorkerDefinition.SYNCHRONOUS,
-        force: Boolean = false,
-        action: (TaskExecutionResult<T, E>) -> TaskExecutionResult<TR, ER>
+            workerDefinition: WorkerDefinition = WorkerDefinition.SYNCHRONOUS,
+            force: Boolean = false,
+            action: (TaskExecutionResult<T, E>) -> TaskExecutionResult<TR, ER>
     ): TaskStepElement<TR, ER> {
         if (next != null) {
             throw IllegalStateException("Task should have only single chain")
@@ -51,7 +51,7 @@ internal class TaskStepElement<T, E : Exception>(
                 val handlingResult = when {
                     currentResult is TaskExecutionResult.Interruption -> currentResult
                     currentResult.task.isInterrupted() -> TaskExecutionResult.Interruption(
-                        currentResult.task, TaskInterruptedException("Interrupted externally")
+                            currentResult.task, TaskInterruptedException("Interrupted externally")
                     )
                     else -> currentResult
                 }
@@ -152,20 +152,15 @@ internal class TaskStepElement<T, E : Exception>(
     }
 
     override fun sendResultTo(entity: UpdateEntity<in T>): TaskStep<T, E> {
-        return nextStep { current ->
-            if (current is TaskExecutionResult.Value) {
-                entity.update(current.value)
-            }
-            current
+        return onNext {
+            entity.update(it)
+
         }
     }
 
     override fun sendErrorTo(entity: UpdateEntity<in E>): TaskStep<T, E> {
-        return nextStep { current ->
-            if (current is TaskExecutionResult.Error) {
-                entity.update(current.exception)
-            }
-            current
+        return onError {
+            entity.update(it)
         }
     }
 
@@ -177,7 +172,6 @@ internal class TaskStepElement<T, E : Exception>(
             } catch (e: Exception) {
                 current.error<T, E>(e)
             }
-
         }
     }
 

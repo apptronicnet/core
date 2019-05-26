@@ -8,9 +8,9 @@ import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelStackAdapter
 import net.apptronic.core.threading.execute
 
 class ViewModelStackNavigator(
-    private val parent: ViewModel
+        private val parent: ViewModel
 ) : Navigator<ViewModel?>(
-    parent
+        parent
 ) {
 
     private val subject = BehaviorSubject<ViewModel?>()
@@ -72,7 +72,7 @@ class ViewModelStackNavigator(
             val currentItem = getCurrentItem()
             this.adapter = adapter
             invalidate(
-                oldItem = null, newItem = getCurrentItem(), transitionInfo = null
+                    oldItem = null, newItem = getCurrentItem(), transitionInfo = null
             )
             parent.getLifecycle().onExitFromActiveStage {
                 if (currentItem != null) {
@@ -94,9 +94,9 @@ class ViewModelStackNavigator(
     }
 
     private fun invalidate(
-        oldItem: ViewModelContainerItem?,
-        newItem: ViewModelContainerItem?,
-        transitionInfo: Any?
+            oldItem: ViewModelContainerItem?,
+            newItem: ViewModelContainerItem?,
+            transitionInfo: Any?
     ) {
         adapter?.apply {
             if (oldItem != null) {
@@ -108,9 +108,9 @@ class ViewModelStackNavigator(
                 newItem.setBound(true)
             }
             onInvalidate(
-                oldItem?.viewModel,
-                newItem?.viewModel,
-                transitionInfo
+                    oldItem?.viewModel,
+                    newItem?.viewModel,
+                    transitionInfo
             )
             if (newItem != null) {
                 newItem.setVisible(true)
@@ -151,9 +151,9 @@ class ViewModelStackNavigator(
                 item
             }
             invalidate(
-                oldItem = activeModel,
-                newItem = newItem,
-                transitionInfo = transitionInfo
+                    oldItem = activeModel,
+                    newItem = newItem,
+                    transitionInfo = transitionInfo
             )
             updateSubject()
         }
@@ -169,9 +169,9 @@ class ViewModelStackNavigator(
             stack.add(newItem)
             onAdded(newItem)
             invalidate(
-                oldItem = activeModel,
-                newItem = newItem,
-                transitionInfo = transitionInfo
+                    oldItem = activeModel,
+                    newItem = newItem,
+                    transitionInfo = transitionInfo
             )
             updateSubject()
         }
@@ -191,9 +191,9 @@ class ViewModelStackNavigator(
             stack.add(newItem)
             onAdded(newItem)
             invalidate(
-                oldItem = currentItem,
-                newItem = newItem,
-                transitionInfo = transitionInfo
+                    oldItem = currentItem,
+                    newItem = newItem,
+                    transitionInfo = transitionInfo
             )
             updateSubject()
         }
@@ -215,13 +215,13 @@ class ViewModelStackNavigator(
                 if (viewModel == activeModel) {
                     val newActiveBox = getCurrentItem()
                     invalidate(
-                        oldItem = currentBox,
-                        newItem = newActiveBox,
-                        transitionInfo = transitionInfo
+                            oldItem = currentBox,
+                            newItem = newActiveBox,
+                            transitionInfo = transitionInfo
                     )
                 }
+                updateSubject()
             }
-            updateSubject()
         }
     }
 
@@ -276,9 +276,9 @@ class ViewModelStackNavigator(
                 }
             }
             invalidate(
-                oldItem = activeBeforePop,
-                newItem = getCurrentItem(),
-                transitionInfo = transitionInfo
+                    oldItem = activeBeforePop,
+                    newItem = getCurrentItem(),
+                    transitionInfo = transitionInfo
             )
             subject.update(getActiveModel())
             true

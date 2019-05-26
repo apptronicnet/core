@@ -25,6 +25,22 @@ interface EntityValue<T> : Entity<T> {
     }
 
     /**
+     * Get value or return [fallbackValue] if value is not set
+     */
+    fun getOr(fallbackValue: T): T {
+        val valueHolder = getValueHolder()
+        return if (valueHolder != null) valueHolder.value else fallbackValue
+    }
+
+    /**
+     * Get value or return  instance returned by [fallbackValueProvider] if value is not set
+     */
+    fun getOr(fallbackValueProvider: () -> T): T {
+        val valueHolder = getValueHolder()
+        return if (valueHolder != null) valueHolder.value else fallbackValueProvider.invoke()
+    }
+
+    /**
      * Check is value is set
      */
     fun isSet(): Boolean {

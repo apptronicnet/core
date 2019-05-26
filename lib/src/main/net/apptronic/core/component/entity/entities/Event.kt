@@ -38,3 +38,9 @@ class TypedEvent<T>(context: Context) : Event<T>(context) {
     }
 
 }
+
+fun <T> Event<T>.subscribe(action: () -> Unit) {
+    subscribe {
+        action.invoke()
+    }
+}
