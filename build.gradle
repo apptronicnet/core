@@ -39,7 +39,7 @@ task clean(type: Delete) {
 task cleanAll(dependsOn: [':lib:clean',
                           ':lib_android:clean'])
 
-task assembleLib(dependsOn: [
+task assembleLibs(dependsOn: [
         ':cleanAll',
         ':lib:jvmJar',
         ':lib_android:bundleDebugAar'
@@ -54,3 +54,11 @@ task assembleLib(dependsOn: [
         file("lib_android/build/outputs/aar/lib_android-debug.aar").renameTo("out/net.apptronic.android.aar")
     }
 }
+
+
+task publishLibsToMavenLocal(dependsOn: [
+        ':cleanAll',
+        ':lib:publishToMavenLocal',
+        ':lib_android:bundleDebugAar',
+        ':lib_android:publishToMavenLocal'
+])

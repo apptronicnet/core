@@ -1,7 +1,6 @@
 plugins {
     id "kotlin-multiplatform"
     id "maven-publish"
-
 }
 
 group = "net.apptronic.core"
@@ -19,30 +18,30 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation kotlin('stdlib-common')
-                implementation kotlin('reflect')
-                implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core-common:1.2.1'
+                implementation kotlin("stdlib-common")
+                implementation kotlin("reflect")
+                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:1.2.1"
             }
         }
         commonTest {
             dependencies {
-                implementation kotlin('test-common')
-                implementation kotlin('test-annotations-common')
+                implementation kotlin("test-common")
+                implementation kotlin("test-annotations-common")
             }
         }
         jvmMain {
             dependencies {
-                implementation kotlin('stdlib-jdk8')
+                implementation kotlin("stdlib-jdk8")
             }
         }
         jvmTest {
             dependencies {
-                implementation kotlin('test-junit')
+                implementation kotlin("test-junit")
             }
         }
         iosMain {
             dependencies {
-                implementation kotlin('stdlib-common')
+                implementation kotlin("stdlib-common")
             }
         }
     }
