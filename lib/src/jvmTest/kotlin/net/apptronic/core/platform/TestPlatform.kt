@@ -1,29 +1,27 @@
-package net.apptronic.core.android.platform
+package net.apptronic.core.platform
 
-import android.util.Log
-import net.apptronic.core.android.component.AndroidAsyncMainThreadWorkerProvider
-import net.apptronic.core.android.component.AndroidMainThreadWorkerProvider
-import net.apptronic.core.platform.AtomicReference
-import net.apptronic.core.platform.Platform
-import net.apptronic.core.platform.Synchronized
+import net.apptronic.core.android.platform.JavaAtomicReference
+import net.apptronic.core.android.platform.JavaSynchronized
+import net.apptronic.core.threading.InstanceWorkerProvider
 import net.apptronic.core.threading.WorkerProvider
+import net.apptronic.core.threading.synchronousWorker
 
-object AndroidPlatform : Platform {
+object TestPlatform : Platform {
 
     override fun logMessage(text: String) {
-        Log.i("apptronic.net_core", text)
+        println(text)
     }
 
     override fun defaultWorkerProvider(): WorkerProvider {
-        return AndroidMainThreadWorkerProvider
+        return InstanceWorkerProvider(synchronousWorker())
     }
 
     override fun uiWorkerProvider(): WorkerProvider {
-        return AndroidMainThreadWorkerProvider
+        return InstanceWorkerProvider(synchronousWorker())
     }
 
     override fun uiAsyncWorkerProvider(): WorkerProvider {
-        return AndroidAsyncMainThreadWorkerProvider
+        return InstanceWorkerProvider(synchronousWorker())
     }
 
     override fun createSynchronized(): Synchronized {
@@ -48,5 +46,6 @@ object AndroidPlatform : Platform {
     override fun <T> createAtomicReference(initialValue: T): AtomicReference<T> {
         return JavaAtomicReference(initialValue)
     }
+
 
 }

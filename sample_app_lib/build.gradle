@@ -9,7 +9,7 @@ kotlin {
             dependencies {
                 implementation kotlin('stdlib-common')
                 implementation kotlin('reflect')
-                implementation project(':lib')
+                implementation "net.apptronic.core:lib-jvm:0.1.0"
             }
         }
         commonTest {

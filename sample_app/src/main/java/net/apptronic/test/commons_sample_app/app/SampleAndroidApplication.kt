@@ -6,13 +6,16 @@ import net.apptronic.core.android.platform.AndroidPlatform
 
 class SampleAndroidApplication : Application() {
 
+    init {
+        initializePlatform(AndroidPlatform)
+    }
+
     private val coreContext = ApplicationContext(
             object : HttpClientFactory {
                 override fun createHttpClient(): HttpClient {
                     return object : HttpClient {}
                 }
             },
-            AndroidPlatform(),
             PlatformDefinition.Android
     )
     val appComponent by lazy {

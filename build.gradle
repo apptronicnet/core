@@ -4,6 +4,7 @@ buildscript {
 
     ext.kotlin_version = "1.3.31"
     ext.junit_version = "4.12"
+    ext.lib_version = "0.1.0"
 
     repositories {
         google()
@@ -24,6 +25,7 @@ wrapper {
 
 allprojects {
     repositories {
+        mavenLocal()
         google()
         mavenCentral()
         jcenter()
@@ -48,7 +50,7 @@ task assembleLib(dependsOn: [
         for (def item : destDir.listFiles()) {
             item.delete()
         }
-        file("lib/build/libs/lib-jvm.jar").renameTo("out/net.apptronic.core.jar")
+        file("lib/build/libs/lib-jvm-${rootProject.ext.lib_version}.jar").renameTo("out/net.apptronic.core.jar")
         file("lib_android/build/outputs/aar/lib_android-debug.aar").renameTo("out/net.apptronic.android.aar")
     }
 }
