@@ -8,13 +8,12 @@ import kotlin.reflect.KClass
  * Class for providing dependencies
  */
 class DependencyProvider(
-    private val context: Context,
-    private val parent: DependencyProvider?
+        internal val context: Context,
+        private val parent: DependencyProvider?
 ) {
 
     private val externalInstances = mutableMapOf<ObjectKey, ValueHolder<*>>()
     private val modules = mutableListOf<Module>()
-    private val logger = context.getLogger()
 
     /**
      * Add external instance to this provider.

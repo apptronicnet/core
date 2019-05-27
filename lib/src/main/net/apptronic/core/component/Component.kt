@@ -125,8 +125,6 @@ open class Component(
         return Toggle(target, false, true)
     }
 
-    abstract class SubModel(parent: Component) : Component(parent)
-
     fun update(block: () -> Unit) {
         getScheduler().execute(WorkerDefinition.DEFAULT, block)
     }

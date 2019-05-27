@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" href="../code_style.css">
+    <script src="../highlight.pack.js"></script>
+    <script src="../code.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="../style.css">
+    <meta charset="UTF-8">
+    <title>Component / apptronic.net core framework</title>
+</head>
+<body>
+<div class="content">
+    <div class="inner_link"><a href="../index.html">Documentation</a> - Component</div>
+    <div class="page_title">Component</div>
+
+    <div class="section_paragraph">
+        <div class="code_inline">Component</div>
+        is a base brick of building apps. Each
+        <div class="code_inline">Component</div>
+        requires
+        <div class="code_inline">Context</div>
+        to work, using all
+        <div class="code_inline">Context</div>
+        features:
+        <div class="code_inline">Scheduler</div><!--remove_space-->,
+        <div class="code_inline">Lifecycle</div>
+        and
+        <div class="code_inline">DependencyProvider</div><!--remove_space-->.
+    </div>
+    <div class="section_paragraph">
+        Many
+        <div class="code_inline">Component</div><!--remove_space-->s can use one
+        <div class="code_inline">Context</div><!--remove_space-->, and
+        <div class="code_inline">Component</div>
+        can be parent for another
+        <div class="code_inline">Context</div><!--remove_space-->. Repository, Interactor, ViewModel, Cache, Database,
+        Storage, Service, Data processing unit etc. - all these entities can be implemented as
+        <div class="code_inline">Component</div><!--remove_space-->s. This allows them to only be responsible for their
+        own business logic, granting responsibility about all other things to
+        <div class="code_inline">Context</div><!--remove_space-->.
+    </div>
+    <div class="section_paragraph">
+        <b>Sample 1</b>
+        <br/>
+        <div class="code_inline">ViewModel</div>
+        needs
+        <div class="code_inline">Repository</div><!--remove_space-->. Context declares this
+        <div class="code_inline">Repository</div>
+        which extends
+        <div class="code_inline">Component</div>
+        in
+        <div class="code_inline">DependencyProvider</div>
+        and
+        <div class="code_inline">ViewModel</div>
+        is created using this
+        <div class="code_inline">Context</div><!--remove_space-->. In that case
+        <div class="code_inline">Repository</div>
+        can be injected to
+        <div class="code_inline">ViewModel</div>
+        and
+        <div class="code_inline">ViewModel</div>
+        have is not responsible to create instance of
+        <div class="code_inline">Repository</div><!--remove_space-->. At same time
+        <div class="code_inline">ViewModel</div>
+        and
+        <div class="code_inline">Repository</div>
+        uses same
+        <div class="code_inline">Lifecycle</div>
+        and
+        <div class="code_inline">Repository</div>
+        can clean up all resources when it needed without additional interaction between
+        <div class="code_inline">Lifecycle</div>
+        and
+        <div class="code_inline">Repository</div><!--remove_space-->.
+    </div>
+    <div class="section_paragraph">
+        <b>Sample 2</b>
+        <br/>
+        In some places of app it needed to use cache, which bound to whole app
+        <div class="code_inline">Lifecycle</div><!--remove_space-->. This cache can be implemented as
+        <div class="code_inline">Component</div>
+        and added as dependency to root application
+        <div class="code_inline">Context</div><!--remove_space-->. Any other
+        <div class="code_inline">Component</div>
+        in whole app can inject this cache when it needed.
+    </div>
+
+    <div class="section_title">Component features</div>
+
+    <div class="section_subtitle">Entity</div>
+    <div class="section_paragraph">
+        <div class="code_inline">Entity&lt;T&gt;</div>
+        is base reactive brick of component. It holds context and provides ability to subscribe on it's updates.
+        <div class="code_inline">Entity&lt;T&gt;</div>
+        can be:
+        <ul>
+            <li>
+                <b>Constant</b>: simple value, emitted immediately on subscribe.
+            </li>
+            <li>
+                <b>Property</b>: stored value, emitted immediately on subscribe and send updates on value change.
+            </li>
+            <li>
+                <b>Event</b>: nothing stored, but immediately sends event to all subscribers.
+            </li>
+            <li>
+                <b>Function</b>: calculated as function of one ot several other entities. Cannot be set directly, but
+                holds and emits latest calculated value on subscribe.
+            </li>
+            <li>
+                Behavior entities, like filter, do-when etc.
+            </li>
+            <li>
+                Specific types, designed for concrete usage: Navigators etc.
+            </li>
+            <li>
+                <b>Worker switch</b>, which does nothing with emitted values, but resends them to subscribers using
+                another
+                <div class="code_inline">Worker</div><!--remove_space-->.
+            </li>
+        </ul>
+    </div>
+    <div class="section_paragraph">
+        All
+        <div class="code_inline">Entity&lt;T&gt;</div>
+        subscriptions are bound to
+        <div class="code_inline">Component</div><!--remove_space-->s
+        <div class="code_inline">Context</div>
+        <div class="code_inline">Lifecycle</div>
+        and automatically unsubscribes when
+        <div class="code_inline">Lifecycle</div>
+        exits from stage, in which these subscriptions created. It allows use
+        <div class="code_inline">Lifecycle</div>
+        as behavior controller for
+        <div class="code_inline">Entity&lt;T&gt;</div>
+        transformations.
+        <div class="code_inline">Entity&lt;T&gt;</div><!--remove_space-->es should not be used between different
+        <div class="code_inline">Context</div>
+        instances, but for case when some
+        <div class="code_inline">Entity&lt;T&gt;</div>
+        should be used in another
+        <div class="code_inline">Context</div>
+        can be used specific
+        <div class="code_inline">Entity&lt;T&gt;</div>
+        type, which is named
+        <div class="code_inline">ContextSwitchEntity&lt;T&gt;</div><!--remove_space-->.
+        <pre><code>entity.switchContext(newContext)</code></pre>
+        After that result entity can be used in another
+        <div class="code_inline">Context</div>
+        and all subscriptions will be automatically recycled when any of source or target
+        <div class="code_inline">Context</div>
+        <div class="code_inline">Lifecycle</div>
+        exits from stage when subscription was created.
+    </div>
+
+    <div class="section_subtitle">Task scheduler</div>
+    <div class="section_paragraph">
+        ... TODO ...
+    </div>
+
+    <div class="section_subtitle">Lifecycle events handling</div>
+    <div class="section_paragraph">
+        ... TODO ...
+    </div>
+
+    <div class="section_title">Usage</div>
+
+    <div class="section_paragraph">
+        ... TODO ...
+    </div>
+</div>
+</body>
+</html>

@@ -38,7 +38,7 @@ internal class SchedulerTask<T>(
 
 }
 
-fun <T> taskSchedulerBuilder(
+internal fun <T> taskSchedulerBuilder(
     context: Context,
     mode: SchedulerMode,
     builder: TaskBuilder<T>.() -> Unit

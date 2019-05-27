@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" href="code_style.css">
+    <script src="highlight.pack.js"></script>
+    <script src="code.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="style.css">
+
+    <meta charset="UTF-8">
+    <title>apptronic.net core framework</title>
+</head>
+<body>
+<div class="content">
+    <div class="page_title">apptronic.net core framework</div>
+    <div class="section_title">Introduction</div>
+    <div class="section_paragraph">
+        Library is designed to simplify development of, mostly, UI-based applications, but also can be used for backend
+        development.
+    </div>
+    <div class="section_title">Framework modules</div>
+
+    <div class="section_subtitle">Context</div>
+    <div class="section_paragraph">
+        <div class="code_inline">Context</div>
+        is a root class for working with library. It manages all other modules and defines some level of responsibility,
+        like screen. App should have at least one root
+        <div class="code_inline">Context</div><!--remove_space-->, which should be global singleton object, and all
+        other
+        <div class="code_inline">Context</div><!--remove_space-->s are sub-contexts of this parent.
+        <div class="code_inline">Context</div><!--remove_space-->s can be organized into tree, each
+        <div class="code_inline">Context</div>
+        can have unlimited number of sub-context instances.
+    </div>
+    <div class="section_paragraph">
+        Sub-context inherits behavior of the parent
+        <div class="code_inline">Context</div>
+        in all areas, except those which is defined in concrete
+        <div class="code_inline">Context</div><!--remove_space-->.
+    </div>
+    <div class="section_paragraph">
+        Tree-structure of
+        <div class="code_inline">Context</div>
+        instances allows you to organize dependencies in tree structure.
+    </div>
+    <div class="inner_link"><a href="content/context.html">Context guide</a></div>
+
+    <div class="section_subtitle">Lifecycle</div>
+    <div class="section_paragraph">
+        <div class="code_inline">Lifecycle</div>
+        is defined separately for each
+        <div class="code_inline">Context</div><!--remove_space-->. Generally
+        <div class="code_inline">Lifecycle</div>
+        of child
+        <div class="code_inline">Context</div>
+        is not bound to parent
+        <div class="code_inline">Context</div><!--remove_space-->, except termination, when
+        <div class="code_inline">Lifecycle</div>
+        and
+        <div class="code_inline">Context</div>
+        is completely recycled. All other
+        <div class="code_inline">Lifecycle</div>
+        management is responsibility of each
+        <div class="code_inline">Context</div>
+        by self.
+    </div>
+    <div class="section_paragraph">
+        <div class="code_inline">Lifecycle</div>
+        allows you to define linear structure of
+        <div class="code_inline">LifecycleStage</div><!--remove_space-->s, which can be entered or exited sequentially.
+        Next
+        <div class="code_inline">LifecycleStage</div>
+        cannot be entered until previous
+        <div class="code_inline">LifecycleStage</div>
+        is not entered. Exiting from previous
+        <div class="code_inline">LifecycleStage</div>
+        automatically exits all next
+        <div class="code_inline">LifecycleStage</div><!--remove_space-->s.
+        <div class="code_inline">Lifecycle</div>
+        always created with already entered root
+        <div class="code_inline">LifecycleStage</div><!--remove_space-->. Exiting from root
+        <div class="code_inline">LifecycleStage</div>
+        is named termination and stops all framework-based activity in
+        <div class="code_inline">Context</div>
+        except things, defined to be lifecycle-independent.
+    </div>
+    <div class="section_paragraph">
+        Reactive model of framework is bound to
+        <div class="code_inline">LifecycleStage</div><!--remove_space-->s and cannot exist without it. Inside
+        <div class="code_inline">Context</div>
+        it uses
+        <div class="code_inline">Lifecycle</div>
+        to automatically manage subscriptions, recycle injected instances and perform all other activity.
+        Each subscription, started inside of
+        <div class="code_inline">LifecycleStage</div><!--remove_space-->, automatically unsubscribes when this
+        <div class="code_inline">LifecycleStage</div>
+        exits.
+    </div>
+
+    <div class="section_subtitle">Scheduler</div>
+    <div class="section_paragraph">
+        <div class="code_inline">Scheduler</div>
+        responsible for threading. Scheduler defines
+        <div class="code_inline">Worker</div>
+        using
+        <div class="code_inline">WorkerDefinition</div><!--remove_space-->. Each
+        <div class="code_inline">Worker</div>
+        run's actions according to it threading specification. Each
+        <div class="code_inline">WorkerDefinition</div>
+        inside
+        <div class="code_inline">Scheduler</div>
+        provides assigned
+        <div class="code_inline">Worker</div>
+        by request and defines how worker is provided: separate or same
+        <div class="code_inline">Worker</div>
+        for each request.
+    </div>
+    <div class="section_paragraph">
+        Each
+        <div class="code_inline">context</div>
+        have it's own
+        <div class="code_inline">Scheduler</div>
+        but defines no additional behavior by default, inheriting all
+        <div class="code_inline">WorkerDefinition</div><!--remove_space-->s from it's parent. But each
+        <div class="code_inline">Context</div>
+        can re-define
+        <div class="code_inline">Worker</div>
+        provider for each
+        <div class="code_inline">WorkerDefinition</div>
+        or declare another
+        <div class="code_inline">WorkerDefinition</div><!--remove_space-->.
+        In case if
+        <div class="code_inline">Worker</div>
+        for requested
+        <div class="code_inline">WorkerDefinition</div>
+        is not exists - default
+        <div class="code_inline">Worker</div>
+        will be used.
+    </div>
+    <div class="section_paragraph">
+        Using
+        <div class="code_inline">Worker</div><!--remove_space-->s allows to define threading behavior by
+        <div class="code_inline">Context</div>
+        and make it abstract from platform and from concrete
+        <div class="code_inline">Component</div>
+        implementation. Also it provides ability to replace each
+        <div class="code_inline">Worker</div>
+        for unit-testing, allowing writing multi-thread tests easily.
+    </div>
+    <div class="inner_link"><a href="content/scheduler.html">Scheduler guide</a></div>
+
+    <div class="section_subtitle">DependencyProvider</div>
+    <div class="section_paragraph">
+        <div class="code_inline">DependencyProvider</div>
+        is dependency injection implementation. Each
+        <div class="code_inline">DependencyProvider</div>
+        defines instances and modules inside of
+        <div class="code_inline">Context</div><!--remove_space-->. Also it can inject them. If instance is not exists in
+        current
+        <div class="code_inline">Context</div>
+        - is will search recursively in parent context until core context with no parent. Also each
+        <div class="code_inline">Context</div>
+        can redefine items, provided by parent
+        <div class="code_inline">Context</div><!--remove_space-->s. In this case redefined instance will be injected in
+        this
+        <div class="code_inline">Context</div>
+        and all child
+        <div class="code_inline">Context</div><!--remove_space-->s.
+    </div>
+
+    <div class="section_subtitle">Component</div>
+    <div class="section_paragraph">
+        <div class="code_inline">Component</div>
+        is an base class for concrete app code implementation. It have access all reactive and threading features,
+        defined by it's
+        <div class="code_inline">Context</div><!--remove_space-->. Each
+        <div class="code_inline">Component</div>
+        requires
+        <div class="code_inline">Context</div>
+        to work, taking from it
+        <div class="code_inline">Lifecycle</div><!--remove_space-->,
+        <div class="code_inline">Scheduler</div>
+        and
+        <div class="code_inline">DependencyProvider</div><!--remove_space-->.
+    </div>
+    <div class="section_paragraph">
+        <div class="code_inline">Component</div>
+        also implements
+        <div class="code_inline">Context</div>
+        and can be used as parent for other
+        <div class="code_inline">Context</div><!--remove_space-->.
+        <div class="code_inline">Context</div>
+        can be parent for one or many
+        <div class="code_inline">Component</div><!--remove_space-->s, and also each
+        <div class="code_inline">Component</div>
+        can contain inner component's to divide complex logic into parts.
+    </div>
+    <div class="section_paragraph">
+        All
+        <div class="code_inline">Components</div>
+        inside one context shares
+        <div class="code_inline">Lifecycle</div><!--remove_space-->,
+        <div class="code_inline">Scheduler</div>
+        and
+        <div class="code_inline">DependencyProvider</div>
+        allowing to define all behavior for whole app part, for which concrete
+        <div class="code_inline">Context</div>
+        is responsible. Implementing repositories, interactors and all other dependencies, required for domain logic, as
+        <div class="code_inline">Components</div><!--remove_space-->s
+        allows to write simple, testable and reliable code. For unit-testing
+        <div class="code_inline">Context</div>
+        can be replaced, for production it can define required behavior and dependencies.
+    </div>
+    <div class="inner_link"><a href="content/component.html">Component guide</a></div>
+
+    <div class="section_subtitle">ViewModel and ViewModelContext</div>
+    <div class="section_paragraph">
+        <div class="code_inline">ViewModel</div>
+        is implementation of
+        <div class="code_inline">Components</div>
+        for development of user interface. It requires to use
+        <div class="code_inline">ViewModelContext</div>
+        as it contains corresponding UI
+        <div class="code_inline">Lifecycle</div><!--remove_space-->.
+    </div>
+    <div class="section_paragraph">
+        Generally
+        <div class="code_inline">ViewModel</div><!--remove_space-->s are also organized into tree, where root
+        <div class="code_inline">ViewModel</div>
+        holds whole application screen. Platform UI controller should manage root
+        <div class="code_inline">ViewModel</div>
+        lifecycle. All other
+        <div class="code_inline">ViewModel</div><!--remove_space-->s, which are inside root
+        <div class="code_inline">ViewModel</div>
+        and responsible for concrete screens, dialogs or screen parts etc., uses different kinds of
+        <div class="code_inline">Navigator</div><!--remove_space-->s
+        (list/page, stack) which manages it's
+        <div class="code_inline">ViewModel</div><!--remove_space-->s
+        <div class="code_inline">Lifecycle</div>
+        according to root
+        <div class="code_inline">ViewModel</div>
+        <div class="code_inline">Lifecycle</div>
+        and concrete
+        <div class="code_inline">ViewModel</div>
+        state inside
+        <div class="code_inline">Navigator</div><!--remove_space-->s hierarchy.
+    </div>
+    <div class="section_paragraph">
+        Using corresponding adapters allows automatically update UI for concrete platform and write all UI logic inside
+        <div class="code_inline">ViewModel</div>
+        s and share it between different platforms.
+    </div>
+</div>
+</body>
+</html>
