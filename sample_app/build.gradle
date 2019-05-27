@@ -1,6 +1,6 @@
 plugins {
+    id 'kotlin-multiplatform'
     id "com.android.application"
-    id "kotlin-android"
     id "kotlin-android-extensions"
 }
 
@@ -28,7 +28,6 @@ android {
 dependencies {
     implementation "net.apptronic.core:lib-jvm:${rootProject.ext.lib_version}"
     implementation "net.apptronic.core:lib_android:${rootProject.ext.lib_version}"
-    implementation project(path: ':sample_app_lib')
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
@@ -41,4 +40,31 @@ dependencies {
 
     androidTestImplementation "com.android.support.test:runner:1.0.2"
     androidTestImplementation "com.android.support.test.espresso:espresso-core:3.0.2"
+}
+
+kotlin {
+    android("android")
+    // This is for iPhone emulator
+    // Switch here to iosArm64 (or iosArm32) to build library for iPhone device
+    iosX64("ios") {
+        binaries {
+            framework()
+        }
+    }
+    sourceSets {
+        commonMain {
+            dependencies {
+                implementation kotlin('stdlib-common')
+                implementation kotlin('reflect')
+                implementation "net.apptronic.core:lib-jvm:${rootProject.ext.lib_version}"
+            }
+        }
+        androidMain {
+            dependencies {
+                implementation kotlin('stdlib')
+            }
+        }
+        iosMain {
+        }
+    }
 }
