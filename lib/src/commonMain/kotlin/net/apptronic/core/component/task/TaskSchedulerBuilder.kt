@@ -7,7 +7,7 @@ import net.apptronic.core.base.observable.subject.PublishSubject
 import net.apptronic.core.base.observable.subscribe
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.EntitySubscription
-import net.apptronic.core.component.entity.bindContext
+import net.apptronic.core.component.entity.subscriptions.ContextSubjectWrapper
 import net.apptronic.core.threading.Worker
 import net.apptronic.core.threading.WorkerDefinition
 import net.apptronic.core.threading.execute
@@ -62,7 +62,7 @@ private class TaskSchedulerBuilder<T>(
     private val actionsAfterRequest = mutableListOf<SchedulerActionDefinition<T>>()
     private val actionsAfterProcessing = mutableListOf<SchedulerActionDefinition<Unit>>()
 
-    private val onNextSource = PublishSubject<T>()
+    private val onNextSource = ContextSubjectWrapper(context, PublishSubject<T>())
     private val sourceStep = TaskStepElement<T, Exception>(context)
 
     init {
@@ -100,7 +100,7 @@ private class TaskSchedulerBuilder<T>(
     }
 
     override fun subscribe(observer: Observer<T>): EntitySubscription {
-        return onNextSource.subscribe(observer).bindContext(context)
+        return onNextSource.subscribe(observer)
     }
 
     override fun execute(request: T): Task {

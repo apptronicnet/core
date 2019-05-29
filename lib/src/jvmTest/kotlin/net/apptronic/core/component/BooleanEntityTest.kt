@@ -8,7 +8,7 @@ import net.apptronic.core.component.entity.functions.variants.or
 import net.apptronic.core.component.entity.functions.variants.xor
 import org.junit.Test
 
-class BooleanPredicatesTest {
+class BooleanEntityTest {
 
     private class TestComponent : BaseTestComponent() {
 

@@ -4,7 +4,7 @@ import net.apptronic.core.base.utils.BaseTestComponent
 import net.apptronic.core.component.entity.functions.variants.*
 import org.junit.Test
 
-class IntPredicatesTest {
+class IntEntityTest {
 
     private class TestComponent : BaseTestComponent() {
 

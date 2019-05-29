@@ -7,6 +7,7 @@ import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.EntitySubscription
 import net.apptronic.core.component.entity.bindContext
 import net.apptronic.core.component.entity.subscribe
+import net.apptronic.core.component.entity.subscriptions.ContextSubjectWrapper
 
 fun <Source, Result> Entity<Source?>.whenNotNull(
     transformation: (Entity<Source>) -> Entity<Result>
@@ -19,20 +20,18 @@ private class WhenNotNullTransformationEntity<Source, Result>(
     transformation: (Entity<Source>) -> Entity<Result>
 ) : Entity<Result?> {
 
-    private val sourcePredicate =
-        BehaviorSubject<Source>()
-    private val resultPredicate =
-        BehaviorSubject<Result?>()
+    private val sourceSubject = BehaviorSubject<Source>()
+    private val resultSubject = ContextSubjectWrapper(getContext(), BehaviorSubject<Result?>())
 
     init {
-        transformation.invoke(sourcePredicate.bindContext(source.getContext())).subscribe {
-            resultPredicate.update(it)
+        transformation.invoke(sourceSubject.bindContext(source.getContext())).subscribe {
+            resultSubject.update(it)
         }
         source.subscribe {
             if (it != null) {
-                sourcePredicate.update(it)
+                sourceSubject.update(it)
             } else {
-                resultPredicate.update(null)
+                resultSubject.update(null)
             }
         }
     }
@@ -42,7 +41,7 @@ private class WhenNotNullTransformationEntity<Source, Result>(
     }
 
     override fun subscribe(observer: Observer<Result?>): EntitySubscription {
-        return resultPredicate.subscribe(observer).bindContext(source.getContext())
+        return resultSubject.subscribe(observer)
     }
 
 }

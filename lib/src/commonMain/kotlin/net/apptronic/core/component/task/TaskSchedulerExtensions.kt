@@ -1,13 +1,20 @@
 package net.apptronic.core.component.task
 
 import net.apptronic.core.component.context.Context
+import net.apptronic.core.component.entity.Entity
+import net.apptronic.core.component.entity.entities.setAs
 import net.apptronic.core.threading.WorkerDefinition
 
 fun <T> Context.taskScheduler(
-    mode: SchedulerMode = SchedulerMode.Parallel,
-    builder: TaskBuilder<T>.() -> Unit
+        mode: SchedulerMode = SchedulerMode.Parallel,
+        source: Entity<T>? = null,
+        builder: TaskBuilder<T>.() -> Unit
 ): TaskScheduler<T> {
-    return taskSchedulerBuilder(this, mode, builder)
+    return taskSchedulerBuilder(this, mode, builder).also {
+        if (source != null) {
+            it.setAs(source)
+        }
+    }
 }
 
 fun <T> Context.newTask(

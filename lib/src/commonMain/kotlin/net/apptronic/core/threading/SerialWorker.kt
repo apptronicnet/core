@@ -1,6 +1,6 @@
 package net.apptronic.core.threading
 
-import net.apptronic.core.base.AtomicEntity
+import net.apptronic.core.base.concurrent.AtomicEntity
 import net.apptronic.core.platform.getPlatform
 
 /**

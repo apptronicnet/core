@@ -1,6 +1,6 @@
 package net.apptronic.core.component.di
 
-import net.apptronic.core.base.AtomicEntity
+import net.apptronic.core.base.concurrent.AtomicEntity
 import net.apptronic.core.component.context.Context
 
 enum class RecycleOn {

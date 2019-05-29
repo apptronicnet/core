@@ -6,7 +6,7 @@ import net.apptronic.core.base.observable.subscribe
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.EntitySubscription
-import net.apptronic.core.component.entity.bindContext
+import net.apptronic.core.component.entity.subscriptions.ContextSubjectWrapper
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 
 /**
@@ -27,11 +27,10 @@ abstract class ViewModelListBuilder<T, Id, VM : ViewModel>(
 
     private val viewModelHolders = arrayListOf<ViewModelHolder>()
 
-    private val predicate =
-        BehaviorSubject<List<ViewModel>>()
+    private val subject = ContextSubjectWrapper(context, BehaviorSubject<List<ViewModel>>())
 
     init {
-        predicate.update(emptyList())
+        subject.update(emptyList())
     }
 
     override fun getContext(): Context {
@@ -103,11 +102,11 @@ abstract class ViewModelListBuilder<T, Id, VM : ViewModel>(
         }
         viewModelHolders.sortWith(PostArrangeComparator(newList))
         val result = viewModelHolders.map { it.viewModel }
-        predicate.update(result)
+        subject.update(result)
     }
 
     override fun subscribe(observer: Observer<List<ViewModel>>): EntitySubscription {
-        return predicate.subscribe(observer).bindContext(getContext())
+        return subject.subscribe(observer)
     }
 
     private inner class PostArrangeComparator(items: List<T>) :

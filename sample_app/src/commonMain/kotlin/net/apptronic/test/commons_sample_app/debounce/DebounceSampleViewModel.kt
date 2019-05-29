@@ -1,6 +1,6 @@
 package net.apptronic.test.commons_sample_app.debounce
 
-import net.apptronic.core.base.AtomicEntity
+import net.apptronic.core.base.concurrent.AtomicEntity
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.behavior.debounce
 import net.apptronic.core.component.entity.entities.setTo

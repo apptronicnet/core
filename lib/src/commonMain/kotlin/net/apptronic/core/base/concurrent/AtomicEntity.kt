@@ -1,11 +1,9 @@
-package net.apptronic.core.base
-
-import net.apptronic.core.platform.getPlatform
+package net.apptronic.core.base.concurrent
 
 class AtomicEntity<T>(initialValue: T) {
 
-    private val sync = getPlatform().createSynchronized()
-    private val value = getPlatform().createAtomicReference(initialValue)
+    private val sync = Synchronized()
+    private val value = AtomicReference(initialValue)
 
     fun set(value: T): T {
         return sync.run {

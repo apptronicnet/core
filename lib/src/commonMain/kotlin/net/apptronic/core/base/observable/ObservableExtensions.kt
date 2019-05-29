@@ -1,7 +1,7 @@
 package net.apptronic.core.base.observable
 
+import net.apptronic.core.base.concurrent.AtomicReference
 import net.apptronic.core.base.observable.subject.ValueHolder
-import net.apptronic.core.platform.getPlatform
 
 fun <T> Observable<T>.subscribe(callback: (T) -> Unit): Subscription {
     return subscribe(object : Observer<T> {
@@ -27,7 +27,7 @@ private class DistinctUntilChangedObservable<T>(
             private val target: Observer<T>
     ) : Observer<T> {
 
-        private var lastValue = getPlatform().createAtomicReference<ValueHolder<T>?>(null)
+        private var lastValue = AtomicReference<ValueHolder<T>?>(null)
 
         override fun notify(value: T) {
             val last = this.lastValue.get()

@@ -1,10 +1,10 @@
 package net.apptronic.core.component.lifecycle
 
-import net.apptronic.core.platform.getPlatform
+import net.apptronic.core.base.concurrent.AtomicReference
 
 internal class EventCallback(private val action: () -> Unit) {
 
-    val parent = getPlatform().createAtomicReference<CompositeCallback?>(null)
+    val parent = AtomicReference<CompositeCallback?>(null)
 
     fun execute() {
         action()

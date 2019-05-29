@@ -2,19 +2,25 @@ package net.apptronic.core.mvvm.viewmodel.container
 
 import net.apptronic.core.base.observable.Observable
 import net.apptronic.core.base.observable.subject.BehaviorSubject
+import net.apptronic.core.component.entity.UpdateEntity
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelListAdapter
 import net.apptronic.core.threading.execute
 
 class ViewModelListNavigator(
-    private val parent: ViewModel
+        private val parent: ViewModel
 ) : Navigator<List<ViewModel>>(parent),
-    ViewModelListAdapter.SourceNavigator {
+        UpdateEntity<List<ViewModel>>,
+        ViewModelListAdapter.SourceNavigator {
 
     private val subject = BehaviorSubject<List<ViewModel>>()
 
     private fun updateSubject() {
         subject.update(items)
+    }
+
+    override fun update(value: List<ViewModel>) {
+        set(value)
     }
 
     override fun getObservable(): Observable<List<ViewModel>> {
@@ -77,8 +83,8 @@ class ViewModelListNavigator(
     }
 
     override fun requestCloseSelf(
-        viewModel: ViewModel,
-        transitionInfo: Any?
+            viewModel: ViewModel,
+            transitionInfo: Any?
     ) {
         update {
             it.remove(viewModel)

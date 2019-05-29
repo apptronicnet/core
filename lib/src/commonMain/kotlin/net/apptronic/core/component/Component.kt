@@ -12,7 +12,7 @@ import net.apptronic.core.mvvm.viewmodel.ComponentRegistry
 import net.apptronic.core.threading.WorkerDefinition
 
 open class Component(
-    val context: Context
+        val context: Context
 ) : Context by context {
 
     override fun getToken(): Context {
@@ -138,6 +138,10 @@ open class Component(
      */
     fun newChain(): Entity<Unit> {
         return EmptyChain(this)
+    }
+
+    fun <T> entity(source: Entity<T>): Entity<T> {
+        return value<T>().setAs(source)
     }
 
 }

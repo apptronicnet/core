@@ -38,7 +38,7 @@ class BalanceViewModel(context: BalanceViewModelContext) : ViewModel(context) {
 
     val isContinueButtonEnabled = value(false).setAs(
         balanceParsed.map {
-            this != null
+            it != null
         }
     )
 

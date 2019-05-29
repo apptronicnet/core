@@ -1,9 +1,10 @@
 plugins {
     id "kotlin-multiplatform"
     id "maven-publish"
+    id 'kotlinx-atomicfu'
 }
 
-group = "net.apptronic.core"
+group = rootProject.ext.lib_group_id
 version = rootProject.ext.lib_version
 
 kotlin {
@@ -20,7 +21,7 @@ kotlin {
             dependencies {
                 implementation kotlin("stdlib-common")
                 implementation kotlin("reflect")
-                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:1.2.1"
+                implementation "org.jetbrains.kotlinx:atomicfu-common:$atomicfu_version"
             }
         }
         commonTest {
@@ -43,6 +44,16 @@ kotlin {
             dependencies {
                 implementation kotlin("stdlib-common")
             }
+        }
+    }
+}
+
+publishing {
+    publications {
+        jvm {
+            groupId = rootProject.ext.lib_group_id
+            artifactId = "core-commons"
+            version = rootProject.ext.lib_version
         }
     }
 }

@@ -3,9 +3,7 @@ package net.apptronic.core.android.platform
 import android.util.Log
 import net.apptronic.core.android.component.AndroidAsyncMainThreadWorkerProvider
 import net.apptronic.core.android.component.AndroidMainThreadWorkerProvider
-import net.apptronic.core.platform.AtomicReference
 import net.apptronic.core.platform.Platform
-import net.apptronic.core.platform.Synchronized
 import net.apptronic.core.threading.WorkerProvider
 
 object AndroidPlatform : Platform {
@@ -26,10 +24,6 @@ object AndroidPlatform : Platform {
         return AndroidAsyncMainThreadWorkerProvider
     }
 
-    override fun createSynchronized(): Synchronized {
-        return JavaSynchronized()
-    }
-
     override fun runInNewThread(action: () -> Unit) {
         Thread(Runnable { action.invoke() }).start()
     }
@@ -43,10 +37,6 @@ object AndroidPlatform : Platform {
                 // ignore
             }
         }
-    }
-
-    override fun <T> createAtomicReference(initialValue: T): AtomicReference<T> {
-        return JavaAtomicReference(initialValue)
     }
 
 }

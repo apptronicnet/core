@@ -1,9 +1,9 @@
 package net.apptronic.core.base.observable.subject
 
+import net.apptronic.core.base.concurrent.AtomicReference
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.base.observable.Subscription
 import net.apptronic.core.base.observable.Subscriptions
-import net.apptronic.core.platform.getPlatform
 
 /**
  * Entity which is store values
@@ -12,7 +12,7 @@ open class BehaviorSubject<T> : Subject<T> {
 
     private val subscriptions = Subscriptions<T>()
 
-    private var valueHolder = getPlatform().createAtomicReference<ValueHolder<T>?>(null)
+    private var valueHolder = AtomicReference<ValueHolder<T>?>(null)
 
     fun clear() {
         valueHolder.set(null)

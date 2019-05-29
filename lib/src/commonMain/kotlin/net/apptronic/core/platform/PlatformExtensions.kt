@@ -18,10 +18,6 @@ fun uiAsyncWorkerProvider(): WorkerProvider {
     return getPlatform().uiAsyncWorkerProvider()
 }
 
-fun createSynchronized(): Synchronized {
-    return getPlatform().createSynchronized()
-}
-
 fun runInNewThread(action: () -> Unit) {
     getPlatform().runInNewThread(action)
 }
@@ -29,8 +25,3 @@ fun runInNewThread(action: () -> Unit) {
 fun pauseCurrentThread(timeInMillis: Long) {
     getPlatform().pauseCurrentThread(timeInMillis)
 }
-
-fun <T> createAtomicReference(initialValue: T): AtomicReference<T> {
-    return getPlatform().createAtomicReference(initialValue)
-}
-

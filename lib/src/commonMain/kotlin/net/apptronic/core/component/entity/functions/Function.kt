@@ -9,7 +9,7 @@ import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.EntitySubscription
 import net.apptronic.core.component.entity.EntityValue
-import net.apptronic.core.component.entity.bindContext
+import net.apptronic.core.component.entity.subscriptions.ContextSubscriptions
 import net.apptronic.core.threading.Worker
 import net.apptronic.core.threading.WorkerDefinition
 
@@ -19,6 +19,7 @@ abstract class Function<T> : EntityValue<T> {
     private val observable = subject.distinctUntilChanged()
     protected abstract val functionContext: Context
     protected abstract var worker: Worker
+    protected abstract val subscriptions: ContextSubscriptions<T>
 
     override fun getValueHolder(): ValueHolder<T>? {
         return subject.getValue()
@@ -29,7 +30,7 @@ abstract class Function<T> : EntityValue<T> {
     }
 
     override fun subscribe(observer: Observer<T>): EntitySubscription {
-        return observable.subscribe(observer).bindContext(getContext())
+        return subscriptions.subscribe(observer, observable)
     }
 
     /**
@@ -114,6 +115,7 @@ private class SingleFunction<T, X>(
     private var sourceSubject = BehaviorSubject<X>()
     override val functionContext = sourceEntity.getContext()
     override var worker = functionContext.getScheduler().getWorker(WorkerDefinition.SYNCHRONOUS)
+    override val subscriptions: ContextSubscriptions<T> = ContextSubscriptions(functionContext)
 
     init {
         sourceEntity.subscribe {
@@ -153,6 +155,7 @@ private class DoubleFunction<T, A, B>(
     private var rightValue = BehaviorSubject<B>()
     override val functionContext = collectContext(left, right)
     override var worker = functionContext.getScheduler().getWorker(WorkerDefinition.SYNCHRONOUS)
+    override val subscriptions: ContextSubscriptions<T> = ContextSubscriptions(functionContext)
 
     init {
         left.subscribe {
@@ -183,6 +186,7 @@ private class ArrayFunction<T>(
 
     override val functionContext = collectContext(*sources)
     override var worker = functionContext.getScheduler().getWorker(WorkerDefinition.SYNCHRONOUS)
+    override val subscriptions: ContextSubscriptions<T> = ContextSubscriptions(functionContext)
     private val sourceValues: List<BehaviorSubject<Any?>> =
         sources.map { BehaviorSubject<Any?>() }
 

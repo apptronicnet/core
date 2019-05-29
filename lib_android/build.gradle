@@ -4,7 +4,7 @@ plugins {
     id "maven-publish"
 }
 
-group = "net.apptronic.core"
+group = rootProject.ext.lib_group_id
 version = rootProject.ext.lib_version
 
 android {
@@ -37,6 +37,9 @@ publishing {
     publications {
         bar(MavenPublication) {
             artifact("build/outputs/aar/lib_android-debug.aar")
+            groupId = rootProject.ext.lib_group_id
+            artifactId = "core-android"
+            version = rootProject.ext.lib_version
         }
     }
 }

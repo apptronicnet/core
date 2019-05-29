@@ -1,5 +1,6 @@
 package net.apptronic.core.component.di
 
+import net.apptronic.core.base.concurrent.AtomicEntity
 import kotlin.reflect.KClass
 
 sealed class Descriptor<T>(
@@ -7,10 +8,14 @@ sealed class Descriptor<T>(
 ) {
 
     private companion object {
-        var id: Int = 0
+        val id = AtomicEntity<Int>(0)
     }
 
-    internal val descriptorId: Int = id++
+    internal val descriptorId: Int = id.let {
+        val value = it.get()
+        it.set(value + 1)
+        value
+    }
 
     override fun hashCode(): Int {
         return descriptorId

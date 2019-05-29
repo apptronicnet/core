@@ -5,7 +5,7 @@ import net.apptronic.core.base.observable.Subscription
 import net.apptronic.core.base.observable.Subscriptions
 
 /**
- * Base predicate which can receive some values and resent if to subscribers
+ * Base subject which can receive some values and resent if to subscribers
  */
 open class PublishSubject<T> : Subject<T> {
 

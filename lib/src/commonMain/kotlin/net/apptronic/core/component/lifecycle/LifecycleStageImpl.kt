@@ -1,25 +1,37 @@
 package net.apptronic.core.component.lifecycle
 
-import net.apptronic.core.base.AtomicEntity
-import net.apptronic.core.platform.getPlatform
+import net.apptronic.core.base.concurrent.AtomicEntity
+import net.apptronic.core.base.concurrent.AtomicReference
+import net.apptronic.core.component.entity.EntitySubscription
+import net.apptronic.core.component.entity.subscriptions.EntitySubscriptionListener
 
 internal class LifecycleStageImpl(val parent: LifecycleStageParent, val name: String) :
-    LifecycleStage, LifecycleStageParent {
+        LifecycleStage, LifecycleStageParent, EntitySubscriptionListener {
 
     private val childStage = AtomicEntity<LifecycleStageImpl?>(null)
 
-    private val isEntered = getPlatform().createAtomicReference(false)
-    private val isTerminated = getPlatform().createAtomicReference(false)
+    private val isEntered = AtomicReference(false)
+    private val isTerminated = AtomicReference(false)
 
     private val enterCallback = CompositeCallback()
     private val exitCallback = CompositeCallback()
     private val whenEnteredActions = HashMap<String, (() -> Unit)>()
 
-    private val enterHandler = getPlatform().createAtomicReference<OnEnterHandlerImpl?>(null)
-    private val exitHandler = getPlatform().createAtomicReference<OnExitHandlerImpl?>(null)
+    private val enterHandler = AtomicReference<OnEnterHandlerImpl?>(null)
+    private val exitHandler = AtomicReference<OnExitHandlerImpl?>(null)
+    private val subscriptions = mutableListOf<EntitySubscription>()
 
     override fun toString(): String {
         return super.toString() + " $name isEntered=${isEntered.get()}"
+    }
+
+    override fun onUnsubscribed(subscription: EntitySubscription) {
+        subscriptions.remove(subscription)
+    }
+
+    fun registerSubscription(subscription: EntitySubscription) {
+        subscriptions.add(subscription)
+        subscription.registerListener(this)
     }
 
     /**
@@ -91,6 +103,12 @@ internal class LifecycleStageImpl(val parent: LifecycleStageParent, val name: St
     internal fun exit() {
         if (isTerminated.get() || !isEntered.get()) {
             return
+        }
+        val subscriptionsArray = subscriptions.toTypedArray()
+        subscriptions.clear()
+        subscriptionsArray.forEach {
+            it.removeListener(this)
+            it.unsubscribe()
         }
         childStage.get()?.exit()
         isEntered.set(false)

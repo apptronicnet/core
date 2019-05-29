@@ -1,7 +1,8 @@
 package net.apptronic.core.component.lifecycle
 
+import net.apptronic.core.base.concurrent.AtomicReference
 import net.apptronic.core.component.context.Context
-import net.apptronic.core.platform.getPlatform
+import net.apptronic.core.component.entity.EntitySubscription
 
 /**
  * Def
@@ -27,7 +28,7 @@ open class Lifecycle {
         const val ROOT_STAGE = "_root"
     }
 
-    private val isTerminated = getPlatform().createAtomicReference(false)
+    private val isTerminated = AtomicReference(false)
 
     private val rootStage: LifecycleStageImpl = LifecycleStageImpl(baseParent, ROOT_STAGE)
 
@@ -88,6 +89,14 @@ open class Lifecycle {
 
     fun terminate() {
         rootStage.terminate()
+    }
+
+    fun registerSubscription(subscription: EntitySubscription) {
+        rootStage.lastEntered()?.let {
+            it.registerSubscription(subscription)
+        } ?: run {
+            subscription.unsubscribe()
+        }
     }
 
 }

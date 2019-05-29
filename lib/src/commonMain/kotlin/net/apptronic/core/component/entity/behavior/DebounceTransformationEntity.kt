@@ -1,6 +1,6 @@
 package net.apptronic.core.component.entity.behavior
 
-import net.apptronic.core.base.AtomicEntity
+import net.apptronic.core.base.concurrent.AtomicEntity
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.base.observable.subject.BehaviorSubject
 import net.apptronic.core.base.observable.subject.ValueHolder

@@ -12,12 +12,8 @@ interface Platform {
 
     fun uiAsyncWorkerProvider(): WorkerProvider
 
-    fun createSynchronized(): Synchronized
-
     fun runInNewThread(action: () -> Unit)
 
     fun pauseCurrentThread(timeInMillis: Long)
-
-    fun <T> createAtomicReference(initialValue: T): AtomicReference<T>
 
 }

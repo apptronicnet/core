@@ -1,10 +1,10 @@
 package net.apptronic.core.base.observable
 
-import net.apptronic.core.platform.getPlatform
+import net.apptronic.core.base.concurrent.Synchronized
 
 class Subscriptions<T> {
 
-    private val sync = getPlatform().createSynchronized()
+    private val sync = Synchronized()
     private val subscriptions = mutableListOf<SubscriptionImpl>()
 
     fun createSubscription(observer: Observer<T>): Subscription {

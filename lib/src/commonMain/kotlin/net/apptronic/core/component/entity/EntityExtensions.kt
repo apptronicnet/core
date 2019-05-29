@@ -2,42 +2,27 @@ package net.apptronic.core.component.entity
 
 import net.apptronic.core.base.observable.Observable
 import net.apptronic.core.base.observable.Observer
-import net.apptronic.core.base.observable.Subscription
 import net.apptronic.core.base.observable.subject.ValueHolder
 import net.apptronic.core.component.context.Context
-
-fun Subscription.bindContext(context: Context): EntitySubscription {
-    context.getLifecycle().onExitFromActiveStage {
-        unsubscribe()
-    }
-    return EntitySubscriptionImpl(this)
-}
-
-private class EntitySubscriptionImpl(
-    private val subscription: Subscription
-) : EntitySubscription {
-
-    override fun unsubscribe() {
-        subscription.unsubscribe()
-    }
-
-}
+import net.apptronic.core.component.entity.subscriptions.ContextSubscriptions
 
 fun <T> Observable<T>.bindContext(context: Context): Entity<T> {
     return EntityObservableWrapper(context, this)
 }
 
 private class EntityObservableWrapper<T>(
-    private val context: Context,
-    private val observable: Observable<T>
+        private val context: Context,
+        private val observable: Observable<T>
 ) : Entity<T> {
+
+    private val subscriptions = ContextSubscriptions<T>(context)
 
     override fun getContext(): Context {
         return context
     }
 
     override fun subscribe(observer: Observer<T>): EntitySubscription {
-        return observable.subscribe(observer).bindContext(context)
+        return subscriptions.subscribe(observer, observable)
     }
 
 }
