@@ -25,3 +25,12 @@ fun runInNewThread(action: () -> Unit) {
 fun pauseCurrentThread(timeInMillis: Long) {
     getPlatform().pauseCurrentThread(timeInMillis)
 }
+
+fun currentTimeInMillis(): Long {
+    return getPlatform().currentTimeInMillis()
+}
+
+fun elapsedRealtimeMillis(): Long {
+    return getPlatform().elapsedRealtimeMillis()
+}
+

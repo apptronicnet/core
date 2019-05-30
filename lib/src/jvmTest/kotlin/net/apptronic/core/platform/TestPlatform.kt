@@ -14,6 +14,10 @@ object TestPlatform : Platform {
         return InstanceWorkerProvider(synchronousWorker())
     }
 
+    override fun defaultAsyncWorkerProvider(): WorkerProvider {
+        return InstanceWorkerProvider(synchronousWorker())
+    }
+
     override fun uiWorkerProvider(): WorkerProvider {
         return InstanceWorkerProvider(synchronousWorker())
     }
@@ -35,6 +39,14 @@ object TestPlatform : Platform {
                 // ignore
             }
         }
+    }
+
+    override fun currentTimeInMillis(): Long {
+        return System.currentTimeMillis()
+    }
+
+    override fun elapsedRealtimeMillis(): Long {
+        throw UnsupportedOperationException()
     }
 
 }

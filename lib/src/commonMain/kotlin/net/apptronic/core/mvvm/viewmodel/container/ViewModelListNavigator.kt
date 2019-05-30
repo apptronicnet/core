@@ -13,7 +13,9 @@ class ViewModelListNavigator(
         UpdateEntity<List<ViewModel>>,
         ViewModelListAdapter.SourceNavigator {
 
-    private val subject = BehaviorSubject<List<ViewModel>>()
+    private val subject = BehaviorSubject<List<ViewModel>>().apply {
+        update(emptyList())
+    }
 
     private fun updateSubject() {
         subject.update(items)

@@ -22,9 +22,9 @@ private class TakeCountEntity<T>(
         return source.getContext()
     }
 
-    override fun subscribe(observer: Observer<T>): EntitySubscription {
+    override fun subscribe(context: Context, observer: Observer<T>): EntitySubscription {
         val targetObserver = CountObserver(count, observer)
-        val subscription = source.subscribe(targetObserver)
+        val subscription = source.subscribe(context, targetObserver)
         targetObserver.subscription = subscription
         return subscription
     }

@@ -11,9 +11,9 @@ fun <T> Entity<T>.takeWhen(chooser: Entity<Boolean>, whileNotSet: Boolean = fals
 }
 
 private class TakeWhenEntity<T>(
-    private val source: Entity<T>,
-    private val chooser: Entity<Boolean>,
-    whileNotSet: Boolean = false
+        private val source: Entity<T>,
+        private val chooser: Entity<Boolean>,
+        whileNotSet: Boolean = false
 ) : Entity<T> {
 
     private var chooserValue = whileNotSet
@@ -28,12 +28,12 @@ private class TakeWhenEntity<T>(
         return source.getContext()
     }
 
-    override fun subscribe(observer: Observer<T>): EntitySubscription {
-        return source.subscribe(ChooserObserver(observer))
+    override fun subscribe(context: Context, observer: Observer<T>): EntitySubscription {
+        return source.subscribe(context, ChooserObserver(observer))
     }
 
     private inner class ChooserObserver<T>(
-        private val target: Observer<T>
+            private val target: Observer<T>
     ) : Observer<T> {
         override fun notify(value: T) {
             if (chooserValue) {

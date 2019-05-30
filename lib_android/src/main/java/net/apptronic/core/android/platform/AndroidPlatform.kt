@@ -1,5 +1,6 @@
 package net.apptronic.core.android.platform
 
+import android.os.SystemClock
 import android.util.Log
 import net.apptronic.core.android.component.AndroidAsyncMainThreadWorkerProvider
 import net.apptronic.core.android.component.AndroidMainThreadWorkerProvider
@@ -14,6 +15,10 @@ object AndroidPlatform : Platform {
 
     override fun defaultWorkerProvider(): WorkerProvider {
         return AndroidMainThreadWorkerProvider
+    }
+
+    override fun defaultAsyncWorkerProvider(): WorkerProvider {
+        return AndroidAsyncMainThreadWorkerProvider
     }
 
     override fun uiWorkerProvider(): WorkerProvider {
@@ -37,6 +42,14 @@ object AndroidPlatform : Platform {
                 // ignore
             }
         }
+    }
+
+    override fun currentTimeInMillis(): Long {
+        return System.currentTimeMillis()
+    }
+
+    override fun elapsedRealtimeMillis(): Long {
+        return SystemClock.elapsedRealtime()
     }
 
 }

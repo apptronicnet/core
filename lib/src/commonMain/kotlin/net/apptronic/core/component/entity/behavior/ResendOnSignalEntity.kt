@@ -3,11 +3,11 @@ package net.apptronic.core.component.entity.behavior
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.base.observable.subject.BehaviorSubject
 import net.apptronic.core.base.observable.subject.ValueHolder
-import net.apptronic.core.base.observable.subscribe
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.EntitySubscription
 import net.apptronic.core.component.entity.EntityValue
+import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.component.entity.subscriptions.ContextSubjectWrapper
 
 fun <T> Entity<T>.asResendable(): ResendEntity<T> {
@@ -28,7 +28,7 @@ private class ResendOnSignalEntity<T>(
     private val wrappedEntity: Entity<T>
 ) : ResendEntity<T> {
 
-    private val subject = ContextSubjectWrapper(getContext(), BehaviorSubject<T>())
+    private val subject = ContextSubjectWrapper(wrappedEntity.getContext(), BehaviorSubject<T>())
 
     init {
         wrappedEntity.subscribe(subject)
@@ -48,8 +48,8 @@ private class ResendOnSignalEntity<T>(
         return wrappedEntity.getContext()
     }
 
-    override fun subscribe(observer: Observer<T>): EntitySubscription {
-        return subject.subscribe(observer)
+    override fun subscribe(context: Context, observer: Observer<T>): EntitySubscription {
+        return subject.subscribe(context, observer)
     }
 
 }

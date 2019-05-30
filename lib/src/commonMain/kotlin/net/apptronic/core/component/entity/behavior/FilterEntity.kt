@@ -22,8 +22,8 @@ fun <T> Entity<T>.filterNot(filterNotFunction: (T) -> Boolean): Entity<T> {
 }
 
 private class FilterEntity<T>(
-    private val target: Entity<T>,
-    private val filterFunction: (T) -> Boolean
+        private val target: Entity<T>,
+        private val filterFunction: (T) -> Boolean
 ) : Entity<T> {
 
     override fun getContext(): Context {
@@ -32,6 +32,14 @@ private class FilterEntity<T>(
 
     override fun subscribe(observer: Observer<T>): EntitySubscription {
         return target.subscribe { value ->
+            if (filterFunction(value)) {
+                observer.notify(value)
+            }
+        }
+    }
+
+    override fun subscribe(context: Context, observer: Observer<T>): EntitySubscription {
+        return target.subscribe(context) { value ->
             if (filterFunction(value)) {
                 observer.notify(value)
             }

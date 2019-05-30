@@ -76,4 +76,10 @@ private class DebounceTransformationEntity<Source, Result>(
             .subscribe(observer)
     }
 
+    override fun subscribe(context: Context, observer: Observer<Result>): EntitySubscription {
+        return resultObservable.bindContext(context)
+                .switchWorker(subscribeWorkerDefinition)
+                .subscribe(observer)
+    }
+
 }

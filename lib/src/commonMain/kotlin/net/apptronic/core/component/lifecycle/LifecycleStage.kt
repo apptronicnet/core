@@ -1,5 +1,7 @@
 package net.apptronic.core.component.lifecycle
 
+import net.apptronic.core.component.entity.EntitySubscription
+
 interface LifecycleStage {
 
     fun doOnce(action: () -> Unit)
@@ -29,6 +31,8 @@ interface LifecycleStage {
      * each time stage entering until current active stage (at moment of this method call) exited.
      */
     fun doOnExit(callback: OnExitHandler.() -> Unit): LifecycleSubscription
+
+    fun registerSubscription(subscription: EntitySubscription)
 
     /**
      * Interface provided at the moment of [doOnEnter] subscription

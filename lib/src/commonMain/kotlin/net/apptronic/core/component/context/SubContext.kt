@@ -6,8 +6,8 @@ import net.apptronic.core.threading.Scheduler
 import net.apptronic.core.threading.createSubScheduler
 
 open class SubContext(
-    private val parent: Context,
-    private val lifecycle: Lifecycle = Lifecycle()
+        private val parent: Context,
+        private val lifecycle: Lifecycle = Lifecycle()
 ) : Context {
 
     init {
@@ -18,6 +18,10 @@ open class SubContext(
 
     private val dependencyProvider = DependencyProvider(this, parent.getProvider())
     private val scheduler = createSubScheduler(parent.getScheduler())
+
+    override fun getParent(): Context? {
+        return parent
+    }
 
     final override fun getScheduler(): Scheduler {
         return scheduler

@@ -29,9 +29,13 @@ internal class LifecycleStageImpl(val parent: LifecycleStageParent, val name: St
         subscriptions.remove(subscription)
     }
 
-    fun registerSubscription(subscription: EntitySubscription) {
-        subscriptions.add(subscription)
-        subscription.registerListener(this)
+    override fun registerSubscription(subscription: EntitySubscription) {
+        if (isEntered()) {
+            subscriptions.add(subscription)
+            subscription.registerListener(this)
+        } else {
+            subscription.unsubscribe()
+        }
     }
 
     /**

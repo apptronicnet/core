@@ -1,25 +1,27 @@
 package net.apptronic.core.base.concurrent
 
-class AtomicEntity<T>(initialValue: T) {
+import net.apptronic.core.base.concurrent.base.IAtomicEntity
+
+class AtomicEntity<T>(initialValue: T) : IAtomicEntity<T> {
 
     private val sync = Synchronized()
     private val value = AtomicReference(initialValue)
 
-    fun set(value: T): T {
-        return sync.run {
+    override fun set(value: T): T {
+        return sync.executeBlock {
             this.value.set(value)
             value
         }
     }
 
-    fun get(): T {
-        return sync.run {
+    override fun get(): T {
+        return sync.executeBlock {
             value.get()
         }
     }
 
-    fun <R> perform(block: AtomicEntity<T>.(T) -> R): R {
-        return sync.run {
+    override fun <R> perform(block: AtomicEntity<T>.(T) -> R): R {
+        return sync.executeBlock {
             block(value.get())
         }
     }

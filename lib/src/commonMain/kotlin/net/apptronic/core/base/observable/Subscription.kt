@@ -6,4 +6,6 @@ interface Subscription : SubscriptionHolder {
 
     override fun unsubscribe()
 
+    fun isUnsubscribed(): Boolean
+
 }

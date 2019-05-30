@@ -8,14 +8,20 @@ import net.apptronic.core.component.entity.entities.*
 import net.apptronic.core.component.entity.extensions.setup
 import net.apptronic.core.component.lifecycle.Lifecycle
 import net.apptronic.core.component.lifecycle.LifecycleStage
+import net.apptronic.core.component.timer.Timer
+import net.apptronic.core.component.timer.TimerTick
 import net.apptronic.core.mvvm.viewmodel.ComponentRegistry
 import net.apptronic.core.threading.WorkerDefinition
 
 open class Component(
-        val context: Context
+        private val context: Context
 ) : Context by context {
 
     override fun getToken(): Context {
+        return context
+    }
+
+    open fun getContext(): Context {
         return context
     }
 
@@ -142,6 +148,19 @@ open class Component(
 
     fun <T> entity(source: Entity<T>): Entity<T> {
         return value<T>().setAs(source)
+    }
+
+    fun timer(
+            interval: Long,
+            worker: WorkerDefinition = WorkerDefinition.DEFAULT,
+            limit: Long = Timer.INFINITE,
+            action: ((TimerTick) -> Unit)? = null
+    ): Timer {
+        return Timer(this, initialInterval = interval, worker = worker, initialLimit = limit).also {
+            if (action != null) {
+                it.observe(action)
+            }
+        }
     }
 
 }

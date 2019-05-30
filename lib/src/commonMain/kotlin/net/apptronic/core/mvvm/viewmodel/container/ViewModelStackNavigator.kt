@@ -13,7 +13,9 @@ class ViewModelStackNavigator(
         parent
 ) {
 
-    private val subject = BehaviorSubject<ViewModel?>()
+    private val subject = BehaviorSubject<ViewModel?>().apply {
+        update(null)
+    }
     private val observable = subject.distinctUntilChanged()
     private val stack = mutableListOf<ViewModelContainerItem>()
     private var adapter: ViewModelStackAdapter? = null

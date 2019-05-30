@@ -1,5 +1,6 @@
 package net.apptronic.core.base.observable
 
+import net.apptronic.core.base.concurrent.AtomicReference
 import net.apptronic.core.base.concurrent.Synchronized
 
 class Subscriptions<T> {
@@ -8,7 +9,7 @@ class Subscriptions<T> {
     private val subscriptions = mutableListOf<SubscriptionImpl>()
 
     fun createSubscription(observer: Observer<T>): Subscription {
-        return sync.run {
+        return sync.executeBlock {
             val subscription = SubscriptionImpl(observer)
             subscriptions.add(subscription)
             subscription
@@ -16,7 +17,7 @@ class Subscriptions<T> {
     }
 
     fun notifyObservers(value: T) {
-        val targets = sync.run {
+        val targets = sync.executeBlock {
             subscriptions.toTypedArray()
         }
         targets.forEach {
@@ -28,10 +29,17 @@ class Subscriptions<T> {
             val observer: Observer<T>
     ) : Subscription {
 
+        private var isUnsubscribed = AtomicReference(false)
+
         override fun unsubscribe() {
-            return sync.run {
+            isUnsubscribed.set(true)
+            return sync.executeBlock {
                 subscriptions.remove(this)
             }
+        }
+
+        override fun isUnsubscribed(): Boolean {
+            return isUnsubscribed.get()
         }
 
     }

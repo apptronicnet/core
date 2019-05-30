@@ -3,16 +3,14 @@ package net.apptronic.core.android.viewmodel
 import android.view.View
 import android.view.ViewGroup
 import net.apptronic.core.mvvm.viewmodel.ViewModel
-import net.apptronic.core.mvvm.viewmodel.adapter.BasicTransition
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelStackAdapter
 
 open class AndroidViewModelStackAdapter(
-    private val container: ViewGroup,
-    private val androidViewFactory: AndroidViewFactory = AndroidViewFactory()
+        private val container: ViewGroup,
+        private val androidViewFactory: AndroidViewFactory = AndroidViewFactory(),
+        private val stackAnimator: StackAnimator = StackAnimator(),
+        private val defaultAnimationTime: Long = container.resources.getInteger(android.R.integer.config_mediumAnimTime).toLong()
 ) : ViewModelStackAdapter() {
-
-    private var animationTime =
-        container.resources.getInteger(android.R.integer.config_mediumAnimTime)
 
     fun bindings(setup: AndroidViewFactory.() -> Unit) {
         setup.invoke(androidViewFactory)
@@ -22,7 +20,7 @@ open class AndroidViewModelStackAdapter(
 
     override fun onInvalidate(oldModel: ViewModel?, newModel: ViewModel?, transitionInfo: Any?) {
         val newAndroidView =
-            if (newModel != null) androidViewFactory.getAndroidView(newModel) else null
+                if (newModel != null) androidViewFactory.getAndroidView(newModel) else null
         if (newAndroidView != null && newModel != null) {
             val view = newAndroidView.onCreateView(container)
             newAndroidView.bindView(view, newModel)
@@ -43,30 +41,29 @@ open class AndroidViewModelStackAdapter(
     }
 
     open fun onAdd(container: ViewGroup, newView: View, transitionInfo: Any?) {
-        if (transitionInfo is BasicTransition) {
-            applyEnterTransition(container, newView, transitionInfo, animationTime)
+        if (transitionInfo != null) {
+            stackAnimator.applyEnterTransition(container, newView, transitionInfo, defaultAnimationTime)
         } else {
             container.addView(newView)
         }
     }
 
     open fun onReplace(container: ViewGroup, oldView: View, newView: View, transitionInfo: Any?) {
-        if (transitionInfo is BasicTransition) {
-            applyExitTransition(container, oldView, transitionInfo, animationTime)
-            applyEnterTransition(container, newView, transitionInfo, animationTime)
+        if (transitionInfo != null) {
+            stackAnimator.applyEnterTransition(container, newView, transitionInfo, defaultAnimationTime)
+            stackAnimator.applyExitTransition(container, oldView, transitionInfo, defaultAnimationTime)
         } else {
-            container.removeView(oldView)
             container.addView(newView)
+            container.removeView(oldView)
         }
     }
 
     open fun onRemove(container: ViewGroup, oldView: View, transitionInfo: Any?) {
-        if (transitionInfo is BasicTransition) {
-            applyExitTransition(container, oldView, transitionInfo, animationTime)
+        if (transitionInfo != null) {
+            stackAnimator.applyExitTransition(container, oldView, transitionInfo, defaultAnimationTime)
         } else {
             container.removeView(oldView)
         }
     }
-
 
 }

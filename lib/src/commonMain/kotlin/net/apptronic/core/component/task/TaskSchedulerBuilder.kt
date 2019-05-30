@@ -99,8 +99,8 @@ private class TaskSchedulerBuilder<T>(
         return context
     }
 
-    override fun subscribe(observer: Observer<T>): EntitySubscription {
-        return onNextSource.subscribe(observer)
+    override fun subscribe(context: Context, observer: Observer<T>): EntitySubscription {
+        return onNextSource.subscribe(context, observer)
     }
 
     override fun execute(request: T): Task {

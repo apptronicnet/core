@@ -11,6 +11,8 @@ import net.apptronic.core.threading.Scheduler
  */
 interface Context {
 
+    fun getParent(): Context?
+
     /**
      * User for cases when thing is used as only context wrapper. Returns core instance
      * of context for direct usage and comparison when needed.

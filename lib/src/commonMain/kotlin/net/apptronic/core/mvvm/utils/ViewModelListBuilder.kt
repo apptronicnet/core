@@ -105,8 +105,8 @@ abstract class ViewModelListBuilder<T, Id, VM : ViewModel>(
         subject.update(result)
     }
 
-    override fun subscribe(observer: Observer<List<ViewModel>>): EntitySubscription {
-        return subject.subscribe(observer)
+    override fun subscribe(context: Context, observer: Observer<List<ViewModel>>): EntitySubscription {
+        return subject.subscribe(context, observer)
     }
 
     private inner class PostArrangeComparator(items: List<T>) :

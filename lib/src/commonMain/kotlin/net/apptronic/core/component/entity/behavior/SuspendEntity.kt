@@ -16,16 +16,16 @@ fun <T> Entity<T>.suspendOn(timeInMillisProvider: (T) -> Long): Entity<T> {
 }
 
 private class SuspendEntity<T>(
-    private val source: Entity<T>,
-    private val timeInMillisProvider: (T) -> Long
+        private val source: Entity<T>,
+        private val timeInMillisProvider: (T) -> Long
 ) : Entity<T> {
 
     override fun getContext(): Context {
         return source.getContext()
     }
 
-    override fun subscribe(observer: Observer<T>): EntitySubscription {
-        return source.subscribe {
+    override fun subscribe(context: Context, observer: Observer<T>): EntitySubscription {
+        return source.subscribe(context) {
             val timeInMillis = timeInMillisProvider.invoke(it)
             if (timeInMillis > 0L) {
                 pauseCurrentThread(timeInMillis)

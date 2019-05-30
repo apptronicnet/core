@@ -12,7 +12,11 @@ interface Entity<T> : Observable<T> {
 
     fun getContext(): Context
 
-    override fun subscribe(observer: Observer<T>): EntitySubscription
+    override fun subscribe(observer: Observer<T>): EntitySubscription {
+        return subscribe(getContext(), observer)
+    }
+
+    fun subscribe(context: Context, observer: Observer<T>): EntitySubscription
 
 }
 

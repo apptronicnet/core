@@ -5,7 +5,7 @@ import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.EntitySubscription
 
-internal class ContextEntitySubscription<T>(
+public class ContextEntitySubscription<T>(
         val observer: Observer<T>
 ) : EntitySubscription {
 
@@ -14,15 +14,17 @@ internal class ContextEntitySubscription<T>(
 
     override fun unsubscribe() {
         isUnsubscribed.set(true)
-        listeners.forEach {
+        listeners.toTypedArray().forEach {
             it.onUnsubscribed(this)
         }
+        listeners.clear()
     }
 
     override fun registerListener(listener: EntitySubscriptionListener) {
-        listeners.add(listener)
         if (isUnsubscribed.get()) {
             listener.onUnsubscribed(this)
+        } else {
+            listeners.add(listener)
         }
     }
 
@@ -32,6 +34,16 @@ internal class ContextEntitySubscription<T>(
 
     override fun attachToContext(context: Context) {
         context.getLifecycle().registerSubscription(this)
+    }
+
+    override fun isUnsubscribed(): Boolean {
+        return isUnsubscribed.get()
+    }
+
+    fun notify(value: T) {
+        if (!isUnsubscribed()) {
+            observer.notify(value)
+        }
     }
 
 }

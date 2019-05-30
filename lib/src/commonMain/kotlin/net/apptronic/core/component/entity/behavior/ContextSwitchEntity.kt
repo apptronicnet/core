@@ -11,7 +11,7 @@ import net.apptronic.core.threading.execute
 fun <T> Entity<T>.switchContext(context: Context): Entity<T> {
     return if (getContext().getToken() != context.getToken()) {
         ContextSwitchEntity(
-            this, context
+                this, context
         )
     } else {
         this
@@ -19,8 +19,8 @@ fun <T> Entity<T>.switchContext(context: Context): Entity<T> {
 }
 
 private class ContextSwitchEntity<T>(
-    private val target: Entity<T>,
-    private val context: Context
+        private val target: Entity<T>,
+        private val context: Context
 ) : Entity<T> {
 
     private val worker = context.getScheduler().getWorker(WorkerDefinition.DEFAULT)
@@ -34,7 +34,13 @@ private class ContextSwitchEntity<T>(
             worker.execute {
                 observer.notify(value)
             }
+        }.also {
+            getContext().getLifecycle().getRootStage().registerSubscription(it)
         }
+    }
+
+    override fun subscribe(context: Context, observer: Observer<T>): EntitySubscription {
+        return target.subscribe(context, observer)
     }
 
 }

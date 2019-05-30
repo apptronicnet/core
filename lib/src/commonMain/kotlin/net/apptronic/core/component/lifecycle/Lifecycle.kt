@@ -32,6 +32,10 @@ open class Lifecycle {
 
     private val rootStage: LifecycleStageImpl = LifecycleStageImpl(baseParent, ROOT_STAGE)
 
+    fun getRootStage(): LifecycleStage {
+        return rootStage
+    }
+
     init {
         rootStage.apply {
             enter()

@@ -8,6 +8,8 @@ interface Platform {
 
     fun defaultWorkerProvider(): WorkerProvider
 
+    fun defaultAsyncWorkerProvider(): WorkerProvider
+
     fun uiWorkerProvider(): WorkerProvider
 
     fun uiAsyncWorkerProvider(): WorkerProvider
@@ -15,5 +17,9 @@ interface Platform {
     fun runInNewThread(action: () -> Unit)
 
     fun pauseCurrentThread(timeInMillis: Long)
+
+    fun currentTimeInMillis(): Long
+
+    fun elapsedRealtimeMillis(): Long
 
 }

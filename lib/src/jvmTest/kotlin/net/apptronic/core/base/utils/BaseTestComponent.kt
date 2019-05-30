@@ -15,9 +15,11 @@ open class BaseTestComponent : Component {
 
     constructor(context: TestContext) : super(context)
 
-    fun getTestContext(): TestContext = context as TestContext
+    override fun getContext(): TestContext {
+        return super.getContext() as TestContext
+    }
 
-    override fun getLifecycle(): TestLifecycle = context.getLifecycle() as TestLifecycle
+    override fun getLifecycle(): TestLifecycle = getContext().getLifecycle() as TestLifecycle
 
     fun doOnCreate(callback: LifecycleStage.OnEnterHandler.() -> Unit) {
         getLifecycle().created.doOnEnter(callback)

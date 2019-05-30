@@ -4,7 +4,7 @@ import net.apptronic.core.base.observable.Observable
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.base.observable.subject.ValueHolder
 import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.entity.subscriptions.ContextSubscriptions
+import net.apptronic.core.component.entity.subscriptions.ContextSubscriptionFactory
 
 fun <T> Observable<T>.bindContext(context: Context): Entity<T> {
     return EntityObservableWrapper(context, this)
@@ -15,14 +15,14 @@ private class EntityObservableWrapper<T>(
         private val observable: Observable<T>
 ) : Entity<T> {
 
-    private val subscriptions = ContextSubscriptions<T>(context)
+    private val subscriptionFactory = ContextSubscriptionFactory<T>(context)
 
     override fun getContext(): Context {
         return context
     }
 
-    override fun subscribe(observer: Observer<T>): EntitySubscription {
-        return subscriptions.subscribe(observer, observable)
+    override fun subscribe(context: Context, observer: Observer<T>): EntitySubscription {
+        return subscriptionFactory.using(context).subscribe(observer, observable)
     }
 
 }
@@ -33,14 +33,6 @@ fun <T> Entity<T>.subscribe(callback: (T) -> Unit): EntitySubscription {
             callback.invoke(value)
         }
     })
-}
-
-fun <T> Entity<T>.subscribe(context: Context, observer: Observer<T>): EntitySubscription {
-    return subscribe(observer).also { subscription ->
-        context.getLifecycle().onExitFromActiveStage {
-            subscription.unsubscribe()
-        }
-    }
 }
 
 fun <T> Entity<T>.subscribe(context: Context, callback: (T) -> Unit): EntitySubscription {

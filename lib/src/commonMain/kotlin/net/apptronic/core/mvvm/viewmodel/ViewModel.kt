@@ -25,6 +25,10 @@ open class ViewModel : Component {
         viewModelContext = parent.viewModelContext
     }
 
+    override fun getContext(): ViewModelContext {
+        return viewModelContext
+    }
+
     override fun getDefaultWorker(): WorkerDefinition {
         return WorkerDefinition.UI
     }
@@ -85,11 +89,11 @@ open class ViewModel : Component {
     }
 
     internal fun onAddedToContainer(parent: ViewModelParent) {
-        context.getLifecycle().enterStage(ViewModelLifecycle.STAGE_CREATED)
+        getLifecycle().enterStage(ViewModelLifecycle.STAGE_CREATED)
     }
 
     internal fun onRemovedFromContainer(parent: ViewModelParent) {
-        context.getLifecycle().exitStage(ViewModelLifecycle.STAGE_CREATED)
+        getLifecycle().exitStage(ViewModelLifecycle.STAGE_CREATED)
     }
 
     private var parent: ViewModelParent? = null
@@ -159,7 +163,8 @@ open class ViewModel : Component {
      */
     fun closeSelf(transitionInfo: Any? = null): Boolean {
         return parent?.let {
-            getScheduler().execute(context.getScheduler().getDefaultWorker()) {
+            val defaultWorker = getScheduler().getDefaultWorker()
+            getScheduler().execute(defaultWorker) {
                 it.requestCloseSelf(this, transitionInfo)
             }
             true

@@ -5,7 +5,7 @@ import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.EntitySubscription
-import net.apptronic.core.component.entity.subscriptions.ContextSubscriptions
+import net.apptronic.core.component.entity.subscriptions.ContextSubscriptionFactory
 import net.apptronic.core.component.entity.subscriptions.WorkerSource
 import net.apptronic.core.threading.Worker
 import net.apptronic.core.threading.WorkerDefinition
@@ -15,7 +15,7 @@ abstract class ComponentEntity<T>(
 ) : Entity<T>, WorkerSource {
 
     private var worker: Worker = context.getScheduler().getWorker(WorkerDefinition.DEFAULT)
-    private val subscriptions = ContextSubscriptions<T>(context)
+    private val subscriptionFactory = ContextSubscriptionFactory<T>(context)
 
     fun setWorker(workerDefinition: WorkerDefinition) {
         worker = context.getScheduler().getWorker(workerDefinition)
@@ -31,8 +31,8 @@ abstract class ComponentEntity<T>(
         return worker
     }
 
-    override fun subscribe(observer: Observer<T>): EntitySubscription {
-        return subscriptions.subscribe(observer, getObservable(), this)
+    override fun subscribe(context: Context, observer: Observer<T>): EntitySubscription {
+        return subscriptionFactory.using(context).subscribe(observer, getObservable(), this)
     }
 
 }

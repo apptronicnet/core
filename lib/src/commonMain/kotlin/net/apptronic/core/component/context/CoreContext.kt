@@ -12,6 +12,10 @@ open class CoreContext(
     private val scheduler = createCoreScheduler()
     private val dependencyProvider = DependencyProvider(this, null)
 
+    override fun getParent(): Context? {
+        return null
+    }
+
     override fun getLifecycle(): Lifecycle {
         return lifecycle
     }

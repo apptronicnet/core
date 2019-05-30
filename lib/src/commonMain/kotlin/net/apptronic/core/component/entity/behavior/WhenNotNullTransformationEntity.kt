@@ -40,8 +40,8 @@ private class WhenNotNullTransformationEntity<Source, Result>(
         return source.getContext()
     }
 
-    override fun subscribe(observer: Observer<Result?>): EntitySubscription {
-        return resultSubject.subscribe(observer)
+    override fun subscribe(context: Context, observer: Observer<Result?>): EntitySubscription {
+        return resultSubject.subscribe(context, observer)
     }
 
 }
