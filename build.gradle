@@ -6,7 +6,7 @@ buildscript {
     ext.atomicfu_version = '0.12.7'
     ext.junit_version = "4.12"
     ext.lib_group_id = "net.apptronic.core"
-    ext.lib_version = "0.1.2-09"
+    ext.lib_version = "0.1.2-10"
 
     repositories {
         google()

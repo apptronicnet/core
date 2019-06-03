@@ -1,6 +1,5 @@
 package net.apptronic.core.base.concurrent
 
-import kotlinx.atomicfu.atomic
 import net.apptronic.core.base.concurrent.base.ISynchronized
 
 /**
@@ -8,19 +7,20 @@ import net.apptronic.core.base.concurrent.base.ISynchronized
  */
 class Synchronized : ISynchronized {
 
-    private val lock = atomic(false)
+    private val lock = AtomicReference(false)
 
     /**
      * Run synchronized block
      */
     override fun <R> executeBlock(block: () -> R): R {
         return try {
-            while (lock.value) {
+            while (lock.get()) {
                 // repeat while locked
             }
+            lock.set(true)
             block.invoke()
         } finally {
-            lock.value = false
+            lock.set(false)
         }
     }
 
