@@ -21,7 +21,6 @@ kotlin {
             dependencies {
                 implementation kotlin("stdlib-common")
                 implementation kotlin("reflect")
-                implementation "org.jetbrains.kotlinx:atomicfu-common:$atomicfu_version"
             }
         }
         commonTest {
@@ -33,6 +32,7 @@ kotlin {
         jvmMain {
             dependencies {
                 implementation kotlin("stdlib-jdk8")
+                implementation "org.jetbrains.kotlinx:atomicfu-common:$atomicfu_version"
             }
         }
         jvmTest {
@@ -43,6 +43,7 @@ kotlin {
         iosMain {
             dependencies {
                 implementation kotlin("stdlib-common")
+                implementation "org.jetbrains.kotlinx:atomicfu-native:$atomicfu_version"
             }
         }
     }
