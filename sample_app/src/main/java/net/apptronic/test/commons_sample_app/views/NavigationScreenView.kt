@@ -9,9 +9,7 @@ import net.apptronic.test.commons_sample_app.navigation.NavigationScreenViewMode
 
 class NavigationScreenView : AndroidView<NavigationScreenViewModel>() {
 
-    init {
-        layoutResId = R.layout.screen_navigation
-    }
+    override val layoutResId: Int = R.layout.screen_navigation
 
     override fun onBindView(view: View, viewModel: NavigationScreenViewModel) {
         with(view) {

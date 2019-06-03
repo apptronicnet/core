@@ -44,3 +44,22 @@ fun <E> Entity<List<E>>.trimLength(length: Int, ellipsizeItem: E? = null): Entit
         }
     }
 }
+
+fun <E> Entity<List<E>>.isEmpty(): Entity<Boolean> {
+    return map {
+        it.isEmpty()
+    }
+}
+
+fun <E> Entity<List<E>>.isNotEmpty(): Entity<Boolean> {
+    return map {
+        it.isNotEmpty()
+    }
+}
+
+
+fun <E> Entity<List<E?>>.removeNulls(): Entity<List<E>> {
+    return map { list ->
+        list.filter { item -> item != null }.map { item -> item!! }
+    }
+}

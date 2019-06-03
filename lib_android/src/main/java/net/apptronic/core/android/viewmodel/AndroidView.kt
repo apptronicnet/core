@@ -9,15 +9,15 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 
-abstract class AndroidView<T : ViewModel> {
+abstract class AndroidView<T : ViewModel> : BindingContainer {
 
     @LayoutRes
-    var layoutResId: Int? = null
+    open val layoutResId: Int? = null
 
     private var viewModel: ViewModel? = null
     private var view: View? = null
 
-    private val onUnbindActions = mutableListOf<() -> Unit>()
+    private var bindings: Bindings? = null
     private val bindingList = mutableListOf<Binding>()
 
     open fun onCreateView(container: ViewGroup): View {
@@ -61,28 +61,26 @@ abstract class AndroidView<T : ViewModel> {
     fun bindView(view: View, viewModel: ViewModel) {
         this.view = view
         this.viewModel = viewModel
+        bindings = Bindings(viewModel, this)
         onBindView(view, viewModel as T)
         viewModel.doOnUnbind {
-            onUnbindActions.forEach { it.invoke() }
-            onUnbindActions.clear()
-            bindingList.forEach { it.unbind() }
-            bindingList.clear()
+            bindings!!.unbind()
+            bindings = null
         }
     }
 
     protected abstract fun onBindView(view: View, viewModel: T)
 
-    infix fun add(binding: Binding) {
-        bindingList.add(binding)
-        binding.onBind(getViewModel(), this)
+    override fun onUnbind(action: () -> Unit) {
+        bindings!!.onUnbind(action)
     }
 
-    operator fun Binding.unaryPlus() {
-        this@AndroidView.add(this)
+    override infix fun add(binding: Binding) {
+        bindings!!.add(binding)
     }
 
-    fun onUnbind(action: () -> Unit) {
-        onUnbindActions.add(action)
+    override operator fun Binding.unaryPlus() {
+        bindings!!.add(this)
     }
 
 }

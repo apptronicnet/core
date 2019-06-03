@@ -12,9 +12,7 @@ import net.apptronic.test.commons_sample_app.registration.RegistrationViewModel
 
 class RegistrationScreenView : AndroidView<RegistrationViewModel>() {
 
-    init {
-        layoutResId = R.layout.screen_registration
-    }
+    override val layoutResId: Int = R.layout.screen_registration
 
     override fun onBindView(view: View, viewModel: RegistrationViewModel) {
         with(view) {

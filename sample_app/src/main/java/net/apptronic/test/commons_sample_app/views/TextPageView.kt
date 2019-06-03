@@ -10,9 +10,7 @@ import net.apptronic.test.commons_sample_app.pager.pages.TextPageViewModel
 
 class TextPageView : AndroidView<TextPageViewModel>() {
 
-    init {
-        layoutResId = R.layout.page_text
-    }
+    override val layoutResId: Int = R.layout.page_text
 
     override fun onBindView(view: View, viewModel: TextPageViewModel) {
         with(view) {

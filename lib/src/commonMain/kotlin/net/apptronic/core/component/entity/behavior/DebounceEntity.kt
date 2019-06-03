@@ -89,7 +89,8 @@ private class DebounceObserver<T>(
             if (isWaiting.get().not()) {
                 isWaiting.set(true)
                 val timeFromLast = elapsedRealtimeMillis() - lastUpdate.time
-                val waitTime = interval + delay - timeFromLast
+                val timeToNext = interval - timeFromLast
+                val waitTime = if (timeToNext < delay) delay else timeToNext
                 timerWorker.execute {
                     if (waitTime > 0) {
                         pauseCurrentThread(waitTime)

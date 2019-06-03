@@ -5,31 +5,50 @@ import net.apptronic.core.platform.getPlatform
 fun createCoreScheduler(): Scheduler {
     val scheduler = ContextScheduler()
     with(scheduler) {
-        assignWorker(WorkerDefinition.DEFAULT, getPlatform().defaultWorkerProvider())
-        assignWorker(WorkerDefinition.DEFAULT_ASYNC, getPlatform().defaultAsyncWorkerProvider())
-        assignWorker(WorkerDefinition.UI, getPlatform().uiWorkerProvider())
-        assignWorker(WorkerDefinition.UI_ASYNC, getPlatform().uiAsyncWorkerProvider())
-        assignWorker(WorkerDefinition.SYNCHRONOUS, InstanceWorkerProvider(synchronousWorker()))
+        assignWorker(
+                WorkerDefinition.DEFAULT,
+                getPlatform().defaultWorkerProvider()
+        )
+        assignWorker(
+                WorkerDefinition.DEFAULT_ASYNC,
+                getPlatform().defaultAsyncWorkerProvider()
+        )
+        assignWorker(
+                WorkerDefinition.UI,
+                getPlatform().uiWorkerProvider()
+        )
+        assignWorker(
+                WorkerDefinition.UI_ASYNC,
+                getPlatform().uiAsyncWorkerProvider()
+        )
+        assignWorker(
+                WorkerDefinition.SYNCHRONOUS,
+                InstanceWorkerProvider(synchronousWorker())
+        )
         assignWorker(
                 WorkerDefinition.BACKGROUND_SINGLE_SHARED,
                 InstanceWorkerProvider(singleThreadWorker())
         )
         assignWorker(
                 WorkerDefinition.BACKGROUND_SINGLE_INDIVIDUAL,
-                FactoryWorkerProvider { singleThreadWorker() })
+                FactoryWorkerProvider { singleThreadWorker() }
+        )
         assignWorker(
                 WorkerDefinition.BACKGROUND_PARALLEL_SHARED,
                 InstanceWorkerProvider(parallelWorker())
         )
         assignWorker(
                 WorkerDefinition.BACKGROUND_PARALLEL_INDIVIDUAL,
-                FactoryWorkerProvider { parallelWorker() })
+                FactoryWorkerProvider { parallelWorker() }
+        )
         assignWorker(
                 WorkerDefinition.BACKGROUND_SERIAL,
-                FactoryWorkerProvider { serialWorker() })
+                FactoryWorkerProvider { serialWorker() }
+        )
         assignWorker(
                 WorkerDefinition.TIMER,
-                FactoryWorkerProvider { singleThreadWorker() })
+                FactoryWorkerProvider { singleThreadWorker() }
+        )
     }
     return scheduler
 }

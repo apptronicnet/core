@@ -2,21 +2,31 @@ package net.apptronic.core.android.viewmodel
 
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 
-abstract class Binding {
+abstract class Binding : BindingContainer {
 
-    private val onUnbindActions = mutableListOf<() -> Unit>()
+    private var bindings: Bindings? = null
+
+    internal fun bind(viewModel: ViewModel, androidView: AndroidView<*>) {
+        bindings = Bindings(viewModel, androidView)
+        onBind(viewModel, androidView)
+    }
 
     abstract fun onBind(viewModel: ViewModel, androidView: AndroidView<*>)
 
-    protected fun onUnbind(action: () -> Unit) {
-        onUnbindActions.add(action)
+    internal fun unbind() {
+        bindings!!.unbind()
     }
 
-    internal fun unbind() {
-        onUnbindActions.forEach {
-            it.invoke()
-        }
-        onUnbindActions.clear()
+    override fun onUnbind(action: () -> Unit) {
+        bindings!!.onUnbind(action)
+    }
+
+    override infix fun add(binding: Binding) {
+        bindings!!.add(binding)
+    }
+
+    override operator fun Binding.unaryPlus() {
+        bindings!!.add(this)
     }
 
 }

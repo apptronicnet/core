@@ -15,9 +15,7 @@ import net.apptronic.test.commons_sample_app.resources.getResourceId
 
 class ImagePageView : AndroidView<ImagePageViewModel>() {
 
-    init {
-        layoutResId = R.layout.page_image
-    }
+    override val layoutResId: Int = R.layout.page_image
 
     override fun onBindView(view: View, viewModel: ImagePageViewModel) {
         with(view) {

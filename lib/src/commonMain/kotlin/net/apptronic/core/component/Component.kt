@@ -150,6 +150,10 @@ open class Component(
         return value<T>().setAs(source)
     }
 
+    fun <T> entity(source: Entity<T>, defaultValue: T): Entity<T> {
+        return value<T>(defaultValue).setAs(source)
+    }
+
     fun timer(
             interval: Long,
             worker: WorkerDefinition = WorkerDefinition.DEFAULT,

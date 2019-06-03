@@ -11,9 +11,7 @@ import net.apptronic.test.commons_sample_app.list.ListItemTextViewModel
 
 class ListItemTextView : AndroidView<ListItemTextViewModel>() {
 
-    init {
-        layoutResId = R.layout.list_item_text
-    }
+    override val layoutResId: Int = R.layout.list_item_text
 
     override fun onBindView(view: View, viewModel: ListItemTextViewModel) {
         with(view) {
