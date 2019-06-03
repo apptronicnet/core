@@ -1,7 +1,6 @@
 plugins {
     id "kotlin-multiplatform"
     id "maven-publish"
-    id 'kotlinx-atomicfu'
 }
 
 group = rootProject.ext.lib_group_id
@@ -32,7 +31,6 @@ kotlin {
         jvmMain {
             dependencies {
                 implementation kotlin("stdlib-jdk8")
-                implementation "org.jetbrains.kotlinx:atomicfu-common:$atomicfu_version"
             }
         }
         jvmTest {
@@ -43,7 +41,6 @@ kotlin {
         iosMain {
             dependencies {
                 implementation kotlin("stdlib-common")
-                implementation "org.jetbrains.kotlinx:atomicfu-native:$atomicfu_version"
             }
         }
     }
