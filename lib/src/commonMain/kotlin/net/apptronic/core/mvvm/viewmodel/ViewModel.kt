@@ -51,6 +51,18 @@ open class ViewModel : Component {
     private val isVisible = stateOfStage(ViewModelLifecycle.STAGE_VISIBLE)
     private val isFocused = stateOfStage(ViewModelLifecycle.STAGE_FOCUSED)
 
+    private var savedState: SavedState? = null
+
+    fun newSavedState(): SavedState {
+        return SavedState().also {
+            savedState = it
+        }
+    }
+
+    fun getSavesState(): SavedState? {
+        return savedState
+    }
+
     private fun stateOfStage(stageName: String): Observable<Boolean> {
         val target = BehaviorSubject<Boolean>()
         onEnterStage(stageName) {
