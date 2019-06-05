@@ -1,8 +1,7 @@
-package net.apptronic.core.component.entity.functions.variants
+package net.apptronic.core.component.entity.functions
 
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.behavior.filter
-import net.apptronic.core.component.entity.functions.entityFunction
 
 class LeftRight<A, B>(
     val left: Entity<A>,

@@ -1,9 +1,6 @@
-package net.apptronic.core.component.entity.functions.variants
+package net.apptronic.core.component.entity.functions
 
 import net.apptronic.core.component.entity.Entity
-import net.apptronic.core.component.entity.functions.Function
-import net.apptronic.core.component.entity.functions.entityArrayFunction
-import net.apptronic.core.component.entity.functions.entityFunction
 
 fun <T> Entity<T>.isNull(): Function<Boolean> =
         entityFunction(this) {

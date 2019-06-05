@@ -3,7 +3,7 @@ package net.apptronic.core.component.entity.behavior
 import net.apptronic.core.base.observable.subscribe
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.functions.entityFunction
-import net.apptronic.core.component.entity.functions.variants.map
+import net.apptronic.core.component.entity.functions.map
 
 
 fun Entity<Boolean>.whenTrue(): Entity<Unit> {

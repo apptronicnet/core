@@ -1,4 +1,4 @@
-package net.apptronic.core.component.entity.functions.variants
+package net.apptronic.core.component.entity.functions
 
 internal infix fun <T : Number> T.plus(another: T): T {
     if (this is Byte) {

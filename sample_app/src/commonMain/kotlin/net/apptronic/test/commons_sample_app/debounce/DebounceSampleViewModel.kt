@@ -4,9 +4,9 @@ import net.apptronic.core.base.concurrent.AtomicEntity
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.behavior.debounce
 import net.apptronic.core.component.entity.entities.setTo
-import net.apptronic.core.component.entity.functions.variants.map
-import net.apptronic.core.component.entity.functions.variants.mapOr
-import net.apptronic.core.component.entity.functions.variants.onNext
+import net.apptronic.core.component.entity.functions.map
+import net.apptronic.core.component.entity.functions.mapOr
+import net.apptronic.core.component.entity.functions.onNext
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 import net.apptronic.core.platform.pauseCurrentThread

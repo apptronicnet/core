@@ -4,10 +4,7 @@ import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.base.observable.subject.BehaviorSubject
 import net.apptronic.core.base.observable.subject.ValueHolder
 import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.entity.Entity
-import net.apptronic.core.component.entity.EntitySubscription
-import net.apptronic.core.component.entity.EntityValue
-import net.apptronic.core.component.entity.subscribe
+import net.apptronic.core.component.entity.*
 import net.apptronic.core.component.entity.subscriptions.ContextSubjectWrapper
 
 fun <T> Entity<T>.asResendable(): ResendEntity<T> {
@@ -18,7 +15,7 @@ fun <T> Entity<T>.resendWhen(vararg entities: Entity<*>): ResendEntity<T> {
     return asResendable().signalWhen(*entities)
 }
 
-interface ResendEntity<T> : EntityValue<T> {
+interface ResendEntity<T> : EntityValue<T>, UpdateEntity<T> {
 
     fun resendSignal()
 
@@ -50,6 +47,10 @@ private class ResendOnSignalEntity<T>(
 
     override fun subscribe(context: Context, observer: Observer<T>): EntitySubscription {
         return subject.subscribe(context, observer)
+    }
+
+    override fun update(value: T) {
+        subject.update(value)
     }
 
 }

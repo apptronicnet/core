@@ -1,7 +1,6 @@
-package net.apptronic.core.component.entity.functions.variants
+package net.apptronic.core.component.entity.functions
 
 import net.apptronic.core.component.entity.Entity
-import net.apptronic.core.component.entity.functions.entityFunction
 
 fun Entity<Number>.toByte(): Entity<Byte> =
     entityFunction(this) {

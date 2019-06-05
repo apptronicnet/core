@@ -2,7 +2,7 @@ package net.apptronic.core.component
 
 import net.apptronic.core.base.utils.TestContext
 import net.apptronic.core.component.entity.entities.setAs
-import net.apptronic.core.component.entity.functions.variants.*
+import net.apptronic.core.component.entity.functions.*
 import org.junit.Test
 
 class AllAnyNoneFunctionTest {

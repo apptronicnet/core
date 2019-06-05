@@ -8,7 +8,7 @@ import net.apptronic.core.android.viewmodel.bindings.sendClicksTo
 import net.apptronic.core.android.viewmodel.bindings.setImageResourceFrom
 import net.apptronic.core.android.viewmodel.bindings.setImageTintFrom
 import net.apptronic.core.android.viewmodel.bindings.setTextFrom
-import net.apptronic.core.component.entity.functions.variants.map
+import net.apptronic.core.component.entity.functions.map
 import net.apptronic.test.commons_sample_app.R
 import net.apptronic.test.commons_sample_app.list.ListItemImageViewModel
 import net.apptronic.test.commons_sample_app.resources.getResourceId

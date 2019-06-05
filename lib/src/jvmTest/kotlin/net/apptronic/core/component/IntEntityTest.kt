@@ -1,7 +1,7 @@
 package net.apptronic.core.component
 
 import net.apptronic.core.base.utils.BaseTestComponent
-import net.apptronic.core.component.entity.functions.variants.*
+import net.apptronic.core.component.entity.functions.*
 import org.junit.Test
 
 class IntEntityTest {

@@ -4,7 +4,7 @@ import net.apptronic.core.base.utils.BaseTestComponent
 import net.apptronic.core.base.utils.TestWorker
 import net.apptronic.core.component.assertNoValue
 import net.apptronic.core.component.assertTrue
-import net.apptronic.core.component.entity.functions.variants.isEqualsTo
+import net.apptronic.core.component.entity.functions.isEqualsTo
 import org.junit.Test
 
 class TestTransformationChain : BaseTestComponent() {

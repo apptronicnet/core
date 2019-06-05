@@ -4,7 +4,9 @@ import net.apptronic.core.base.observable.Observable
 import net.apptronic.core.base.observable.subject.BehaviorSubject
 import net.apptronic.core.component.Component
 import net.apptronic.core.component.entity.Entity
+import net.apptronic.core.component.entity.bindContext
 import net.apptronic.core.component.entity.entities.setAs
+import net.apptronic.core.component.entity.extensions.doWhen
 import net.apptronic.core.component.entity.extensions.setup
 import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.component.lifecycle.Lifecycle
@@ -97,7 +99,7 @@ open class ViewModel : Component {
     }
 
     fun <T, Id, VM : ViewModel> listNavigator(
-        source: Entity<List<T>>,
+        source: Entity<out List<T>>,
         builder: ViewModelBuilder<T, Id, VM>
     ): ViewModelListNavigator {
         val listBuilder = listBuilder(builder)
@@ -163,6 +165,42 @@ open class ViewModel : Component {
     fun isFocused() = getLifecycle().isStageEntered(ViewModelLifecycle.STAGE_FOCUSED)
 
     fun observeFocused(): Observable<Boolean> = isFocused
+
+    private fun whenEntered(observable: Observable<Boolean>): Entity<Unit> {
+        return genericEvent().also { event ->
+            doWhen(observable.bindContext(this)) {
+                event.sendEvent()
+            }
+        }
+    }
+
+    /**
+     * Create [Entity] which emits item when [ViewModel] entering created stage
+     */
+    fun whenCreated(): Entity<Unit> {
+        return whenEntered(isCreated)
+    }
+
+    /**
+     * Create [Entity] which emits item when [ViewModel] entering bound stage
+     */
+    fun whenBound(): Entity<Unit> {
+        return whenEntered(isBound)
+    }
+
+    /**
+     * Create [Entity] which emits item when [ViewModel] entering visible stage
+     */
+    fun whenVisible(): Entity<Unit> {
+        return whenEntered(isVisible)
+    }
+
+    /**
+     * Create [Entity] which emits item when [ViewModel] entering focused stage
+     */
+    fun whenFocused(): Entity<Unit> {
+        return whenEntered(isFocused)
+    }
 
     /**
      * Check is current state is exactly on state created

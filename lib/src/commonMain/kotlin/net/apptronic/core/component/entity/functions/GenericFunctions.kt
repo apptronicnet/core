@@ -1,9 +1,8 @@
-package net.apptronic.core.component.entity.functions.variants
+package net.apptronic.core.component.entity.functions
 
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.base.ConstantEntity
-import net.apptronic.core.component.entity.functions.entityFunction
 
 fun <T> Entity<T>.onNext(action: (T) -> Unit): Entity<T> =
     map {

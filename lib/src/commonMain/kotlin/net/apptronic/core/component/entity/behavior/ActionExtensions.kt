@@ -2,7 +2,7 @@ package net.apptronic.core.component.entity.extensions
 
 import net.apptronic.core.base.observable.subscribe
 import net.apptronic.core.component.entity.Entity
-import net.apptronic.core.component.entity.functions.variants.not
+import net.apptronic.core.component.entity.functions.not
 
 class OrElseSubscription() {
 

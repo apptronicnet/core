@@ -2,7 +2,7 @@ package net.apptronic.test.commons_sample_app.onboarding.balance
 
 import net.apptronic.core.base.observable.subscribe
 import net.apptronic.core.component.entity.entities.setAs
-import net.apptronic.core.component.entity.functions.variants.map
+import net.apptronic.core.component.entity.functions.map
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.test.commons_sample_app.app.ApplicationContext
 import net.apptronic.test.commons_sample_app.onboarding.OnboardingContext

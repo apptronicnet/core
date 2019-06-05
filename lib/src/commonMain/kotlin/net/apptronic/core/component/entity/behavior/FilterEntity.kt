@@ -4,7 +4,7 @@ import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.EntitySubscription
-import net.apptronic.core.component.entity.functions.variants.map
+import net.apptronic.core.component.entity.functions.map
 import net.apptronic.core.component.entity.subscribe
 
 fun <T> Entity<T>.filter(filterFunction: (T) -> Boolean): Entity<T> {

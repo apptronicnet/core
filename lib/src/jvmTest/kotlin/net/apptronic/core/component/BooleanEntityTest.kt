@@ -2,10 +2,10 @@ package net.apptronic.core.component
 
 import net.apptronic.core.base.utils.BaseTestComponent
 import net.apptronic.core.component.entity.extensions.doWhen
-import net.apptronic.core.component.entity.functions.variants.and
-import net.apptronic.core.component.entity.functions.variants.not
-import net.apptronic.core.component.entity.functions.variants.or
-import net.apptronic.core.component.entity.functions.variants.xor
+import net.apptronic.core.component.entity.functions.and
+import net.apptronic.core.component.entity.functions.not
+import net.apptronic.core.component.entity.functions.or
+import net.apptronic.core.component.entity.functions.xor
 import org.junit.Test
 
 class BooleanEntityTest {

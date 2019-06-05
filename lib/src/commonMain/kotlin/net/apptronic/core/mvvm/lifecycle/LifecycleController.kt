@@ -5,7 +5,7 @@ import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.entities.Value
 import net.apptronic.core.component.entity.entities.setAs
-import net.apptronic.core.component.entity.functions.variants.and
+import net.apptronic.core.component.entity.functions.and
 import net.apptronic.core.component.lifecycle.Lifecycle
 import net.apptronic.core.component.lifecycle.enterStage
 import net.apptronic.core.component.lifecycle.exitStage

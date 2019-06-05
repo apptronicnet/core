@@ -14,7 +14,7 @@ import net.apptronic.core.mvvm.viewmodel.ComponentRegistry
 import net.apptronic.core.threading.WorkerDefinition
 
 open class Component(
-        private val context: Context
+    private val context: Context
 ) : Context by context {
 
     override fun getToken(): Context {
@@ -146,6 +146,13 @@ open class Component(
         return EmptyChain(this)
     }
 
+    /**
+     * Create [Entity] which simply emits new item on subscribe to allow perform some transformation once.
+     */
+    fun now(): Entity<Unit> {
+        return EmptyChain(this)
+    }
+
     fun <T> entity(source: Entity<T>): Entity<T> {
         return value<T>().setAs(source)
     }
@@ -155,10 +162,10 @@ open class Component(
     }
 
     fun timer(
-            interval: Long,
-            worker: WorkerDefinition = WorkerDefinition.DEFAULT,
-            limit: Long = Timer.INFINITE,
-            action: ((TimerTick) -> Unit)? = null
+        interval: Long,
+        worker: WorkerDefinition = WorkerDefinition.DEFAULT,
+        limit: Long = Timer.INFINITE,
+        action: ((TimerTick) -> Unit)? = null
     ): Timer {
         return Timer(this, initialInterval = interval, worker = worker, initialLimit = limit).also {
             if (action != null) {

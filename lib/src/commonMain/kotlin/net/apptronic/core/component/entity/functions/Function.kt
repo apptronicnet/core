@@ -9,6 +9,7 @@ import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.EntitySubscription
 import net.apptronic.core.component.entity.EntityValue
+import net.apptronic.core.component.entity.collectContext
 import net.apptronic.core.component.entity.subscriptions.ContextSubscriptionFactory
 import net.apptronic.core.threading.Worker
 import net.apptronic.core.threading.WorkerDefinition
@@ -135,15 +136,6 @@ private class SingleFunction<T, X>(
 
 }
 
-private fun collectContext(vararg entities: Entity<*>): Context {
-    val context = entities[0].getContext().getToken()
-    entities.forEach {
-        if (context !== it.getContext().getToken()) {
-            throw IllegalArgumentException("Function cannot use arguments from different contexts")
-        }
-    }
-    return context
-}
 
 private class DoubleFunction<T, A, B>(
     left: Entity<A>,

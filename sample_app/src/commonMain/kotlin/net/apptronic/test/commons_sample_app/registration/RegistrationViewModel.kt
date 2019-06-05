@@ -2,7 +2,7 @@ package net.apptronic.test.commons_sample_app.registration
 
 import net.apptronic.core.base.observable.subscribe
 import net.apptronic.core.component.entity.entities.setAs
-import net.apptronic.core.component.entity.functions.variants.*
+import net.apptronic.core.component.entity.functions.*
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 import net.apptronic.core.mvvm.viewmodel.extensions.forEachChangeAnyOf

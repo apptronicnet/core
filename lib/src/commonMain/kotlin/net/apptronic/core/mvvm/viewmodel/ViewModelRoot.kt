@@ -5,7 +5,7 @@ import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.behavior.whenever
 import net.apptronic.core.component.entity.behavior.wheneverNot
 import net.apptronic.core.component.entity.entities.setAs
-import net.apptronic.core.component.entity.functions.variants.and
+import net.apptronic.core.component.entity.functions.and
 
 class ViewModelRoot(
     val coreViewModel: ViewModel,
