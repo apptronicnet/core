@@ -15,7 +15,7 @@ import net.apptronic.test.commons_sample_app.resources.getResourceId
 
 class ListItemImageView : AndroidView<ListItemImageViewModel>() {
 
-    override val layoutResId: Int = R.layout.list_item_image
+    override var layoutResId: Int? = R.layout.list_item_image
 
     override fun onBindView(view: View, viewModel: ListItemImageViewModel) {
         with(view) {

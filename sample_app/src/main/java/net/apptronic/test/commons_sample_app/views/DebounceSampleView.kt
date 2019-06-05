@@ -10,7 +10,7 @@ import net.apptronic.test.commons_sample_app.debounce.DebounceSampleViewModel
 
 class DebounceSampleView : AndroidView<DebounceSampleViewModel>() {
 
-    override val layoutResId: Int = R.layout.debounce_test
+    override var layoutResId: Int? = R.layout.debounce_test
 
     override fun onBindView(view: View, viewModel: DebounceSampleViewModel) {
         with(view) {

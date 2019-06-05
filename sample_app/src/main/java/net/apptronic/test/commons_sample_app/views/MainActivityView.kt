@@ -10,7 +10,7 @@ import net.apptronic.test.commons_sample_app.R
 
 class MainActivityView : AndroidView<ApplicationScreenViewModel>() {
 
-    override val layoutResId: Int = R.layout.activity_main
+    override var layoutResId: Int? = R.layout.activity_main
 
     override fun onBindView(view: View, viewModel: ApplicationScreenViewModel) {
         with(view) {

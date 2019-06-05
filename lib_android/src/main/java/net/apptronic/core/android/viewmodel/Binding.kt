@@ -11,7 +11,7 @@ abstract class Binding : BindingContainer {
         onBind(viewModel, androidView)
     }
 
-    abstract fun onBind(viewModel: ViewModel, androidView: AndroidView<*>)
+    protected abstract fun onBind(viewModel: ViewModel, androidView: AndroidView<*>)
 
     internal fun unbind() {
         bindings!!.unbind()
@@ -23,10 +23,6 @@ abstract class Binding : BindingContainer {
 
     override infix fun add(binding: Binding) {
         bindings!!.add(binding)
-    }
-
-    override operator fun Binding.unaryPlus() {
-        bindings!!.add(this)
     }
 
 }

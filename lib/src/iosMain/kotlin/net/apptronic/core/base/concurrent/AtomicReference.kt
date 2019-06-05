@@ -1,18 +1,18 @@
 package net.apptronic.core.base.concurrent
 
 import net.apptronic.core.base.concurrent.base.IAtomicReference
+import kotlin.native.concurrent.AtomicReference
 
 actual class AtomicReference<T> actual constructor(initialValue: T) : IAtomicReference<T> {
 
-    // TODO temporary solution
-    private var reference: T = initialValue
+    private var atomic = AtomicReference<T>(initialValue)
 
     override fun set(value: T) {
-        reference = value
+        atomic.value = value
     }
 
     override fun get(): T {
-        return reference
+        return atomic.value
     }
 
 }

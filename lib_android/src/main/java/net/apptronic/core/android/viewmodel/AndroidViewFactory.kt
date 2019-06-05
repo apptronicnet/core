@@ -19,6 +19,7 @@ inline fun <reified ViewModelType : ViewModel> androidView(
 
 class AndroidViewFactory {
 
+    private var parent: AndroidViewFactory? = null
     private var indexGenerator = 1
     private val views = mutableMapOf<KClass<*>, ViewSpec>()
 
@@ -29,11 +30,21 @@ class AndroidViewFactory {
     ) {
 
         fun build(): AndroidView<*> {
-            return builder.invoke()
+            return builder.invoke().also {
+                if (layoutResId != null) {
+                    it.layoutResId = layoutResId
+                }
+            }
         }
 
     }
 
+    /**
+     * Add binding
+     * @param [ViewModelType] type of [ViewModel] for bind
+     * @param [builder] builder function of constructor reference for [AndroidView]
+     * @param [layoutResId] optional value for layout to be overridden instead of set in [AndroidView]
+     */
     inline fun <reified ViewModelType : ViewModel> addBinding(
         noinline builder: () -> AndroidView<ViewModelType>,
         @LayoutRes layoutResId: Int? = null
@@ -45,6 +56,12 @@ class AndroidViewFactory {
         )
     }
 
+    /**
+     * Add binding
+     * @param [clazz] type of [ViewModel] for bind
+     * @param [builder] builder function of constructor reference for [AndroidView]
+     * @param [layoutResId] optional value for layout to be overridden instead of set in [AndroidView]
+     */
     fun <ViewModelType : ViewModel> addBinding(
         clazz: KClass<ViewModelType>,
         builder: () -> AndroidView<ViewModelType>,
@@ -76,12 +93,26 @@ class AndroidViewFactory {
             }
             iterableValue = iterableValue?.superclasses?.get(0)
         } while (iterableValue != null && iterableValue != ViewModel::class)
+        val parent = this.parent
+        if (parent != null) {
+            return parent.searchRecursive(clazz)
+        }
         return null
     }
 
     fun getType(viewModel: ViewModel): Int {
         return searchRecursive(viewModel::class)?.typeId
             ?: throw IllegalArgumentException("AndroidView is not registered for $viewModel")
+    }
+
+    /**
+     * Create new [AndroidViewFactory] which inherits all bindings from current but with possibility
+     * to add new bindings which have no affecting for initial [AndroidViewFactory]
+     */
+    fun override(initializer: AndroidViewFactory.() -> Unit): AndroidViewFactory {
+        return androidViewFactory(initializer).also {
+            it.parent = this
+        }
     }
 
 }

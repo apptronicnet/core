@@ -10,7 +10,7 @@ import net.apptronic.test.commons_sample_app.login.LoginViewModel
 
 class LoginScreenView : AndroidView<LoginViewModel>() {
 
-    override val layoutResId: Int = R.layout.screen_login
+    override var layoutResId: Int? = R.layout.screen_login
 
     override fun onBindView(view: View, viewModel: LoginViewModel) {
         with(view) {

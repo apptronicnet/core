@@ -1,4 +1,4 @@
-package net.apptronic.core.mvvm.utils
+package net.apptronic.core.mvvm.viewmodel.container
 
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.base.observable.subject.BehaviorSubject
@@ -16,9 +16,10 @@ import net.apptronic.core.mvvm.viewmodel.ViewModel
  * for item in updated list already exists - it will not create new [ViewModel] but update
  * existing [ViewModel] and place it in updates list at required place.
  */
-abstract class ViewModelListBuilder<T, Id, VM : ViewModel>(
-    private val context: Context
-) : Entity<List<ViewModel>> {
+class ViewModelListBuilder<T, Id, VM : ViewModel>(
+    private val parent: ViewModel,
+    private val builder: ViewModelBuilder<T, Id, VM>
+) : Entity<List<ViewModel>>, ViewModelBuilder<T, Id, VM> by builder {
 
     private inner class ViewModelHolder(
         val id: Id,
@@ -27,30 +28,15 @@ abstract class ViewModelListBuilder<T, Id, VM : ViewModel>(
 
     private val viewModelHolders = arrayListOf<ViewModelHolder>()
 
-    private val subject = ContextSubjectWrapper(context, BehaviorSubject<List<ViewModel>>())
+    private val subject = ContextSubjectWrapper(parent, BehaviorSubject<List<ViewModel>>())
 
     init {
         subject.update(emptyList())
     }
 
     override fun getContext(): Context {
-        return context
+        return parent
     }
-
-    /**
-     * Get id for item. By this id [ViewModelListBuilder] defines is item is same or not.
-     */
-    protected abstract fun getId(item: T): Id
-
-    /**
-     * Create [ViewModel] fro item
-     */
-    protected abstract fun onCreateViewModel(parent: Context, item: T): VM
-
-    /**
-     * Update already existing [ViewModel] for item
-     */
-    protected abstract fun onUpdateViewModel(viewModel: VM, newItem: T)
 
     /**
      * Update list of [ViewModel]s automatically from given [Entity]
@@ -97,7 +83,7 @@ abstract class ViewModelListBuilder<T, Id, VM : ViewModel>(
         }
         addedItems.forEach { item ->
             val id = getId(item)
-            val viewModel = onCreateViewModel(context, item)
+            val viewModel = onCreateViewModel(parent, item)
             viewModelHolders.add(ViewModelHolder(id, viewModel))
         }
         viewModelHolders.sortWith(PostArrangeComparator(newList))
@@ -105,7 +91,10 @@ abstract class ViewModelListBuilder<T, Id, VM : ViewModel>(
         subject.update(result)
     }
 
-    override fun subscribe(context: Context, observer: Observer<List<ViewModel>>): EntitySubscription {
+    override fun subscribe(
+        context: Context,
+        observer: Observer<List<ViewModel>>
+    ): EntitySubscription {
         return subject.subscribe(context, observer)
     }
 

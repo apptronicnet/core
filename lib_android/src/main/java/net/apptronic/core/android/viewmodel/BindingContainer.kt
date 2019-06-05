@@ -8,8 +8,6 @@ interface BindingContainer {
 
     infix fun add(binding: Binding)
 
-    operator fun Binding.unaryPlus()
-
 }
 
 internal class Bindings(
@@ -38,10 +36,6 @@ internal class Bindings(
     override infix fun add(binding: Binding) {
         bindingList.add(binding)
         binding.bind(viewModel, androidView)
-    }
-
-    override operator fun Binding.unaryPlus() {
-        this.add(this)
     }
 
 }
