@@ -22,7 +22,20 @@ kotlin {
     jvm {
 
     }
+    iosX64 {
+        compilations.main {
+            outputKinds("framework")
+            extraOpts "-Xobjc-generics"
+        }
+    }
+    iosArm64 {
+        compilations.main {
+            outputKinds("framework")
+            extraOpts "-Xobjc-generics"
+        }
+    }
     sourceSets {
+        
         commonMain {
             dependencies {
                 implementation kotlin("stdlib-common")
