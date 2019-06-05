@@ -7,15 +7,13 @@ group = rootProject.ext.lib_group_id
 version = rootProject.ext.lib_version
 
 kotlin {
-    targets {
-        final def iOSTarget = System.getenv('SDK_NAME')?.startsWith("iphoneos") \
-                              ? presets.iosArm64 : presets.iosX64
-
-
-        fromPreset(iOSTarget, 'ios') {
-            binaries {
-                framework('ApptronicNetCore')
-            }
+    iosX64("ios") {
+        binaries {
+            framework()
+        }
+        compilations.main {
+            outputKinds("framework")
+            extraOpts "-Xobjc-generics"
         }
     }
 
@@ -76,24 +74,20 @@ publishing {
     }
 }
 
-
-task packForXCode(type: Sync) {
-    final File frameworkDir = new File(buildDir, "xcode-frameworks")
-    final String mode = project.findProperty("XCODE_CONFIGURATION")?.toUpperCase() ?: 'DEBUG'
-    final def framework = kotlin.targets.ios.binaries.getFramework("ApptronicNetCore", mode)
-
-    inputs.property "mode", mode
-    dependsOn framework.linkTask
-
-    from { framework.outputFile.parentFile }
-    into frameworkDir
+task copyFramework {
+    def buildType = project.findProperty('kotlin.build.type') ?: 'DEBUG'
+    def target = project.findProperty('kotlin.target') ?: 'ios'
+    dependsOn kotlin.targets."$target".binaries.getFramework(buildType).linkTask
 
     doLast {
-        new File(frameworkDir, 'gradlew').with {
-            text = "#!/bin/bash\nexport 'JAVA_HOME=${System.getProperty("java.home")}'\ncd '${rootProject.rootDir}'\n./gradlew \$@\n"
-            setExecutable(true)
+        def srcFile = kotlin.targets."$target".binaries.getFramework(buildType).outputFile
+        def targetDir = rootProject.file("lib_ios/framework")
+        targetDir.mkdirs()
+        copy {
+            from srcFile.parent
+            into targetDir
+            include 'lib.framework/**'
+            include 'lib.framework.dSYM'
         }
     }
 }
-
-tasks.build.dependsOn packForXCode
