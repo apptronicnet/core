@@ -8,13 +8,20 @@ group = rootProject.ext.lib_group_id
 version = rootProject.ext.lib_version
 
 kotlin {
+    targets {
+        final def iOSTarget = System.getenv('SDK_NAME')?.startsWith("iphoneos") \
+                              ? presets.iosArm64 : presets.iosX64
+
+
+        fromPreset(iOSTarget, 'ios') {
+            binaries {
+                framework('ApptronicNetCore')
+            }
+        }
+    }
+
     jvm {
 
-    }
-    iosX64("ios") {
-        binaries {
-            framework()
-        }
     }
     sourceSets {
         commonMain {
@@ -32,7 +39,6 @@ kotlin {
         jvmMain {
             dependencies {
                 implementation kotlin("stdlib-jdk8")
-                implementation "org.jetbrains.kotlinx:atomicfu-common:$atomicfu_version"
             }
         }
         jvmTest {
@@ -43,7 +49,6 @@ kotlin {
         iosMain {
             dependencies {
                 implementation kotlin("stdlib-common")
-                implementation "org.jetbrains.kotlinx:atomicfu-native:$atomicfu_version"
             }
         }
     }
@@ -58,3 +63,25 @@ publishing {
         }
     }
 }
+
+
+task packForXCode(type: Sync) {
+    final File frameworkDir = new File(buildDir, "xcode-frameworks")
+    final String mode = project.findProperty("XCODE_CONFIGURATION")?.toUpperCase() ?: 'DEBUG'
+    final def framework = kotlin.targets.ios.binaries.getFramework("ApptronicNetCore", mode)
+
+    inputs.property "mode", mode
+    dependsOn framework.linkTask
+
+    from { framework.outputFile.parentFile }
+    into frameworkDir
+
+    doLast {
+        new File(frameworkDir, 'gradlew').with {
+            text = "#!/bin/bash\nexport 'JAVA_HOME=${System.getProperty("java.home")}'\ncd '${rootProject.rootDir}'\n./gradlew \$@\n"
+            setExecutable(true)
+        }
+    }
+}
+
+tasks.build.dependsOn packForXCode
