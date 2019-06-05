@@ -18,7 +18,7 @@ import net.apptronic.test.commons_sample_app.convert.MeasurementUnit
 
 class ConvertScreenView : AndroidView<ConvertScreenViewModel>() {
 
-    override val layoutResId: Int = R.layout.screen_convert
+    override var layoutResId: Int? = R.layout.screen_convert
 
     override fun onBindView(view: View, viewModel: ConvertScreenViewModel) {
         with(view) {

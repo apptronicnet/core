@@ -9,7 +9,7 @@ import net.apptronic.core.threading.execute
 
 class ViewModelListNavigator(
         private val parent: ViewModel
-) : Navigator<List<ViewModel>>(parent),
+) : BaseViewModelListNavigator<ViewModel>(parent),
         UpdateEntity<List<ViewModel>>,
         ViewModelListAdapter.SourceNavigator {
 
@@ -111,7 +111,7 @@ class ViewModelListNavigator(
         }
     }
 
-    fun setAdapter(adapter: ViewModelListAdapter) {
+    override fun setAdapter(adapter: ViewModelListAdapter) {
         uiWorker.execute {
             this.adapter = adapter
             adapter.onDataChanged(items)

@@ -14,7 +14,7 @@ import net.apptronic.core.mvvm.viewmodel.ViewModel
 abstract class AndroidView<T : ViewModel> : BindingContainer {
 
     @LayoutRes
-    open val layoutResId: Int? = null
+    open var layoutResId: Int? = null
 
     private lateinit var viewModel: ViewModel
     private lateinit var view: View

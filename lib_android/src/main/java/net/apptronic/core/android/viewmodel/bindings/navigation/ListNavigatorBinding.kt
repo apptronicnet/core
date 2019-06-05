@@ -7,11 +7,11 @@ import net.apptronic.core.android.viewmodel.AndroidViewModelListAdapter
 import net.apptronic.core.android.viewmodel.Binding
 import net.apptronic.core.android.viewmodel.listadapters.RecyclerViewAdapter
 import net.apptronic.core.mvvm.viewmodel.ViewModel
-import net.apptronic.core.mvvm.viewmodel.container.ViewModelListNavigator
+import net.apptronic.core.mvvm.viewmodel.container.BaseViewModelListNavigator
 
 fun listNavigatorBinding(
     recyclerView: RecyclerView,
-    navigator: ViewModelListNavigator,
+    navigator: BaseViewModelListNavigator<*>,
     factory: AndroidViewFactory
 ): ListNavigatorBinding {
     return ListNavigatorBinding(recyclerView, navigator, factory)
@@ -19,7 +19,7 @@ fun listNavigatorBinding(
 
 class ListNavigatorBinding(
     private val recyclerView: RecyclerView,
-    private val navigator: ViewModelListNavigator,
+    private val navigator: BaseViewModelListNavigator<*>,
     private val factory: AndroidViewFactory
 ) : Binding() {
 

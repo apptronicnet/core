@@ -4,12 +4,12 @@ import net.apptronic.core.base.observable.Observable
 import net.apptronic.core.base.observable.subject.BehaviorSubject
 import net.apptronic.core.component.Component
 import net.apptronic.core.component.entity.Entity
+import net.apptronic.core.component.entity.entities.setAs
 import net.apptronic.core.component.entity.extensions.setup
 import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.component.lifecycle.Lifecycle
 import net.apptronic.core.component.lifecycle.LifecycleStage
-import net.apptronic.core.mvvm.viewmodel.container.ViewModelListNavigator
-import net.apptronic.core.mvvm.viewmodel.container.ViewModelStackNavigator
+import net.apptronic.core.mvvm.viewmodel.container.*
 import net.apptronic.core.platform.getPlatform
 import net.apptronic.core.threading.WorkerDefinition
 
@@ -88,8 +88,38 @@ open class ViewModel : Component {
         }
     }
 
+    fun <T, Id, VM : ViewModel> listBuilder(builder: ViewModelBuilder<T, Id, VM>): ViewModelListBuilder<T, Id, VM> {
+        return ViewModelListBuilder(this, builder)
+    }
+
     fun listNavigator(): ViewModelListNavigator {
         return ViewModelListNavigator(this)
+    }
+
+    fun <T, Id, VM : ViewModel> listNavigator(
+        source: Entity<List<T>>,
+        builder: ViewModelBuilder<T, Id, VM>
+    ): ViewModelListNavigator {
+        val listBuilder = listBuilder(builder)
+        listBuilder.updateFrom(source)
+        return listNavigator().setAs(listBuilder)
+    }
+
+    fun <T, Id, VM : ViewModel> listRecyclerNavigator(
+        builder: ViewModelBuilder<T, Id, VM>
+    ): ViewModelListRecyclerNavigator<T, Id, VM> {
+        return ViewModelListRecyclerNavigator(this, builder)
+    }
+
+    fun <T, Id, VM : ViewModel> listRecyclerNavigator(
+        source: Entity<List<T>>,
+        builder: ViewModelBuilder<T, Id, VM>
+    ): ViewModelListRecyclerNavigator<T, Id, VM> {
+        val navigator = listRecyclerNavigator(builder)
+        source.subscribe {
+            navigator.set(it)
+        }
+        return navigator
     }
 
     fun listNavigator(source: Entity<List<ViewModel>>): ViewModelListNavigator {

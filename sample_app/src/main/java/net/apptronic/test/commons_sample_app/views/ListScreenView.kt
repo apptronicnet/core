@@ -14,7 +14,7 @@ import net.apptronic.test.commons_sample_app.list.ListScreenViewModel
 
 class ListScreenView : AndroidView<ListScreenViewModel>() {
 
-    override val layoutResId: Int = R.layout.screen_list
+    override var layoutResId: Int? = R.layout.screen_list
 
     override fun onBindView(view: View, viewModel: ListScreenViewModel) {
         with(view) {

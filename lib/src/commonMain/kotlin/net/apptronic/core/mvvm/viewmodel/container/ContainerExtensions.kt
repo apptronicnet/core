@@ -10,10 +10,11 @@ internal fun <T> getDiff(before: List<T>, after: List<T>): Diff<T> {
     val removed = before.filter {
         same.contains(it).not()
     }
-    return Diff(added, removed)
+    return Diff(same, added, removed)
 }
 
 internal data class Diff<T>(
+    val same: List<T>,
     val added: List<T>,
     val removed: List<T>
 )

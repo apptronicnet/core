@@ -11,7 +11,7 @@ import net.apptronic.test.commons_sample_app.pager.PagerViewModel
 
 class PagerView : AndroidView<PagerViewModel>() {
 
-    override val layoutResId: Int = R.layout.screen_pages
+    override var layoutResId: Int? = R.layout.screen_pages
 
     override fun onBindView(view: View, viewModel: PagerViewModel) {
         with(view) {
