@@ -7,24 +7,27 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		58A6E4A38E0880774BB1F955 /* MainThreadAsyncWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58A6EF811E152EB3D4AD08A8 /* MainThreadAsyncWorker.swift */; };
+		58A6E4CECBA0E5435F6F816F /* IosPlatform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58A6E5C4A046CFC5E590B56C /* IosPlatform.swift */; };
+		58A6E836FE42179B418183AF /* MainThreadWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58A6EFA403BB38DD3066ED39 /* MainThreadWorker.swift */; };
+		6547637322A9038A00CC8E71 /* lib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6547637222A9038900CC8E71 /* lib.framework */; };
+		6547637422A9038A00CC8E71 /* lib.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6547637222A9038900CC8E71 /* lib.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		CBE99D9022A5A0BD00B6B299 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBE99D8F22A5A0BD00B6B299 /* AppDelegate.swift */; };
 		CBE99D9222A5A0BD00B6B299 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBE99D9122A5A0BD00B6B299 /* ViewController.swift */; };
 		CBE99D9522A5A0BD00B6B299 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CBE99D9322A5A0BD00B6B299 /* Main.storyboard */; };
 		CBE99D9722A5A0BE00B6B299 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CBE99D9622A5A0BE00B6B299 /* Assets.xcassets */; };
 		CBE99D9A22A5A0BE00B6B299 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CBE99D9822A5A0BE00B6B299 /* LaunchScreen.storyboard */; };
 		CBE99DA622A5A10100B6B299 /* MainViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBE99DA522A5A10100B6B299 /* MainViewModel.swift */; };
-		CBE99DB222A5A5DE00B6B299 /* ApptronicNetCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CBE99DB122A5A5DE00B6B299 /* ApptronicNetCore.framework */; };
-		CBE99DB322A5A5DE00B6B299 /* ApptronicNetCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CBE99DB122A5A5DE00B6B299 /* ApptronicNetCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		CBE99DB422A5A5DE00B6B299 /* Embed Frameworks */ = {
+		6547637522A9038A00CC8E71 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				CBE99DB322A5A5DE00B6B299 /* ApptronicNetCore.framework in Embed Frameworks */,
+				6547637422A9038A00CC8E71 /* lib.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -32,6 +35,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		58A6E5C4A046CFC5E590B56C /* IosPlatform.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IosPlatform.swift; sourceTree = "<group>"; };
+		58A6EF811E152EB3D4AD08A8 /* MainThreadAsyncWorker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainThreadAsyncWorker.swift; sourceTree = "<group>"; };
+		58A6EFA403BB38DD3066ED39 /* MainThreadWorker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainThreadWorker.swift; sourceTree = "<group>"; };
+		6547636322A8FE0E00CC8E71 /* lib.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; name = lib.framework.dSYM; path = ../framework/lib.framework.dSYM; sourceTree = "<group>"; };
+		6547637222A9038900CC8E71 /* lib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = lib.framework; path = ../framework/lib.framework; sourceTree = "<group>"; };
 		CBE99D8C22A5A0BD00B6B299 /* core-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "core-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CBE99D8F22A5A0BD00B6B299 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CBE99D9122A5A0BD00B6B299 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -40,8 +48,6 @@
 		CBE99D9922A5A0BE00B6B299 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		CBE99D9B22A5A0BE00B6B299 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CBE99DA522A5A10100B6B299 /* MainViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewModel.swift; sourceTree = "<group>"; };
-		CBE99DAE22A5A59A00B6B299 /* ApptronicNetCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApptronicNetCore.framework; path = ../../lib/build/bin/ios/ApptronicNetCoreDebugFramework/ApptronicNetCore.framework; sourceTree = "<group>"; };
-		CBE99DB122A5A5DE00B6B299 /* ApptronicNetCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApptronicNetCore.framework; path = "../../lib/build/xcode-frameworks/ApptronicNetCore.framework"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -49,20 +55,38 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CBE99DB222A5A5DE00B6B299 /* ApptronicNetCore.framework in Frameworks */,
+				6547637322A9038A00CC8E71 /* lib.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		58A6E06DADAD5095BF763A1D /* lib_ios */ = {
+			isa = PBXGroup;
+			children = (
+				58A6E5C4A046CFC5E590B56C /* IosPlatform.swift */,
+				58A6EFA403BB38DD3066ED39 /* MainThreadWorker.swift */,
+				58A6EF811E152EB3D4AD08A8 /* MainThreadAsyncWorker.swift */,
+			);
+			path = lib_ios;
+			sourceTree = "<group>";
+		};
+		6547636422A8FE2500CC8E71 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		CBE99D8322A5A0BD00B6B299 = {
 			isa = PBXGroup;
 			children = (
-				CBE99DAE22A5A59A00B6B299 /* ApptronicNetCore.framework */,
-				CBE99DB122A5A5DE00B6B299 /* ApptronicNetCore.framework */,
+				6547637222A9038900CC8E71 /* lib.framework */,
+				6547636322A8FE0E00CC8E71 /* lib.framework.dSYM */,
 				CBE99D8E22A5A0BD00B6B299 /* core-ios */,
 				CBE99D8D22A5A0BD00B6B299 /* Products */,
+				6547636422A8FE2500CC8E71 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -84,6 +108,7 @@
 				CBE99D9822A5A0BE00B6B299 /* LaunchScreen.storyboard */,
 				CBE99D9B22A5A0BE00B6B299 /* Info.plist */,
 				CBE99DA522A5A10100B6B299 /* MainViewModel.swift */,
+				58A6E06DADAD5095BF763A1D /* lib_ios */,
 			);
 			path = "core-ios";
 			sourceTree = "<group>";
@@ -98,7 +123,7 @@
 				CBE99D8822A5A0BD00B6B299 /* Sources */,
 				CBE99D8922A5A0BD00B6B299 /* Frameworks */,
 				CBE99D8A22A5A0BD00B6B299 /* Resources */,
-				CBE99DB422A5A5DE00B6B299 /* Embed Frameworks */,
+				6547637522A9038A00CC8E71 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -163,6 +188,9 @@
 				CBE99D9222A5A0BD00B6B299 /* ViewController.swift in Sources */,
 				CBE99D9022A5A0BD00B6B299 /* AppDelegate.swift in Sources */,
 				CBE99DA622A5A10100B6B299 /* MainViewModel.swift in Sources */,
+				58A6E4CECBA0E5435F6F816F /* IosPlatform.swift in Sources */,
+				58A6E836FE42179B418183AF /* MainThreadWorker.swift in Sources */,
+				58A6E4A38E0880774BB1F955 /* MainThreadAsyncWorker.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -310,7 +338,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = T794799894;
-				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../../lib/build/xcode-frameworks";
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../framework/**";
 				INFOPLIST_FILE = "core-ios/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -329,7 +357,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = T794799894;
-				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../../lib/build/xcode-frameworks";
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../framework/**";
 				INFOPLIST_FILE = "core-ios/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

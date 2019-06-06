@@ -7,14 +7,32 @@
 //
 
 import Foundation
-import ApptronicNetCore
+import lib
+
+class A {
+
+    init(value: String) {
+
+    }
+}
+
+class B: A {
+    var x: String
+
+    override init(value: String) {
+        self.x = "123"
+        super.init(value: value)
+    }
+}
 
 class MainViewModel: ViewModel {
+
+    lazy var name: Property = {
+        value(defaultValue: "Any")
+    }()
+
     override init(context: ViewModelContext) {
-        super.init(context: <#T##ViewModelContext#>)
-        self.name = value<String>("John")
+        super.init(context: context)
     }
-    
-    var name: Property?
-    
+
 }
