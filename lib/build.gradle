@@ -7,15 +7,38 @@ group = rootProject.ext.lib_group_id
 version = rootProject.ext.lib_version
 
 kotlin {
+    iosX64("ios") {
+        binaries {
+            framework {
+                compilations.main {
+                    outputKinds("framework")
+                    extraOpts "-Xobjc-generics"
+                }
+            }
+        }
+        compilations.main {
+            outputKinds("framework")
+            extraOpts "-Xobjc-generics"
+        }
+    }
+
     jvm {
 
     }
-    iosX64("ios") {
-        binaries {
-            framework()
+    iosX64 {
+        compilations.main {
+            outputKinds("framework")
+            extraOpts "-Xobjc-generics"
+        }
+    }
+    iosArm64 {
+        compilations.main {
+            outputKinds("framework")
+            extraOpts "-Xobjc-generics"
         }
     }
     sourceSets {
+        
         commonMain {
             dependencies {
                 implementation kotlin("stdlib-common")
@@ -52,6 +75,24 @@ publishing {
             groupId = rootProject.ext.lib_group_id
             artifactId = "core-commons"
             version = rootProject.ext.lib_version
+        }
+    }
+}
+
+task copyFramework {
+    def buildType = project.findProperty('kotlin.build.type') ?: 'DEBUG'
+    def target = project.findProperty('kotlin.target') ?: 'ios'
+    dependsOn kotlin.targets."$target".binaries.getFramework(buildType).linkTask
+
+    doLast {
+        def srcFile = kotlin.targets."$target".binaries.getFramework(buildType).outputFile
+        def targetDir = rootProject.file("lib_ios/framework")
+        targetDir.mkdirs()
+        copy {
+            from srcFile.parent
+            into targetDir
+            include 'lib.framework/**'
+            include 'lib.framework.dSYM'
         }
     }
 }
