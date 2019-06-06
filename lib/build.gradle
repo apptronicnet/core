@@ -9,7 +9,12 @@ version = rootProject.ext.lib_version
 kotlin {
     iosX64("ios") {
         binaries {
-            framework()
+            framework {
+                compilations.main {
+                    outputKinds("framework")
+                    extraOpts "-Xobjc-generics"
+                }
+            }
         }
         compilations.main {
             outputKinds("framework")
