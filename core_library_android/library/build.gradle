@@ -4,8 +4,8 @@ plugins {
     id "maven-publish"
 }
 
-group = rootProject.ext.lib_group_id
-version = rootProject.ext.lib_version
+group = "net.apptronic.core"
+version = rootProject.ext.library_android_version
 
 android {
 
@@ -26,7 +26,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
-    implementation project(path: ':lib')
+    implementation "net.apptronic.core:core-commons:${rootProject.ext.library_android_version}"
 
     compileOnly "androidx.core:core:1.0.2"
     compileOnly "androidx.appcompat:appcompat:1.0.2"
@@ -36,10 +36,10 @@ dependencies {
 publishing {
     publications {
         bar(MavenPublication) {
-            artifact("build/outputs/aar/lib_android-debug.aar")
-            groupId = rootProject.ext.lib_group_id
+            artifact("build/outputs/aar/library-debug.aar")
+            groupId = "net.apptronic.core"
             artifactId = "core-android"
-            version = rootProject.ext.lib_version
+            version = rootProject.ext.library_android_version
         }
     }
 }

@@ -1,1 +1,0 @@
-include ':lib', ':lib_android', ':sample_app'

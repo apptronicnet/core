@@ -21,13 +21,13 @@ android {
         }
     }
     packagingOptions {
-        exclude 'META-INF/lib.kotlin_module'
+        exclude 'META-INF/core_library_common.kotlin_module'
     }
 }
 
 dependencies {
-    implementation "net.apptronic.core:core-commons:${rootProject.ext.lib_version}"
-    implementation "net.apptronic.core:core-android:${rootProject.ext.lib_version}"
+    implementation "net.apptronic.core:core-commons:${rootProject.ext.library_android_version}"
+    implementation project(path: ':library')
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
@@ -56,7 +56,7 @@ kotlin {
             dependencies {
                 implementation kotlin('stdlib-common')
                 implementation kotlin('reflect')
-                implementation "net.apptronic.core:core-commons:${rootProject.ext.lib_version}"
+                implementation "net.apptronic.core:core-commons:${rootProject.ext.library_android_version}"
             }
         }
         androidMain {

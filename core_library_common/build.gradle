@@ -1,10 +1,36 @@
-plugins {
-    id "kotlin-multiplatform"
-    id "maven-publish"
+buildscript {
+    ext.kotlin_version = "1.3.31"
+    ext.junit_version = "4.12"
+    ext.library_core_version = "0.1.3"
+    repositories {
+        google()
+        gradlePluginPortal()
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.4.1'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
 }
 
-group = rootProject.ext.lib_group_id
-version = rootProject.ext.lib_version
+apply plugin: "kotlin-multiplatform"
+apply plugin: "maven-publish"
+
+repositories {
+    google()
+    gradlePluginPortal()
+    mavenCentral()
+    jcenter()
+}
+
+wrapper {
+    gradleVersion = "5.3.1"
+    distributionType = "ALL"
+}
+
+group = "net.apptronic.core"
+version = ext.library_core_version
 
 kotlin {
     iosX64("ios") {
@@ -21,10 +47,7 @@ kotlin {
             extraOpts "-Xobjc-generics"
         }
     }
-
-    jvm {
-
-    }
+    jvm()
     iosX64 {
         compilations.main {
             outputKinds("framework")
@@ -38,7 +61,6 @@ kotlin {
         }
     }
     sourceSets {
-        
         commonMain {
             dependencies {
                 implementation kotlin("stdlib-common")
@@ -72,9 +94,9 @@ kotlin {
 publishing {
     publications {
         jvm {
-            groupId = rootProject.ext.lib_group_id
+            groupId = "net.apptronic.core"
             artifactId = "core-commons"
-            version = rootProject.ext.lib_version
+            version = project.ext.library_core_version
         }
     }
 }
@@ -86,7 +108,7 @@ task copyFramework {
 
     doLast {
         def srcFile = kotlin.targets."$target".binaries.getFramework(buildType).outputFile
-        def targetDir = rootProject.file("lib_ios/framework")
+        def targetDir = rootProject.file("../lib_ios/framework")
         targetDir.mkdirs()
         copy {
             from srcFile.parent
