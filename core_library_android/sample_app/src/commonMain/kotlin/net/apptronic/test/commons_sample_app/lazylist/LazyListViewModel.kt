@@ -27,8 +27,14 @@ class LazyListViewModel(context: ViewModelContext) : ViewModel(context), LazyLis
 
     private val loaderTask = genericTaskScheduler(SchedulerMode.Debounce) {
         onStart(WorkerDefinition.BACKGROUND_PARALLEL_SHARED).map {
-            (1..100).map {
-                LazyListItem(it.toLong(), it, randomString())
+            mutableListOf<Any>().apply {
+                add(StaticItem("start", "Start", randomString()))
+                addAll(
+                    (1..100).map {
+                        LazyListItem(it.toLong(), it, randomString())
+                    }
+                )
+                add(StaticItem("end", "End", randomString()))
             }
         }.sendResultTo(items)
     }.executeWhen(whenCreated())
@@ -36,16 +42,20 @@ class LazyListViewModel(context: ViewModelContext) : ViewModel(context), LazyLis
     private val updateTask = taskScheduler<Long> {
         onStart(WorkerDefinition.DEFAULT).map {
             items.get() to it
-        }.switchWorker(WorkerDefinition.BACKGROUND_PARALLEL_SHARED).map { paur ->
-            paur.first.map {
-                if (it.id == paur.second) {
-                    LazyListItem(
-                        it.id,
-                        it.number,
-                        randomString()
-                    )
-                } else {
-                    it
+        }.switchWorker(WorkerDefinition.BACKGROUND_PARALLEL_SHARED).map { pair ->
+            pair.first.map { item ->
+                (item as? LazyListItem)?.let {
+                    if (it.id == pair.second) {
+                        LazyListItem(
+                            it.id,
+                            it.number,
+                            randomString()
+                        )
+                    } else {
+                        it
+                    }
+                } ?: (item as StaticItem).also {
+                    it.text = randomString()
                 }
             }
         }.sendResultTo(items)

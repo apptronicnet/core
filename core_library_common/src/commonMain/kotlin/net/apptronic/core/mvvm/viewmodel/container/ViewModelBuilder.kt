@@ -27,4 +27,19 @@ interface ViewModelBuilder<T, Id, VM : ViewModel> {
      */
     fun onUpdateViewModel(viewModel: VM, newItem: T)
 
+    /**
+     * Defines whenever [ViewModel] should not be recycled on going out from list. This should be used carefully
+     * as it may cause that [ViewModel] will not be recycled after [item] is removed from list. This method should
+     * verify that [item] exists in list, which can be hard in case when list is large or lazy-loaded by itself so
+     * simple check for [List.contains] can be dangerous as requires seeking whole list and loading all of it's elements.
+     * Position in list is not provided too as it took to much time to define real position of item on long or lazy list.
+     *
+     * @param list list, used as source in adapter
+     * @param item item, which represents [viewModel] in [list]
+     * @param viewModel [ViewModel], used to display this item
+     */
+    fun shouldRetainInstance(list: List<T>, item: T, viewModel: VM): Boolean {
+        return false
+    }
+
 }

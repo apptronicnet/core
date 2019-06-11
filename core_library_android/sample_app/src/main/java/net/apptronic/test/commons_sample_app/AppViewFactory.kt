@@ -18,4 +18,5 @@ val AppViewFactory = androidViewFactory {
     addBinding(::DebounceSampleView)
     addBinding(::LazyListView)
     addBinding(::LazyListItemView)
+    addBinding(::StaticItemView)
 }

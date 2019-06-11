@@ -119,7 +119,12 @@ class ViewModelListRecyclerNavigator<T, Id, VM : ViewModel>(
                 containers.entries.firstOrNull {
                     it.value.container.viewModel == viewModel
                 }?.let {
-                    onRemoved(it.value.item)
+                    val key = builder.getId(it.value.item)
+                    if (builder.shouldRetainInstance(items, it.value.item, viewModel as VM)) {
+                        viewModel.getContainer()?.container?.setBound(false)
+                    } else {
+                        onRemoved(it.value.item)
+                    }
                 }
             }
         }
