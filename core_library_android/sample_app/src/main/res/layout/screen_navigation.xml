@@ -46,4 +46,11 @@
         android:layout_marginEnd="24dp"
         android:text="Debounce demo" />
 
+    <Button
+        android:id="@+id/lazyListDemo"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="24dp"
+        android:text="Lazy list demo" />
+
 </TableLayout>

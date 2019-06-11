@@ -16,4 +16,6 @@ val AppViewFactory = androidViewFactory {
     addBinding(::TextPageView)
     addBinding(::ImagePageView)
     addBinding(::DebounceSampleView)
+    addBinding(::LazyListView)
+    addBinding(::LazyListItemView)
 }

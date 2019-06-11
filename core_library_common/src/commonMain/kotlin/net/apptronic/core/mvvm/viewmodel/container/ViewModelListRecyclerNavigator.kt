@@ -44,9 +44,11 @@ class ViewModelListRecyclerNavigator<T, Id, VM : ViewModel>(
     }
 
     private inner class IdContainer(
-        val item: T,
+        var item: T,
         val container: ViewModelContainerItem
-    )
+    ) {
+        var requiresUpdate = false
+    }
 
     private val containers = mutableMapOf<Id, IdContainer>()
 
@@ -66,14 +68,8 @@ class ViewModelListRecyclerNavigator<T, Id, VM : ViewModel>(
 
     fun set(value: List<T>) {
         uiAsyncWorker.execute {
-            val diff = getDiff(items, value)
-            diff.removed.forEach {
-                onRemoved(it)
-            }
-            diff.same.forEach { item ->
-                containers[item.getId()]?.let {
-                    builder.onUpdateViewModel(it.container.viewModel as VM, item)
-                }
+            containers.values.forEach {
+                it.requiresUpdate = true
             }
             items = value
             adapter?.onDataChanged(viewModels)
@@ -98,6 +94,7 @@ class ViewModelListRecyclerNavigator<T, Id, VM : ViewModel>(
         containers[key.getId()]?.let { container ->
             container.container.viewModel.onDetachFromParent()
             container.container.terminate()
+            containers.remove(key.getId())
         }
     }
 
@@ -116,7 +113,15 @@ class ViewModelListRecyclerNavigator<T, Id, VM : ViewModel>(
 
     override fun setBound(viewModel: ViewModel, isBound: Boolean) {
         uiWorker.execute {
-            viewModel.getContainer()?.container?.setBound(isBound)
+            if (isBound) {
+                viewModel.getContainer()?.container?.setBound(isBound)
+            } else {
+                containers.entries.firstOrNull {
+                    it.value.container.viewModel == viewModel
+                }?.let {
+                    onRemoved(it.value.item)
+                }
+            }
         }
     }
 
@@ -140,7 +145,7 @@ class ViewModelListRecyclerNavigator<T, Id, VM : ViewModel>(
             parent.getLifecycle().onExitFromActiveStage {
                 adapter.setNavigator(null)
                 this.adapter = null
-                containers.values.forEach {
+                containers.values.toTypedArray().forEach {
                     onRemoved(it.item)
                 }
                 containers.clear()
@@ -159,6 +164,10 @@ class ViewModelListRecyclerNavigator<T, Id, VM : ViewModel>(
             return if (existing == null) {
                 onAdded(key).viewModel
             } else {
+                if (existing.requiresUpdate) {
+                    existing.item = key
+                    builder.onUpdateViewModel(existing.container.viewModel as VM, key)
+                }
                 existing.container.viewModel
             }
         }

@@ -27,6 +27,10 @@ class NavigationScreenViewModel(context: ViewModelContext) : ViewModel(context) 
         router.openDebounceDemo()
     }
 
+    fun onClickLazyListDemo() {
+        router.openLazyListDemo()
+    }
+
     init {
         doOnVisible {
             doOnCreate {

@@ -5,6 +5,7 @@ import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 import net.apptronic.core.mvvm.viewmodel.adapter.BasicTransition
 import net.apptronic.test.commons_sample_app.convert.ConvertScreenViewModel
 import net.apptronic.test.commons_sample_app.debounce.createDebounceSampleViewModel
+import net.apptronic.test.commons_sample_app.lazylist.createLazyListItemViewModel
 import net.apptronic.test.commons_sample_app.list.ListContext
 import net.apptronic.test.commons_sample_app.list.ListScreenViewModel
 import net.apptronic.test.commons_sample_app.login.LoginRouter
@@ -71,6 +72,13 @@ class ApplicationScreenNavigationRouterImpl(
     override fun openDebounceDemo() {
         parent.rootPage.add(
             createDebounceSampleViewModel(parent),
+            BasicTransition.Forward
+        )
+    }
+
+    override fun openLazyListDemo() {
+        parent.rootPage.add(
+            createLazyListItemViewModel(parent),
             BasicTransition.Forward
         )
     }

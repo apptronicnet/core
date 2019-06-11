@@ -12,4 +12,6 @@ interface NavigationRouter {
 
     fun openDebounceDemo()
 
+    fun openLazyListDemo()
+
 }
