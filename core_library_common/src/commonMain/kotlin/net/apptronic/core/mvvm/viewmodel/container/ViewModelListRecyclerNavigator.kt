@@ -8,11 +8,11 @@ import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelListAdapter
 import net.apptronic.core.threading.execute
 
 class ViewModelListRecyclerNavigator<T, Id, VM : ViewModel>(
-    private val parent: ViewModel,
-    private val builder: ViewModelBuilder<T, Id, VM>
+        private val parent: ViewModel,
+        private val builder: ViewModelBuilder<T, Id, VM>
 ) : BaseViewModelListNavigator<T>(parent),
-    UpdateEntity<List<T>>,
-    ViewModelListAdapter.SourceNavigator {
+        UpdateEntity<List<T>>,
+        ViewModelListAdapter.SourceNavigator {
 
     private val subject = BehaviorSubject<List<T>>().apply {
         update(emptyList())
@@ -33,48 +33,59 @@ class ViewModelListRecyclerNavigator<T, Id, VM : ViewModel>(
     private var adapter: ViewModelListAdapter? = null
 
     private var items: List<T> = emptyList()
+    private var staticItems: List<T> = emptyList()
     private val viewModels = LazyList()
 
     override fun get(): List<T> {
-        return ArrayList(items)
+        return items
     }
 
     override fun getOrNull(): List<T>? {
-        return ArrayList(items)
+        return items
     }
 
-    private inner class IdContainer(
-        var item: T,
-        val container: ViewModelContainerItem
-    ) {
-        var requiresUpdate = false
-    }
-
-    private val containers = mutableMapOf<Id, IdContainer>()
-
-    private fun ViewModel.getContainer(): IdContainer? {
-        return containers.values.firstOrNull {
-            it.container.viewModel == this
-        }
-    }
-
-    fun update(action: (MutableList<T>) -> Unit) {
-        uiWorker.execute {
-            val list = items.toMutableList()
-            action.invoke(list)
-            set(list)
-        }
-    }
+    private val containers = ViewModelContainers<T, Id>()
 
     fun set(value: List<T>) {
         uiAsyncWorker.execute {
-            containers.values.forEach {
-                it.requiresUpdate = true
-            }
+            containers.markAllRequiresUpdate()
             items = value
             adapter?.onDataChanged(viewModels)
             updateSubject()
         }
+    }
+
+    fun setStaticItems(value: List<T>) {
+        fun Id.getKey(): T? {
+            return value.firstOrNull { key ->
+                key.getId() == this
+            }
+        }
+        uiAsyncWorker.execute {
+            val oldIds = staticItems.map { it.getId() }
+            val newIds = value.map { it.getId() }
+            val diff = getDiff(oldIds, newIds)
+            diff.removed.forEach { id ->
+                containers.findRecordForId(id)?.let { record ->
+                    if (!record.container.viewModel.isBound()) {
+                        val key = id.getKey()
+                        if (key != null) {
+                            onRemoved(key)
+                        }
+                    }
+                }
+            }
+            staticItems = value
+            diff.added.forEach { id ->
+                id.getKey()?.let {
+                    onAdded(it)
+                }
+            }
+        }
+    }
+
+    private fun shouldRetainInstance(key: T, viewModel: ViewModel): Boolean {
+        return staticItems.contains(key) || builder.shouldRetainInstance(items, key, viewModel as VM)
     }
 
     private fun T.getId(): Id {
@@ -84,46 +95,39 @@ class ViewModelListRecyclerNavigator<T, Id, VM : ViewModel>(
     private fun onAdded(key: T): ViewModelContainerItem {
         val viewModel = builder.onCreateViewModel(parent, key)
         val container = ViewModelContainerItem(viewModel, parent)
-        containers[key.getId()] = IdContainer(key, container)
+        containers.add(key.getId(), container, key)
         container.viewModel.onAttachToParent(this)
         container.setCreated(true)
         return container
     }
 
     private fun onRemoved(key: T) {
-        containers[key.getId()]?.let { container ->
+        containers.removeById(key.getId())?.let { container ->
             container.container.viewModel.onDetachFromParent()
             container.container.terminate()
-            containers.remove(key.getId())
         }
     }
 
     override fun requestCloseSelf(
-        viewModel: ViewModel,
-        transitionInfo: Any?
+            viewModel: ViewModel,
+            transitionInfo: Any?
     ) {
-        update {
-            containers.forEach { entry ->
-                if (entry.value.container.viewModel == viewModel) {
-                    it.remove(entry.value.item)
-                }
-            }
-        }
+        throw UnsupportedOperationException("ViewModelListRecyclerNavigator cannot close items")
     }
 
     override fun setBound(viewModel: ViewModel, isBound: Boolean) {
         uiWorker.execute {
             if (isBound) {
-                viewModel.getContainer()?.container?.setBound(isBound)
+                containers.findRecordForModel(viewModel)?.let { record ->
+                    record.container.setBound(true)
+                }
             } else {
-                containers.entries.firstOrNull {
-                    it.value.container.viewModel == viewModel
-                }?.let {
-                    val key = builder.getId(it.value.item)
-                    if (builder.shouldRetainInstance(items, it.value.item, viewModel as VM)) {
-                        viewModel.getContainer()?.container?.setBound(false)
+                containers.findRecordForModel(viewModel)?.let { record ->
+                    val key = builder.getId(record.item)
+                    if (shouldRetainInstance(record.item, viewModel as VM)) {
+                        record.container.setBound(false)
                     } else {
-                        onRemoved(it.value.item)
+                        onRemoved(record.item)
                     }
                 }
             }
@@ -132,13 +136,13 @@ class ViewModelListRecyclerNavigator<T, Id, VM : ViewModel>(
 
     override fun setVisible(viewModel: ViewModel, isBound: Boolean) {
         uiWorker.execute {
-            viewModel.getContainer()?.container?.setVisible(isBound)
+            containers.findRecordForModel(viewModel)?.container?.setVisible(isBound)
         }
     }
 
     override fun setFocused(viewModel: ViewModel, isBound: Boolean) {
         uiWorker.execute {
-            viewModel.getContainer()?.container?.setFocused(isBound)
+            containers.findRecordForModel(viewModel)?.container?.setFocused(isBound)
         }
     }
 
@@ -150,7 +154,7 @@ class ViewModelListRecyclerNavigator<T, Id, VM : ViewModel>(
             parent.getLifecycle().onExitFromActiveStage {
                 adapter.setNavigator(null)
                 this.adapter = null
-                containers.values.toTypedArray().forEach {
+                containers.getAll().forEach {
                     onRemoved(it.item)
                 }
                 containers.clear()
@@ -165,30 +169,25 @@ class ViewModelListRecyclerNavigator<T, Id, VM : ViewModel>(
 
         override fun get(index: Int): ViewModel {
             val key = items[index]
-            val existing = containers[key.getId()]
+            val existing = containers.findRecordForItem(key)
             return if (existing == null) {
                 onAdded(key).viewModel
             } else {
                 if (existing.requiresUpdate) {
                     existing.item = key
                     builder.onUpdateViewModel(existing.container.viewModel as VM, key)
+                    existing.requiresUpdate = false
                 }
                 existing.container.viewModel
             }
         }
 
         override fun indexOf(element: ViewModel): Int {
-            val entry = containers.entries.firstOrNull {
-                it.value.container.viewModel == element
-            }
-            return if (entry != null) items.indexOf(entry.value.item) else -1
+            return -1
         }
 
         override fun lastIndexOf(element: ViewModel): Int {
-            val entry = containers.entries.firstOrNull {
-                it.value.container.viewModel == element
-            }
-            return if (entry != null) items.lastIndexOf(entry.value.item) else -1
+            return -1
         }
 
     }
