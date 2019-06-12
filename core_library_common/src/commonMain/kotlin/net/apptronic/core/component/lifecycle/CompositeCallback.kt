@@ -1,7 +1,10 @@
 package net.apptronic.core.component.lifecycle
 
+import kotlin.native.concurrent.ThreadLocal
+
 internal class CompositeCallback {
 
+    @ThreadLocal
     private val innerCallbacks = mutableListOf<EventCallback>()
 
     fun execute() {

@@ -4,21 +4,31 @@ import net.apptronic.core.base.concurrent.AtomicEntity
 import net.apptronic.core.base.concurrent.AtomicReference
 import net.apptronic.core.component.entity.EntitySubscription
 import net.apptronic.core.component.entity.subscriptions.EntitySubscriptionListener
+import kotlin.native.concurrent.SharedImmutable
 
 internal class LifecycleStageImpl(val parent: LifecycleStageParent, val name: String) :
         LifecycleStage, LifecycleStageParent, EntitySubscriptionListener {
 
+    @SharedImmutable
     private val childStage = AtomicEntity<LifecycleStageImpl?>(null)
 
+    @SharedImmutable
     private val isEntered = AtomicReference(false)
+    @SharedImmutable
     private val isTerminated = AtomicReference(false)
 
+    @SharedImmutable
     private val enterCallback = CompositeCallback()
+    @SharedImmutable
     private val exitCallback = CompositeCallback()
+    @SharedImmutable
     private val whenEnteredActions = HashMap<String, (() -> Unit)>()
 
+    @SharedImmutable
     private val enterHandler = AtomicReference<OnEnterHandlerImpl?>(null)
+    @SharedImmutable
     private val exitHandler = AtomicReference<OnExitHandlerImpl?>(null)
+    @SharedImmutable
     private val subscriptions = mutableListOf<EntitySubscription>()
 
     override fun toString(): String {
