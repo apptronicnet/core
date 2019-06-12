@@ -1,5 +1,6 @@
 package net.apptronic.core.platform
 
+import net.apptronic.core.base.concurrent.AtomicReference
 import net.apptronic.core.platform.PlatformInstance.platform
 
 fun initializePlatform(platform: Platform) {
@@ -8,14 +9,14 @@ fun initializePlatform(platform: Platform) {
 
 private object PlatformInstance {
 
-    private lateinit var platformReference: Platform
+    private val platformReference = AtomicReference<Platform?>(null)
 
     val platform by lazy {
-        platformReference
+        platformReference.get()!!
     }
 
     fun initialize(platform: Platform) {
-        this.platformReference = platform
+        this.platformReference.set(platform)
     }
 
 }
