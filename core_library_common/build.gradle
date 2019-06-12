@@ -109,6 +109,7 @@ task copyFramework {
     doLast {
         def srcFile = kotlin.targets."$target".binaries.getFramework(buildType).outputFile
         def targetDir = rootProject.file("../lib_ios/framework")
+        delete fileTree(dir: targetDir)
         targetDir.mkdirs()
         copy {
             from srcFile.parent
