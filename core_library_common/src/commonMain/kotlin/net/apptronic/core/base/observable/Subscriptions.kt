@@ -1,7 +1,7 @@
 package net.apptronic.core.base.observable
 
-import net.apptronic.core.base.concurrent.AtomicReference
 import net.apptronic.core.base.concurrent.Synchronized
+import net.apptronic.core.base.concurrent.Volatile
 
 class Subscriptions<T> {
 
@@ -29,7 +29,7 @@ class Subscriptions<T> {
             val observer: Observer<T>
     ) : Subscription {
 
-        private var isUnsubscribed = AtomicReference(false)
+        private var isUnsubscribed = Volatile(false)
 
         override fun unsubscribe() {
             isUnsubscribed.set(true)

@@ -3,9 +3,8 @@ package net.apptronic.core.base.concurrent
 import net.apptronic.core.base.concurrent.base.IAtomicReference
 import kotlin.native.concurrent.AtomicReference
 
-actual class AtomicReference<T> actual constructor(initialValue: T) : IAtomicReference<T> {
+actual class Volatile<T> actual constructor(initialValue: T) : IAtomicReference<T> {
 
-    @SharedImmutable
     private var atomic = AtomicReference<T>(initialValue)
 
     override fun set(value: T) {

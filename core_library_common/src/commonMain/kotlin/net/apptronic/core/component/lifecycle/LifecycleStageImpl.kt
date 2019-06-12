@@ -1,34 +1,35 @@
 package net.apptronic.core.component.lifecycle
 
 import net.apptronic.core.base.concurrent.AtomicEntity
-import net.apptronic.core.base.concurrent.AtomicReference
+import net.apptronic.core.base.concurrent.Volatile
 import net.apptronic.core.component.entity.EntitySubscription
 import net.apptronic.core.component.entity.subscriptions.EntitySubscriptionListener
 import kotlin.native.concurrent.SharedImmutable
+import kotlin.native.concurrent.ThreadLocal
 
 internal class LifecycleStageImpl(val parent: LifecycleStageParent, val name: String) :
         LifecycleStage, LifecycleStageParent, EntitySubscriptionListener {
 
-    @SharedImmutable
+    @ThreadLocal
     private val childStage = AtomicEntity<LifecycleStageImpl?>(null)
 
-    @SharedImmutable
-    private val isEntered = AtomicReference(false)
-    @SharedImmutable
-    private val isTerminated = AtomicReference(false)
+    @ThreadLocal
+    private val isEntered = Volatile(false)
+    @ThreadLocal
+    private val isTerminated = Volatile(false)
 
-    @SharedImmutable
+    @ThreadLocal
     private val enterCallback = CompositeCallback()
-    @SharedImmutable
+    @ThreadLocal
     private val exitCallback = CompositeCallback()
-    @SharedImmutable
+    @ThreadLocal
     private val whenEnteredActions = HashMap<String, (() -> Unit)>()
 
-    @SharedImmutable
-    private val enterHandler = AtomicReference<OnEnterHandlerImpl?>(null)
-    @SharedImmutable
-    private val exitHandler = AtomicReference<OnExitHandlerImpl?>(null)
-    @SharedImmutable
+    @ThreadLocal
+    private val enterHandler = Volatile<OnEnterHandlerImpl?>(null)
+    @ThreadLocal
+    private val exitHandler = Volatile<OnExitHandlerImpl?>(null)
+    @ThreadLocal
     private val subscriptions = mutableListOf<EntitySubscription>()
 
     override fun toString(): String {

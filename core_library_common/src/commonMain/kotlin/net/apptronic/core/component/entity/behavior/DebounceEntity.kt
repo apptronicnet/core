@@ -1,7 +1,7 @@
 package net.apptronic.core.component.entity.behavior
 
-import net.apptronic.core.base.concurrent.AtomicReference
 import net.apptronic.core.base.concurrent.Synchronized
+import net.apptronic.core.base.concurrent.Volatile
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.Entity
@@ -59,8 +59,8 @@ private class DebounceObserver<T>(
     class Update<T>(val time: Long, val value: T)
 
     val sync = Synchronized()
-    val update = AtomicReference<Update<T>?>(null)
-    val isWaiting = AtomicReference(false)
+    val update = Volatile<Update<T>?>(null)
+    val isWaiting = Volatile(false)
 
     override fun notify(value: T) {
         sync.executeBlock {

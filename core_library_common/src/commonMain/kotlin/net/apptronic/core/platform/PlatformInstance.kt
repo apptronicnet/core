@@ -1,6 +1,6 @@
 package net.apptronic.core.platform
 
-import net.apptronic.core.base.concurrent.AtomicReference
+import net.apptronic.core.base.concurrent.Volatile
 import net.apptronic.core.platform.PlatformInstance.platform
 
 fun initializePlatform(platform: Platform) {
@@ -9,7 +9,7 @@ fun initializePlatform(platform: Platform) {
 
 private object PlatformInstance {
 
-    private val platformReference = AtomicReference<Platform?>(null)
+    private val platformReference = Volatile<Platform?>(null)
 
     val platform by lazy {
         platformReference.get()!!

@@ -1,6 +1,6 @@
 package net.apptronic.core.base.observable.subject
 
-import net.apptronic.core.base.concurrent.AtomicReference
+import net.apptronic.core.base.concurrent.Volatile
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.base.observable.Subscription
 import net.apptronic.core.base.observable.Subscriptions
@@ -12,7 +12,7 @@ open class BehaviorSubject<T> : Subject<T> {
 
     private val subscriptions = Subscriptions<T>()
 
-    private var valueHolder = AtomicReference<ValueHolder<T>?>(null)
+    private var valueHolder = Volatile<ValueHolder<T>?>(null)
 
     fun clear() {
         valueHolder.set(null)

@@ -5,7 +5,7 @@ import net.apptronic.core.base.concurrent.base.IAtomicEntity
 class AtomicEntity<T>(initialValue: T) : IAtomicEntity<T> {
 
     private val sync = Synchronized()
-    private val value = AtomicReference(initialValue)
+    private val value = Volatile(initialValue)
 
     override fun set(value: T): T {
         return sync.executeBlock {

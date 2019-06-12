@@ -1,6 +1,6 @@
 package net.apptronic.core.component.entity.subscriptions
 
-import net.apptronic.core.base.concurrent.AtomicReference
+import net.apptronic.core.base.concurrent.Volatile
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.EntitySubscription
@@ -9,7 +9,7 @@ public class ContextEntitySubscription<T>(
         val observer: Observer<T>
 ) : EntitySubscription {
 
-    private val isUnsubscribed = AtomicReference(false)
+    private val isUnsubscribed = Volatile(false)
     private val listeners = mutableListOf<EntitySubscriptionListener>()
 
     override fun unsubscribe() {

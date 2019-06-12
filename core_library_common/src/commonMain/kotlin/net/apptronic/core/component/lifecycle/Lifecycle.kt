@@ -1,6 +1,6 @@
 package net.apptronic.core.component.lifecycle
 
-import net.apptronic.core.base.concurrent.AtomicReference
+import net.apptronic.core.base.concurrent.Volatile
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.EntitySubscription
 
@@ -28,7 +28,7 @@ open class Lifecycle {
         const val ROOT_STAGE = "_root"
     }
 
-    private val isTerminated = AtomicReference(false)
+    private val isTerminated = Volatile(false)
 
     private val rootStage: LifecycleStageImpl = LifecycleStageImpl(baseParent, ROOT_STAGE)
 
