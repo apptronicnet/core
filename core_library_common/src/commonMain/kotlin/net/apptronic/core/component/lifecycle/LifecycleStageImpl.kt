@@ -106,8 +106,8 @@ internal class LifecycleStageImpl(val parent: LifecycleStageParent, val name: St
             return
         }
         parent.onChildEnter()
-        enterHandler.set(OnEnterHandlerImpl())
-        exitHandler.set(OnExitHandlerImpl())
+        enterHandler.set(OnEnterHandlerImpl(this))
+        exitHandler.set(OnExitHandlerImpl(this))
         isEntered.set(true)
         enterCallback.execute()
         whenEnteredActions.values.forEach { it.invoke() }
@@ -190,15 +190,21 @@ internal class LifecycleStageImpl(val parent: LifecycleStageParent, val name: St
         }
     }
 
-    private inner class OnEnterHandlerImpl : LifecycleStage.OnEnterHandler {
+    private class OnEnterHandlerImpl(
+            @SharedImmutable
+            private val stage: LifecycleStageImpl
+    ) : LifecycleStage.OnEnterHandler {
 
         override fun onExit(callback: LifecycleStage.OnExitHandler.() -> Unit): LifecycleSubscription {
-            return doOnExit(callback)
+            return stage.doOnExit(callback)
         }
 
     }
 
-    private inner class OnExitHandlerImpl : LifecycleStage.OnExitHandler {
+    private inner class OnExitHandlerImpl(
+            @SharedImmutable
+            private val stage: LifecycleStageImpl
+    ) : LifecycleStage.OnExitHandler {
 
     }
 
