@@ -4,7 +4,6 @@ import net.apptronic.core.base.concurrent.AtomicEntity
 import net.apptronic.core.base.concurrent.Volatile
 import net.apptronic.core.component.entity.EntitySubscription
 import net.apptronic.core.component.entity.subscriptions.EntitySubscriptionListener
-import kotlin.native.concurrent.SharedImmutable
 import kotlin.native.concurrent.ThreadLocal
 
 internal class LifecycleStageImpl(val parent: LifecycleStageParent, val name: String) :
@@ -32,6 +31,12 @@ internal class LifecycleStageImpl(val parent: LifecycleStageParent, val name: St
     @ThreadLocal
     private val subscriptions = mutableListOf<EntitySubscription>()
 
+    /**
+     * This callbacks are internally created to be executed on exit stage command
+     */
+    @ThreadLocal
+    private val inStageCallbacks = mutableListOf<EventCallback>()
+
     override fun toString(): String {
         return super.toString() + " $name isEntered=${isEntered.get()}"
     }
@@ -48,11 +53,6 @@ internal class LifecycleStageImpl(val parent: LifecycleStageParent, val name: St
             subscription.unsubscribe()
         }
     }
-
-    /**
-     * This callbacks are internally created to be executed on exit stage command
-     */
-    private val inStageCallbacks = mutableListOf<EventCallback>()
 
     fun isEntered(): Boolean {
         return isEntered.get()
@@ -192,7 +192,6 @@ internal class LifecycleStageImpl(val parent: LifecycleStageParent, val name: St
     }
 
     private class OnEnterHandlerImpl(
-            @SharedImmutable
             private val stage: LifecycleStageImpl
     ) : LifecycleStage.OnEnterHandler {
 
@@ -203,7 +202,6 @@ internal class LifecycleStageImpl(val parent: LifecycleStageParent, val name: St
     }
 
     private inner class OnExitHandlerImpl(
-            @SharedImmutable
             private val stage: LifecycleStageImpl
     ) : LifecycleStage.OnExitHandler {
 
