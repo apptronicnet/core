@@ -5,7 +5,7 @@
 
 import os
 import Foundation
-import lib
+import core_library_common
 
 class IosPlatform: Platform {
 

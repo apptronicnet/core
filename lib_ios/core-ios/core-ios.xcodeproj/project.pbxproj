@@ -10,24 +10,23 @@
 		58A6E4A38E0880774BB1F955 /* MainThreadAsyncWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58A6EF811E152EB3D4AD08A8 /* MainThreadAsyncWorker.swift */; };
 		58A6E4CECBA0E5435F6F816F /* IosPlatform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58A6E5C4A046CFC5E590B56C /* IosPlatform.swift */; };
 		58A6E836FE42179B418183AF /* MainThreadWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58A6EFA403BB38DD3066ED39 /* MainThreadWorker.swift */; };
-		6547637322A9038A00CC8E71 /* lib.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6547637222A9038900CC8E71 /* lib.framework */; };
-		6547637422A9038A00CC8E71 /* lib.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6547637222A9038900CC8E71 /* lib.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		CBA0879422B16F8A005CAA7E /* core_library_common.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CBA0879322B16F8A005CAA7E /* core_library_common.framework */; };
+		CBA0879522B16F8A005CAA7E /* core_library_common.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CBA0879322B16F8A005CAA7E /* core_library_common.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		CBE99D9022A5A0BD00B6B299 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBE99D8F22A5A0BD00B6B299 /* AppDelegate.swift */; };
 		CBE99D9222A5A0BD00B6B299 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBE99D9122A5A0BD00B6B299 /* ViewController.swift */; };
 		CBE99D9522A5A0BD00B6B299 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CBE99D9322A5A0BD00B6B299 /* Main.storyboard */; };
 		CBE99D9722A5A0BE00B6B299 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CBE99D9622A5A0BE00B6B299 /* Assets.xcassets */; };
 		CBE99D9A22A5A0BE00B6B299 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CBE99D9822A5A0BE00B6B299 /* LaunchScreen.storyboard */; };
-		CBE99DA622A5A10100B6B299 /* MainViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBE99DA522A5A10100B6B299 /* MainViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		6547637522A9038A00CC8E71 /* Embed Frameworks */ = {
+		CBA0879622B16F8A005CAA7E /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				6547637422A9038A00CC8E71 /* lib.framework in Embed Frameworks */,
+				CBA0879522B16F8A005CAA7E /* core_library_common.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -40,6 +39,7 @@
 		58A6EFA403BB38DD3066ED39 /* MainThreadWorker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainThreadWorker.swift; sourceTree = "<group>"; };
 		6547636322A8FE0E00CC8E71 /* lib.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; name = lib.framework.dSYM; path = ../framework/lib.framework.dSYM; sourceTree = "<group>"; };
 		6547637222A9038900CC8E71 /* lib.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = lib.framework; path = ../framework/lib.framework; sourceTree = "<group>"; };
+		CBA0879322B16F8A005CAA7E /* core_library_common.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = core_library_common.framework; path = ../framework/core_library_common.framework; sourceTree = "<group>"; };
 		CBE99D8C22A5A0BD00B6B299 /* core-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "core-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CBE99D8F22A5A0BD00B6B299 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CBE99D9122A5A0BD00B6B299 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -47,7 +47,6 @@
 		CBE99D9622A5A0BE00B6B299 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CBE99D9922A5A0BE00B6B299 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		CBE99D9B22A5A0BE00B6B299 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		CBE99DA522A5A10100B6B299 /* MainViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,7 +54,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6547637322A9038A00CC8E71 /* lib.framework in Frameworks */,
+				CBA0879422B16F8A005CAA7E /* core_library_common.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -82,6 +81,7 @@
 		CBE99D8322A5A0BD00B6B299 = {
 			isa = PBXGroup;
 			children = (
+				CBA0879322B16F8A005CAA7E /* core_library_common.framework */,
 				6547637222A9038900CC8E71 /* lib.framework */,
 				6547636322A8FE0E00CC8E71 /* lib.framework.dSYM */,
 				CBE99D8E22A5A0BD00B6B299 /* core-ios */,
@@ -107,7 +107,6 @@
 				CBE99D9622A5A0BE00B6B299 /* Assets.xcassets */,
 				CBE99D9822A5A0BE00B6B299 /* LaunchScreen.storyboard */,
 				CBE99D9B22A5A0BE00B6B299 /* Info.plist */,
-				CBE99DA522A5A10100B6B299 /* MainViewModel.swift */,
 				58A6E06DADAD5095BF763A1D /* lib_ios */,
 			);
 			path = "core-ios";
@@ -123,7 +122,7 @@
 				CBE99D8822A5A0BD00B6B299 /* Sources */,
 				CBE99D8922A5A0BD00B6B299 /* Frameworks */,
 				CBE99D8A22A5A0BD00B6B299 /* Resources */,
-				6547637522A9038A00CC8E71 /* Embed Frameworks */,
+				CBA0879622B16F8A005CAA7E /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -187,7 +186,6 @@
 			files = (
 				CBE99D9222A5A0BD00B6B299 /* ViewController.swift in Sources */,
 				CBE99D9022A5A0BD00B6B299 /* AppDelegate.swift in Sources */,
-				CBE99DA622A5A10100B6B299 /* MainViewModel.swift in Sources */,
 				58A6E4CECBA0E5435F6F816F /* IosPlatform.swift in Sources */,
 				58A6E836FE42179B418183AF /* MainThreadWorker.swift in Sources */,
 				58A6E4A38E0880774BB1F955 /* MainThreadAsyncWorker.swift in Sources */,
