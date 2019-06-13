@@ -6,8 +6,6 @@ class WorkerDefinition internal constructor(private val name: String) {
         val DEFAULT = defineWorker("DEFAULT")
         val DEFAULT_ASYNC = defineWorker("DEFAULT_ASYNC")
         val SYNCHRONOUS = defineWorker("SYNCHRONOUS")
-        val UI = defineWorker("UI")
-        val UI_ASYNC = defineWorker("UI_ASYNC")
         val BACKGROUND_SINGLE_SHARED = defineWorker("BACKGROUND_SINGLE_SHARED")
         val BACKGROUND_SINGLE_INDIVIDUAL = defineWorker("BACKGROUND_SINGLE_INDIVIDUAL")
         val BACKGROUND_PARALLEL_SHARED = defineWorker("BACKGROUND_PARALLEL_SHARED")

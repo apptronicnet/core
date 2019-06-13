@@ -1,6 +1,7 @@
 package net.apptronic.core.component.lifecycle
 
 import net.apptronic.core.base.concurrent.Volatile
+import net.apptronic.core.base.concurrent.requireNeverFrozen
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.EntitySubscription
 
@@ -8,6 +9,10 @@ import net.apptronic.core.component.entity.EntitySubscription
  * Def
  */
 open class Lifecycle {
+
+    init {
+        requireNeverFrozen()
+    }
 
     private inner class BaseParent : LifecycleStageParent {
 

@@ -1,5 +1,6 @@
 package net.apptronic.core.component.context
 
+import net.apptronic.core.base.concurrent.requireNeverFrozen
 import net.apptronic.core.component.di.DependencyProvider
 import net.apptronic.core.component.lifecycle.Lifecycle
 import net.apptronic.core.threading.Scheduler
@@ -11,6 +12,7 @@ open class SubContext(
 ) : Context {
 
     init {
+        requireNeverFrozen()
         parent.getLifecycle().doOnTerminate {
             getLifecycle().terminate()
         }

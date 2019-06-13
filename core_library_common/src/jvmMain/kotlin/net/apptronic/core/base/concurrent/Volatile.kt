@@ -1,9 +1,9 @@
 package net.apptronic.core.base.concurrent
 
-import net.apptronic.core.base.concurrent.base.IAtomicReference
+import net.apptronic.core.base.concurrent.base.IVolatile
 import java.util.concurrent.atomic.AtomicReference
 
-actual class Volatile<T> actual constructor(initialValue: T) : IAtomicReference<T> {
+actual class Volatile<T> actual constructor(initialValue: T) : IVolatile<T> {
 
     private val atomic = AtomicReference<T>(initialValue)
 

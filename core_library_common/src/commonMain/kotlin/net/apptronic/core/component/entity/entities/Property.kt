@@ -1,5 +1,6 @@
 package net.apptronic.core.component.entity.entities
 
+import net.apptronic.core.base.concurrent.requireNeverFrozen
 import net.apptronic.core.base.observable.subject.BehaviorSubject
 import net.apptronic.core.base.observable.subject.ValueHolder
 import net.apptronic.core.component.context.Context
@@ -7,6 +8,10 @@ import net.apptronic.core.component.entity.*
 
 abstract class Property<T>(context: Context) : ComponentEntity<T>(context), EntityValue<T>,
     UpdateEntity<T> {
+
+    init {
+        requireNeverFrozen()
+    }
 
     protected val subject = BehaviorSubject<T>()
 

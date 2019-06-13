@@ -4,41 +4,30 @@ import net.apptronic.core.base.concurrent.AtomicEntity
 import net.apptronic.core.base.concurrent.Volatile
 import net.apptronic.core.component.entity.EntitySubscription
 import net.apptronic.core.component.entity.subscriptions.EntitySubscriptionListener
-import kotlin.native.concurrent.ThreadLocal
 
 internal class LifecycleStageImpl(val parent: LifecycleStageParent, val name: String) :
         LifecycleStage, LifecycleStageParent, EntitySubscriptionListener {
 
-    @ThreadLocal
     private val childStage = AtomicEntity<LifecycleStageImpl?>(null)
 
-    @ThreadLocal
-    private val isEntered = Volatile(false)
-    @ThreadLocal
-    private val isTerminated = Volatile(false)
+    private var isEntered = false
+    private var isTerminated = false
 
-    @ThreadLocal
     private val enterCallback = CompositeCallback()
-    @ThreadLocal
     private val exitCallback = CompositeCallback()
-    @ThreadLocal
     private val whenEnteredActions = HashMap<String, (() -> Unit)>()
 
-    @ThreadLocal
     private val enterHandler = Volatile<OnEnterHandlerImpl?>(null)
-    @ThreadLocal
     private val exitHandler = Volatile<OnExitHandlerImpl?>(null)
-    @ThreadLocal
     private val subscriptions = mutableListOf<EntitySubscription>()
 
     /**
      * This callbacks are internally created to be executed on exit stage command
      */
-    @ThreadLocal
     private val inStageCallbacks = mutableListOf<EventCallback>()
 
     override fun toString(): String {
-        return super.toString() + " $name isEntered=${isEntered.get()}"
+        return super.toString() + " $name isEntered=${isEntered}"
     }
 
     override fun onUnsubscribed(subscription: EntitySubscription) {
@@ -55,7 +44,7 @@ internal class LifecycleStageImpl(val parent: LifecycleStageParent, val name: St
     }
 
     fun isEntered(): Boolean {
-        return isEntered.get()
+        return isEntered
     }
 
     fun terminate() {
@@ -63,14 +52,14 @@ internal class LifecycleStageImpl(val parent: LifecycleStageParent, val name: St
             get()?.terminate()
             set(null)
         }
-        if (isEntered.get()) {
+        if (isEntered) {
             exit()
         }
-        isTerminated.set(true)
+        isTerminated = true
     }
 
     override fun onChildEnter() {
-        if (!isEntered.get()) {
+        if (!isEntered) {
             enter()
         }
     }
@@ -80,7 +69,7 @@ internal class LifecycleStageImpl(val parent: LifecycleStageParent, val name: St
     }
 
     fun lastEntered(): LifecycleStageImpl? {
-        return if (isEntered.get()) {
+        return if (isEntered) {
             childStage.get()?.lastEntered() ?: this
         } else null
     }
@@ -103,20 +92,20 @@ internal class LifecycleStageImpl(val parent: LifecycleStageParent, val name: St
     }
 
     internal fun enter() {
-        if (isTerminated.get() || isEntered.get()) {
+        if (isTerminated || isEntered) {
             return
         }
         parent.onChildEnter()
-        enterHandler.set(OnEnterHandlerImpl(this))
-        exitHandler.set(OnExitHandlerImpl(this))
-        isEntered.set(true)
+        enterHandler.set(OnEnterHandlerImpl())
+        exitHandler.set(OnExitHandlerImpl())
+        isEntered = true
         enterCallback.execute()
         whenEnteredActions.values.forEach { it.invoke() }
         whenEnteredActions.clear()
     }
 
     internal fun exit() {
-        if (isTerminated.get() || !isEntered.get()) {
+        if (isTerminated || !isEntered) {
             return
         }
         val subscriptionsArray = subscriptions.toTypedArray()
@@ -126,7 +115,7 @@ internal class LifecycleStageImpl(val parent: LifecycleStageParent, val name: St
             it.unsubscribe()
         }
         childStage.get()?.exit()
-        isEntered.set(false)
+        isEntered = false
         exitCallback.execute()
         inStageCallbacks.forEach { it.cancel() }
         inStageCallbacks.clear()
@@ -136,7 +125,7 @@ internal class LifecycleStageImpl(val parent: LifecycleStageParent, val name: St
         return EventCallback {
             enterHandler.get()?.callback()
         }.apply {
-            if (isEntered.get()) {
+            if (isEntered) {
                 execute()
             }
         }
@@ -147,10 +136,10 @@ internal class LifecycleStageImpl(val parent: LifecycleStageParent, val name: St
     }
 
     override fun doOnce(key: String, action: () -> Unit): LifecycleSubscription {
-        if (isTerminated.get()) {
+        if (isTerminated) {
             return LifecycleSubscription()
         }
-        if (isEntered.get()) {
+        if (isEntered) {
             action()
             return LifecycleSubscription()
         } else {
@@ -162,7 +151,7 @@ internal class LifecycleStageImpl(val parent: LifecycleStageParent, val name: St
     }
 
     override fun doOnEnter(callback: LifecycleStage.OnEnterHandler.() -> Unit): LifecycleSubscription {
-        if (isEntered.get() || isTerminated.get()) {
+        if (isEntered || isTerminated) {
             return LifecycleSubscription()
         }
         val eventCallback = subscribeEnter(callback)
@@ -180,7 +169,7 @@ internal class LifecycleStageImpl(val parent: LifecycleStageParent, val name: St
     }
 
     override fun doOnExit(callback: LifecycleStage.OnExitHandler.() -> Unit): LifecycleSubscription {
-        if (isTerminated.get()) {
+        if (isTerminated) {
             return LifecycleSubscription()
         }
         val eventCallback = subscribeExit(callback)
@@ -191,19 +180,15 @@ internal class LifecycleStageImpl(val parent: LifecycleStageParent, val name: St
         }
     }
 
-    private class OnEnterHandlerImpl(
-            private val stage: LifecycleStageImpl
-    ) : LifecycleStage.OnEnterHandler {
+    private inner class OnEnterHandlerImpl : LifecycleStage.OnEnterHandler {
 
         override fun onExit(callback: LifecycleStage.OnExitHandler.() -> Unit): LifecycleSubscription {
-            return stage.doOnExit(callback)
+            return doOnExit(callback)
         }
 
     }
 
-    private inner class OnExitHandlerImpl(
-            private val stage: LifecycleStageImpl
-    ) : LifecycleStage.OnExitHandler {
+    private inner class OnExitHandlerImpl : LifecycleStage.OnExitHandler {
 
     }
 
@@ -212,7 +197,7 @@ internal class LifecycleStageImpl(val parent: LifecycleStageParent, val name: St
     }
 
     override fun cancelOnExitFromActiveStage(eventCallback: EventCallback) {
-        if (isEntered.get()) {
+        if (isEntered) {
             cancelOnExit(eventCallback)
         } else {
             parent.cancelOnExitFromActiveStage(eventCallback)

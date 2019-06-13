@@ -1,5 +1,6 @@
 package net.apptronic.core.component.entity.subscriptions
 
+import net.apptronic.core.base.concurrent.requireNeverFrozen
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.base.observable.subject.Subject
 import net.apptronic.core.component.context.Context
@@ -10,6 +11,10 @@ class ContextSubjectWrapper<T, E : Subject<T>>(
         private val context: Context,
         val wrapped: E
 ) : UpdateEntity<T> {
+
+    init {
+        requireNeverFrozen()
+    }
 
     private val subscriptions = ContextSubscriptionFactory<T>(context)
 

@@ -1,9 +1,9 @@
 package net.apptronic.core.base.concurrent
 
-import net.apptronic.core.base.concurrent.base.IAtomicReference
+import net.apptronic.core.base.concurrent.base.IVolatile
 import kotlin.native.concurrent.AtomicReference
 
-actual class Volatile<T> actual constructor(initialValue: T) : IAtomicReference<T> {
+actual class Volatile<T> actual constructor(initialValue: T) : IVolatile<T> {
 
     private var atomic = AtomicReference<T>(initialValue)
 

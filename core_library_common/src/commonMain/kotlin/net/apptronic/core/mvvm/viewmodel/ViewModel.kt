@@ -32,7 +32,7 @@ open class ViewModel : Component {
     }
 
     override fun getDefaultWorker(): WorkerDefinition {
-        return WorkerDefinition.UI
+        return WorkerDefinition.DEFAULT
     }
 
     override fun getLifecycle(): ViewModelLifecycle {

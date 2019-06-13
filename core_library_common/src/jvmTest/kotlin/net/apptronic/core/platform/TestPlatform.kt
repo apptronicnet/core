@@ -18,14 +18,6 @@ object TestPlatform : Platform {
         return InstanceWorkerProvider(synchronousWorker())
     }
 
-    override fun uiWorkerProvider(): WorkerProvider {
-        return InstanceWorkerProvider(synchronousWorker())
-    }
-
-    override fun uiAsyncWorkerProvider(): WorkerProvider {
-        return InstanceWorkerProvider(synchronousWorker())
-    }
-
     override fun runInNewThread(action: () -> Unit) {
         Thread(Runnable { action.invoke() }).start()
     }

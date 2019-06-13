@@ -1,6 +1,7 @@
 package net.apptronic.core.base.observable.subject
 
 import net.apptronic.core.base.concurrent.Volatile
+import net.apptronic.core.base.concurrent.requireNeverFrozen
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.base.observable.Subscription
 import net.apptronic.core.base.observable.Subscriptions
@@ -9,6 +10,10 @@ import net.apptronic.core.base.observable.Subscriptions
  * Entity which is store values
  */
 open class BehaviorSubject<T> : Subject<T> {
+
+    init {
+        requireNeverFrozen()
+    }
 
     private val subscriptions = Subscriptions<T>()
 

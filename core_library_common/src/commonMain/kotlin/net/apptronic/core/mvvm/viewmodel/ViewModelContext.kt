@@ -7,7 +7,7 @@ import net.apptronic.core.threading.WorkerDefinition
 open class ViewModelContext : SubContext {
 
     init {
-        getScheduler().setDefaultWorker(WorkerDefinition.UI)
+        getScheduler().setDefaultWorker(WorkerDefinition.DEFAULT)
     }
 
     private val lifecycle: ViewModelLifecycle

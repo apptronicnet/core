@@ -76,10 +76,6 @@ internal class TaskStepElement<T, E : Exception>(
         return switchWorker(WorkerDefinition.DEFAULT)
     }
 
-    override fun uiWorker(): TaskStep<T, E> {
-        return switchWorker(WorkerDefinition.UI)
-    }
-
     override fun onNext(action: (T) -> Unit): TaskStep<T, E> {
         return nextStep { current ->
             try {

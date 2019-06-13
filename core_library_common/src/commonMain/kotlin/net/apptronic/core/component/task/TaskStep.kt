@@ -7,8 +7,6 @@ interface TaskStep<T, E : Exception> {
 
     fun switchWorker(workerDefinition: WorkerDefinition): TaskStep<T, E>
 
-    fun uiWorker(): TaskStep<T, E>
-
     fun defaultWorker(): TaskStep<T, E>
 
     fun onNext(action: (T) -> Unit): TaskStep<T, E>

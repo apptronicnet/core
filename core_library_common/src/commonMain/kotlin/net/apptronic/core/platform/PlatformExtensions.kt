@@ -10,14 +10,6 @@ fun defaultWorkerProvider(): WorkerProvider {
     return getPlatform().defaultWorkerProvider()
 }
 
-fun uiWorkerProvider(): WorkerProvider {
-    return getPlatform().uiWorkerProvider()
-}
-
-fun uiAsyncWorkerProvider(): WorkerProvider {
-    return getPlatform().uiAsyncWorkerProvider()
-}
-
 fun runInNewThread(action: () -> Unit) {
     getPlatform().runInNewThread(action)
 }

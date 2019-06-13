@@ -1,5 +1,6 @@
 package net.apptronic.core.component.entity.entities
 
+import net.apptronic.core.base.concurrent.requireNeverFrozen
 import net.apptronic.core.base.observable.Observable
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.component.context.Context
@@ -13,6 +14,10 @@ import net.apptronic.core.threading.WorkerDefinition
 abstract class ComponentEntity<T>(
         private val context: Context
 ) : Entity<T>, WorkerSource {
+
+    init {
+        requireNeverFrozen()
+    }
 
     private var worker: Worker = context.getScheduler().getWorker(WorkerDefinition.DEFAULT)
     private val subscriptionFactory = ContextSubscriptionFactory<T>(context)

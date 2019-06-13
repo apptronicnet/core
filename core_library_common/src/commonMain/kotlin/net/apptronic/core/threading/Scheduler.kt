@@ -14,14 +14,6 @@ fun createCoreScheduler(): Scheduler {
                 getPlatform().defaultAsyncWorkerProvider()
         )
         assignWorker(
-                WorkerDefinition.UI,
-                getPlatform().uiWorkerProvider()
-        )
-        assignWorker(
-                WorkerDefinition.UI_ASYNC,
-                getPlatform().uiAsyncWorkerProvider()
-        )
-        assignWorker(
                 WorkerDefinition.SYNCHRONOUS,
                 InstanceWorkerProvider(synchronousWorker())
         )

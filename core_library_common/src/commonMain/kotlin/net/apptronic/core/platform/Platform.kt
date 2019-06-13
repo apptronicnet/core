@@ -10,10 +10,6 @@ interface Platform {
 
     fun defaultAsyncWorkerProvider(): WorkerProvider
 
-    fun uiWorkerProvider(): WorkerProvider
-
-    fun uiAsyncWorkerProvider(): WorkerProvider
-
     fun runInNewThread(action: () -> Unit)
 
     fun pauseCurrentThread(timeInMillis: Long)

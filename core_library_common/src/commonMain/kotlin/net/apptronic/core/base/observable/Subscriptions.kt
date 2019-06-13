@@ -2,8 +2,13 @@ package net.apptronic.core.base.observable
 
 import net.apptronic.core.base.concurrent.Synchronized
 import net.apptronic.core.base.concurrent.Volatile
+import net.apptronic.core.base.concurrent.requireNeverFrozen
 
 class Subscriptions<T> {
+
+    init {
+        requireNeverFrozen()
+    }
 
     private val sync = Synchronized()
     private val subscriptions = mutableListOf<SubscriptionImpl>()
