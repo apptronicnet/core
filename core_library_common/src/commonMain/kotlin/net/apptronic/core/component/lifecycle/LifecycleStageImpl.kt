@@ -2,11 +2,16 @@ package net.apptronic.core.component.lifecycle
 
 import net.apptronic.core.base.concurrent.AtomicEntity
 import net.apptronic.core.base.concurrent.Volatile
+import net.apptronic.core.base.concurrent.requireNeverFrozen
 import net.apptronic.core.component.entity.EntitySubscription
 import net.apptronic.core.component.entity.subscriptions.EntitySubscriptionListener
 
 internal class LifecycleStageImpl(val parent: LifecycleStageParent, val name: String) :
         LifecycleStage, LifecycleStageParent, EntitySubscriptionListener {
+
+    init {
+        requireNeverFrozen()
+    }
 
     private val childStage = AtomicEntity<LifecycleStageImpl?>(null)
 
@@ -15,11 +20,11 @@ internal class LifecycleStageImpl(val parent: LifecycleStageParent, val name: St
 
     private val enterCallback = CompositeCallback()
     private val exitCallback = CompositeCallback()
-    private val whenEnteredActions = HashMap<String, (() -> Unit)>()
+    private val whenEnteredActions = requireNeverFrozen(HashMap<String, (() -> Unit)>())
 
     private val enterHandler = Volatile<OnEnterHandlerImpl?>(null)
     private val exitHandler = Volatile<OnExitHandlerImpl?>(null)
-    private val subscriptions = mutableListOf<EntitySubscription>()
+    private val subscriptions = requireNeverFrozen(mutableListOf<EntitySubscription>())
 
     /**
      * This callbacks are internally created to be executed on exit stage command

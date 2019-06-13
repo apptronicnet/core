@@ -1,8 +1,13 @@
 package net.apptronic.core.component.lifecycle
 
+import net.apptronic.core.base.concurrent.requireNeverFrozen
 import kotlin.native.concurrent.ThreadLocal
 
 internal class CompositeCallback {
+
+    init {
+        requireNeverFrozen()
+    }
 
     @ThreadLocal
     private val innerCallbacks = mutableListOf<EventCallback>()
