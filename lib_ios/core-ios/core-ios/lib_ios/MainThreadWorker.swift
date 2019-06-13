@@ -4,7 +4,7 @@
 //
 
 import Foundation
-import lib
+import core_library_common
 
 class MainThreadWorker: Worker {
 

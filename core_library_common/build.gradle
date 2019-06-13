@@ -114,8 +114,8 @@ task copyFramework {
         copy {
             from srcFile.parent
             into targetDir
-            include 'lib.framework/**'
-            include 'lib.framework.dSYM'
+            include 'core_library_common.framework/**'
+            include 'core_library_common.framework.dSYM'
         }
     }
 }

@@ -7,16 +7,17 @@
 //
 
 import UIKit
-import lib
+import core_library_common
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
+    var rootContext: RootContext?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         PlatformInstanceKt.initializePlatform(platform: IosPlatform())
+        rootContext = RootContext()
         // Override point for customization after application launch.
         return true
     }
