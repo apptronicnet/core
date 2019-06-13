@@ -4,7 +4,7 @@ import net.apptronic.core.base.concurrent.base.IVolatile
 
 actual class Volatile<T> actual constructor(initialValue: T) : IVolatile<T> {
 
-    @Volatile
+    @kotlin.jvm.Volatile
     private var value: T = initialValue
 
     override fun set(value: T) {
