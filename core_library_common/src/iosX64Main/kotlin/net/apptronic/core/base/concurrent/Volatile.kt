@@ -2,13 +2,8 @@ package net.apptronic.core.base.concurrent
 
 import net.apptronic.core.base.concurrent.base.IVolatile
 import kotlin.native.concurrent.AtomicReference
-import kotlin.native.concurrent.ensureNeverFrozen
 
 actual class Volatile<T> actual constructor(initialValue: T) : IVolatile<T> {
-
-    init {
-        ensureNeverFrozen()
-    }
 
     private val atomic = AtomicReference<T>(initialValue)
 
