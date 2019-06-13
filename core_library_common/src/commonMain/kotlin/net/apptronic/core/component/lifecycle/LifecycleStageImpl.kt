@@ -186,6 +186,9 @@ internal class LifecycleStageImpl(val parent: LifecycleStageParent, val name: St
     }
 
     private inner class OnEnterHandlerImpl : LifecycleStage.OnEnterHandler {
+        init {
+            requireNeverFrozen()
+        }
 
         override fun onExit(callback: LifecycleStage.OnExitHandler.() -> Unit): LifecycleSubscription {
             return doOnExit(callback)
@@ -195,6 +198,9 @@ internal class LifecycleStageImpl(val parent: LifecycleStageParent, val name: St
 
     private inner class OnExitHandlerImpl : LifecycleStage.OnExitHandler {
 
+        init {
+            requireNeverFrozen()
+        }
     }
 
     private fun cancelOnExit(callback: EventCallback) {
