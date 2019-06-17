@@ -12,6 +12,10 @@ fun <T> Entity<T>.isNotNull(): Function<Boolean> =
             it != null
         }
 
+/**
+ * Function which emits single true signal when source entity emits any item. Good for usage when needed to
+ * observe when entity without value receives it's first value
+ */
 fun <T> Entity<T>.anyValue(): Function<Boolean> =
         entityFunction(this) {
             true

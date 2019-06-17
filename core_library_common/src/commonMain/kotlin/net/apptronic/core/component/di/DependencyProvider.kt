@@ -36,6 +36,9 @@ class DependencyProvider(
         clazz: KClass<TypeDeclaration>,
         instance: TypeDeclaration
     ) {
+        if (instance is ModuleDefinition) {
+            throw IllegalArgumentException("ModuleDefinition should be added using addModule()")
+        }
         val key = objectKey(clazz)
         externalInstances[key] = ValueHolder(instance)
     }
@@ -50,6 +53,9 @@ class DependencyProvider(
         descriptor: Descriptor<TypeDeclaration>,
         instance: TypeDeclaration
     ) {
+        if (instance is ModuleDefinition) {
+            throw IllegalArgumentException("ModuleDefinition should be added using addModule()")
+        }
         val key = objectKey(descriptor)
         externalInstances[key] = ValueHolder(instance)
     }

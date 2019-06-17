@@ -3,7 +3,7 @@ package net.apptronic.core.mvvm.viewmodel.container
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelStackAdapter
 
-class TestStackAdapter : ViewModelStackAdapter() {
+internal class TestStackAdapter : ViewModelStackAdapter() {
 
     var activeModel: ViewModel? = null
 

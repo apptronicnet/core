@@ -1,4 +1,4 @@
-package net.apptronic.core.component.entity.extensions
+package net.apptronic.core.component.entity.behavior
 
 import net.apptronic.core.base.observable.subscribe
 import net.apptronic.core.component.entity.Entity

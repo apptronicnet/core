@@ -123,7 +123,6 @@ class ViewModelListRecyclerNavigator<T, Id, VM : ViewModel>(
                 }
             } else {
                 containers.findRecordForModel(viewModel)?.let { record ->
-                    val key = builder.getId(record.item)
                     if (shouldRetainInstance(record.item, viewModel as VM)) {
                         record.container.setBound(false)
                     } else {
