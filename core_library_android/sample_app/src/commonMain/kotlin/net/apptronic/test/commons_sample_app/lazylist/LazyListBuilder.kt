@@ -33,7 +33,7 @@ class LazyListBuilder : GenericViewModelBuilder {
         }
     }
 
-    override fun shouldRetainInstance(list: List<Any>, item: Any, viewModel: ViewModel): Boolean {
+    override fun shouldRetainInstance(item: Any, viewModel: ViewModel): Boolean {
         return item is StaticItem
     }
 
