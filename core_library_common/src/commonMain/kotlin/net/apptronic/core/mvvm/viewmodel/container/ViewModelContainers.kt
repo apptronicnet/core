@@ -36,12 +36,6 @@ internal class ViewModelContainers<T, Id> {
         }
     }
 
-    fun findRecordForItem(item: T): Record? {
-        return containers.values.firstOrNull {
-            it.item == item
-        }
-    }
-
     fun removeById(id: Id): Record? {
         return containers.remove(id)
     }

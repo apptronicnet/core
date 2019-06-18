@@ -168,7 +168,7 @@ class ViewModelListRecyclerNavigator<T, Id, VM : ViewModel>(
 
         override fun get(index: Int): ViewModel {
             val key = items[index]
-            val existing = containers.findRecordForItem(key)
+            val existing = containers.findRecordForId(key.getId())
             return if (existing == null) {
                 onAdded(key).viewModel
             } else {

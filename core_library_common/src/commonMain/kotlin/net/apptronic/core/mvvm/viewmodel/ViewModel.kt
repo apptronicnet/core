@@ -4,10 +4,10 @@ import net.apptronic.core.base.observable.Observable
 import net.apptronic.core.base.observable.subject.BehaviorSubject
 import net.apptronic.core.component.Component
 import net.apptronic.core.component.entity.Entity
+import net.apptronic.core.component.entity.behavior.doWhen
+import net.apptronic.core.component.entity.behavior.setup
 import net.apptronic.core.component.entity.bindContext
 import net.apptronic.core.component.entity.entities.setAs
-import net.apptronic.core.component.entity.extensions.doWhen
-import net.apptronic.core.component.entity.extensions.setup
 import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.component.lifecycle.Lifecycle
 import net.apptronic.core.component.lifecycle.LifecycleStage
