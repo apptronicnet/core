@@ -21,14 +21,6 @@ object AndroidPlatform : Platform {
         return AndroidAsyncMainThreadWorkerProvider
     }
 
-    override fun uiWorkerProvider(): WorkerProvider {
-        return AndroidMainThreadWorkerProvider
-    }
-
-    override fun uiAsyncWorkerProvider(): WorkerProvider {
-        return AndroidAsyncMainThreadWorkerProvider
-    }
-
     override fun runInNewThread(action: () -> Unit) {
         Thread(Runnable { action.invoke() }).start()
     }
