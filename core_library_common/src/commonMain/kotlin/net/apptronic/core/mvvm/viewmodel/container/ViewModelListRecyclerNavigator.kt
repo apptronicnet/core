@@ -7,7 +7,7 @@ import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelListAdapter
 import net.apptronic.core.threading.execute
 
-class ViewModelListRecyclerNavigator<T, Id, VM : ViewModel>(
+class ViewModelListRecyclerNavigator<T : Any, Id, VM : ViewModel>(
         private val parent: ViewModel,
         private val builder: ViewModelBuilder<T, Id, VM>
 ) : BaseViewModelListNavigator<T>(parent),
@@ -85,7 +85,7 @@ class ViewModelListRecyclerNavigator<T, Id, VM : ViewModel>(
     }
 
     private fun shouldRetainInstance(key: T, viewModel: ViewModel): Boolean {
-        return staticItems.contains(key) || builder.shouldRetainInstance(items, key, viewModel as VM)
+        return staticItems.contains(key) || builder.shouldRetainInstance(key, viewModel as VM)
     }
 
     private fun T.getId(): Id {

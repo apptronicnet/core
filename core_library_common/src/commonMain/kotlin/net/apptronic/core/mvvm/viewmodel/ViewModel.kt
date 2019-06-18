@@ -107,13 +107,13 @@ open class ViewModel : Component {
         return listNavigator().setAs(listBuilder)
     }
 
-    fun <T, Id, VM : ViewModel> listRecyclerNavigator(
+    fun <T : Any, Id, VM : ViewModel> listRecyclerNavigator(
         builder: ViewModelBuilder<T, Id, VM>
     ): ViewModelListRecyclerNavigator<T, Id, VM> {
         return ViewModelListRecyclerNavigator(this, builder)
     }
 
-    fun <T, Id, VM : ViewModel> listRecyclerNavigator(
+    fun <T : Any, Id, VM : ViewModel> listRecyclerNavigator(
         source: Entity<List<T>>,
         builder: ViewModelBuilder<T, Id, VM>
     ): ViewModelListRecyclerNavigator<T, Id, VM> {

@@ -34,11 +34,10 @@ interface ViewModelBuilder<T, Id, VM : ViewModel> {
      * simple check for [List.contains] can be dangerous as requires seeking whole list and loading all of it's elements.
      * Position in list is not provided too as it took to much time to define real position of item on long or lazy list.
      *
-     * @param list list, used as source in adapter
      * @param item item, which represents [viewModel] in [list]
      * @param viewModel [ViewModel], used to display this item
      */
-    fun shouldRetainInstance(list: List<T>, item: T, viewModel: VM): Boolean {
+    fun shouldRetainInstance(item: T, viewModel: VM): Boolean {
         return false
     }
 
