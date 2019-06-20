@@ -3,7 +3,7 @@ package net.apptronic.core.mvvm.viewmodel.container
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 
 /**
- * Create simple filter which filters list for only visible items
+ * Create simple filter which filters list for only visible items.
  */
 fun simpleFilter(): ViewModelListFilter {
     return SimpleFilter()
@@ -16,7 +16,7 @@ private class SimpleFilter : ViewModelListFilter {
 }
 
 /**
- * Create filter which filters list for only not broken chain of visible items from start
+ * Create filter which filters list for only not broken chain of visible items from start.
  */
 fun takeUntilVisibleFilter(): ViewModelListFilter {
     return TakeUntilVisibleFilter()
@@ -70,8 +70,14 @@ private class NotifyNextFilter(
     }
 }
 
+/**
+ * Interface for use with [notifyNextFilter]
+ */
 interface OnReadyForLoad {
 
+    /**
+     * Called when [notifyNextFilter] marks [ViewModel] which implements this interface that it can load data.
+     */
     fun setReadyForLoad()
 
 }

@@ -148,15 +148,20 @@ internal class TaskStepElement<T, E : Exception>(
     }
 
     override fun sendResultTo(entity: UpdateEntity<in T>): TaskStep<T, E> {
+        val worker = context.getScheduler().getWorker(WorkerDefinition.DEFAULT)
         return onNext {
-            entity.update(it)
-
+            worker.execute {
+                entity.update(it)
+            }
         }
     }
 
     override fun sendErrorTo(entity: UpdateEntity<in E>): TaskStep<T, E> {
+        val worker = context.getScheduler().getWorker(WorkerDefinition.DEFAULT)
         return onError {
-            entity.update(it)
+            worker.execute {
+                entity.update(it)
+            }
         }
     }
 

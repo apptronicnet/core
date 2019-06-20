@@ -55,11 +55,13 @@ class ViewModelListRecyclerNavigator<T : Any, Id, VM : ViewModel>(
      * Set source items list.
      */
     fun set(value: List<T>) {
-        clearSaved()
-        containers.markAllRequiresUpdate()
-        items = value
-        adapter?.onDataChanged(viewModels)
-        updateSubject()
+        uiWorker.execute {
+            clearSaved()
+            containers.markAllRequiresUpdate()
+            items = value
+            adapter?.onDataChanged(viewModels)
+            updateSubject()
+        }
     }
 
     /**
@@ -67,29 +69,31 @@ class ViewModelListRecyclerNavigator<T : Any, Id, VM : ViewModel>(
      * will not be removed when item is unbound.
      */
     fun setStaticItems(value: List<T>) {
-        fun Id.getKey(): T? {
-            return value.firstOrNull { key ->
-                key.getId() == this
+        uiWorker.execute {
+            fun Id.getKey(): T? {
+                return value.firstOrNull { key ->
+                    key.getId() == this
+                }
             }
-        }
-        uiAsyncWorker.execute {
-            val oldIds = staticItems.map { it.getId() }
-            val newIds = value.map { it.getId() }
-            val diff = getDiff(oldIds, newIds)
-            diff.removed.forEach { id ->
-                containers.findRecordForId(id)?.let { record ->
-                    if (!record.container.getViewModel().isBound()) {
-                        val key = id.getKey()
-                        if (key != null) {
-                            onRemoved(key)
+            uiAsyncWorker.execute {
+                val oldIds = staticItems.map { it.getId() }
+                val newIds = value.map { it.getId() }
+                val diff = getDiff(oldIds, newIds)
+                diff.removed.forEach { id ->
+                    containers.findRecordForId(id)?.let { record ->
+                        if (!record.container.getViewModel().isBound()) {
+                            val key = id.getKey()
+                            if (key != null) {
+                                onRemoved(key)
+                            }
                         }
                     }
                 }
-            }
-            staticItems = value
-            diff.added.forEach { id ->
-                id.getKey()?.let {
-                    onAdded(it)
+                staticItems = value
+                diff.added.forEach { id ->
+                    id.getKey()?.let {
+                        onAdded(it)
+                    }
                 }
             }
         }

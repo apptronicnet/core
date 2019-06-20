@@ -6,7 +6,7 @@ import net.apptronic.core.mvvm.viewmodel.container.VisibilityFilter
 
 class LoadItemVisibilityFilter : VisibilityFilter<LoadItemViewModel> {
 
-    override fun shouldShow(viewModel: LoadItemViewModel): Entity<Boolean> {
+    override fun isReadyToShow(viewModel: LoadItemViewModel): Entity<Boolean> {
         return viewModel.isLoading.not()
     }
 

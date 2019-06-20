@@ -13,25 +13,25 @@ import net.apptronic.core.threading.execute
 class ViewModelListNavigator(
         private val parent: ViewModel
 ) : BaseViewModelListNavigator<ViewModel>(parent),
-        UpdateEntity<List<ViewModel>> {
+        UpdateEntity<List<ViewModel>>, VisibilityFilterableNavigator {
 
     private var postRefreshingVisibility = false
 
-    private val filters = VisibilityFilters<ViewModel>()
+    private val visibilityFilters: VisibilityFilters<ViewModel> = VisibilityFilters<ViewModel>()
     private var listFilter: ViewModelListFilter = simpleFilter()
 
     private val subject = BehaviorSubject<List<ViewModel>>().apply {
         update(emptyList())
     }
 
-    private val viewModelListEntity = ContextSubjectWrapper(parent, BehaviorSubject<ViewModelList>())
+    private val viewModelListEntity = ContextSubjectWrapper(parent, BehaviorSubject<ListNavigatorStatus>())
 
     private fun updateSubject() {
         subject.update(items)
     }
 
-    fun getFilters(): VisibilityFilters<ViewModel> {
-        return filters
+    override fun getVisibilityFilters(): VisibilityFilters<ViewModel> {
+        return visibilityFilters
     }
 
     fun setListFilter(listFilter: ViewModelListFilter) {
@@ -47,12 +47,12 @@ class ViewModelListNavigator(
         return subject
     }
 
-    fun observeList(): Entity<ViewModelList> {
+    fun observeStatus(): Entity<ListNavigatorStatus> {
         return viewModelListEntity
     }
 
-    fun getList(): ViewModelList {
-        return ViewModelList(items, visibleItems)
+    fun getStatus(): ListNavigatorStatus {
+        return ListNavigatorStatus(items, visibleItems)
     }
 
     private var adapter: ViewModelListAdapter? = null
@@ -77,7 +77,7 @@ class ViewModelListNavigator(
         }
         visibleItems = listFilter.filterList(source)
         adapter?.onDataChanged(visibleItems)
-        viewModelListEntity.update(ViewModelList(items, visibleItems))
+        viewModelListEntity.update(ListNavigatorStatus(items, visibleItems))
     }
 
     override fun get(): List<ViewModel> {
@@ -107,19 +107,22 @@ class ViewModelListNavigator(
     }
 
     fun set(value: List<ViewModel>) {
-        val diff = getDiff(items, value)
-        diff.removed.forEach {
-            onRemoved(it)
+        uiWorker.execute {
+            val diff = getDiff(items, value)
+            diff.removed.forEach {
+                onRemoved(it)
+            }
+            items = value
+            diff.added.forEach {
+                onAdded(it)
+            }
+            postRefreshVisibility()
+            updateSubject()
         }
-        items = value
-        diff.added.forEach {
-            onAdded(it)
-        }
-        postRefreshVisibility()
     }
 
     private fun onAdded(viewModel: ViewModel) {
-        val container = ViewModelContainerItem(viewModel, parent, filters.shouldShow(viewModel), this::postRefreshVisibility)
+        val container = ViewModelContainerItem(viewModel, parent, visibilityFilters.isReadyToShow(viewModel), this::postRefreshVisibility)
         containers[viewModel.getId()] = container
         container.getViewModel().onAttachToParent(this)
         container.setCreated(true)
