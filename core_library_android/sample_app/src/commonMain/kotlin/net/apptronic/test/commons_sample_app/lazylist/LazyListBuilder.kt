@@ -3,7 +3,7 @@ package net.apptronic.test.commons_sample_app.lazylist
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
-import net.apptronic.core.mvvm.viewmodel.container.GenericViewModelBuilder
+import net.apptronic.core.mvvm.viewmodel.navigation.GenericViewModelBuilder
 
 class LazyListBuilder : GenericViewModelBuilder {
 

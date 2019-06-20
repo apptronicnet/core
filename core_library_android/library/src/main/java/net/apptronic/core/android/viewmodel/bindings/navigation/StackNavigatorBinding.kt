@@ -3,11 +3,11 @@ package net.apptronic.core.android.viewmodel.bindings.navigation
 import android.view.ViewGroup
 import net.apptronic.core.android.viewmodel.*
 import net.apptronic.core.mvvm.viewmodel.ViewModel
-import net.apptronic.core.mvvm.viewmodel.container.ViewModelStackNavigator
+import net.apptronic.core.mvvm.viewmodel.navigation.StackNavigator
 
 fun stackNavigatorBinding(
         viewGroup: ViewGroup,
-        navigator: ViewModelStackNavigator,
+        navigator: StackNavigator,
         factory: AndroidViewFactory,
         stackAnimator: StackAnimator = StackAnimator(),
         defaultAnimationTime: Long = viewGroup.resources.getInteger(android.R.integer.config_mediumAnimTime).toLong()
@@ -17,7 +17,7 @@ fun stackNavigatorBinding(
 
 class StackNavigatorBinding(
         private val viewGroup: ViewGroup,
-        private val navigator: ViewModelStackNavigator,
+        private val navigator: StackNavigator,
         private val factory: AndroidViewFactory,
         private val stackAnimator: StackAnimator,
         private val defaultAnimationTime: Long

@@ -3,7 +3,7 @@ package net.apptronic.core.android.viewmodel
 import android.app.Activity
 import android.view.View
 import net.apptronic.core.mvvm.viewmodel.ViewModel
-import net.apptronic.core.mvvm.viewmodel.container.ViewModelLifecycleController
+import net.apptronic.core.mvvm.viewmodel.navigation.ViewModelLifecycleController
 
 fun <T : ViewModel> lifecycleController(
     viewModel: T,

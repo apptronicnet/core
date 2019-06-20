@@ -4,10 +4,10 @@ import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.functions.map
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
-import net.apptronic.core.mvvm.viewmodel.container.addVisibilityFilter
-import net.apptronic.core.mvvm.viewmodel.container.notifyNextFilter
-import net.apptronic.core.mvvm.viewmodel.container.simpleFilter
-import net.apptronic.core.mvvm.viewmodel.container.takeUntilVisibleFilter
+import net.apptronic.core.mvvm.viewmodel.navigation.addVisibilityFilter
+import net.apptronic.core.mvvm.viewmodel.navigation.notifyNextFilter
+import net.apptronic.core.mvvm.viewmodel.navigation.simpleFilter
+import net.apptronic.core.mvvm.viewmodel.navigation.takeUntilVisibleFilter
 
 fun createLoadFilterListViewModel(parent: Context): LoadFilterListViewModel {
     return LoadFilterListViewModel(ViewModelContext(parent))

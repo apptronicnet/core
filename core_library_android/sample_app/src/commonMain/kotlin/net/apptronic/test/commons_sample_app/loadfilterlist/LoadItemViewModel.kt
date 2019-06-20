@@ -9,7 +9,7 @@ import net.apptronic.core.component.entity.functions.not
 import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
-import net.apptronic.core.mvvm.viewmodel.container.OnReadyForLoad
+import net.apptronic.core.mvvm.viewmodel.navigation.OnReadyForLoad
 
 fun createLoadItemViewModel(parent: Context, time: Long, initialReady: Boolean): ViewModel {
     val context = ViewModelContext(parent)

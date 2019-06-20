@@ -9,11 +9,11 @@ import net.apptronic.core.android.viewmodel.listadapters.TitleFactory
 import net.apptronic.core.android.viewmodel.listadapters.TitleProvider
 import net.apptronic.core.android.viewmodel.listadapters.ViewPagerAdapter
 import net.apptronic.core.mvvm.viewmodel.ViewModel
-import net.apptronic.core.mvvm.viewmodel.container.ViewModelListNavigator
+import net.apptronic.core.mvvm.viewmodel.navigation.ListNavigator
 
 fun pagerNavigatorBinding(
     viewPager: ViewPager,
-    navigator: ViewModelListNavigator,
+    navigator: ListNavigator,
     factory: AndroidViewFactory,
     titleFactory: TitleFactory? = null
 ): PagerNavigatorBinding {
@@ -22,7 +22,7 @@ fun pagerNavigatorBinding(
 
 class PagerNavigatorBinding(
     private val viewPager: ViewPager,
-    private val navigator: ViewModelListNavigator,
+    private val navigator: ListNavigator,
     private val factory: AndroidViewFactory,
     private val titleFactory: TitleFactory?
 ) : Binding() {
