@@ -1,4 +1,4 @@
-package net.apptronic.core.mvvm.viewmodel.container
+package net.apptronic.core.mvvm.viewmodel.navigation
 
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.base.observable.subject.BehaviorSubject

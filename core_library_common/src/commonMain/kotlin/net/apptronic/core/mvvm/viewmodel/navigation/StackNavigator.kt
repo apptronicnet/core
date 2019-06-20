@@ -1,4 +1,4 @@
-package net.apptronic.core.mvvm.viewmodel.container
+package net.apptronic.core.mvvm.viewmodel.navigation
 
 import net.apptronic.core.base.observable.Observable
 import net.apptronic.core.base.observable.distinctUntilChanged
@@ -8,7 +8,7 @@ import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelStackAdapter
 import net.apptronic.core.threading.execute
 
-class ViewModelStackNavigator(
+class StackNavigator(
         private val parent: ViewModel
 ) : Navigator<StackNavigatorStatus>(
         parent
@@ -16,8 +16,8 @@ class ViewModelStackNavigator(
 
     private data class State(
             val isInProgress: Boolean,
-            val visibleItem: ViewModelContainerItem?, // current item placed inside adapter
-            val actualItem: ViewModelContainerItem? // current item which is last in stack
+            val visibleItem: ViewModelContainer?, // current item placed inside adapter
+            val actualItem: ViewModelContainer? // current item which is last in stack
     ) {
         fun toStatus(): StackNavigatorStatus {
             return StackNavigatorStatus(
@@ -32,14 +32,14 @@ class ViewModelStackNavigator(
         update(State(false, null, null))
     }
     private val observable = BehaviorSubject<StackNavigatorStatus>()
-    private val stack = mutableListOf<ViewModelContainerItem>()
+    private val stack = mutableListOf<ViewModelContainer>()
     private var currentAdapter: CurrentAdapter? = null
     private val visibilityFilters: VisibilityFilters<ViewModel> = VisibilityFilters<ViewModel>()
 
     private class CurrentAdapter(
             val adapter: ViewModelStackAdapter
     ) {
-        var activeItem: ViewModelContainerItem? = null
+        var activeItem: ViewModelContainer? = null
     }
 
     override fun getObservable(): Observable<StackNavigatorStatus> {
@@ -96,7 +96,7 @@ class ViewModelStackNavigator(
     }
 
     private fun invalidateAdapter(
-            newItem: ViewModelContainerItem?,
+            newItem: ViewModelContainer?,
             transitionInfo: Any?
     ) {
         currentAdapter?.apply {
@@ -137,7 +137,7 @@ class ViewModelStackNavigator(
         return stack.size
     }
 
-    private fun getCurrentItem(): ViewModelContainerItem? = stack.lastOrNull()
+    private fun getCurrentItem(): ViewModelContainer? = stack.lastOrNull()
 
     /**
      * Set [ViewModelStackAdapter] to create view controllers for [ViewModel]s
@@ -160,7 +160,7 @@ class ViewModelStackNavigator(
         return stack[index].getViewModel()
     }
 
-    private fun onUnbind(item: ViewModelContainerItem) {
+    private fun onUnbind(item: ViewModelContainer) {
         item.setBound(false)
         item.setVisible(false)
         item.setFocused(false)
@@ -189,7 +189,7 @@ class ViewModelStackNavigator(
             }
             stack.clear()
             viewModel?.let {
-                val item = ViewModelContainerItem(
+                val item = ViewModelContainer(
                         it,
                         parent,
                         visibilityFilters.isReadyToShow(it),
@@ -209,7 +209,7 @@ class ViewModelStackNavigator(
     fun add(viewModel: ViewModel, transitionInfo: Any? = null) {
         uiAsyncWorker.execute {
             val activeModel = getCurrentItem()
-            val newItem = ViewModelContainerItem(viewModel, parent)
+            val newItem = ViewModelContainer(viewModel, parent)
             stack.add(newItem)
             onAdded(newItem)
             refreshState(transitionInfo)
@@ -226,7 +226,7 @@ class ViewModelStackNavigator(
                 stack.remove(it)
                 onRemoved(it)
             }
-            val newItem = ViewModelContainerItem(viewModel, parent)
+            val newItem = ViewModelContainer(viewModel, parent)
             stack.add(newItem)
             onAdded(newItem)
             refreshState(transitionInfo)
@@ -316,12 +316,12 @@ class ViewModelStackNavigator(
         }
     }
 
-    private fun onAdded(item: ViewModelContainerItem) {
+    private fun onAdded(item: ViewModelContainer) {
         item.getViewModel().onAttachToParent(this)
         item.setCreated(true)
     }
 
-    private fun onRemoved(item: ViewModelContainerItem) {
+    private fun onRemoved(item: ViewModelContainer) {
         item.getViewModel().onDetachFromParent()
         item.terminate()
     }

@@ -1,4 +1,4 @@
-package net.apptronic.core.mvvm.viewmodel.container
+package net.apptronic.core.mvvm.viewmodel.navigation
 
 internal fun <T> getDiff(before: List<T>, after: List<T>): Diff<T> {
     val same = before.filter {

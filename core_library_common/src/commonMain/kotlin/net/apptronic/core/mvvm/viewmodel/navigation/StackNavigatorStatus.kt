@@ -1,11 +1,11 @@
-package net.apptronic.core.mvvm.viewmodel.container
+package net.apptronic.core.mvvm.viewmodel.navigation
 
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.functions.map
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 
 /**
- * Class representing status of [ViewModelStackNavigator]
+ * Class representing status of [StackNavigator]
  */
 data class StackNavigatorStatus(
         /**
@@ -18,7 +18,7 @@ data class StackNavigatorStatus(
         val actualModel: ViewModel?,
         /**
          * Current visible [ViewModel]. Same as [actualModel] when no progress but may be different pr null
-         * if new [ViewModel] is loading's it's data inside [ViewModelStackNavigator] and waiting to be shown
+         * if new [ViewModel] is loading's it's data inside [StackNavigator] and waiting to be shown
          */
         val visibleModel: ViewModel?
 )

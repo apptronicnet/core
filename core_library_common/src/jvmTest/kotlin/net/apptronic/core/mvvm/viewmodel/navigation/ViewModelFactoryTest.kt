@@ -1,8 +1,8 @@
-package net.apptronic.core.mvvm.viewmodel.container
+package net.apptronic.core.mvvm.viewmodel.navigation
 
-import net.apptronic.core.testutils.TestContext
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.mvvm.TestViewModel
+import net.apptronic.core.testutils.TestContext
 import org.junit.Test
 
 class ViewModelFactoryTest : TestContext() {

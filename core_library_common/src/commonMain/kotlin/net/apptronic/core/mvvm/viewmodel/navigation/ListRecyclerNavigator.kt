@@ -1,4 +1,4 @@
-package net.apptronic.core.mvvm.viewmodel.container
+package net.apptronic.core.mvvm.viewmodel.navigation
 
 import net.apptronic.core.base.observable.Observable
 import net.apptronic.core.base.observable.subject.BehaviorSubject
@@ -10,10 +10,10 @@ import net.apptronic.core.threading.execute
 
 const val RECYCLER_NAVIGATOR_DEFAULT_SAVED_ITEMS_SIZE = 10
 
-class ViewModelListRecyclerNavigator<T : Any, Id, VM : ViewModel>(
+class ListRecyclerNavigator<T : Any, Id, VM : ViewModel>(
         private val parent: ViewModel,
         private val builder: ViewModelBuilder<T, Id, VM>
-) : BaseViewModelListNavigator<T>(parent),
+) : BaseListNavigator<T>(parent),
         UpdateEntity<List<T>> {
 
     private val subject = BehaviorSubject<List<T>>().apply {
@@ -107,9 +107,9 @@ class ViewModelListRecyclerNavigator<T : Any, Id, VM : ViewModel>(
         return builder.getId(this)
     }
 
-    private fun onAdded(key: T): ViewModelContainerItem {
+    private fun onAdded(key: T): ViewModelContainer {
         val viewModel = builder.onCreateViewModel(parent, key)
-        val container = ViewModelContainerItem(viewModel, parent)
+        val container = ViewModelContainer(viewModel, parent)
         containers.add(key.getId(), container, key)
         container.getViewModel().onAttachToParent(this)
         container.setCreated(true)
@@ -160,7 +160,7 @@ class ViewModelListRecyclerNavigator<T : Any, Id, VM : ViewModel>(
             viewModel: ViewModel,
             transitionInfo: Any?
     ) {
-        throw UnsupportedOperationException("ViewModelListRecyclerNavigator cannot close items")
+        throw UnsupportedOperationException("ListRecyclerNavigator cannot close items")
     }
 
     override fun setAdapter(adapter: ViewModelListAdapter) {

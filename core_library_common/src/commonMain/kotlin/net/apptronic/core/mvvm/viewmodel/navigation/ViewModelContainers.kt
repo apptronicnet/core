@@ -1,4 +1,4 @@
-package net.apptronic.core.mvvm.viewmodel.container
+package net.apptronic.core.mvvm.viewmodel.navigation
 
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 
@@ -7,14 +7,14 @@ internal class ViewModelContainers<T, Id> {
     private val containers = mutableMapOf<Id, Record>()
 
      inner class Record(
-            val id: Id,
-            val container: ViewModelContainerItem,
-            var item: T
+             val id: Id,
+             val container: ViewModelContainer,
+             var item: T
     ) {
         var requiresUpdate = false
     }
 
-    fun add(id: Id, container: ViewModelContainerItem, item: T) {
+    fun add(id: Id, container: ViewModelContainer, item: T) {
         containers[id] = Record(id, container, item)
     }
 

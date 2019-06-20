@@ -3,7 +3,7 @@ package net.apptronic.core.mvvm
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
-import net.apptronic.core.mvvm.viewmodel.container.ViewModelLifecycleController
+import net.apptronic.core.mvvm.viewmodel.navigation.ViewModelLifecycleController
 import org.junit.Test
 
 class SubModelLifecycleTest {

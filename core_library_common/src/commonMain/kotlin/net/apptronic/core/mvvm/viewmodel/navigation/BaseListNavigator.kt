@@ -1,9 +1,9 @@
-package net.apptronic.core.mvvm.viewmodel.container
+package net.apptronic.core.mvvm.viewmodel.navigation
 
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelListAdapter
 
-abstract class BaseViewModelListNavigator<T>(
+abstract class BaseListNavigator<T>(
     parent: ViewModel
 ) : Navigator<List<T>>(parent) {
 

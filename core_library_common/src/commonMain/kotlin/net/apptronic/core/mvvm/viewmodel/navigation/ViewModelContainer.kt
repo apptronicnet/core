@@ -1,4 +1,4 @@
-package net.apptronic.core.mvvm.viewmodel.container
+package net.apptronic.core.mvvm.viewmodel.navigation
 
 import net.apptronic.core.base.SubscriptionHolders
 import net.apptronic.core.base.addTo
@@ -14,7 +14,7 @@ import net.apptronic.core.component.lifecycle.exitStage
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelLifecycle
 
-class ViewModelContainerItem(
+internal class ViewModelContainer(
         private val viewModel: ViewModel,
         private val parent: ViewModel,
         private val shouldShow: Entity<Boolean> = viewModel.ofValue(true),

@@ -1,4 +1,4 @@
-package net.apptronic.core.mvvm.viewmodel.container
+package net.apptronic.core.mvvm.viewmodel.navigation
 
 import net.apptronic.core.base.observable.Observable
 import net.apptronic.core.base.observable.subject.BehaviorSubject
@@ -10,9 +10,9 @@ import net.apptronic.core.mvvm.viewmodel.adapter.ItemStateNavigator
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelListAdapter
 import net.apptronic.core.threading.execute
 
-class ViewModelListNavigator(
+class ListNavigator(
         private val parent: ViewModel
-) : BaseViewModelListNavigator<ViewModel>(parent),
+) : BaseListNavigator<ViewModel>(parent),
         UpdateEntity<List<ViewModel>>, VisibilityFilterableNavigator {
 
     private var postRefreshingVisibility = false
@@ -92,9 +92,9 @@ class ViewModelListNavigator(
         return ArrayList(items)
     }
 
-    private val containers = mutableMapOf<Long, ViewModelContainerItem>()
+    private val containers = mutableMapOf<Long, ViewModelContainer>()
 
-    private fun ViewModel.getContainer(): ViewModelContainerItem? {
+    private fun ViewModel.getContainer(): ViewModelContainer? {
         return containers[getId()]
     }
 
@@ -122,7 +122,7 @@ class ViewModelListNavigator(
     }
 
     private fun onAdded(viewModel: ViewModel) {
-        val container = ViewModelContainerItem(viewModel, parent, visibilityFilters.isReadyToShow(viewModel), this::postRefreshVisibility)
+        val container = ViewModelContainer(viewModel, parent, visibilityFilters.isReadyToShow(viewModel), this::postRefreshVisibility)
         containers[viewModel.getId()] = container
         container.getViewModel().onAttachToParent(this)
         container.setCreated(true)

@@ -11,7 +11,7 @@ import net.apptronic.core.component.entity.entities.setAs
 import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.component.lifecycle.Lifecycle
 import net.apptronic.core.component.lifecycle.LifecycleStage
-import net.apptronic.core.mvvm.viewmodel.container.*
+import net.apptronic.core.mvvm.viewmodel.navigation.*
 import net.apptronic.core.platform.getPlatform
 import net.apptronic.core.threading.WorkerDefinition
 
@@ -78,12 +78,12 @@ open class ViewModel : Component {
         return target
     }
 
-    fun stackNavigator(): ViewModelStackNavigator {
-        return ViewModelStackNavigator(this)
+    fun stackNavigator(): StackNavigator {
+        return StackNavigator(this)
     }
 
-    fun stackNavigator(source: Entity<ViewModel>): ViewModelStackNavigator {
-        return ViewModelStackNavigator(this).setup {
+    fun stackNavigator(source: Entity<ViewModel>): StackNavigator {
+        return StackNavigator(this).setup {
             source.subscribe {
                 set(it)
             }
@@ -94,14 +94,14 @@ open class ViewModel : Component {
         return ViewModelListBuilder(this, builder)
     }
 
-    fun listNavigator(): ViewModelListNavigator {
-        return ViewModelListNavigator(this)
+    fun listNavigator(): ListNavigator {
+        return ListNavigator(this)
     }
 
     fun <T, Id, VM : ViewModel> listNavigator(
         source: Entity<out List<T>>,
         builder: ViewModelBuilder<T, Id, VM>
-    ): ViewModelListNavigator {
+    ): ListNavigator {
         val listBuilder = listBuilder(builder)
         listBuilder.updateFrom(source)
         return listNavigator().setAs(listBuilder)
@@ -109,14 +109,14 @@ open class ViewModel : Component {
 
     fun <T : Any, Id, VM : ViewModel> listRecyclerNavigator(
         builder: ViewModelBuilder<T, Id, VM>
-    ): ViewModelListRecyclerNavigator<T, Id, VM> {
-        return ViewModelListRecyclerNavigator(this, builder)
+    ): ListRecyclerNavigator<T, Id, VM> {
+        return ListRecyclerNavigator(this, builder)
     }
 
     fun <T : Any, Id, VM : ViewModel> listRecyclerNavigator(
         source: Entity<List<T>>,
         builder: ViewModelBuilder<T, Id, VM>
-    ): ViewModelListRecyclerNavigator<T, Id, VM> {
+    ): ListRecyclerNavigator<T, Id, VM> {
         val navigator = listRecyclerNavigator(builder)
         source.subscribe {
             navigator.set(it)
@@ -124,8 +124,8 @@ open class ViewModel : Component {
         return navigator
     }
 
-    fun listNavigator(source: Entity<List<ViewModel>>): ViewModelListNavigator {
-        return ViewModelListNavigator(this).setup {
+    fun listNavigator(source: Entity<List<ViewModel>>): ListNavigator {
+        return ListNavigator(this).setup {
             source.subscribe {
                 set(it)
             }

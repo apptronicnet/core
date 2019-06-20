@@ -1,8 +1,8 @@
-package net.apptronic.core.mvvm.viewmodel.container
+package net.apptronic.core.mvvm.viewmodel.navigation
 
-import net.apptronic.core.testutils.TestContext
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
+import net.apptronic.core.testutils.TestContext
 import kotlin.test.Test
 
 class StackNavigatorTest : TestContext() {
