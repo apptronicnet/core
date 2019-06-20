@@ -19,6 +19,7 @@ class NavigationScreenView : AndroidView<NavigationScreenViewModel>() {
             +(pagesScreenDemo sendClicksTo viewModel::onClickPagerDemo)
             +(debounceScreenDemo sendClicksTo viewModel::onClickDebounceDemo)
             +(lazyListDemo sendClicksTo viewModel::onClickLazyListDemo)
+            +(filterListDemo sendClicksTo viewModel::onClickListFilterDemo)
         }
     }
 

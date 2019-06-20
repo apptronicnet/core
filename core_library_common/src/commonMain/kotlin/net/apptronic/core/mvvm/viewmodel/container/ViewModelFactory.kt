@@ -1,5 +1,6 @@
 package net.apptronic.core.mvvm.viewmodel.container
 
+import net.apptronic.core.base.utils.isInstanceOf
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import kotlin.reflect.KClass
@@ -29,7 +30,7 @@ class ViewModelFactory<T : Any, Id, VM : ViewModel> : ViewModelBuilder<T, Id, VM
 
     override fun getId(item: T): Id {
         builders.forEach {
-            if (it.canUseType(item::class)) {
+            if (it.isFor(item)) {
                 return it.getId(item)
             }
         }
@@ -38,7 +39,7 @@ class ViewModelFactory<T : Any, Id, VM : ViewModel> : ViewModelBuilder<T, Id, VM
 
     override fun onCreateViewModel(parent: Context, item: T): VM {
         builders.forEach {
-            if (it.canUseType(item::class)) {
+            if (it.isFor(item)) {
                 return it.onCreateViewModel(parent, item)
             }
         }
@@ -47,7 +48,7 @@ class ViewModelFactory<T : Any, Id, VM : ViewModel> : ViewModelBuilder<T, Id, VM
 
     override fun onUpdateViewModel(viewModel: VM, newItem: T) {
         builders.forEach {
-            if (it.canUseType(newItem::class)) {
+            if (it.isFor(newItem)) {
                 it.onUpdateViewModel(viewModel, newItem)
             }
         }
@@ -55,19 +56,17 @@ class ViewModelFactory<T : Any, Id, VM : ViewModel> : ViewModelBuilder<T, Id, VM
 
     override fun shouldRetainInstance(item: T, viewModel: VM): Boolean {
         return builders.any {
-            it.canUseType(item::class) && it.shouldRetainInstance(item, viewModel)
+            it.isFor(item) && it.shouldRetainInstance(item, viewModel)
         }
     }
 
     private class ViewModelBuilderWrapper<T : Any, Id, VM : ViewModel, SubT : T, SubId : Id, SubVM : VM>(
-            val type: KClass<SubT>,
-            val wrapped: ViewModelBuilder<SubT, SubId, SubVM>
+            private val type: KClass<SubT>,
+            private val wrapped: ViewModelBuilder<SubT, SubId, SubVM>
     ) : ViewModelBuilder<T, Id, VM> {
 
-        fun canUseType(itemType: KClass<*>): Boolean {
-            return itemType == type || itemType.supertypes.any {
-                it.classifier != null && it.classifier is KClass<*> && canUseType(it.classifier as KClass<*>)
-            }
+        fun isFor(item: Any): Boolean {
+            return item isInstanceOf type
         }
 
         override fun getId(item: T): Id {

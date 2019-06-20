@@ -1,6 +1,6 @@
 package net.apptronic.core.base.core.di
 
-import net.apptronic.core.base.utils.TestContext
+import net.apptronic.core.testutils.TestContext
 import net.apptronic.core.component.context.SubContext
 import net.apptronic.core.component.di.InjectionFailedException
 import net.apptronic.core.component.di.createDescriptor

@@ -3,11 +3,13 @@ package net.apptronic.test.commons_sample_app
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 import net.apptronic.core.mvvm.viewmodel.adapter.BasicTransition
+import net.apptronic.core.mvvm.viewmodel.newViewModel
 import net.apptronic.test.commons_sample_app.convert.ConvertScreenViewModel
 import net.apptronic.test.commons_sample_app.debounce.createDebounceSampleViewModel
 import net.apptronic.test.commons_sample_app.lazylist.createLazyListItemViewModel
 import net.apptronic.test.commons_sample_app.list.ListContext
 import net.apptronic.test.commons_sample_app.list.ListScreenViewModel
+import net.apptronic.test.commons_sample_app.loadfilterlist.LoadFilterListViewModel
 import net.apptronic.test.commons_sample_app.login.LoginRouter
 import net.apptronic.test.commons_sample_app.login.LoginViewModel
 import net.apptronic.test.commons_sample_app.login.LoginViewModelContext
@@ -79,6 +81,13 @@ class ApplicationScreenNavigationRouterImpl(
     override fun openLazyListDemo() {
         parent.rootPage.add(
             createLazyListItemViewModel(parent),
+            BasicTransition.Forward
+        )
+    }
+
+    override fun openListFilterDemo() {
+        parent.rootPage.add(
+            parent.newViewModel(::LoadFilterListViewModel),
             BasicTransition.Forward
         )
     }

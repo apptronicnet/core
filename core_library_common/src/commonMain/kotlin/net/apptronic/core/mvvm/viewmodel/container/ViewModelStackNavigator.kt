@@ -54,7 +54,7 @@ class ViewModelStackNavigator(
      * Get currently active model in stack
      */
     fun getActiveModel(): ViewModel? {
-        return getCurrentItem()?.viewModel
+        return getCurrentItem()?.getViewModel()
     }
 
     /**
@@ -86,7 +86,7 @@ class ViewModelStackNavigator(
     }
 
     fun getItemAt(index: Int): ViewModel {
-        return stack[index].viewModel
+        return stack[index].getViewModel()
     }
 
     private fun onUnbind(item: ViewModelContainerItem) {
@@ -110,8 +110,8 @@ class ViewModelStackNavigator(
                 newItem.setBound(true)
             }
             onInvalidate(
-                    oldItem?.viewModel,
-                    newItem?.viewModel,
+                    oldItem?.getViewModel(),
+                    newItem?.getViewModel(),
                     transitionInfo
             )
             if (newItem != null) {
@@ -209,7 +209,7 @@ class ViewModelStackNavigator(
         uiAsyncWorker.execute {
             val activeModel = getActiveModel()
             val currentBox = stack.lastOrNull {
-                it.viewModel == viewModel
+                it.getViewModel() == viewModel
             }
             if (currentBox != null) {
                 stack.remove(currentBox)
@@ -270,9 +270,9 @@ class ViewModelStackNavigator(
      * @return true if anything is removed from stack
      */
     fun popBackStackTo(viewModel: ViewModel, transitionInfo: Any? = null): Boolean {
-        return if (stack.any { it.viewModel == viewModel } && stack.lastOrNull()?.viewModel != viewModel) {
+        return if (stack.any { it.getViewModel() == viewModel } && stack.lastOrNull()?.getViewModel() != viewModel) {
             val activeBeforePop = getCurrentItem()
-            while (stack.lastOrNull()?.viewModel != viewModel) {
+            while (stack.lastOrNull()?.getViewModel() != viewModel) {
                 stack.removeAt(stack.size - 1).apply {
                     onRemoved(this)
                 }
@@ -296,12 +296,12 @@ class ViewModelStackNavigator(
     }
 
     private fun onAdded(item: ViewModelContainerItem) {
-        item.viewModel.onAttachToParent(this)
+        item.getViewModel().onAttachToParent(this)
         item.setCreated(true)
     }
 
     private fun onRemoved(item: ViewModelContainerItem) {
-        item.viewModel.onDetachFromParent()
+        item.getViewModel().onDetachFromParent()
         item.terminate()
     }
 

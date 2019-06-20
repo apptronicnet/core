@@ -14,4 +14,6 @@ interface NavigationRouter {
 
     fun openLazyListDemo()
 
+    fun openListFilterDemo()
+
 }

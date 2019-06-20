@@ -1,6 +1,6 @@
 package net.apptronic.core.mvvm.viewmodel.container
 
-import net.apptronic.core.base.utils.TestContext
+import net.apptronic.core.testutils.TestContext
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 import kotlin.test.Test

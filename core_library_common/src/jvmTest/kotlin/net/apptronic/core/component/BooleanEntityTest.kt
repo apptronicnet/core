@@ -1,6 +1,6 @@
 package net.apptronic.core.component
 
-import net.apptronic.core.base.utils.BaseTestComponent
+import net.apptronic.core.testutils.BaseTestComponent
 import net.apptronic.core.component.entity.behavior.doWhen
 import net.apptronic.core.component.entity.functions.and
 import net.apptronic.core.component.entity.functions.not

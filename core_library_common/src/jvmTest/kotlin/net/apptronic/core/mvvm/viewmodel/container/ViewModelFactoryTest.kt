@@ -1,6 +1,6 @@
 package net.apptronic.core.mvvm.viewmodel.container
 
-import net.apptronic.core.base.utils.TestContext
+import net.apptronic.core.testutils.TestContext
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.mvvm.TestViewModel
 import org.junit.Test

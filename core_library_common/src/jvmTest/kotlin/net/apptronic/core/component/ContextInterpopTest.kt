@@ -1,8 +1,8 @@
 package net.apptronic.core.component
 
-import net.apptronic.core.base.utils.BaseTestComponent
-import net.apptronic.core.base.utils.TestContext
-import net.apptronic.core.base.utils.TestLifecycle
+import net.apptronic.core.testutils.BaseTestComponent
+import net.apptronic.core.testutils.TestContext
+import net.apptronic.core.testutils.TestLifecycle
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.entities.setAs
 import net.apptronic.core.component.lifecycle.enterStage

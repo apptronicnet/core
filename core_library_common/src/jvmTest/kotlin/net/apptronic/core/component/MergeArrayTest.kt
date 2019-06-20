@@ -1,6 +1,6 @@
 package net.apptronic.core.component
 
-import net.apptronic.core.base.utils.TestContext
+import net.apptronic.core.testutils.TestContext
 import net.apptronic.core.component.entity.behavior.mergeArray
 import net.apptronic.core.component.entity.subscribe
 import org.junit.Test

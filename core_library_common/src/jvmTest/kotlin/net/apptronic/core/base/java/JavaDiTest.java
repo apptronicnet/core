@@ -1,7 +1,7 @@
 //package net.apptronic.common.java;
 //
-//import net.apptronic.common.utils.BaseTestComponent;
-//import net.apptronic.common.utils.TestContext;
+//import net.apptronic.common.testutils.BaseTestComponent;
+//import net.apptronic.common.testutils.TestContext;
 //import net.apptronic.core.component.di.FactoryContext;
 //import net.apptronic.core.component.di.ModuleBuilder;
 //import net.apptronic.core.component.di.ModuleDefinition;

@@ -1,7 +1,7 @@
 package net.apptronic.core.component.task
 
-import net.apptronic.core.base.utils.BaseTestComponent
-import net.apptronic.core.base.utils.addDeferredWorker
+import net.apptronic.core.testutils.BaseTestComponent
+import net.apptronic.core.testutils.addDeferredWorker
 import net.apptronic.core.threading.defineWorker
 import org.junit.Test
 

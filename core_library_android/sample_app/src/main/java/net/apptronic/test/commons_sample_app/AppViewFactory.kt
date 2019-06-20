@@ -19,4 +19,6 @@ val AppViewFactory = androidViewFactory {
     addBinding(::LazyListView)
     addBinding(::LazyListItemView)
     addBinding(::StaticItemView)
+    addBinding(::LoadFilterListView)
+    addBinding(::LoadFilterListItemView)
 }

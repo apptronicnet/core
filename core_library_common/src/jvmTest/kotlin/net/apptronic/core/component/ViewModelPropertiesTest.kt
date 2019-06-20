@@ -1,8 +1,8 @@
 package net.apptronic.core.component
 
 import net.apptronic.core.base.observable.subscribe
-import net.apptronic.core.base.utils.BaseTestComponent
-import net.apptronic.core.base.utils.TestLifecycle
+import net.apptronic.core.testutils.BaseTestComponent
+import net.apptronic.core.testutils.TestLifecycle
 import net.apptronic.core.component.entity.ValueNotSetException
 import net.apptronic.core.mvvm.viewmodel.extensions.asFunctionOf
 import net.apptronic.core.mvvm.viewmodel.extensions.copyValueFrom

@@ -7,14 +7,18 @@ import net.apptronic.core.base.observable.subscribe
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.entities.Value
 import net.apptronic.core.component.entity.functions.and
+import net.apptronic.core.component.entity.functions.ofValue
+import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.component.lifecycle.enterStage
 import net.apptronic.core.component.lifecycle.exitStage
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelLifecycle
 
 class ViewModelContainerItem(
-    val viewModel: ViewModel,
-    val parent: ViewModel
+        private val viewModel: ViewModel,
+        private val parent: ViewModel,
+        private val shouldShow: Entity<Boolean> = viewModel.ofValue(true),
+        private val onShouldShowChanged: () -> Unit = {}
 ) {
 
     private val subscriptionHolders = SubscriptionHolders()
@@ -33,6 +37,7 @@ class ViewModelContainerItem(
     private val isBound = boundLocal and boundParent
     private val isVisible = visibleLocal and visibleParent
     private val isFocused = focusedLocal and focusedParent
+    private var shouldShowValue = true
 
     private fun from(parent: Observable<Boolean>): Entity<Boolean> {
         val property = Value<Boolean>(viewModel).apply { set(false) }
@@ -66,6 +71,12 @@ class ViewModelContainerItem(
         parent.doOnTerminate {
             terminate()
         }
+        shouldShow.subscribe {
+            if (shouldShowValue != it) {
+                shouldShowValue = it
+                onShouldShowChanged.invoke()
+            }
+        }
     }
 
     private fun bindStage(viewModel: ViewModel, stageName: String, entity: Entity<Boolean>) {
@@ -81,6 +92,14 @@ class ViewModelContainerItem(
     fun terminate() {
         subscriptionHolders.unsubscribe()
         viewModel.terminate()
+    }
+
+    fun shouldShow(): Boolean {
+        return shouldShowValue
+    }
+
+    fun getViewModel(): ViewModel {
+        return viewModel
     }
 
 }

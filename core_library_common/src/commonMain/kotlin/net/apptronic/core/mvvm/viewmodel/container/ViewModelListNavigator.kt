@@ -2,23 +2,41 @@ package net.apptronic.core.mvvm.viewmodel.container
 
 import net.apptronic.core.base.observable.Observable
 import net.apptronic.core.base.observable.subject.BehaviorSubject
+import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.UpdateEntity
+import net.apptronic.core.component.entity.subscriptions.ContextSubjectWrapper
 import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.mvvm.viewmodel.adapter.ItemStateNavigator
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelListAdapter
 import net.apptronic.core.threading.execute
 
 class ViewModelListNavigator(
         private val parent: ViewModel
 ) : BaseViewModelListNavigator<ViewModel>(parent),
-        UpdateEntity<List<ViewModel>>,
-        ViewModelListAdapter.SourceNavigator {
+        UpdateEntity<List<ViewModel>> {
+
+    private var postRefreshingVisibility = false
+
+    private val filters = VisibilityFilters<ViewModel>()
+    private var listFilter: ViewModelListFilter = simpleFilter()
 
     private val subject = BehaviorSubject<List<ViewModel>>().apply {
         update(emptyList())
     }
 
+    private val viewModelListEntity = ContextSubjectWrapper(parent, BehaviorSubject<ViewModelList>())
+
     private fun updateSubject() {
         subject.update(items)
+    }
+
+    fun getFilters(): VisibilityFilters<ViewModel> {
+        return filters
+    }
+
+    fun setListFilter(listFilter: ViewModelListFilter) {
+        this.listFilter = listFilter
+        postRefreshVisibility()
     }
 
     override fun update(value: List<ViewModel>) {
@@ -29,12 +47,45 @@ class ViewModelListNavigator(
         return subject
     }
 
+    fun observeList(): Entity<ViewModelList> {
+        return viewModelListEntity
+    }
+
+    fun getList(): ViewModelList {
+        return ViewModelList(items, visibleItems)
+    }
+
     private var adapter: ViewModelListAdapter? = null
+    private val itemStateNavigator = ItemStateNavigatorImpl()
 
     private var items: List<ViewModel> = emptyList()
+    private var visibleItems: List<ViewModel> = emptyList()
+
+    private fun postRefreshVisibility() {
+        if (!postRefreshingVisibility) {
+            postRefreshingVisibility = true
+            uiAsyncWorker.execute {
+                refreshVisibility()
+                postRefreshingVisibility = false
+            }
+        }
+    }
+
+    private fun refreshVisibility() {
+        val source = items.map {
+            ViewModelVisibilityRequest(it, it.getContainer()?.shouldShow() ?: true)
+        }
+        visibleItems = listFilter.filterList(source)
+        adapter?.onDataChanged(visibleItems)
+        viewModelListEntity.update(ViewModelList(items, visibleItems))
+    }
 
     override fun get(): List<ViewModel> {
         return ArrayList(items)
+    }
+
+    fun getVisible(): List<ViewModel> {
+        return ArrayList(visibleItems)
     }
 
     override fun getOrNull(): List<ViewModel>? {
@@ -56,30 +107,27 @@ class ViewModelListNavigator(
     }
 
     fun set(value: List<ViewModel>) {
-        uiAsyncWorker.execute {
-            val diff = getDiff(items, value)
-            diff.removed.forEach {
-                onRemoved(it)
-            }
-            items = value
-            diff.added.forEach {
-                onAdded(it)
-            }
-            adapter?.onDataChanged(items)
-            updateSubject()
+        val diff = getDiff(items, value)
+        diff.removed.forEach {
+            onRemoved(it)
         }
+        items = value
+        diff.added.forEach {
+            onAdded(it)
+        }
+        postRefreshVisibility()
     }
 
     private fun onAdded(viewModel: ViewModel) {
-        val container = ViewModelContainerItem(viewModel, parent)
+        val container = ViewModelContainerItem(viewModel, parent, filters.shouldShow(viewModel), this::postRefreshVisibility)
         containers[viewModel.getId()] = container
-        container.viewModel.onAttachToParent(this)
+        container.getViewModel().onAttachToParent(this)
         container.setCreated(true)
     }
 
     private fun onRemoved(viewModel: ViewModel) {
         viewModel.getContainer()?.let { container ->
-            container.viewModel.onDetachFromParent()
+            container.getViewModel().onDetachFromParent()
             container.terminate()
         }
     }
@@ -93,37 +141,41 @@ class ViewModelListNavigator(
         }
     }
 
-    override fun setBound(viewModel: ViewModel, isBound: Boolean) {
-        uiWorker.execute {
-            viewModel.getContainer()?.setBound(isBound)
-        }
-    }
-
-    override fun setVisible(viewModel: ViewModel, isBound: Boolean) {
-        uiWorker.execute {
-            viewModel.getContainer()?.setVisible(isBound)
-        }
-    }
-
-    override fun setFocused(viewModel: ViewModel, isBound: Boolean) {
-        uiWorker.execute {
-            viewModel.getContainer()?.setFocused(isBound)
-        }
-    }
-
     override fun setAdapter(adapter: ViewModelListAdapter) {
         uiWorker.execute {
             this.adapter = adapter
-            adapter.onDataChanged(items)
-            adapter.setNavigator(this)
+            adapter.onDataChanged(visibleItems)
+            adapter.setNavigator(itemStateNavigator)
             parent.getLifecycle().onExitFromActiveStage {
                 items.forEach {
-                    setBound(it, false)
+                    itemStateNavigator.setBound(it, false)
                 }
                 adapter.setNavigator(null)
                 this.adapter = null
             }
         }
+    }
+
+    private inner class ItemStateNavigatorImpl : ItemStateNavigator {
+
+        override fun setBound(viewModel: ViewModel, isBound: Boolean) {
+            uiWorker.execute {
+                viewModel.getContainer()?.setBound(isBound)
+            }
+        }
+
+        override fun setVisible(viewModel: ViewModel, isBound: Boolean) {
+            uiWorker.execute {
+                viewModel.getContainer()?.setVisible(isBound)
+            }
+        }
+
+        override fun setFocused(viewModel: ViewModel, isBound: Boolean) {
+            uiWorker.execute {
+                viewModel.getContainer()?.setFocused(isBound)
+            }
+        }
+
     }
 
 }

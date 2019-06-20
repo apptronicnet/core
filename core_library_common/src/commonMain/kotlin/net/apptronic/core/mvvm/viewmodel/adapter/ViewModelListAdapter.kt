@@ -6,7 +6,7 @@ abstract class ViewModelListAdapter {
 
     private val listeners = mutableListOf<() -> Unit>()
     private var items: List<ViewModel> = emptyList()
-    private var navigator: SourceNavigator? = null
+    private var navigator: ItemStateNavigator? = null
 
     fun addListener(listener: () -> Unit) {
         listeners.add(listener)
@@ -28,16 +28,8 @@ abstract class ViewModelListAdapter {
         return items.indexOf(viewModel)
     }
 
-    fun setNavigator(navigator: SourceNavigator?) {
+    fun setNavigator(navigator: ItemStateNavigator?) {
         this.navigator = navigator
-    }
-
-    interface SourceNavigator {
-
-        fun setBound(viewModel: ViewModel, isBound: Boolean)
-        fun setVisible(viewModel: ViewModel, isBound: Boolean)
-        fun setFocused(viewModel: ViewModel, isBound: Boolean)
-
     }
 
     fun onDataChanged(items: List<ViewModel>) {

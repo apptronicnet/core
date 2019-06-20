@@ -1,7 +1,7 @@
 package net.apptronic.core.component.task
 
-import net.apptronic.core.base.utils.BaseTestComponent
-import net.apptronic.core.base.utils.TestWorker
+import net.apptronic.core.testutils.BaseTestComponent
+import net.apptronic.core.testutils.TestWorker
 import org.junit.Test
 
 class TestNoHandledError : BaseTestComponent() {

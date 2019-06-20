@@ -1,6 +1,6 @@
 package net.apptronic.core.component.task
 
-import net.apptronic.core.base.utils.BaseTestComponent
+import net.apptronic.core.testutils.BaseTestComponent
 import net.apptronic.core.component.assertHasValue
 import net.apptronic.core.component.assertNoValue
 import org.junit.Test

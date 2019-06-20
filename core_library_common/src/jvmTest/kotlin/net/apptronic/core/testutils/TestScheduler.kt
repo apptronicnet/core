@@ -1,4 +1,4 @@
-package net.apptronic.core.base.utils
+package net.apptronic.core.testutils
 
 import net.apptronic.core.threading.ContextScheduler
 import net.apptronic.core.threading.Scheduler

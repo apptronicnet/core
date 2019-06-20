@@ -31,6 +31,10 @@ class NavigationScreenViewModel(context: ViewModelContext) : ViewModel(context) 
         router.openLazyListDemo()
     }
 
+    fun onClickListFilterDemo() {
+        router.openListFilterDemo()
+    }
+
     init {
         doOnVisible {
             doOnCreate {

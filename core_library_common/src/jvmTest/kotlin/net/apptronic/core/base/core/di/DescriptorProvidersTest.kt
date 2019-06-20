@@ -1,6 +1,6 @@
 package net.apptronic.core.base.core.di
 
-import net.apptronic.core.base.utils.BaseTestComponent
+import net.apptronic.core.testutils.BaseTestComponent
 import net.apptronic.core.component.di.createDescriptor
 import net.apptronic.core.component.di.declareModule
 import org.junit.Test

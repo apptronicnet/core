@@ -26,7 +26,7 @@ internal class ViewModelContainers<T, Id> {
 
     fun findRecordForModel(viewModel: ViewModel): Record? {
         return containers.values.firstOrNull {
-            it.container.viewModel == viewModel
+            it.container.getViewModel() == viewModel
         }
     }
 

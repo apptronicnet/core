@@ -1,6 +1,6 @@
 package net.apptronic.core.component.entity.behavior
 
-import net.apptronic.core.base.utils.BaseTestComponent
+import net.apptronic.core.testutils.BaseTestComponent
 import org.junit.Test
 
 class ValueWatcherTestCase : BaseTestComponent() {
