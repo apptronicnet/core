@@ -46,6 +46,7 @@ open class Lifecycle {
             enter()
             doOnExit {
                 isTerminated.set(true)
+                terminateChildren()
             }
         }
     }
@@ -81,6 +82,27 @@ open class Lifecycle {
             }
         } else {
             action.invoke()
+        }
+    }
+
+    private val children = mutableListOf<Lifecycle>()
+
+    fun registerChildLifecycle(child: Lifecycle) {
+        if (isTerminated()) {
+            child.terminate()
+        } else {
+            children.add(child)
+            child.doOnTerminate {
+                children.remove(child)
+            }
+        }
+    }
+
+    private fun terminateChildren() {
+        val copy = children.toTypedArray()
+        children.clear()
+        copy.forEach {
+            it.terminate()
         }
     }
 

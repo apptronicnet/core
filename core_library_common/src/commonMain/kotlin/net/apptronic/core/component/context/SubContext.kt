@@ -13,9 +13,7 @@ open class SubContext(
 
     init {
         requireNeverFrozen()
-        parent.getLifecycle().doOnTerminate {
-            getLifecycle().terminate()
-        }
+        parent.getLifecycle().registerChildLifecycle(lifecycle)
     }
 
     private val dependencyProvider = DependencyProvider(this, parent.getProvider())

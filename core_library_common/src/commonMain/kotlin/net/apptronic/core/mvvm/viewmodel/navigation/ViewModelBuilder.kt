@@ -25,7 +25,9 @@ interface ViewModelBuilder<T, Id, VM : ViewModel> {
     /**
      * Update already existing [ViewModel] for item
      */
-    fun onUpdateViewModel(viewModel: VM, newItem: T)
+    fun onUpdateViewModel(viewModel: VM, newItem: T) {
+        // do nothing by default
+    }
 
     /**
      * Defines whenever [ViewModel] should not be recycled on going out from list. This should be used carefully
