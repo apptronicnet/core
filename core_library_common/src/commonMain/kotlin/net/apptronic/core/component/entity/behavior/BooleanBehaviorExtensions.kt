@@ -2,6 +2,9 @@ package net.apptronic.core.component.entity.behavior
 
 import net.apptronic.core.base.observable.subscribe
 import net.apptronic.core.component.entity.Entity
+import net.apptronic.core.component.entity.entities.Value
+import net.apptronic.core.component.entity.entities.setAs
+import net.apptronic.core.component.entity.functions.anyValue
 import net.apptronic.core.component.entity.functions.entityFunction
 import net.apptronic.core.component.entity.functions.map
 
@@ -63,5 +66,28 @@ fun <E> Entity<Boolean>.selectIf(ifTrue: Entity<E>, ifFalse: E): Entity<E> {
 fun <E> Entity<Boolean>.selectIf(ifTrue: E, ifFalse: Entity<E>): Entity<E> {
     return entityFunction(this, ifFalse) { value, right ->
         if (value) ifTrue else right
+    }
+}
+
+/**
+ * Emits new [Entity] which emit false until no value set is source [Entity]
+ * and emits true when source [Entity] emitted any value.
+ */
+fun <T> Entity<T>.whenAnyValue(): Entity<Boolean> {
+    return Value<Boolean>(getContext()).also {
+        it.set(false)
+        it.setAs(anyValue())
+    }
+}
+
+
+/**
+ * Emits new [Entity] which emit false until no value set is source [Entity]
+ * and emits true when [filterFunction] returned true for [Entity] value.
+ */
+fun <T> Entity<T>.whenAny(filterFunction: (T) -> Boolean): Entity<Boolean> {
+    return Value<Boolean>(getContext()).also {
+        it.set(false)
+        it.setAs(filter(filterFunction).anyValue())
     }
 }
