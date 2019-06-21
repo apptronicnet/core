@@ -33,6 +33,7 @@ class StackNavigator(
     }
     private val observable = BehaviorSubject<StackNavigatorStatus>()
     private val stack = mutableListOf<ViewModelContainer>()
+    private val removingItems = mutableListOf<ViewModelContainer>()
     private var currentAdapter: CurrentAdapter? = null
     private val visibilityFilters: VisibilityFilters<ViewModel> = VisibilityFilters<ViewModel>()
 
@@ -44,6 +45,19 @@ class StackNavigator(
 
     override fun getObservable(): Observable<StackNavigatorStatus> {
         return observable.distinctUntilChanged()
+    }
+
+    private fun removeFromStack(item: ViewModelContainer) {
+        if (stack.contains(item)) {
+            removingItems.add(item)
+            stack.remove(item)
+        }
+    }
+
+    private fun removeFromStack(collection: Collection<ViewModelContainer>) {
+        collection.toTypedArray().forEach {
+            removeFromStack(it)
+        }
     }
 
     init {
@@ -78,20 +92,51 @@ class StackNavigator(
         refreshState()
     }
 
+    private fun getCurrentState(): State {
+        return subject.getValue()!!.value
+    }
+
     private fun refreshState() {
-        val currentState = subject.getValue()!!.value
+        val oldItem = currentAdapter?.activeItem
+        removePending()
+
+        val currentState = getCurrentState()
         val actualItem = stack.lastOrNull()
+        val visibleItem = if (actualItem != null) {
+            if (actualItem.shouldShow()) {
+                actualItem
+            } else {
+                oldItem
+            }
+        } else {
+            null
+        }
         val newState = State(
-                isInProgress = actualItem != null && actualItem.shouldShow().not(),
-                visibleItem = stack.lastOrNull {
-                    it.shouldShow()
-                },
+                isInProgress = actualItem != null && actualItem != visibleItem,
+                visibleItem = visibleItem,
                 actualItem = actualItem
         )
         if (newState != currentState) {
             subject.update(newState)
-            invalidateAdapter(newState.visibleItem, pendingTransition)
-            pendingTransition = null
+            currentAdapter?.let {
+                val newItem = newState.visibleItem
+                if (it.activeItem != newItem) {
+                    invalidateAdapter(newState.visibleItem, pendingTransition)
+                    removePending()
+                    pendingTransition = null
+                }
+            }
+        }
+    }
+
+    private fun removePending() {
+        val currentItemInAdapter = currentAdapter?.activeItem
+        removingItems.removeAll {
+            val remove = currentItemInAdapter == null || it != currentItemInAdapter
+            if (remove) {
+                onRemoved(it)
+            }
+            remove
         }
     }
 
@@ -124,20 +169,11 @@ class StackNavigator(
     }
 
     /**
-     * Get currently active model in stack
-     */
-    private fun getActiveModel(): ViewModel? {
-        return getCurrentItem()?.getViewModel()
-    }
-
-    /**
      * Get size of stack
      */
     fun getSize(): Int {
         return stack.size
     }
-
-    private fun getCurrentItem(): ViewModelContainer? = stack.lastOrNull()
 
     /**
      * Set [ViewModelStackAdapter] to create view controllers for [ViewModel]s
@@ -145,9 +181,9 @@ class StackNavigator(
     fun setAdapter(adapter: ViewModelStackAdapter) {
         uiWorker.execute {
             currentAdapter = CurrentAdapter(adapter)
-            invalidateAdapter(newItem = getCurrentItem(), transitionInfo = null)
+            invalidateAdapter(newItem = getCurrentState().visibleItem, transitionInfo = null)
             parent.getLifecycle().onExitFromActiveStage {
-                val currentItem = getCurrentItem()
+                val currentItem = getCurrentState().visibleItem
                 if (currentItem != null) {
                     onUnbind(currentItem)
                 }
@@ -180,25 +216,23 @@ class StackNavigator(
         clearAndSet(viewModel, transitionInfo)
     }
 
+    private fun addStackItem(viewModel: ViewModel?) {
+        if (viewModel != null) {
+            val item = ViewModelContainer(
+                    viewModel,
+                    parent,
+                    visibilityFilters.isReadyToShow(viewModel),
+                    this::refreshState
+            )
+            stack.add(item)
+            onAdded(item)
+        }
+    }
+
     private fun clearAndSet(viewModel: ViewModel?, transitionInfo: Any? = null) {
         uiAsyncWorker.execute {
-            val activeModel = getCurrentItem()
-            stack.forEach {
-                it.terminate()
-                onRemoved(it)
-            }
-            stack.clear()
-            viewModel?.let {
-                val item = ViewModelContainer(
-                        it,
-                        parent,
-                        visibilityFilters.isReadyToShow(it),
-                        this::refreshState
-                )
-                stack.add(item)
-                onAdded(item)
-                item
-            }
+            removeFromStack(stack)
+            addStackItem(viewModel)
             refreshState(transitionInfo)
         }
     }
@@ -208,10 +242,7 @@ class StackNavigator(
      */
     fun add(viewModel: ViewModel, transitionInfo: Any? = null) {
         uiAsyncWorker.execute {
-            val activeModel = getCurrentItem()
-            val newItem = ViewModelContainer(viewModel, parent)
-            stack.add(newItem)
-            onAdded(newItem)
+            addStackItem(viewModel)
             refreshState(transitionInfo)
         }
     }
@@ -221,14 +252,11 @@ class StackNavigator(
      */
     fun replace(viewModel: ViewModel, transitionInfo: Any? = null) {
         uiAsyncWorker.execute {
-            val currentItem = getCurrentItem()
-            currentItem?.also {
-                stack.remove(it)
-                onRemoved(it)
+            val actualItem = getCurrentState().actualItem
+            if (actualItem != null) {
+                removeFromStack(actualItem)
             }
-            val newItem = ViewModelContainer(viewModel, parent)
-            stack.add(newItem)
-            onAdded(newItem)
+            addStackItem(viewModel)
             refreshState(transitionInfo)
         }
     }
@@ -243,8 +271,7 @@ class StackNavigator(
                 it.getViewModel() == viewModel
             }
             if (currentItem != null) {
-                stack.remove(currentItem)
-                onRemoved(currentItem)
+                removeFromStack(currentItem)
                 if (currentItem.getViewModel() == viewModel) {
                     refreshState(transitionInfo)
                 } else {
@@ -260,9 +287,9 @@ class StackNavigator(
      * @return true if last model removed from stack
      */
     fun popBackStack(transitionInfo: Any? = null): Boolean {
-        val activeModel = getActiveModel()
-        return if (activeModel != null) {
-            remove(activeModel, transitionInfo)
+        val actualItem = getCurrentState().actualItem
+        return if (actualItem != null) {
+            remove(actualItem.getViewModel(), transitionInfo)
             true
         } else {
             false
@@ -299,9 +326,7 @@ class StackNavigator(
     fun popBackStackTo(viewModel: ViewModel, transitionInfo: Any? = null): Boolean {
         return if (stack.any { it.getViewModel() == viewModel } && stack.lastOrNull()?.getViewModel() != viewModel) {
             while (stack.isNotEmpty() && stack.lastOrNull()?.getViewModel() != viewModel) {
-                stack.removeAt(stack.size - 1).apply {
-                    onRemoved(this)
-                }
+                removeFromStack(stack.last())
             }
             refreshState(transitionInfo)
             true

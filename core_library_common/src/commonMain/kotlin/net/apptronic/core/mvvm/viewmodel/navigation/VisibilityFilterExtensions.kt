@@ -57,13 +57,13 @@ interface ViewModelWithVisibility {
     /**
      * Return state of [ViewModel] for [VisibilityFilter]
      */
-    fun isVisible(): Entity<Boolean>
+    fun isReadyToShow(): Entity<Boolean>
 
 }
 
 /**
  * Create simple [VisibilityFilter] which tries to case [ViewModel] to [ViewModelWithVisibility] and returns
- * [ViewModelWithVisibility.isVisible] or true if [ViewModel] is not is [ViewModelWithVisibility]
+ * [ViewModelWithVisibility.isReadyToShow] or true if [ViewModel] is not is [ViewModelWithVisibility]
  */
 fun <VM : ViewModel> simpleVisibilityFilter(): VisibilityFilter<VM> {
     return SimpleVisibilityFilter()
@@ -72,7 +72,7 @@ fun <VM : ViewModel> simpleVisibilityFilter(): VisibilityFilter<VM> {
 private class SimpleVisibilityFilter<VM : ViewModel> : VisibilityFilter<VM> {
 
     override fun isReadyToShow(viewModel: VM): Entity<Boolean> {
-        return (viewModel as? ViewModelWithVisibility)?.isVisible() ?: viewModel.ofValue(true)
+        return (viewModel as? ViewModelWithVisibility)?.isReadyToShow() ?: viewModel.ofValue(true)
     }
 
 }

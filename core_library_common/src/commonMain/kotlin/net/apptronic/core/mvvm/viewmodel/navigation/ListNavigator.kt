@@ -94,6 +94,14 @@ class ListNavigator(
 
     private val containers = mutableMapOf<Long, ViewModelContainer>()
 
+    init {
+        parent.doOnTerminate {
+            containers.values.forEach {
+                it.terminate()
+            }
+        }
+    }
+
     private fun ViewModel.getContainer(): ViewModelContainer? {
         return containers[getId()]
     }

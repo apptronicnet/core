@@ -68,9 +68,6 @@ internal class ViewModelContainer(
         bindStage(viewModel, ViewModelLifecycle.STAGE_BOUND, isBound)
         bindStage(viewModel, ViewModelLifecycle.STAGE_VISIBLE, isVisible)
         bindStage(viewModel, ViewModelLifecycle.STAGE_FOCUSED, isFocused)
-        parent.doOnTerminate {
-            terminate()
-        }
         shouldShow.subscribe {
             if (shouldShowValue != it) {
                 shouldShowValue = it

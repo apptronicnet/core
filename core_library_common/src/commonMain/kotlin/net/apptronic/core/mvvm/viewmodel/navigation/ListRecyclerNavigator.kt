@@ -174,7 +174,7 @@ class ListRecyclerNavigator<T : Any, Id, VM : ViewModel>(
                 containers.getAll().forEach {
                     onRemoved(it.item)
                 }
-                containers.clear()
+                containers.terminateAllAndClear()
             }
         }
     }

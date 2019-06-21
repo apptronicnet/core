@@ -44,7 +44,10 @@ internal class ViewModelContainers<T, Id> {
         return containers.values.toList()
     }
 
-    fun clear() {
+    fun terminateAllAndClear() {
+        containers.values.forEach {
+            it.container.terminate()
+        }
         containers.clear()
     }
 
