@@ -5,7 +5,7 @@ import net.apptronic.core.mvvm.viewmodel.ViewModel
 /**
  * Class representing current status of [ListNavigator]
  */
-class ListNavigatorStatus(
+class ListNavigatorStatus internal constructor(
         /**
          * All [ViewModel]s which now in [ListNavigator]
          */
