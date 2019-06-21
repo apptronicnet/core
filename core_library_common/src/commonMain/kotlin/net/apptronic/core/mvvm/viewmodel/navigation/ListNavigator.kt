@@ -130,9 +130,10 @@ class ListNavigator(
     }
 
     private fun onAdded(viewModel: ViewModel) {
-        val container = ViewModelContainer(viewModel, parent, visibilityFilters.isReadyToShow(viewModel), this::postRefreshVisibility)
+        val container = ViewModelContainer(viewModel, parent, visibilityFilters.isReadyToShow(viewModel))
         containers[viewModel.getId()] = container
         container.getViewModel().onAttachToParent(this)
+        container.observeVisibilityChanged(::postRefreshVisibility)
         container.setCreated(true)
     }
 

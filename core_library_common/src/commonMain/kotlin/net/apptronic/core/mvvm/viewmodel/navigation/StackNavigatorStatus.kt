@@ -28,10 +28,10 @@ fun Entity<StackNavigatorStatus>.progress(): Entity<Boolean> {
 }
 
 
-fun Entity<StackNavigatorStatus>.takeActualModel(): Entity<ViewModel?> {
+fun Entity<StackNavigatorStatus>.actualModel(): Entity<ViewModel?> {
     return map { it.actualModel }
 }
 
-fun Entity<StackNavigatorStatus>.takeVisibleModel(): Entity<ViewModel?> {
+fun Entity<StackNavigatorStatus>.visibleModel(): Entity<ViewModel?> {
     return map { it.visibleModel }
 }

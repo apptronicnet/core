@@ -17,8 +17,7 @@ import net.apptronic.core.mvvm.viewmodel.ViewModelLifecycle
 internal class ViewModelContainer(
         private val viewModel: ViewModel,
         private val parent: ViewModel,
-        private val shouldShow: Entity<Boolean> = viewModel.ofValue(true),
-        private val onShouldShowChanged: () -> Unit = {}
+        private val shouldShow: Entity<Boolean> = viewModel.ofValue(true)
 ) {
 
     private val subscriptionHolders = SubscriptionHolders()
@@ -63,6 +62,12 @@ internal class ViewModelContainer(
         focusedLocal.set(value)
     }
 
+    private var visibilityChangeCallback: () -> Unit = {}
+
+    fun observeVisibilityChanged(callback: () -> Unit) {
+        visibilityChangeCallback = callback
+    }
+
     init {
         bindStage(viewModel, ViewModelLifecycle.STAGE_CREATED, isCreated)
         bindStage(viewModel, ViewModelLifecycle.STAGE_BOUND, isBound)
@@ -71,7 +76,7 @@ internal class ViewModelContainer(
         shouldShow.subscribe {
             if (shouldShowValue != it) {
                 shouldShowValue = it
-                onShouldShowChanged.invoke()
+                visibilityChangeCallback.invoke()
             }
         }
     }
@@ -97,6 +102,10 @@ internal class ViewModelContainer(
 
     fun getViewModel(): ViewModel {
         return viewModel
+    }
+
+    override fun toString(): String {
+        return "ViewModel=$viewModel stage=${viewModel.getLifecycle().getActiveStage()?.getStageName()} shouldShowValue=$shouldShowValue"
     }
 
 }

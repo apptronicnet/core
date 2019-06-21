@@ -7,7 +7,7 @@ fun <T : Component> T?.setupView(block: T.() -> Unit) {
     this?.apply(block)
 }
 
-inline fun <reified T : ViewModel> Context.newViewModel(constructor: (ViewModelContext) -> T): T {
+inline fun <reified T : ViewModel> Context.createViewModel(constructor: (ViewModelContext) -> T): T {
     val resultName = T::class.qualifiedName ?: T::class.simpleName ?: "Unknown"
     val viewModelContext = ViewModelContext(this, resultName)
     return constructor.invoke(viewModelContext)

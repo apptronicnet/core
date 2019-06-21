@@ -87,13 +87,19 @@ class StackNavigator(
 
     private var pendingTransition: Any? = null
 
-    private fun refreshState(postTransition: Any?) {
+    private fun postRefreshState(postTransition: Any?) {
         pendingTransition = postTransition
-        refreshState()
+        postRefreshState()
     }
 
     private fun getCurrentState(): State {
         return subject.getValue()!!.value
+    }
+
+    private fun postRefreshState() {
+        uiAsyncWorker.execute {
+            refreshState()
+        }
     }
 
     private fun refreshState() {
@@ -122,10 +128,12 @@ class StackNavigator(
                 val newItem = newState.visibleItem
                 if (it.activeItem != newItem) {
                     invalidateAdapter(newState.visibleItem, pendingTransition)
-                    removePending()
                     pendingTransition = null
                 }
+            } ?: run {
+                pendingTransition = null
             }
+            removePending()
         }
     }
 
@@ -221,8 +229,7 @@ class StackNavigator(
             val item = ViewModelContainer(
                     viewModel,
                     parent,
-                    visibilityFilters.isReadyToShow(viewModel),
-                    this::refreshState
+                    visibilityFilters.isReadyToShow(viewModel)
             )
             stack.add(item)
             onAdded(item)
@@ -230,10 +237,10 @@ class StackNavigator(
     }
 
     private fun clearAndSet(viewModel: ViewModel?, transitionInfo: Any? = null) {
-        uiAsyncWorker.execute {
+        uiWorker.execute {
             removeFromStack(stack)
             addStackItem(viewModel)
-            refreshState(transitionInfo)
+            postRefreshState(transitionInfo)
         }
     }
 
@@ -241,9 +248,9 @@ class StackNavigator(
      * Add [ViewModel] to stack
      */
     fun add(viewModel: ViewModel, transitionInfo: Any? = null) {
-        uiAsyncWorker.execute {
+        uiWorker.execute {
             addStackItem(viewModel)
-            refreshState(transitionInfo)
+            postRefreshState(transitionInfo)
         }
     }
 
@@ -251,13 +258,13 @@ class StackNavigator(
      * Replace last [ViewModel] in stack
      */
     fun replace(viewModel: ViewModel, transitionInfo: Any? = null) {
-        uiAsyncWorker.execute {
+        uiWorker.execute {
             val actualItem = getCurrentState().actualItem
             if (actualItem != null) {
                 removeFromStack(actualItem)
             }
             addStackItem(viewModel)
-            refreshState(transitionInfo)
+            postRefreshState(transitionInfo)
         }
     }
 
@@ -266,16 +273,16 @@ class StackNavigator(
      * @param transitionInfo will be used only if this [ViewModel] is now active
      */
     fun remove(viewModel: ViewModel, transitionInfo: Any? = null) {
-        uiAsyncWorker.execute {
+        uiWorker.execute {
             val currentItem = stack.lastOrNull {
                 it.getViewModel() == viewModel
             }
             if (currentItem != null) {
                 removeFromStack(currentItem)
                 if (currentItem.getViewModel() == viewModel) {
-                    refreshState(transitionInfo)
+                    postRefreshState(transitionInfo)
                 } else {
-                    refreshState()
+                    postRefreshState()
                 }
             }
         }
@@ -328,7 +335,7 @@ class StackNavigator(
             while (stack.isNotEmpty() && stack.lastOrNull()?.getViewModel() != viewModel) {
                 removeFromStack(stack.last())
             }
-            refreshState(transitionInfo)
+            postRefreshState(transitionInfo)
             true
         } else {
             false
@@ -343,6 +350,7 @@ class StackNavigator(
 
     private fun onAdded(item: ViewModelContainer) {
         item.getViewModel().onAttachToParent(this)
+        item.observeVisibilityChanged(::postRefreshState)
         item.setCreated(true)
     }
 
