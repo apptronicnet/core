@@ -20,6 +20,7 @@ class NavigationScreenView : AndroidView<NavigationScreenViewModel>() {
             +(debounceScreenDemo sendClicksTo viewModel::onClickDebounceDemo)
             +(lazyListDemo sendClicksTo viewModel::onClickLazyListDemo)
             +(filterListDemo sendClicksTo viewModel::onClickListFilterDemo)
+            +(stackLoadingDemo sendClicksTo viewModel::onClickStackLoadingDemo)
         }
     }
 

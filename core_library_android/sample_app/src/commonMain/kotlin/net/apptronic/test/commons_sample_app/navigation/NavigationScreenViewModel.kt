@@ -35,6 +35,10 @@ class NavigationScreenViewModel(context: ViewModelContext) : ViewModel(context) 
         router.openListFilterDemo()
     }
 
+    fun onClickStackLoadingDemo() {
+        router.openStackLoadingDemo()
+    }
+
     init {
         doOnVisible {
             doOnCreate {
