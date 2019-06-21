@@ -1,12 +1,12 @@
 package net.apptronic.test.commons_sample_app.stackloading
 
 import net.apptronic.core.component.entity.functions.map
-import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 import net.apptronic.core.mvvm.viewmodel.adapter.BasicTransition
 import net.apptronic.core.mvvm.viewmodel.navigation.actualModel
 import net.apptronic.core.mvvm.viewmodel.navigation.progress
+import net.apptronic.core.mvvm.viewmodel.navigation.size
 import net.apptronic.core.mvvm.viewmodel.navigation.visibleModel
 
 class StackLoadingViewModel(context: ViewModelContext) : ViewModel(context), StackRouter {
@@ -29,7 +29,7 @@ class StackLoadingViewModel(context: ViewModelContext) : ViewModel(context), Sta
     val onClickBack = genericEvent {
         navigator.popBackStack(BasicTransition.Back)
     }
-    val isBackButtonEnabled = value<Boolean>()
+    val isBackButtonEnabled = navigator.size().map { it > 1 }
 
     private fun newItem(name: String): ViewModel {
         return StackItemViewModel(ViewModelContext(this), "$name #${index++}")
@@ -38,9 +38,6 @@ class StackLoadingViewModel(context: ViewModelContext) : ViewModel(context), Sta
     init {
         navigator.setSimpleVisibilityFilter()
         navigator.add(newItem("Root"), BasicTransition.Fade)
-        navigator.subscribe {
-            isBackButtonEnabled.set(navigator.getSize() > 1)
-        }
     }
 
     override fun navigatorAdd() {
