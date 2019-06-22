@@ -21,6 +21,7 @@ class NavigationScreenView : AndroidView<NavigationScreenViewModel>() {
             +(lazyListDemo sendClicksTo viewModel::onClickLazyListDemo)
             +(filterListDemo sendClicksTo viewModel::onClickListFilterDemo)
             +(stackLoadingDemo sendClicksTo viewModel::onClickStackLoadingDemo)
+            +(lazyFilterListDemo sendClicksTo viewModel::onDynamicFilterListDemo)
         }
     }
 

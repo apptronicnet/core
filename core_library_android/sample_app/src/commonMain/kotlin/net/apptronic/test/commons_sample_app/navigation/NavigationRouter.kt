@@ -18,4 +18,6 @@ interface NavigationRouter {
 
     fun openStackLoadingDemo()
 
+    fun openDynamicFilterListDemo()
+
 }

@@ -7,6 +7,7 @@ import net.apptronic.core.mvvm.viewmodel.createViewModel
 import net.apptronic.test.commons_sample_app.convert.ConvertScreenViewModel
 import net.apptronic.test.commons_sample_app.debounce.createDebounceSampleViewModel
 import net.apptronic.test.commons_sample_app.lazylist.createLazyListItemViewModel
+import net.apptronic.test.commons_sample_app.lazylistfiltering.LazyListFilterViewModel
 import net.apptronic.test.commons_sample_app.list.ListContext
 import net.apptronic.test.commons_sample_app.list.ListScreenViewModel
 import net.apptronic.test.commons_sample_app.loadfilterlist.LoadFilterListViewModel
@@ -96,6 +97,13 @@ class ApplicationScreenNavigationRouterImpl(
     override fun openStackLoadingDemo() {
         parent.rootPage.add(
             parent.createViewModel(::StackLoadingViewModel),
+            BasicTransition.Forward
+        )
+    }
+
+    override fun openDynamicFilterListDemo() {
+        parent.rootPage.add(
+            parent.createViewModel(::LazyListFilterViewModel),
             BasicTransition.Forward
         )
     }

@@ -23,4 +23,7 @@ val AppViewFactory = androidViewFactory {
     addBinding(::LoadFilterListItemView)
     addBinding(::StackLoadingView)
     addBinding(::StackLoadingItemView)
+    addBinding(::DynamicItemView)
+    addBinding(::LazyListFilterView)
+    addBinding(::StaticFilteredItemView)
 }
