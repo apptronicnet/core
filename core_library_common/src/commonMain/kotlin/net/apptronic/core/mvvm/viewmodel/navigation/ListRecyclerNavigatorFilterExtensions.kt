@@ -1,5 +1,10 @@
 package net.apptronic.core.mvvm.viewmodel.navigation
 
+import kotlin.math.min
+
+/**
+ * Create [ListRecyclerNavigatorFilter] which uses [mappingFactory] to create [RecyclerListIndexMapping]
+ */
 fun mappingFactoryFilter(mappingFactory: (List<*>) -> RecyclerListIndexMapping): ListRecyclerNavigatorFilter {
     return StaticMappingFilter(mappingFactory)
 }
@@ -8,12 +13,15 @@ private class StaticMappingFilter(
         private val mappingFactory: (List<*>) -> RecyclerListIndexMapping
 ) : ListRecyclerNavigatorFilter {
 
-    override fun filter(items: List<ListItem>): RecyclerListIndexMapping {
+    override fun filter(items: List<ListItem>, listDescription: Any?): RecyclerListIndexMapping {
         return mappingFactory.invoke(items)
     }
 
 }
 
+/**
+ * This mapping does not modify list.
+ */
 fun defaultMapping(source: List<*>): RecyclerListIndexMapping {
     return DefaultMapping(source)
 }
@@ -29,6 +37,9 @@ private class DefaultMapping(private val source: List<*>) : RecyclerListIndexMap
     }
 }
 
+/**
+ * This mapping trims visibility of list to max size.
+ */
 fun trimLengthMapping(source: List<*>, maxSize: Int): RecyclerListIndexMapping {
     return TrimLengthMapping(source, maxSize)
 }
@@ -39,8 +50,7 @@ private class TrimLengthMapping(
 ) : RecyclerListIndexMapping {
 
     override fun getSize(): Int {
-        val sourceSize = source.size
-        return if (sourceSize < maxSize) maxSize else sourceSize
+        return min(source.size, maxSize)
     }
 
     override fun mapIndex(sourceIndex: Int): Int {
@@ -49,20 +59,31 @@ private class TrimLengthMapping(
 
 }
 
-fun takeVisibleStaticsOnStartFilter(): ListRecyclerNavigatorFilter {
-    return TakeVisibleStaticsOnStartFilter()
+/**
+ * This filter checks static items on start and takes all items until it's visible. When first not static item appears
+ * it shows whole list.
+ */
+fun takeWhileVisibleStaticsOnStartFilter(): ListRecyclerNavigatorFilter {
+    return TakeWhileVisibleStaticsOnStartFilter()
 }
 
-private class TakeVisibleStaticsOnStartFilter : ListRecyclerNavigatorFilter {
+private class TakeWhileVisibleStaticsOnStartFilter : ListRecyclerNavigatorFilter {
 
-    override fun filter(items: List<ListItem>): RecyclerListIndexMapping {
-        val firstNotVisibleOrNotStatic = items.indexOfFirst {
-            !it.isStatic || it.isVisible
+    override fun filter(items: List<ListItem>, listDescription: Any?): RecyclerListIndexMapping {
+        val firstNotStatic = items.indexOfFirst {
+            !it.isStatic
         }
-        return if (firstNotVisibleOrNotStatic >= 0) {
-            TrimLengthMapping(items, firstNotVisibleOrNotStatic)
-        } else {
+        return if (firstNotStatic == 0) {
             defaultMapping(items)
+        } else {
+            val firstNotVisibleIndex = (0 until firstNotStatic).firstOrNull {
+                !items[it].isVisible
+            }
+            if (firstNotVisibleIndex != null) {
+                trimLengthMapping(items, firstNotVisibleIndex)
+            } else {
+                defaultMapping(items)
+            }
         }
     }
 

@@ -1,6 +1,7 @@
 package net.apptronic.core.mvvm.viewmodel.navigation
 
 import net.apptronic.core.component.context.Context
+import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.mvvm.TestViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModel
@@ -36,8 +37,8 @@ class ListRecyclerNavigatorTest : TestViewModel() {
         it.addBuilder(DynamicBuilder())
     }
 
-    private val sources = value<List<Item>>()
-    private val statics = value<List<Item>>()
+    private val sources = value<List<Item>>(emptyList())
+    private val statics = value<List<Item>>(emptyList())
 
     private val navigator = listRecyclerNavigator(sources, factory)
 
@@ -48,8 +49,30 @@ class ListRecyclerNavigatorTest : TestViewModel() {
     }
 
     open class ItemViewModel(context: ViewModelContext) : ViewModel(context)
-    class StaticItemViewModel(context: ViewModelContext, val item: Item.Static) : ItemViewModel(context)
-    class DynamicItemViewModel(context: ViewModelContext, val item: Item.Dynamic) : ItemViewModel(context)
+    class StaticItemViewModel(
+            context: ViewModelContext, val item: Item.Static
+    ) : ItemViewModel(context), ViewModelWithVisibility {
+
+        val isReadyToShow = value(false)
+
+        override fun isReadyToShow(): Entity<Boolean> {
+            // here it will be ignored as this item always dynamic
+            return isReadyToShow
+        }
+
+    }
+
+    class DynamicItemViewModel(
+            context: ViewModelContext, val item: Item.Dynamic
+    ) : ItemViewModel(context), ViewModelWithVisibility {
+
+        private val isReadyToShow = value(false)
+
+        override fun isReadyToShow(): Entity<Boolean> {
+            return isReadyToShow
+        }
+
+    }
 
     class StaticBuilder : ViewModelBuilder<Item.Static, String, StaticItemViewModel> {
 
@@ -79,22 +102,22 @@ class ListRecyclerNavigatorTest : TestViewModel() {
 
     private fun assertStatus(
             allSize: Int = sources.get().size,
-            visibleSize: Int = allSize,
             hasHidden: Boolean = false,
             allItems: List<Any> = sources.get(),
             visibleItems: List<Any> = allItems,
-            staticItems: List<Any> = emptyList(),
+            visibleSize: Int = visibleItems.size,
+            staticItems: List<Any> = statics.get(),
             attachedViewModels: Set<Any>
     ) {
         val status = navigator.getStatus()
         assert(allSize == status.allSize)
         assert(visibleSize == status.visibleSize)
         assert(hasHidden == status.hasHidden)
-        assert(allItems.toTypedArray().contentEquals(allItems.toTypedArray()))
-        assert(visibleItems.toTypedArray().contentEquals(visibleItems.toTypedArray()))
-        assert(staticItems.toTypedArray().contentEquals(staticItems.toTypedArray()))
-        assert(staticItems.toTypedArray().contentEquals(staticItems.toTypedArray()))
-        assert(status.attachedViewModels.size == attachedViewModels.size)
+        assert(allItems.toTypedArray().contentEquals(status.allItems.toTypedArray()))
+        assert(visibleItems.toTypedArray().contentEquals(status.visibleItems.toTypedArray()))
+        assert(staticItems.toTypedArray().contentEquals(status.staticItems.toTypedArray()))
+        assert(staticItems.toTypedArray().contentEquals(status.staticItems.toTypedArray()))
+        assert(attachedViewModels.size == status.attachedViewModels.size)
         attachedViewModels.forEach { keyOrValue ->
             when (keyOrValue) {
                 is ViewModel -> assert(status.attachedViewModels.contains(keyOrValue))
@@ -263,6 +286,58 @@ class ListRecyclerNavigatorTest : TestViewModel() {
         assert(vm5new.isTerminated())
         assert(vm6.isStateCreated())
         assertStatus(attachedViewModels = setOf(vm1new, vm3, vm6, vmOne, "three"))
+    }
+
+    private fun getStatic(type: String): StaticItemViewModel {
+        return navigator.getViewModelForItem(static(type))!! as StaticItemViewModel
+    }
+
+    @Test
+    fun shouldWorkWithFiltersCorrectly() {
+        navigator.setSimpleVisibilityFilter()
+        navigator.setListFilter(takeWhileVisibleStaticsOnStartFilter())
+        navigator.setSavedItemsSize(0)
+        sources.set(
+                listOf(
+                        dynamic(1),
+                        dynamic(2),
+                        dynamic(3)
+                )
+        )
+        enterAllStages()
+        assertStatus(attachedViewModels = emptySet())
+        val vm1 = adapter.getItemAt(0) as DynamicItemViewModel
+        val vm2 = adapter.getItemAt(1) as DynamicItemViewModel
+        val vm3 = adapter.getItemAt(2) as DynamicItemViewModel
+        assertStatus(attachedViewModels = setOf(vm1, vm2, vm3))
+        sources.set(
+                listOf(
+                        static("First"),
+                        dynamic(1),
+                        dynamic(2),
+                        dynamic(3)
+                )
+        )
+        // "First" is not static now
+        assertStatus(attachedViewModels = setOf(vm1, vm2, vm3))
+        // make "First" static
+        statics.set(listOf(static("First")))
+        adapter.setFullBound(vm1, false)
+        adapter.setFullBound(vm2, false)
+        adapter.setFullBound(vm3, false)
+        assertStatus(
+                visibleSize = 0,
+                visibleItems = emptyList(),
+                hasHidden = true,
+                attachedViewModels = setOf("First"))
+        getStatic("First").isReadyToShow.set(true)
+        assertStatus(
+                attachedViewModels = setOf("First"))
+        val vm1new = adapter.getItemAt(1)
+        val vm2new = adapter.getItemAt(2)
+        val vm3new = adapter.getItemAt(3)
+        assertStatus(
+                attachedViewModels = setOf(vm1new, vm2new, vm3new, "First"))
     }
 
 }

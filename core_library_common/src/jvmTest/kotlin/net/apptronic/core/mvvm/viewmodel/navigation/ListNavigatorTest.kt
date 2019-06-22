@@ -1,11 +1,13 @@
 package net.apptronic.core.mvvm.viewmodel.navigation
 
-import net.apptronic.core.mvvm.TestViewModel
+import org.junit.Test
+import kotlin.test.fail
 
 class ListNavigatorTest {
 
-    class ViewModel1 : TestViewModel() {
-
+    @Test
+    fun notWrittenYet() {
+        fail("This test is not written yet")
     }
 
 }

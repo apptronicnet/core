@@ -6,6 +6,7 @@ import net.apptronic.core.base.observable.Observable
 import net.apptronic.core.base.observable.subject.BehaviorSubject
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.UpdateEntity
+import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.adapter.ItemStateNavigator
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelListAdapter
@@ -26,10 +27,27 @@ class ListRecyclerNavigator<T : Any, Id, VM : ViewModel>(
 
     private var visibilityFilters = VisibilityFilters<ViewModel>()
     private var listFilter: ListRecyclerNavigatorFilter = mappingFactoryFilter(::defaultMapping)
-    private var indexMapping: RecyclerListIndexMapping = listFilter.filter(emptyList())
+    private var indexMapping: RecyclerListIndexMapping = listFilter.filter(emptyList(), null)
+
+    private var adapter: ViewModelListAdapter? = null
+    private val itemStateNavigator = ItemStateNavigatorImpl()
+
+    private var items: List<T> = emptyList()
+    private var listDescription: Any? = null
+    private var staticItems: List<T> = emptyList()
+    private val viewModels = LazyList()
+    private val containers = ViewModelContainers<T, Id>()
+
+    private var savedItemsSize = RECYCLER_NAVIGATOR_DEFAULT_SAVED_ITEMS_SIZE
+    private val savedItemIds = mutableListOf<Id>()
 
     override fun getVisibilityFilters(): VisibilityFilters<ViewModel> {
         return visibilityFilters
+    }
+
+    fun setListFilter(listFilter: ListRecyclerNavigatorFilter) {
+        this.listFilter = listFilter
+        postRefreshVisibility()
     }
 
     private fun updateSubject() {
@@ -74,17 +92,6 @@ class ListRecyclerNavigator<T : Any, Id, VM : ViewModel>(
         return subject
     }
 
-    private var adapter: ViewModelListAdapter? = null
-    private val itemStateNavigator = ItemStateNavigatorImpl()
-
-    private var items: List<T> = emptyList()
-    private var staticItems: List<T> = emptyList()
-    private val viewModels = LazyList()
-    private val containers = ViewModelContainers<T, Id>()
-
-    private var savedItemsSize = RECYCLER_NAVIGATOR_DEFAULT_SAVED_ITEMS_SIZE
-    private val savedItemIds = mutableListOf<Id>()
-
     init {
         updateStatusSubject()
     }
@@ -100,11 +107,12 @@ class ListRecyclerNavigator<T : Any, Id, VM : ViewModel>(
     /**
      * Set source items list.
      */
-    fun set(value: List<T>) {
+    fun set(value: List<T>, listDescription: Any? = null) {
         uiWorker.execute {
             clearSaved()
             containers.markAllRequiresUpdate()
             items = value
+            this.listDescription = listDescription
             adapter?.onDataChanged(viewModels)
             refreshVisibility()
             updateSubject()
@@ -116,24 +124,32 @@ class ListRecyclerNavigator<T : Any, Id, VM : ViewModel>(
                 source = items,
                 mapFunction = { item ->
                     val container = containers.findRecordForId(item.getId())?.container
+                    val isStatic = staticItems.contains(item)
+                    val isVisible = if (isStatic) (container?.shouldShow() ?: true) else true
                     ListItem(
                             item = item,
                             viewModel = container?.getViewModel(),
-                            isVisible = container?.shouldShow() ?: true,
-                            isStatic = staticItems.contains(item)
+                            isVisible = isVisible,
+                            isStatic = isStatic
                     )
                 }
         )
-        indexMapping = listFilter.filter(filterable)
+        indexMapping = listFilter.filter(filterable, listDescription)
         adapter?.onDataChanged(viewModels)
         updateStatusSubject()
+    }
+
+    fun setStaticItems(source: Entity<List<out T>>) {
+        source.subscribe {
+            setStaticItems(it)
+        }
     }
 
     /**
      * Set list of items which is static. It means that [ViewModel]s for this items will be created immediately and
      * will not be removed when item is unbound.
      */
-    fun setStaticItems(value: List<T>) {
+    fun setStaticItems(value: List<out T>) {
         uiWorker.execute {
             fun Id.getKey(): T? {
                 return value.firstOrNull { key ->
@@ -160,7 +176,7 @@ class ListRecyclerNavigator<T : Any, Id, VM : ViewModel>(
                         onAdded(it)
                     }
                 }
-                updateStatusSubject()
+                refreshVisibility()
             }
         }
     }
@@ -178,7 +194,11 @@ class ListRecyclerNavigator<T : Any, Id, VM : ViewModel>(
         val container = ViewModelContainer(viewModel, parent, visibilityFilters.isReadyToShow(viewModel))
         containers.add(key.getId(), container, key)
         container.getViewModel().onAttachToParent(this)
-        container.observeVisibilityChanged(::postRefreshVisibility)
+        container.observeVisibilityChanged {
+            if (staticItems.contains(key)) {
+                postRefreshVisibility()
+            }
+        }
         container.setCreated(true)
         updateStatusSubject()
         return container
@@ -211,6 +231,14 @@ class ListRecyclerNavigator<T : Any, Id, VM : ViewModel>(
             onRemovedById(it)
         }
         savedItemIds.clear()
+    }
+
+    fun getViewModelForItem(item: T): VM? {
+        return getViewModelForId(item.getId())
+    }
+
+    fun getViewModelForId(id: Id): VM? {
+        return containers.findRecordForId(id)?.container?.getViewModel() as? VM
     }
 
     private fun onRemoved(key: T) {
