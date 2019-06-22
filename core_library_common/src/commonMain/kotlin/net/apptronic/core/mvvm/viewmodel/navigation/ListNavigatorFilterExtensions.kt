@@ -5,12 +5,12 @@ import net.apptronic.core.mvvm.viewmodel.ViewModel
 /**
  * Create simple filter which filters list for only visible items.
  */
-fun simpleFilter(): ViewModelListFilter {
-    return SimpleFilter()
+fun simpleFilter(): ListNavigatorFilter {
+    return SimpleNavigatorFilter()
 }
 
-private class SimpleFilter : ViewModelListFilter {
-    override fun filterList(source: List<ViewModelVisibilityRequest>): List<ViewModel> {
+private class SimpleNavigatorFilter : ListNavigatorFilter {
+    override fun filterList(source: List<ItemVisibilityRequest>): List<ViewModel> {
         return source.filter { it.isVisible }.map { it.viewModel }
     }
 }
@@ -18,12 +18,12 @@ private class SimpleFilter : ViewModelListFilter {
 /**
  * Create filter which filters list for only not broken chain of visible items from start.
  */
-fun takeUntilVisibleFilter(): ViewModelListFilter {
-    return TakeUntilVisibleFilter()
+fun takeUntilVisibleFilter(): ListNavigatorFilter {
+    return TakeUntilVisibleNavigatorFilter()
 }
 
-private class TakeUntilVisibleFilter : ViewModelListFilter {
-    override fun filterList(source: List<ViewModelVisibilityRequest>): List<ViewModel> {
+private class TakeUntilVisibleNavigatorFilter : ListNavigatorFilter {
+    override fun filterList(source: List<ItemVisibilityRequest>): List<ViewModel> {
         val index = source.indexOfFirst { it.isVisible.not() }
         return if (index >= 0) {
             source.take(index).map { it.viewModel }
@@ -41,8 +41,8 @@ private class TakeUntilVisibleFilter : ViewModelListFilter {
  * or [simpleFilter ] for false
  * @param countToNotify count of still not visible [ViewModel]s no notify [OnReadyForLoad.setReadyForLoad]
  */
-fun notifyNextFilter(takeUntilVisible: Boolean, countToNotify: Int = 1): ViewModelListFilter {
-    return NotifyNextFilter(if (takeUntilVisible) takeUntilVisibleFilter() else simpleFilter(), countToNotify)
+fun notifyNextFilter(takeUntilVisible: Boolean, countToNotify: Int = 1): ListNavigatorFilter {
+    return NotifyNextNavigatorFilter(if (takeUntilVisible) takeUntilVisibleFilter() else simpleFilter(), countToNotify)
 }
 
 /**
@@ -52,15 +52,15 @@ fun notifyNextFilter(takeUntilVisible: Boolean, countToNotify: Int = 1): ViewMod
  * @param targetFilter defines filter which be used for filtering itself
  * @param countToNotify count of still not visible [ViewModel]s no notify [OnReadyForLoad.setReadyForLoad]
  */
-fun notifyNextFilter(targetFilter: ViewModelListFilter, countToNotify: Int = 1): ViewModelListFilter {
-    return NotifyNextFilter(targetFilter, countToNotify)
+fun notifyNextFilter(targetFilter: ListNavigatorFilter, countToNotify: Int = 1): ListNavigatorFilter {
+    return NotifyNextNavigatorFilter(targetFilter, countToNotify)
 }
 
-private class NotifyNextFilter(
-        private val targetFilter: ViewModelListFilter,
+private class NotifyNextNavigatorFilter(
+        private val targetFilter: ListNavigatorFilter,
         private val countToNotify: Int
-) : ViewModelListFilter {
-    override fun filterList(source: List<ViewModelVisibilityRequest>): List<ViewModel> {
+) : ListNavigatorFilter {
+    override fun filterList(source: List<ItemVisibilityRequest>): List<ViewModel> {
         source.filter { it.isVisible.not() && it.viewModel is OnReadyForLoad }
                 .take(countToNotify)
                 .forEach {

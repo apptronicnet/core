@@ -1,7 +1,10 @@
 package net.apptronic.core.mvvm.viewmodel.navigation
 
+import net.apptronic.core.base.collections.lazyListOf
+import net.apptronic.core.base.collections.simpleLazyListOf
 import net.apptronic.core.base.observable.Observable
 import net.apptronic.core.base.observable.subject.BehaviorSubject
+import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.UpdateEntity
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.adapter.ItemStateNavigator
@@ -14,14 +17,53 @@ class ListRecyclerNavigator<T : Any, Id, VM : ViewModel>(
         private val parent: ViewModel,
         private val builder: ViewModelBuilder<T, Id, VM>
 ) : BaseListNavigator<T>(parent),
-        UpdateEntity<List<T>> {
+        UpdateEntity<List<T>>, VisibilityFilterableNavigator {
 
     private val subject = BehaviorSubject<List<T>>().apply {
         update(emptyList())
     }
+    private val status = parent.value<ListRecyclerNavigatorStatus>()
+
+    private var visibilityFilters = VisibilityFilters<ViewModel>()
+    private var listFilter: ListRecyclerNavigatorFilter = mappingFactoryFilter(::defaultMapping)
+    private var indexMapping: RecyclerListIndexMapping = listFilter.filter(emptyList())
+
+    override fun getVisibilityFilters(): VisibilityFilters<ViewModel> {
+        return visibilityFilters
+    }
 
     private fun updateSubject() {
         subject.update(items)
+        updateStatusSubject()
+    }
+
+    private fun updateStatusSubject() {
+        val items = this.items
+        val indexMapping = this.indexMapping
+        val allSize = items.size
+        val visibleSize = indexMapping.getSize()
+        val visibleItems = lazyListOf(items, indexMapping.getSize()) { list: List<T>, index ->
+            val mappedIndex = indexMapping.mapIndex(index)
+            list[mappedIndex]
+        }
+        val viewModels = containers.getAll().map { it.container.getViewModel() }
+        status.set(ListRecyclerNavigatorStatus(
+                allSize = allSize,
+                visibleSize = visibleSize,
+                hasHidden = visibleSize < allSize,
+                allItems = items,
+                visibleItems = visibleItems,
+                staticItems = this.staticItems,
+                attachedViewModels = viewModels.toSet()
+        ))
+    }
+
+    fun getStatus(): ListRecyclerNavigatorStatus {
+        return status.get()
+    }
+
+    fun observerStatus(): Entity<ListRecyclerNavigatorStatus> {
+        return status
     }
 
     override fun update(value: List<T>) {
@@ -43,6 +85,10 @@ class ListRecyclerNavigator<T : Any, Id, VM : ViewModel>(
     private var savedItemsSize = RECYCLER_NAVIGATOR_DEFAULT_SAVED_ITEMS_SIZE
     private val savedItemIds = mutableListOf<Id>()
 
+    init {
+        updateStatusSubject()
+    }
+
     override fun get(): List<T> {
         return items
     }
@@ -60,8 +106,27 @@ class ListRecyclerNavigator<T : Any, Id, VM : ViewModel>(
             containers.markAllRequiresUpdate()
             items = value
             adapter?.onDataChanged(viewModels)
+            refreshVisibility()
             updateSubject()
         }
+    }
+
+    override fun refreshVisibility() {
+        val filterable = simpleLazyListOf<T, ListItem>(
+                source = items,
+                mapFunction = { item ->
+                    val container = containers.findRecordForId(item.getId())?.container
+                    ListItem(
+                            item = item,
+                            viewModel = container?.getViewModel(),
+                            isVisible = container?.shouldShow() ?: true,
+                            isStatic = staticItems.contains(item)
+                    )
+                }
+        )
+        indexMapping = listFilter.filter(filterable)
+        adapter?.onDataChanged(viewModels)
+        updateStatusSubject()
     }
 
     /**
@@ -84,7 +149,7 @@ class ListRecyclerNavigator<T : Any, Id, VM : ViewModel>(
                         if (!record.container.getViewModel().isBound()) {
                             val key = id.getKey()
                             if (key != null) {
-                                onRemoved(key)
+                                onReadyToRemove(key)
                             }
                         }
                     }
@@ -95,6 +160,7 @@ class ListRecyclerNavigator<T : Any, Id, VM : ViewModel>(
                         onAdded(it)
                     }
                 }
+                updateStatusSubject()
             }
         }
     }
@@ -109,14 +175,16 @@ class ListRecyclerNavigator<T : Any, Id, VM : ViewModel>(
 
     private fun onAdded(key: T): ViewModelContainer {
         val viewModel = builder.onCreateViewModel(parent, key)
-        val container = ViewModelContainer(viewModel, parent)
+        val container = ViewModelContainer(viewModel, parent, visibilityFilters.isReadyToShow(viewModel))
         containers.add(key.getId(), container, key)
         container.getViewModel().onAttachToParent(this)
+        container.observeVisibilityChanged(::postRefreshVisibility)
         container.setCreated(true)
+        updateStatusSubject()
         return container
     }
 
-    private fun onUnbound(key: T) {
+    private fun onReadyToRemove(key: T) {
         savedItemIds.add(key.getId())
         reduceSaved()
     }
@@ -154,6 +222,7 @@ class ListRecyclerNavigator<T : Any, Id, VM : ViewModel>(
             container.container.getViewModel().onDetachFromParent()
             container.container.terminate()
         }
+        updateStatusSubject()
     }
 
     override fun requestCloseSelf(
@@ -182,10 +251,13 @@ class ListRecyclerNavigator<T : Any, Id, VM : ViewModel>(
     private inner class LazyList : AbstractList<ViewModel>() {
 
         override val size: Int
-            get() = items.size
+            get() {
+                return indexMapping.getSize()
+            }
 
         override fun get(index: Int): ViewModel {
-            val key = items[index]
+            val mappedIndex = indexMapping.mapIndex(index)
+            val key = items[mappedIndex]
             val existing = containers.findRecordForId(key.getId())
             return if (existing == null) {
                 onAdded(key).getViewModel()
@@ -201,10 +273,12 @@ class ListRecyclerNavigator<T : Any, Id, VM : ViewModel>(
         }
 
         override fun indexOf(element: ViewModel): Int {
+            // not applicable
             return -1
         }
 
         override fun lastIndexOf(element: ViewModel): Int {
+            // not applicable
             return -1
         }
 
@@ -220,10 +294,9 @@ class ListRecyclerNavigator<T : Any, Id, VM : ViewModel>(
                     }
                 } else {
                     containers.findRecordForModel(viewModel)?.let { record ->
-                        if (shouldRetainInstance(record.item, viewModel as VM)) {
-                            record.container.setBound(false)
-                        } else {
-                            onUnbound(record.item)
+                        record.container.setBound(false)
+                        if (!shouldRetainInstance(record.item, viewModel as VM)) {
+                            onReadyToRemove(record.item)
                         }
                     }
                 }

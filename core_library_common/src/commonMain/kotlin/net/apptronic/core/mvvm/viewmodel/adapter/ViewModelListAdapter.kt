@@ -2,7 +2,7 @@ package net.apptronic.core.mvvm.viewmodel.adapter
 
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 
-abstract class ViewModelListAdapter {
+open class ViewModelListAdapter {
 
     private val listeners = mutableListOf<() -> Unit>()
     private var items: List<ViewModel> = emptyList()

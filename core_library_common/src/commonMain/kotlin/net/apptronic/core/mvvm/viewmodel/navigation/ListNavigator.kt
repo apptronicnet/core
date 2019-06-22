@@ -15,10 +15,8 @@ class ListNavigator(
 ) : BaseListNavigator<ViewModel>(parent),
         UpdateEntity<List<ViewModel>>, VisibilityFilterableNavigator {
 
-    private var postRefreshingVisibility = false
-
     private val visibilityFilters: VisibilityFilters<ViewModel> = VisibilityFilters<ViewModel>()
-    private var listFilter: ViewModelListFilter = simpleFilter()
+    private var listFilter: ListNavigatorFilter = simpleFilter()
 
     private val subject = BehaviorSubject<List<ViewModel>>().apply {
         update(emptyList())
@@ -34,7 +32,7 @@ class ListNavigator(
         return visibilityFilters
     }
 
-    fun setListFilter(listFilter: ViewModelListFilter) {
+    fun setListFilter(listFilter: ListNavigatorFilter) {
         this.listFilter = listFilter
         postRefreshVisibility()
     }
@@ -61,19 +59,9 @@ class ListNavigator(
     private var items: List<ViewModel> = emptyList()
     private var visibleItems: List<ViewModel> = emptyList()
 
-    private fun postRefreshVisibility() {
-        if (!postRefreshingVisibility) {
-            postRefreshingVisibility = true
-            uiAsyncWorker.execute {
-                refreshVisibility()
-                postRefreshingVisibility = false
-            }
-        }
-    }
-
-    private fun refreshVisibility() {
+    override fun refreshVisibility() {
         val source = items.map {
-            ViewModelVisibilityRequest(it, it.getContainer()?.shouldShow() ?: true)
+            ItemVisibilityRequest(it, it.getContainer()?.shouldShow() ?: true)
         }
         visibleItems = listFilter.filterList(source)
         adapter?.onDataChanged(visibleItems)

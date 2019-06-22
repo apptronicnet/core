@@ -7,7 +7,6 @@ import net.apptronic.core.base.observable.subscribe
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.entities.Value
 import net.apptronic.core.component.entity.functions.and
-import net.apptronic.core.component.entity.functions.ofValue
 import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.component.lifecycle.enterStage
 import net.apptronic.core.component.lifecycle.exitStage
@@ -17,7 +16,7 @@ import net.apptronic.core.mvvm.viewmodel.ViewModelLifecycle
 internal class ViewModelContainer(
         private val viewModel: ViewModel,
         private val parent: ViewModel,
-        private val shouldShow: Entity<Boolean> = viewModel.ofValue(true)
+        private val shouldShow: Entity<Boolean>
 ) {
 
     private val subscriptionHolders = SubscriptionHolders()
