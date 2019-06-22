@@ -1,5 +1,7 @@
 package net.apptronic.core.mvvm.viewmodel.navigation
 
+import net.apptronic.core.component.entity.Entity
+import net.apptronic.core.component.entity.functions.map
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 
 /**
@@ -35,3 +37,32 @@ class ListRecyclerNavigatorStatus(
          */
         val attachedViewModels: Set<ViewModel>
 )
+
+fun Entity<ListRecyclerNavigatorStatus>.allSize(): Entity<Int> {
+        return map { it.allSize }
+}
+
+fun Entity<ListRecyclerNavigatorStatus>.visibleSize(): Entity<Int> {
+        return map { it.visibleSize }
+}
+
+fun Entity<ListRecyclerNavigatorStatus>.hasHidden(): Entity<Boolean> {
+        return map { it.hasHidden }
+}
+
+fun Entity<ListRecyclerNavigatorStatus>.allItems(): Entity<List<Any>> {
+        return map { it.allItems }
+}
+
+fun Entity<ListRecyclerNavigatorStatus>.visibleItems(): Entity<List<Any>> {
+        return map { it.visibleItems }
+}
+
+fun Entity<ListRecyclerNavigatorStatus>.staticItems(): Entity<List<Any>> {
+        return map { it.staticItems }
+}
+
+fun Entity<ListRecyclerNavigatorStatus>.attachedViewModels(): Entity<Set<ViewModel>> {
+        return map { it.attachedViewModels }
+}
+
