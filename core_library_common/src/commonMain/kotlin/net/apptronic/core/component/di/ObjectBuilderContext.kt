@@ -19,6 +19,13 @@ abstract class ObjectBuilderContext internal constructor(
         return inject(ObjectType::class)
     }
 
+    inline fun <reified ObjectType : Any> optional(): ObjectType? {
+        if (ObjectType::class == Context::class) {
+            throw  IllegalArgumentException("Cannot inject [Context]. Please use definitionContext() or providedContext() instead")
+        }
+        return optional(ObjectType::class)
+    }
+
     fun <ObjectType : Any> inject(
         clazz: KClass<ObjectType>
     ): ObjectType {
@@ -28,10 +35,25 @@ abstract class ObjectBuilderContext internal constructor(
         return performInjection(objectKey(clazz))
     }
 
+    fun <ObjectType : Any> optional(
+            clazz: KClass<ObjectType>
+    ): ObjectType? {
+        if (clazz == Context::class) {
+            throw  IllegalArgumentException("Cannot inject [Context]. Please use definitionContext() or providedContext() instead")
+        }
+        return optionalInjection(objectKey(clazz))
+    }
+
     fun <ObjectType : Any> inject(
         descriptor: Descriptor<ObjectType>
     ): ObjectType {
         return performInjection(objectKey(descriptor))
+    }
+
+    fun <ObjectType : Any> optional(
+            descriptor: Descriptor<ObjectType>
+    ): ObjectType? {
+        return optionalInjection(objectKey(descriptor))
     }
 
     /**
@@ -45,6 +67,12 @@ abstract class ObjectBuilderContext internal constructor(
         objectKey: ObjectKey
     ): ObjectType {
         return parameters.get(objectKey) ?: dependencyProvider.inject(objectKey)
+    }
+
+    internal fun <ObjectType> optionalInjection(
+            objectKey: ObjectKey
+    ): ObjectType? {
+        return parameters.get(objectKey) ?: dependencyProvider.optional(objectKey)
     }
 
 }

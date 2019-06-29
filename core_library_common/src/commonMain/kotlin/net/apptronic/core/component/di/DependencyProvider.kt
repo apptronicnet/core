@@ -21,7 +21,7 @@ class DependencyProvider(
      * @param name optional name for instance
      */
     inline fun <reified TypeDeclaration : Any> addInstance(
-        instance: TypeDeclaration
+            instance: TypeDeclaration
     ) {
         addInstance(TypeDeclaration::class, instance)
     }
@@ -33,8 +33,8 @@ class DependencyProvider(
      * @param name optional name for instance
      */
     fun <TypeDeclaration : Any> addInstance(
-        clazz: KClass<TypeDeclaration>,
-        instance: TypeDeclaration
+            clazz: KClass<TypeDeclaration>,
+            instance: TypeDeclaration
     ) {
         if (instance is ModuleDefinition) {
             throw IllegalArgumentException("ModuleDefinition should be added using addModule()")
@@ -50,8 +50,8 @@ class DependencyProvider(
      * @param name optional name for instance
      */
     fun <TypeDeclaration : Any> addInstance(
-        descriptor: Descriptor<TypeDeclaration>,
-        instance: TypeDeclaration
+            descriptor: Descriptor<TypeDeclaration>,
+            instance: TypeDeclaration
     ) {
         if (instance is ModuleDefinition) {
             throw IllegalArgumentException("ModuleDefinition should be added using addModule()")
@@ -67,8 +67,8 @@ class DependencyProvider(
      * @param name optional name for instance
      */
     fun <TypeDeclaration : Any> addNullableInstance(
-        descriptor: Descriptor<TypeDeclaration?>,
-        instance: TypeDeclaration?
+            descriptor: Descriptor<TypeDeclaration?>,
+            instance: TypeDeclaration?
     ) {
         val key = objectKey(descriptor)
         externalInstances[key] = ValueHolder(instance)
@@ -79,76 +79,158 @@ class DependencyProvider(
     }
 
     inline fun <reified TypeDeclaration : Any> inject(
-        params: Parameters = emptyParameters()
+            params: Parameters = emptyParameters()
     ): TypeDeclaration {
         return inject(TypeDeclaration::class, params)
     }
 
+    inline fun <reified TypeDeclaration : Any> optional(
+            params: Parameters = emptyParameters()
+    ): TypeDeclaration? {
+        return optional(TypeDeclaration::class, params)
+    }
+
     inline fun <reified TypeDeclaration : Any> injectLazy(
-        params: Parameters = emptyParameters()
+            params: Parameters = emptyParameters()
     ): Lazy<TypeDeclaration> {
         return injectLazy(TypeDeclaration::class, params)
     }
 
+    inline fun <reified TypeDeclaration : Any> optionalLazy(
+            params: Parameters = emptyParameters()
+    ): Lazy<TypeDeclaration?> {
+        return optionalLazy(TypeDeclaration::class, params)
+    }
+
     fun <TypeDeclaration : Any> inject(
-        clazz: KClass<TypeDeclaration>,
-        params: Parameters = emptyParameters()
+            clazz: KClass<TypeDeclaration>,
+            params: Parameters = emptyParameters()
     ): TypeDeclaration {
         val key = objectKey(clazz)
         return getInstanceInternal(key, params)
+    }
+
+    fun <TypeDeclaration : Any> optional(
+            clazz: KClass<TypeDeclaration>,
+            params: Parameters = emptyParameters()
+    ): TypeDeclaration? {
+        val key = objectKey(clazz)
+        return getOptionalInternal(key, params)
     }
 
     fun <TypeDeclaration : Any> injectLazy(
-        clazz: KClass<TypeDeclaration>,
-        params: Parameters = emptyParameters()
+            clazz: KClass<TypeDeclaration>,
+            params: Parameters = emptyParameters()
     ): Lazy<TypeDeclaration> {
         val key = objectKey(clazz)
         return getLazyInstanceInternal(key, params)
     }
 
+    fun <TypeDeclaration : Any> optionalLazy(
+            clazz: KClass<TypeDeclaration>,
+            params: Parameters = emptyParameters()
+    ): Lazy<TypeDeclaration?> {
+        val key = objectKey(clazz)
+        return getLazyOptionalInternal(key, params)
+    }
+
     fun <TypeDeclaration> inject(
-        descriptor: Descriptor<TypeDeclaration>,
-        params: Parameters = emptyParameters()
+            descriptor: Descriptor<TypeDeclaration>,
+            params: Parameters = emptyParameters()
     ): TypeDeclaration {
         val key = objectKey(descriptor)
         return getInstanceInternal(key, params)
     }
 
+    fun <TypeDeclaration> optional(
+            descriptor: Descriptor<TypeDeclaration>,
+            params: Parameters = emptyParameters()
+    ): TypeDeclaration? {
+        val key = objectKey(descriptor)
+        return getOptionalInternal(key, params)
+    }
+
     fun <TypeDeclaration> injectLazy(
-        descriptor: Descriptor<TypeDeclaration>,
-        params: Parameters = emptyParameters()
+            descriptor: Descriptor<TypeDeclaration>,
+            params: Parameters = emptyParameters()
     ): Lazy<TypeDeclaration> {
         val key = objectKey(descriptor)
         return getLazyInstanceInternal(key, params)
     }
 
+    fun <TypeDeclaration> optionalLazy(
+            descriptor: Descriptor<TypeDeclaration>,
+            params: Parameters = emptyParameters()
+    ): Lazy<TypeDeclaration?> {
+        val key = objectKey(descriptor)
+        return getLazyOptionalInternal(key, params)
+    }
+
     internal fun <TypeDeclaration> inject(
-        objectKey: ObjectKey,
-        params: Parameters = parameters { }
+            objectKey: ObjectKey,
+            params: Parameters = parameters { }
     ): TypeDeclaration {
         return getInstanceInternal(objectKey, params)
     }
 
+    internal fun <TypeDeclaration> optional(
+            objectKey: ObjectKey,
+            params: Parameters = parameters { }
+    ): TypeDeclaration? {
+        return getOptionalInternal(objectKey, params)
+    }
+
     internal fun <TypeDeclaration> injectLazy(
-        objectKey: ObjectKey,
-        params: Parameters = parameters { }
+            objectKey: ObjectKey,
+            params: Parameters = parameters { }
     ): Lazy<TypeDeclaration> {
         return getLazyInstanceInternal(objectKey, params)
     }
 
+    internal fun <TypeDeclaration> optionalLazy(
+            objectKey: ObjectKey,
+            params: Parameters = parameters { }
+    ): Lazy<TypeDeclaration?> {
+        return getLazyOptionalInternal(objectKey, params)
+    }
+
     private fun <TypeDeclaration> getInstanceInternal(
-        key: ObjectKey,
-        params: Parameters
+            key: ObjectKey,
+            params: Parameters
     ): TypeDeclaration {
         return performInject<TypeDeclaration>(SearchSpec(context, key, params)).value
     }
 
+    private fun <TypeDeclaration> getOptionalInternal(
+            key: ObjectKey,
+            params: Parameters
+    ): TypeDeclaration? {
+        return try {
+            performInject<TypeDeclaration>(SearchSpec(context, key, params)).value
+        } catch (e: InjectionFailedException) {
+            null
+        }
+    }
+
     private fun <TypeDeclaration> getLazyInstanceInternal(
-        key: ObjectKey,
-        params: Parameters
+            key: ObjectKey,
+            params: Parameters
     ): Lazy<TypeDeclaration> {
         return lazy {
             getInstanceInternal<TypeDeclaration>(key, params)
+        }
+    }
+
+    private fun <TypeDeclaration> getLazyOptionalInternal(
+            key: ObjectKey,
+            params: Parameters
+    ): Lazy<TypeDeclaration?> {
+        return lazy {
+            try {
+                getInstanceInternal<TypeDeclaration>(key, params)
+            } catch (e: InjectionFailedException) {
+                null
+            }
         }
     }
 
@@ -165,11 +247,11 @@ class DependencyProvider(
     private fun <TypeDeclaration> performInject(searchSpec: SearchSpec): ValueHolder<TypeDeclaration> {
         var result: ValueHolder<TypeDeclaration>? = searchInstance(searchSpec)
         return result
-            ?: throw InjectionFailedException("Object ${searchSpec.key} is not found:\n${searchSpec.getSearchPath()}")
+                ?: throw InjectionFailedException("Object ${searchSpec.key} is not found:\n${searchSpec.getSearchPath()}")
     }
 
     private fun <TypeDeclaration> searchInstance(
-        searchSpec: SearchSpec
+            searchSpec: SearchSpec
     ): ValueHolder<TypeDeclaration>? {
         searchSpec.addContextToChain(context)
         val local: ValueHolder<TypeDeclaration>? = obtainLocalInstance(searchSpec)
@@ -184,7 +266,7 @@ class DependencyProvider(
     }
 
     private fun <TypeDeclaration> obtainLocalInstance(
-        searchSpec: SearchSpec
+            searchSpec: SearchSpec
     ): ValueHolder<TypeDeclaration>? {
         val obj = externalInstances[searchSpec.key]
         if (obj != null) {
