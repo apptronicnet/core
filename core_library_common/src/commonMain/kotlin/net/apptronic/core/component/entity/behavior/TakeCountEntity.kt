@@ -13,6 +13,10 @@ fun <T> Entity<T>.take(count: Int): Entity<T> {
     return TakeCountEntity(this, count)
 }
 
+fun <T> Entity<T>.takeOne(): Entity<T> {
+    return take(1)
+}
+
 private class TakeCountEntity<T>(
     val source: Entity<T>,
     val count: Int

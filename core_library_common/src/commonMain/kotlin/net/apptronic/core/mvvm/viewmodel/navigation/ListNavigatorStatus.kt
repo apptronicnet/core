@@ -37,10 +37,17 @@ class ListNavigatorStatus internal constructor(
 
 }
 
+fun Entity<ListNavigatorStatus>.all(): Entity<List<ViewModel>> {
+    return map { it.all }
+}
+
+fun Entity<ListNavigatorStatus>.visible(): Entity<List<ViewModel>> {
+    return map { it.visible }
+}
+
 fun Entity<ListNavigatorStatus>.countVisible(): Entity<Int> {
     return map { it.countVisible }
 }
-
 
 fun Entity<ListNavigatorStatus>.countAll(): Entity<Int> {
     return map { it.countAll }

@@ -112,7 +112,7 @@ class ListNavigator(
             diff.added.forEach {
                 onAdded(it)
             }
-            postRefreshVisibility()
+            refreshVisibility()
             updateSubject()
         }
     }
