@@ -2,7 +2,7 @@ buildscript {
 
     ext.kotlin_version = "1.3.40"
     ext.junit_version = "4.12"
-    ext.library_core_version = "0.1.5-25"
+    ext.library_core_version = "0.1.5-30"
     ext.library_android_version = ext.library_core_version
 
     repositories {
@@ -25,7 +25,13 @@ wrapper {
 
 allprojects {
     repositories {
-        mavenLocal()
+        maven {
+            url "s3://maven.apptronic.net/"
+            credentials(AwsCredentials) {
+                accessKey "AKIAQYS4TMFUDDMKIPNL"
+                secretKey "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"
+            }
+        }
         google()
         mavenCentral()
         jcenter()
