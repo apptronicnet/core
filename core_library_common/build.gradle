@@ -83,6 +83,15 @@ publishing {
             version = project.ext.library_core_version
         }
     }
+    repositories {
+        maven {
+            url "s3://maven.apptronic.net/"
+            credentials(AwsCredentials) {
+                accessKey "AKIAQYS4TMFUDDMKIPNL"
+                secretKey "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"
+            }
+        }
+    }
 }
 
 task copyFramework {
