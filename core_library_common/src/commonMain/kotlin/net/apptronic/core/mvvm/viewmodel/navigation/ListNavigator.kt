@@ -53,7 +53,6 @@ class ListNavigator(
         return ListNavigatorStatus(items, visibleItems)
     }
 
-    private var adapter: ViewModelListAdapter? = null
     private val itemStateNavigator = ItemStateNavigatorImpl()
 
     private var items: List<ViewModel> = emptyList()
@@ -64,8 +63,12 @@ class ListNavigator(
             ItemVisibilityRequest(it, it.getContainer()?.shouldShow() ?: true)
         }
         visibleItems = listFilter.filterList(source)
-        adapter?.onDataChanged(visibleItems)
         viewModelListEntity.update(ListNavigatorStatus(items, visibleItems))
+        notifyAdapter()
+    }
+
+    override fun onNotifyAdapter(adapter: ViewModelListAdapter) {
+        adapter.onDataChanged(visibleItems)
     }
 
     override fun get(): List<ViewModel> {
@@ -141,18 +144,13 @@ class ListNavigator(
         }
     }
 
-    override fun setAdapter(adapter: ViewModelListAdapter) {
-        uiWorker.execute {
-            this.adapter = adapter
-            adapter.onDataChanged(visibleItems)
-            adapter.setNavigator(itemStateNavigator)
-            parent.getLifecycle().onExitFromActiveStage {
-                items.forEach {
-                    itemStateNavigator.setBound(it, false)
-                }
-                adapter.setNavigator(null)
-                this.adapter = null
+    override fun onSetAdapter(adapter: ViewModelListAdapter) {
+        adapter.setNavigator(itemStateNavigator)
+        parent.getLifecycle().onExitFromActiveStage {
+            items.forEach {
+                itemStateNavigator.setBound(it, false)
             }
+            adapter.setNavigator(null)
         }
     }
 

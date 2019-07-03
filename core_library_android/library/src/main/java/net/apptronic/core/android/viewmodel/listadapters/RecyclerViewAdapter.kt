@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import net.apptronic.core.android.viewmodel.AndroidView
 import net.apptronic.core.android.viewmodel.AndroidViewModelListAdapter
+import net.apptronic.core.mvvm.viewmodel.ViewModel
 
 class RecyclerViewAdapter(
     private val viewModelAdapter: AndroidViewModelListAdapter
@@ -15,6 +16,10 @@ class RecyclerViewAdapter(
         viewModelAdapter.addListener {
             notifyDataSetChanged()
         }
+    }
+
+    fun getItemAt(position: Int): ViewModel {
+        return viewModelAdapter.getItemAt(position)
     }
 
     override fun getItemId(position: Int): Long {

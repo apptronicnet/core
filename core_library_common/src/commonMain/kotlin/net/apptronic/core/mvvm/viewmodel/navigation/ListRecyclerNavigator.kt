@@ -29,7 +29,6 @@ class ListRecyclerNavigator<T : Any, Id, VM : ViewModel>(
     private var listFilter: ListRecyclerNavigatorFilter = mappingFactoryFilter(::defaultMapping)
     private var indexMapping: RecyclerListIndexMapping = listFilter.filter(emptyList(), null)
 
-    private var adapter: ViewModelListAdapter? = null
     private val itemStateNavigator = ItemStateNavigatorImpl()
 
     private var items: List<T> = emptyList()
@@ -113,10 +112,14 @@ class ListRecyclerNavigator<T : Any, Id, VM : ViewModel>(
             containers.markAllRequiresUpdate()
             items = value
             this.listDescription = listDescription
-            adapter?.onDataChanged(viewModels)
             refreshVisibility()
             updateSubject()
+            notifyAdapter()
         }
+    }
+
+    override fun onNotifyAdapter(adapter: ViewModelListAdapter) {
+        adapter.onDataChanged(viewModels)
     }
 
     override fun refreshVisibility() {
@@ -135,7 +138,7 @@ class ListRecyclerNavigator<T : Any, Id, VM : ViewModel>(
                 }
         )
         indexMapping = listFilter.filter(filterable, listDescription)
-        adapter?.onDataChanged(viewModels)
+        notifyAdapter()
         updateStatusSubject()
     }
 
@@ -260,19 +263,14 @@ class ListRecyclerNavigator<T : Any, Id, VM : ViewModel>(
         throw UnsupportedOperationException("ListRecyclerNavigator cannot close items")
     }
 
-    override fun setAdapter(adapter: ViewModelListAdapter) {
-        uiWorker.execute {
-            this.adapter = adapter
-            adapter.onDataChanged(viewModels)
-            adapter.setNavigator(itemStateNavigator)
-            parent.getLifecycle().onExitFromActiveStage {
-                adapter.setNavigator(null)
-                this.adapter = null
-                containers.getAll().forEach {
-                    onRemoved(it.item)
-                }
-                containers.terminateAllAndClear()
+    override fun onSetAdapter(adapter: ViewModelListAdapter) {
+        adapter.setNavigator(itemStateNavigator)
+        parent.getLifecycle().onExitFromActiveStage {
+            adapter.setNavigator(null)
+            containers.getAll().forEach {
+                onRemoved(it.item)
             }
+            containers.terminateAllAndClear()
         }
     }
 

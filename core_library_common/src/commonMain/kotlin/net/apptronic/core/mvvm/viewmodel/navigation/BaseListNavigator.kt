@@ -5,12 +5,41 @@ import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelListAdapter
 import net.apptronic.core.threading.execute
 
 abstract class BaseListNavigator<T>(
-    parent: ViewModel
+        private val parent: ViewModel
 ) : Navigator<List<T>>(parent) {
 
-    abstract fun setAdapter(adapter: ViewModelListAdapter)
+    private var adapter: ViewModelListAdapter? = null
 
     private var postRefreshingVisibility = false
+    private var postRefreshingAdapter = false
+
+    fun setAdapter(adapter: ViewModelListAdapter) {
+        uiWorker.execute {
+            this.adapter = adapter
+            onSetAdapter(adapter)
+            onNotifyAdapter(adapter)
+            parent.getLifecycle().onExitFromActiveStage {
+                this.adapter = null
+            }
+        }
+    }
+
+    protected abstract fun onSetAdapter(adapter: ViewModelListAdapter)
+
+    fun notifyAdapter() {
+        if (!postRefreshingAdapter) {
+            postRefreshingAdapter = true
+            uiAsyncWorker.execute {
+                val adapter = this.adapter
+                if (adapter != null) {
+                    onNotifyAdapter(adapter)
+                }
+                postRefreshingAdapter = false
+            }
+        }
+    }
+
+    protected abstract fun onNotifyAdapter(adapter: ViewModelListAdapter)
 
     internal fun postRefreshVisibility() {
         if (!postRefreshingVisibility) {
@@ -23,6 +52,5 @@ abstract class BaseListNavigator<T>(
     }
 
     internal abstract fun refreshVisibility()
-
 
 }

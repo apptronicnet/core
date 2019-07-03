@@ -2,8 +2,8 @@ buildscript {
 
     ext.kotlin_version = "1.3.40"
     ext.junit_version = "4.12"
-    ext.library_core_version = "0.1.5-30"
-    ext.library_android_version = ext.library_core_version
+    ext.library_core_version = "0.1.5-33"
+    ext.library_android_version = "0.1.5-33"
 
     repositories {
         google()
@@ -41,6 +41,12 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+
+task publishLibToMavenApptronicNet(dependsOn: [
+        ':library:bundleDebugAar',
+        ':library:publish'
+])
 
 task publishLibToMavenLocal(dependsOn: [
         ':library:bundleDebugAar',
