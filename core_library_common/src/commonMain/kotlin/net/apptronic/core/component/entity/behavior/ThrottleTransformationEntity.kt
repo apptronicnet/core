@@ -11,24 +11,31 @@ import net.apptronic.core.component.entity.bindContext
 import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.threading.WorkerDefinition
 
-fun <Source, Result> Entity<Source>.debounce(
-    transformWith: WorkerDefinition = WorkerDefinition.BACKGROUND_PARALLEL_SHARED,
-    subscribeWith: WorkerDefinition = WorkerDefinition.DEFAULT,
-    debouncedTransformation: (Entity<Source>) -> Entity<Result>
+/**
+ * Throttles source observable to prevent parallel processing many items at same time. Emits next item for processing
+ * only when previous item was processed. Throws out from chain old items if new arrived before previous started
+ * processing.
+ * @param throttledTransformation method tpo operate throttled input, should returns result entity to be processet
+ * after throttling
+ */
+fun <Source, Result> Entity<Source>.throttle(
+        transformWith: WorkerDefinition = WorkerDefinition.BACKGROUND_PARALLEL_SHARED,
+        subscribeWith: WorkerDefinition = WorkerDefinition.DEFAULT,
+        throttledTransformation: (Entity<Source>) -> Entity<Result>
 ): Entity<Result> {
-    return DebounceTransformationEntity(
+    return ThrottleTransformationEntity(
         this,
         transformWith,
         subscribeWith,
-        debouncedTransformation
+            throttledTransformation
     )
 }
 
-private class DebounceTransformationEntity<Source, Result>(
-    private val sourceEntity: Entity<Source>,
-    private val transformWorkerDefinition: WorkerDefinition,
-    private val subscribeWorkerDefinition: WorkerDefinition,
-    debouncedTransformation: (Entity<Source>) -> Entity<Result>
+private class ThrottleTransformationEntity<Source, Result>(
+        private val sourceEntity: Entity<Source>,
+        private val transformWorkerDefinition: WorkerDefinition,
+        private val subscribeWorkerDefinition: WorkerDefinition,
+        private val throttledTransformation: (Entity<Source>) -> Entity<Result>
 ) : Entity<Result> {
 
     private val sourceObservable = BehaviorSubject<Source>()
@@ -46,7 +53,7 @@ private class DebounceTransformationEntity<Source, Result>(
         }
         val sourceEntity = sourceObservable.bindContext(sourceEntity.getContext())
             .switchWorker(transformWorkerDefinition)
-        debouncedTransformation.invoke(sourceEntity).subscribe { nextResult ->
+        throttledTransformation.invoke(sourceEntity).subscribe { nextResult ->
             resultObservable.update(nextResult)
             awaitingValue.perform {
                 isProcessing.set(false)
