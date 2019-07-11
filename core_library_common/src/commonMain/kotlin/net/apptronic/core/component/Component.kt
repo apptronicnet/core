@@ -59,6 +59,13 @@ open class Component(
     }
 
     /**
+     * Property of view
+     */
+    fun <T> value(source: Entity<T>): Property<T> {
+        return value<T>().setAs(source)
+    }
+
+    /**
      * Property of view with some default value
      */
     fun <T> value(defaultValue: T): Property<T> {
