@@ -15,10 +15,10 @@ class ValueWatcherTestCase : BaseTestComponent() {
         value.watch().forEachNewValue {
             eachNew.add(it)
         }
-        value.watch().ferEachReplacedValue {
+        value.watch().forEachReplacedValue {
             eachReplaced.add(it)
         }
-        value.watch().ferEachRecycledValue {
+        value.watch().forEachRecycledValue {
             eachRecycled.add(it)
         }
         assert(eachNew.toTypedArray().contentDeepEquals(arrayOf()))
@@ -60,10 +60,10 @@ class ValueWatcherTestCase : BaseTestComponent() {
         value.watch().forEachNewValue {
             eachNew.add(it)
         }
-        value.watch().ferEachReplacedValue {
+        value.watch().forEachReplacedValue {
             eachReplaced.add(it)
         }
-        value.watch().ferEachRecycledValue {
+        value.watch().forEachRecycledValue {
             eachRecycled.add(it)
         }
         assert(eachNew.toTypedArray().contentDeepEquals(arrayOf(0)))
@@ -108,10 +108,10 @@ class ValueWatcherTestCase : BaseTestComponent() {
         value.watch().forEachNewValue {
             eachNew.add(it)
         }
-        value.watch().ferEachReplacedValue {
+        value.watch().forEachReplacedValue {
             eachReplaced.add(it)
         }
-        value.watch().ferEachRecycledValue {
+        value.watch().forEachRecycledValue {
             eachRecycled.add(it)
         }
         assert(eachNew.toTypedArray().contentDeepEquals(arrayOf(any1)))

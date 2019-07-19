@@ -1,6 +1,7 @@
 package net.apptronic.core.component.entity.entities
 
 import net.apptronic.core.base.observable.Observable
+import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.base.observable.subject.PublishSubject
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.UpdateEntity
@@ -39,8 +40,10 @@ class TypedEvent<T>(context: Context) : Event<T>(context) {
 
 }
 
-fun <T> Event<T>.subscribe(action: () -> Unit) {
-    subscribe {
-        action.invoke()
-    }
+fun GenericEvent.subscribe(action: () -> Unit) {
+    this.subscribe(object : Observer<Unit> {
+        override fun notify(value: Unit) {
+            action.invoke()
+        }
+    })
 }

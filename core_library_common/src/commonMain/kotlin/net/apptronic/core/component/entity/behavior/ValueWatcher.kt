@@ -20,13 +20,13 @@ interface ValueWatcher<T> {
     /**
      * Execute some [action] for each old value in target [EntityValue] when new value is set
      */
-    fun ferEachReplacedValue(action: (T) -> Unit)
+    fun forEachReplacedValue(action: (T) -> Unit)
 
     /**
      * Execute some [action] for each old value in target [EntityValue] when new value is set and for current value
      * when [Lifecycle] exits from active stage
      */
-    fun ferEachRecycledValue(action: (T) -> Unit)
+    fun forEachRecycledValue(action: (T) -> Unit)
 
 }
 
@@ -50,12 +50,12 @@ private class ValueWatcherImpl<T>(
         }
     }
 
-    override fun ferEachReplacedValue(action: (T) -> Unit) {
+    override fun forEachReplacedValue(action: (T) -> Unit) {
         val holder = OldValueActionHolder(action)
         source.subscribe(holder)
     }
 
-    override fun ferEachRecycledValue(action: (T) -> Unit) {
+    override fun forEachRecycledValue(action: (T) -> Unit) {
         val holder = OldValueActionHolder(action)
         source.subscribe(holder)
         source.getContext().getLifecycle().onExitFromActiveStage {
