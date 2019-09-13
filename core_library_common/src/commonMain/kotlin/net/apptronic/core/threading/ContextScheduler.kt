@@ -1,12 +1,19 @@
 package net.apptronic.core.threading
 
+import net.apptronic.core.component.context.Context
+
 class ContextScheduler(
-    private val parent: Scheduler? = null
+        private val context: Context,
+        private val parent: Scheduler? = null
 ) : Scheduler {
 
     private val fallbackWorker = synchronousWorker()
     private var defaultWorker: WorkerDefinition = WorkerDefinition.DEFAULT
     private val providers = mutableMapOf<WorkerDefinition, WorkerProvider>()
+
+    override fun getProvider(workerDefinition: WorkerDefinition): WorkerProvider? {
+        return providers.get(workerDefinition) ?: parent?.getProvider(workerDefinition)
+    }
 
     override fun setDefaultWorker(workerDefinition: WorkerDefinition) {
         this.defaultWorker = workerDefinition
@@ -17,12 +24,9 @@ class ContextScheduler(
     }
 
     override fun getWorker(workerDefinition: WorkerDefinition): Worker {
-        val provider = providers[workerDefinition]
+        val provider = getProvider(workerDefinition)
         if (provider != null) {
-            return provider.provideWorker()
-        }
-        if (parent != null) {
-            return parent.getWorker(workerDefinition)
+            return provider.provideWorker(context)
         }
         return fallbackWorker
     }

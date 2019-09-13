@@ -21,7 +21,7 @@ open class TestContext(
         }
     }
 
-    private val scheduler = createTestScheduler()
+    private val scheduler = createTestScheduler(this)
     private val lifecycle = TestLifecycle()
     private val dependencyProvider = DependencyProvider(this, null)
 

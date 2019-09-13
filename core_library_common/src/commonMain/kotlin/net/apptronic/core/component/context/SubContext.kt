@@ -17,7 +17,7 @@ open class SubContext(
     }
 
     private val dependencyProvider = DependencyProvider(this, parent.getProvider())
-    private val scheduler = createSubScheduler(parent.getScheduler())
+    private val scheduler = createSubScheduler(this, parent.getScheduler())
 
     override fun getParent(): Context? {
         return parent

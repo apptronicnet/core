@@ -14,7 +14,7 @@ open class CoreContext(
         requireNeverFrozen()
     }
 
-    private val scheduler = createCoreScheduler()
+    private val scheduler = createCoreScheduler(this)
     private val dependencyProvider = DependencyProvider(this, null)
 
     override fun getParent(): Context? {

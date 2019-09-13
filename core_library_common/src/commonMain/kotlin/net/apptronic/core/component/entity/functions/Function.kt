@@ -1,7 +1,6 @@
 package net.apptronic.core.component.entity.functions
 
 import net.apptronic.core.base.observable.Observer
-import net.apptronic.core.base.observable.distinctUntilChanged
 import net.apptronic.core.base.observable.subject.BehaviorSubject
 import net.apptronic.core.base.observable.subject.ValueHolder
 import net.apptronic.core.base.observable.subscribe
@@ -17,7 +16,7 @@ import net.apptronic.core.threading.WorkerDefinition
 abstract class Function<T> : EntityValue<T> {
 
     private val subject = BehaviorSubject<T>()
-    private val observable = subject.distinctUntilChanged()
+    private val observable = subject
     protected abstract val functionContext: Context
     protected abstract var worker: Worker
     protected abstract val subscriptions: ContextSubscriptionFactory<T>

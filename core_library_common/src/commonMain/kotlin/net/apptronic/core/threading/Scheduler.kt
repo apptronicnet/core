@@ -1,9 +1,10 @@
 package net.apptronic.core.threading
 
+import net.apptronic.core.component.context.Context
 import net.apptronic.core.platform.getPlatform
 
-fun createCoreScheduler(): Scheduler {
-    val scheduler = ContextScheduler()
+fun createCoreScheduler(context: Context): Scheduler {
+    val scheduler = ContextScheduler(context)
     with(scheduler) {
         assignWorker(
                 WorkerDefinition.DEFAULT,
@@ -45,8 +46,8 @@ fun createCoreScheduler(): Scheduler {
     return scheduler
 }
 
-fun createSubScheduler(parent: Scheduler): Scheduler {
-    return ContextScheduler(parent)
+fun createSubScheduler(context: Context, parent: Scheduler): Scheduler {
+    return ContextScheduler(context, parent)
 }
 
 
@@ -54,6 +55,9 @@ interface Scheduler {
 
     fun getDefaultWorker(): WorkerDefinition
 
+    fun getProvider(workerDefinition: WorkerDefinition): WorkerProvider?
+
+    @Deprecated("Will be removed")
     fun setDefaultWorker(workerDefinition: WorkerDefinition)
 
     fun assignWorker(workerDefinition: WorkerDefinition, workerProvider: WorkerProvider)

@@ -3,12 +3,12 @@ package net.apptronic.core.component.entity.functions
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.base.ConstantEntity
+import net.apptronic.core.component.entity.subscribe
 
-fun <T> Entity<T>.onNext(action: (T) -> Unit): Entity<T> =
-    map {
-        action.invoke(it)
-        it
-    }
+fun <T> Entity<T>.onNext(action: (T) -> Unit): Entity<T> {
+    subscribe(action)
+    return this
+}
 
 fun <T, R> Entity<T>.map(map: (T) -> R): Entity<R> =
     entityFunction(this) {
