@@ -40,7 +40,7 @@ class RecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: ViewModelHolder, position: Int) {
         val viewModel = viewModelAdapter.getItemAt(position)
-        holder.androidView = viewModelAdapter.bindView(viewModel, holder.itemView)
+        holder.androidView = viewModelAdapter.bindView(viewModel, position, holder.itemView)
     }
 
     override fun onViewRecycled(holder: ViewModelHolder) {

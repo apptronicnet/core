@@ -2,11 +2,14 @@ package net.apptronic.core.android.viewmodel
 
 import android.view.View
 import android.view.ViewGroup
+import net.apptronic.core.android.viewmodel.style.list.ListItemStyleAdapter
+import net.apptronic.core.android.viewmodel.style.list.emptyStyleAdapter
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelListAdapter
 
 class AndroidViewModelListAdapter(
-    private val androidViewFactory: AndroidViewFactory = AndroidViewFactory()
+    private val androidViewFactory: AndroidViewFactory = AndroidViewFactory(),
+    private val styleAdapter: ListItemStyleAdapter = emptyStyleAdapter()
 ) : ViewModelListAdapter() {
 
     private val boundViews = mutableMapOf<Long, AndroidView<*>>()
@@ -33,9 +36,11 @@ class AndroidViewModelListAdapter(
 
     fun bindView(
         viewModel: ViewModel,
+        position: Int,
         view: View
     ): AndroidView<*> {
         val oldBoundView: AndroidView<*>? = boundViews[viewModel.getId()]
+        styleAdapter.applyViewStyle(view, position, getItems())
         return if (oldBoundView != null) {
             if (oldBoundView.getViewModel() != viewModel) {
                 unbindView(oldBoundView)
