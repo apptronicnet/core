@@ -5,7 +5,6 @@ import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 import net.apptronic.core.mvvm.viewmodel.adapter.BasicTransition
 import net.apptronic.core.mvvm.viewmodel.createViewModel
 import net.apptronic.test.commons_sample_app.convert.ConvertScreenViewModel
-import net.apptronic.test.commons_sample_app.debounce.createDebounceSampleViewModel
 import net.apptronic.test.commons_sample_app.lazylist.createLazyListItemViewModel
 import net.apptronic.test.commons_sample_app.lazylistfiltering.LazyListFilterViewModel
 import net.apptronic.test.commons_sample_app.list.ListContext
@@ -23,6 +22,7 @@ import net.apptronic.test.commons_sample_app.registration.RegistrationRouter
 import net.apptronic.test.commons_sample_app.registration.RegistrationViewModel
 import net.apptronic.test.commons_sample_app.registration.RegistrationViewModelContext
 import net.apptronic.test.commons_sample_app.stackloading.StackLoadingViewModel
+import net.apptronic.test.commons_sample_app.throttle.createThrottleSampleViewModel
 
 class ApplicationScreenViewModel(context: ViewModelContext) : ViewModel(context) {
 
@@ -73,9 +73,9 @@ class ApplicationScreenNavigationRouterImpl(
         )
     }
 
-    override fun openDebounceDemo() {
+    override fun openThrottleDemo() {
         parent.rootPage.add(
-            createDebounceSampleViewModel(parent),
+            createThrottleSampleViewModel(parent),
             BasicTransition.Forward
         )
     }

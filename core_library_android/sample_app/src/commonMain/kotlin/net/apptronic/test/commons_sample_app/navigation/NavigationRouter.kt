@@ -10,7 +10,7 @@ interface NavigationRouter {
 
     fun openPagerDemo()
 
-    fun openDebounceDemo()
+    fun openThrottleDemo()
 
     fun openLazyListDemo()
 

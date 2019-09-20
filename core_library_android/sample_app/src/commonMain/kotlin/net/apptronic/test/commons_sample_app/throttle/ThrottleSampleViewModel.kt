@@ -1,8 +1,8 @@
-package net.apptronic.test.commons_sample_app.debounce
+package net.apptronic.test.commons_sample_app.throttle
 
 import net.apptronic.core.base.concurrent.AtomicEntity
 import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.entity.behavior.debounce
+import net.apptronic.core.component.entity.behavior.throttle
 import net.apptronic.core.component.entity.entities.setTo
 import net.apptronic.core.component.entity.functions.map
 import net.apptronic.core.component.entity.functions.mapOr
@@ -11,11 +11,11 @@ import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 import net.apptronic.core.platform.pauseCurrentThread
 
-fun createDebounceSampleViewModel(parent: Context): DebounceSampleViewModel {
-    return DebounceSampleViewModel(ViewModelContext(parent))
+fun createThrottleSampleViewModel(parent: Context): ThrottleSampleViewModel {
+    return ThrottleSampleViewModel(ViewModelContext(parent))
 }
 
-class DebounceSampleViewModel(context: ViewModelContext) : ViewModel(context) {
+class ThrottleSampleViewModel(context: ViewModelContext) : ViewModel(context) {
 
     private val serialGenerator = AtomicEntity(1)
 
@@ -40,7 +40,7 @@ class DebounceSampleViewModel(context: ViewModelContext) : ViewModel(context) {
     val resultItem = resultItemIndex.map { it.toString() }
 
     init {
-        currentItemIndex.debounce { source ->
+        currentItemIndex.throttle { source ->
             source.onNext { processingItemIndex.set(Processing(it.index)) }
                 .map {
                     var remaining = 10

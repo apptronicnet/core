@@ -17,7 +17,7 @@ class NavigationScreenView : AndroidView<NavigationScreenViewModel>() {
             +(converterScreenDemo sendClicksTo viewModel::onClickConverterDemo)
             +(listScreenDemo sendClicksTo viewModel::onClickListDemo)
             +(pagesScreenDemo sendClicksTo viewModel::onClickPagerDemo)
-            +(debounceScreenDemo sendClicksTo viewModel::onClickDebounceDemo)
+            +(throttleScreenDemo sendClicksTo viewModel::onClickThrottleDemo)
             +(lazyListDemo sendClicksTo viewModel::onClickLazyListDemo)
             +(filterListDemo sendClicksTo viewModel::onClickListFilterDemo)
             +(stackLoadingDemo sendClicksTo viewModel::onClickStackLoadingDemo)

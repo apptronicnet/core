@@ -23,8 +23,8 @@ class NavigationScreenViewModel(context: ViewModelContext) : ViewModel(context) 
         router.openPagerDemo()
     }
 
-    fun onClickDebounceDemo() {
-        router.openDebounceDemo()
+    fun onClickThrottleDemo() {
+        router.openThrottleDemo()
     }
 
     fun onClickLazyListDemo() {

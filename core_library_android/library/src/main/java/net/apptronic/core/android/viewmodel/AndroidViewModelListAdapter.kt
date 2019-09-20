@@ -9,6 +9,8 @@ class AndroidViewModelListAdapter(
     private val androidViewFactory: AndroidViewFactory = AndroidViewFactory()
 ) : ViewModelListAdapter() {
 
+    private val boundViews = mutableMapOf<Long, AndroidView<*>>()
+
     fun bindings(setup: AndroidViewFactory.() -> Unit) {
         setup.invoke(androidViewFactory)
     }
@@ -31,9 +33,9 @@ class AndroidViewModelListAdapter(
 
     fun bindView(
         viewModel: ViewModel,
-        view: View,
-        oldBoundView: AndroidView<*>? = null
+        view: View
     ): AndroidView<*> {
+        val oldBoundView: AndroidView<*>? = boundViews[viewModel.getId()]
         return if (oldBoundView != null) {
             if (oldBoundView.getViewModel() != viewModel) {
                 unbindView(oldBoundView)
@@ -43,6 +45,8 @@ class AndroidViewModelListAdapter(
             }
         } else {
             performNewBinding(viewModel, view)
+        }.also {
+            boundViews[viewModel.getId()] = it
         }
     }
 
@@ -56,9 +60,13 @@ class AndroidViewModelListAdapter(
     }
 
     fun unbindView(androidView: AndroidView<*>) {
-        setFocused(androidView.getViewModel(), false)
-        setVisible(androidView.getViewModel(), false)
-        setBound(androidView.getViewModel(), false)
+        val viewModel = androidView.getViewModel()
+        if (boundViews.containsKey(viewModel.getId())) {
+            setFocused(androidView.getViewModel(), false)
+            setVisible(androidView.getViewModel(), false)
+            setBound(androidView.getViewModel(), false)
+            boundViews.remove(viewModel.getId())
+        }
     }
 
 }
