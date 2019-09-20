@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
+import net.apptronic.core.debugError
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 
 abstract class AndroidView<T : ViewModel> : BindingContainer {
@@ -61,10 +62,10 @@ abstract class AndroidView<T : ViewModel> : BindingContainer {
 
     fun bindView(view: View, viewModel: ViewModel) {
         if (viewModel.boundView != null) {
-            throw Error("$viewModel already have bound view!!!")
+            debugError(Error("$viewModel already have bound view!!!"))
         }
         if (!viewModel.isStateBound()) {
-            throw Error("$viewModel in stage ${viewModel.getLifecycle().getActiveStage()?.getStageName()}")
+            debugError(Error("$viewModel in stage ${viewModel.getLifecycle().getActiveStage()?.getStageName()}"))
         }
         val stateKey = "view_state_${viewModel.getId()}"
         this.view = view
