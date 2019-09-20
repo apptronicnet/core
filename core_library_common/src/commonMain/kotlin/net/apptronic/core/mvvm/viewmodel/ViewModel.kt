@@ -48,6 +48,11 @@ open class ViewModel : Component {
         }
     }
 
+    /**
+     * Platform-specific instance of object which responsible for view binding. Do not touch, it is used for debugging.
+     */
+    var boundView: Any? = null
+
     private val isCreated = stateOfStage(ViewModelLifecycle.STAGE_CREATED)
     private val isBound = stateOfStage(ViewModelLifecycle.STAGE_BOUND)
     private val isVisible = stateOfStage(ViewModelLifecycle.STAGE_VISIBLE)
@@ -61,7 +66,7 @@ open class ViewModel : Component {
         }
     }
 
-    fun getSavesState(): SavedState? {
+    fun getSavedState(): SavedState? {
         return savedState
     }
 
@@ -99,8 +104,8 @@ open class ViewModel : Component {
     }
 
     fun <T, Id, VM : ViewModel> listNavigator(
-        source: Entity<out List<T>>,
-        builder: ViewModelBuilder<T, Id, VM>
+            source: Entity<out List<T>>,
+            builder: ViewModelBuilder<T, Id, VM>
     ): ListNavigator {
         val listBuilder = listBuilder(builder)
         listBuilder.updateFrom(source)
@@ -108,14 +113,14 @@ open class ViewModel : Component {
     }
 
     fun <T : Any, Id, VM : ViewModel> listRecyclerNavigator(
-        builder: ViewModelBuilder<T, Id, VM>
+            builder: ViewModelBuilder<T, Id, VM>
     ): ListRecyclerNavigator<T, Id, VM> {
         return ListRecyclerNavigator(this, builder)
     }
 
     fun <T : Any, Id, VM : ViewModel> listRecyclerNavigator(
-        source: Entity<List<T>>,
-        builder: ViewModelBuilder<T, Id, VM>
+            source: Entity<List<T>>,
+            builder: ViewModelBuilder<T, Id, VM>
     ): ListRecyclerNavigator<T, Id, VM> {
         val navigator = listRecyclerNavigator(builder)
         source.subscribe {

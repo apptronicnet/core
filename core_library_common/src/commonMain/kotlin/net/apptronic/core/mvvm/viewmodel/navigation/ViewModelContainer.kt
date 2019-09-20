@@ -6,10 +6,12 @@ import net.apptronic.core.base.observable.Observable
 import net.apptronic.core.base.observable.subscribe
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.entities.Value
+import net.apptronic.core.component.entity.entities.distinctUntilChanged
 import net.apptronic.core.component.entity.functions.and
 import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.component.lifecycle.enterStage
 import net.apptronic.core.component.lifecycle.exitStage
+import net.apptronic.core.debugError
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelLifecycle
 
@@ -21,20 +23,20 @@ internal class ViewModelContainer(
 
     private val subscriptionHolders = SubscriptionHolders()
 
-    private val createdLocal = Value<Boolean>(viewModel).apply { set(false) }
-    private val boundLocal = Value<Boolean>(viewModel).apply { set(false) }
-    private val visibleLocal = Value<Boolean>(viewModel).apply { set(false) }
-    private val focusedLocal = Value<Boolean>(viewModel).apply { set(false) }
+    private val createdLocal = viewModel.value(false)
+    private val boundLocal = viewModel.value(false)
+    private val visibleLocal = viewModel.value(false)
+    private val focusedLocal = viewModel.value(false)
 
     private val createdParent = from(parent.observeCreated())
     private val boundParent = from(parent.observeBound())
     private val visibleParent = from(parent.observeVisible())
     private val focusedParent = from(parent.observeFocused())
 
-    private val isCreated = createdLocal and createdParent
-    private val isBound = boundLocal and boundParent
-    private val isVisible = visibleLocal and visibleParent
-    private val isFocused = focusedLocal and focusedParent
+    private val isCreated = (createdLocal and createdParent).distinctUntilChanged()
+    private val isBound = (isCreated and boundLocal and boundParent).distinctUntilChanged()
+    private val isVisible = (isBound and visibleLocal and visibleParent).distinctUntilChanged()
+    private val isFocused = (isVisible and focusedLocal and focusedParent).distinctUntilChanged()
     private var shouldShowValue = true
 
     private fun from(parent: Observable<Boolean>): Entity<Boolean> {
@@ -46,18 +48,39 @@ internal class ViewModelContainer(
     }
 
     fun setCreated(value: Boolean) {
+        if (value == createdLocal.get()) {
+            debugError(Error("$viewModel is already created=$value"))
+        }
         createdLocal.set(value)
     }
 
     fun setBound(value: Boolean) {
+        if (createdLocal.get().not()) {
+            debugError(Error("$viewModel is not created"))
+        }
+        if (value == boundLocal.get()) {
+            debugError(Error("$viewModel is already bound=$value"))
+        }
         boundLocal.set(value)
     }
 
     fun setVisible(value: Boolean) {
+        if (createdLocal.get().not()) {
+            debugError(Error("$viewModel is not bound"))
+        }
+        if (value == visibleLocal.get()) {
+            debugError(Error("$viewModel is already visible=$value"))
+        }
         visibleLocal.set(value)
     }
 
     fun setFocused(value: Boolean) {
+        if (createdLocal.get().not()) {
+            debugError(Error("$viewModel is not visible"))
+        }
+        if (value == focusedLocal.get()) {
+            debugError(Error("$viewModel is already focused=$value"))
+        }
         focusedLocal.set(value)
     }
 
@@ -68,6 +91,11 @@ internal class ViewModelContainer(
     }
 
     init {
+        viewModel.doOnVisible {
+            if (viewModel.boundView == null) {
+                debugError(Error("$viewModel have no bound view"))
+            }
+        }
         bindStage(viewModel, ViewModelLifecycle.STAGE_CREATED, isCreated)
         bindStage(viewModel, ViewModelLifecycle.STAGE_BOUND, isBound)
         bindStage(viewModel, ViewModelLifecycle.STAGE_VISIBLE, isVisible)
@@ -81,7 +109,7 @@ internal class ViewModelContainer(
     }
 
     private fun bindStage(viewModel: ViewModel, stageName: String, entity: Entity<Boolean>) {
-        entity.subscribe {
+        entity.distinctUntilChanged().subscribe {
             if (it) {
                 enterStage(viewModel, stageName)
             } else {

@@ -153,9 +153,7 @@ class StackNavigator(
         currentAdapter?.apply {
             val oldItem = activeItem
             if (oldItem != null) {
-                oldItem.setFocused(false)
-                oldItem.setVisible(false)
-                oldItem.setBound(false)
+                onUnbind(oldItem)
             }
             newItem?.setBound(true)
             adapter.onInvalidate(
@@ -166,9 +164,6 @@ class StackNavigator(
             if (newItem != null) {
                 newItem.setVisible(true)
                 newItem.setFocused(true)
-            }
-            if (oldItem != null) {
-                onUnbind(oldItem)
             }
             activeItem = newItem
         }

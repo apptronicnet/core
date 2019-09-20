@@ -28,14 +28,20 @@ dependencies {
 
     implementation "net.apptronic.core:core-commons:${rootProject.ext.library_core_version}"
 
-    compileOnly "androidx.core:core:1.0.2"
-    compileOnly "androidx.appcompat:appcompat:1.0.2"
+    compileOnly "androidx.core:core:1.1.0"
+    compileOnly "androidx.appcompat:appcompat:1.1.0"
     compileOnly "com.google.android.material:material:1.0.0"
+}
+
+task sourceJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier "sources"
 }
 
 publishing {
     publications {
         bar(MavenPublication) {
+            artifact(sourceJar)
             artifact("build/outputs/aar/library-debug.aar")
             groupId = "net.apptronic.core"
             artifactId = "core-android"

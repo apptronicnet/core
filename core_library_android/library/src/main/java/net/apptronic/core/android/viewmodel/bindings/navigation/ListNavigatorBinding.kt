@@ -6,25 +6,29 @@ import net.apptronic.core.android.viewmodel.AndroidViewFactory
 import net.apptronic.core.android.viewmodel.AndroidViewModelListAdapter
 import net.apptronic.core.android.viewmodel.Binding
 import net.apptronic.core.android.viewmodel.listadapters.RecyclerViewAdapter
+import net.apptronic.core.android.viewmodel.style.list.ListItemStyleAdapter
+import net.apptronic.core.android.viewmodel.style.list.emptyStyleAdapter
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.navigation.BaseListNavigator
 
 fun listNavigatorBinding(
     recyclerView: RecyclerView,
     navigator: BaseListNavigator<*>,
-    factory: AndroidViewFactory
+    factory: AndroidViewFactory,
+    styleAdapter: ListItemStyleAdapter = emptyStyleAdapter()
 ): ListNavigatorBinding {
-    return ListNavigatorBinding(recyclerView, navigator, factory)
+    return ListNavigatorBinding(recyclerView, navigator, factory, styleAdapter)
 }
 
 class ListNavigatorBinding(
     private val recyclerView: RecyclerView,
     private val navigator: BaseListNavigator<*>,
-    private val factory: AndroidViewFactory
+    private val factory: AndroidViewFactory,
+    private val styleAdapter: ListItemStyleAdapter
 ) : Binding() {
 
     override fun onBind(viewModel: ViewModel, androidView: AndroidView<*>) {
-        val viewModelAdapter = AndroidViewModelListAdapter(factory)
+        val viewModelAdapter = AndroidViewModelListAdapter(factory, styleAdapter)
         recyclerView.adapter = RecyclerViewAdapter(viewModelAdapter)
         navigator.setAdapter(viewModelAdapter)
     }

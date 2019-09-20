@@ -2,8 +2,8 @@ buildscript {
 
     ext.kotlin_version = "1.3.50"
     ext.junit_version = "4.12"
-    ext.library_core_version = "0.1.5-38"
-    ext.library_android_version = "0.1.5-39"
+    ext.library_core_version = "0.1.6-0"
+    ext.library_android_version = "0.1.6-0"
 
     repositories {
         google()
@@ -45,6 +45,7 @@ task clean(type: Delete) {
 
 task bundleLibrary(dependsOn: [
         ':library:bundleDebugAar',
+        ':library:sourceJar',
 ])
 
 task publishLibrary(dependsOn: [
@@ -56,13 +57,17 @@ task publishLibraryToMavenLocal(dependsOn: [
 ])
 
 task publishLibToMavenApptronicNet() {
+    dependsOn 'clean'
     dependsOn 'bundleLibrary'
     dependsOn 'publishLibrary'
+    tasks.findByName('bundleLibrary').mustRunAfter 'clean'
     tasks.findByName('publishLibrary').mustRunAfter 'bundleLibrary'
 }
 
 task publishLibToMavenLocal() {
+    dependsOn 'clean'
     dependsOn 'bundleLibrary'
     dependsOn 'publishLibraryToMavenLocal'
+    tasks.findByName('bundleLibrary').mustRunAfter 'clean'
     tasks.findByName('publishLibraryToMavenLocal').mustRunAfter 'bundleLibrary'
 }

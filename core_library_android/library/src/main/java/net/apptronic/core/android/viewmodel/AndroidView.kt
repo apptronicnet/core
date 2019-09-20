@@ -60,17 +60,24 @@ abstract class AndroidView<T : ViewModel> : BindingContainer {
     }
 
     fun bindView(view: View, viewModel: ViewModel) {
+        if (viewModel.boundView != null) {
+            throw Error("$viewModel already have bound view!!!")
+        }
+        if (!viewModel.isStateBound()) {
+            throw Error("$viewModel in stage ${viewModel.getLifecycle().getActiveStage()?.getStageName()}")
+        }
         val stateKey = "view_state_${viewModel.getId()}"
         this.view = view
         this.viewModel = viewModel
         bindings = Bindings(viewModel, this)
         onBindView(view, viewModel as T)
-        viewModel.getSavesState()?.let {
+        viewModel.getSavedState()?.let {
             val hierarchyState = it.get<SparseArray<Parcelable>>(stateKey)
             if (hierarchyState != null) {
                 view.restoreHierarchyState(hierarchyState)
             }
         }
+        viewModel.boundView = this
         viewModel.doOnUnbind {
             val hierarchyState = SparseArray<Parcelable>()
             view.saveHierarchyState(hierarchyState)
@@ -78,6 +85,7 @@ abstract class AndroidView<T : ViewModel> : BindingContainer {
                 it.put(stateKey, hierarchyState)
             }
             bindings.unbind()
+            viewModel.boundView = null
         }
     }
 

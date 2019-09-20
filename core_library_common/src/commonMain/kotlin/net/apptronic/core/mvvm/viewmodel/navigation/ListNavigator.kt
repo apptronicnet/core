@@ -99,7 +99,7 @@ class ListNavigator(
 
     fun update(action: (MutableList<ViewModel>) -> Unit) {
         uiWorker.execute {
-            val list = items.toMutableList()
+            val list = items.toTypedArray().toMutableList()
             action.invoke(list)
             set(list)
         }
@@ -111,7 +111,7 @@ class ListNavigator(
             diff.removed.forEach {
                 onRemoved(it)
             }
-            items = value
+            items = value.toTypedArray().toList()
             diff.added.forEach {
                 onAdded(it)
             }
@@ -148,30 +148,36 @@ class ListNavigator(
         adapter.setNavigator(itemStateNavigator)
         parent.getLifecycle().onExitFromActiveStage {
             items.forEach {
-                itemStateNavigator.setBound(it, false)
+                if (boundIds.contains(it.getId())) {
+                    itemStateNavigator.setFocused(it, false)
+                    itemStateNavigator.setVisible(it, false)
+                    itemStateNavigator.setBound(it, false)
+                }
             }
+            boundIds.clear()
             adapter.setNavigator(null)
         }
     }
 
+    private val boundIds = mutableSetOf<Long>()
+
     private inner class ItemStateNavigatorImpl : ItemStateNavigator {
 
         override fun setBound(viewModel: ViewModel, isBound: Boolean) {
-            uiWorker.execute {
-                viewModel.getContainer()?.setBound(isBound)
+            viewModel.getContainer()?.setBound(isBound)
+            if (isBound) {
+                boundIds.add(viewModel.getId())
+            } else {
+                boundIds.remove(viewModel.getId())
             }
         }
 
         override fun setVisible(viewModel: ViewModel, isBound: Boolean) {
-            uiWorker.execute {
-                viewModel.getContainer()?.setVisible(isBound)
-            }
+            viewModel.getContainer()?.setVisible(isBound)
         }
 
         override fun setFocused(viewModel: ViewModel, isBound: Boolean) {
-            uiWorker.execute {
-                viewModel.getContainer()?.setFocused(isBound)
-            }
+            viewModel.getContainer()?.setFocused(isBound)
         }
 
     }

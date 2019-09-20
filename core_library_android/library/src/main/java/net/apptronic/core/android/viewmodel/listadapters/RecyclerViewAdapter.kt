@@ -45,10 +45,11 @@ class RecyclerViewAdapter(
 
     override fun onViewRecycled(holder: ViewModelHolder) {
         super.onViewRecycled(holder)
-        holder.androidView?.let {
-            viewModelAdapter.unbindView(it)
+        val androidView = holder.androidView
+        if (androidView != null) {
+            viewModelAdapter.unbindView(androidView)
+            holder.androidView = null
         }
-        holder.androidView = null
     }
 
     inner class ViewModelHolder(view: View) : RecyclerView.ViewHolder(view) {

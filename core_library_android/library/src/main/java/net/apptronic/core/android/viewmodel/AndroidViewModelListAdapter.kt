@@ -67,9 +67,9 @@ class AndroidViewModelListAdapter(
     fun unbindView(androidView: AndroidView<*>) {
         val viewModel = androidView.getViewModel()
         if (boundViews.containsKey(viewModel.getId())) {
-            setFocused(androidView.getViewModel(), false)
-            setVisible(androidView.getViewModel(), false)
-            setBound(androidView.getViewModel(), false)
+            setFocused(viewModel, false)
+            setVisible(viewModel, false)
+            setBound(viewModel, false)
             boundViews.remove(viewModel.getId())
         }
     }
