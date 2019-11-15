@@ -41,6 +41,9 @@ class DependencyProvider(
         }
         val key = objectKey(clazz)
         externalInstances[key] = ValueHolder(instance)
+        context.getLifecycle().onExitFromActiveStage {
+            externalInstances.remove(key)
+        }
     }
 
     /**
