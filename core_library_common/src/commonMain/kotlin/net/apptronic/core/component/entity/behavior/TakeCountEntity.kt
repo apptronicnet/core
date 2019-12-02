@@ -18,8 +18,8 @@ fun <T> Entity<T>.takeOne(): Entity<T> {
 }
 
 private class TakeCountEntity<T>(
-    val source: Entity<T>,
-    val count: Int
+        val source: Entity<T>,
+        val count: Int
 ) : Entity<T> {
 
     override fun getContext(): Context {
@@ -34,13 +34,13 @@ private class TakeCountEntity<T>(
     }
 
     private class CountObserver<T>(
-        val max: Int,
-        val target: Observer<T>
+            val max: Int,
+            val target: Observer<T>
     ) : Observer<T> {
         private var count = 0
         var subscription: EntitySubscription? = null
             set(value) {
-                if (max >= count) {
+                if (count >= max) {
                     value?.unsubscribe()
                 } else {
                     field = value
@@ -48,10 +48,11 @@ private class TakeCountEntity<T>(
             }
 
         override fun notify(value: T) {
-            if (max < count) {
+            if (count < max) {
                 count++
                 target.notify(value)
-            } else {
+            }
+            if (count >= max) {
                 subscription?.unsubscribe()
             }
         }
