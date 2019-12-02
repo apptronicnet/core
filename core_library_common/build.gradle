@@ -1,7 +1,7 @@
 buildscript {
-    ext.kotlin_version = "1.3.50"
+    ext.kotlin_version = "1.3.61"
     ext.junit_version = "4.12"
-    ext.library_core_version = "0.1.6-2"
+    ext.library_core_version = "0.1.7.0"
     repositories {
         google()
         gradlePluginPortal()
@@ -38,7 +38,7 @@ kotlin {
     iosX64("ios") {
         binaries {
             framework {
-                freeCompilerArgs.add("-Xobjc-generics")
+//                freeCompilerArgs.add("-Xobjc-generics")
                 compilations.main {}
             }
         }
