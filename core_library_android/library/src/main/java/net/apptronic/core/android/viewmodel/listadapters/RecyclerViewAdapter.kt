@@ -8,7 +8,8 @@ import net.apptronic.core.android.viewmodel.AndroidViewModelListAdapter
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 
 class RecyclerViewAdapter(
-    private val viewModelAdapter: AndroidViewModelListAdapter
+    private val viewModelAdapter: AndroidViewModelListAdapter,
+    private val bindingStrategy: BindingStrategy
 ) : RecyclerView.Adapter<RecyclerViewAdapter.ViewModelHolder>() {
 
     init {
@@ -40,11 +41,20 @@ class RecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: ViewModelHolder, position: Int) {
         val viewModel = viewModelAdapter.getItemAt(position)
+        if (bindingStrategy == BindingStrategy.UntilReused) {
+            unbindViewHolder(holder)
+        }
         holder.androidView = viewModelAdapter.bindView(viewModel, position, holder.itemView)
     }
 
     override fun onViewRecycled(holder: ViewModelHolder) {
         super.onViewRecycled(holder)
+        if (bindingStrategy == BindingStrategy.MatchRecycle) {
+            unbindViewHolder(holder)
+        }
+    }
+
+    private fun unbindViewHolder(holder: ViewModelHolder) {
         val androidView = holder.androidView
         if (androidView != null) {
             viewModelAdapter.unbindView(androidView)
