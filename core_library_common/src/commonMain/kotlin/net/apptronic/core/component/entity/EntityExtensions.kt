@@ -11,15 +11,11 @@ fun <T> Observable<T>.bindContext(context: Context): Entity<T> {
 }
 
 private class EntityObservableWrapper<T>(
-        private val context: Context,
+        override val context: Context,
         private val observable: Observable<T>
 ) : Entity<T> {
 
     private val subscriptionFactory = ContextSubscriptionFactory<T>(context)
-
-    override fun getContext(): Context {
-        return context
-    }
 
     override fun subscribe(context: Context, observer: Observer<T>): EntitySubscription {
         return subscriptionFactory.using(context).subscribe(observer, observable)

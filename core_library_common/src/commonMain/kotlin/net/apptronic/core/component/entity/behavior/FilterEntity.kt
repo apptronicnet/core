@@ -26,9 +26,7 @@ private class FilterEntity<T>(
         private val filterFunction: (T) -> Boolean
 ) : Entity<T> {
 
-    override fun getContext(): Context {
-        return target.getContext()
-    }
+    override val context: Context = target.context
 
     override fun subscribe(observer: Observer<T>): EntitySubscription {
         return target.subscribe { value ->

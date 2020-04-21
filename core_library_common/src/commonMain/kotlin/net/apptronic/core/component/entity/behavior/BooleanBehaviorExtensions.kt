@@ -74,7 +74,7 @@ fun <E> Entity<Boolean>.selectIf(ifTrue: E, ifFalse: Entity<E>): Entity<E> {
  * and emits true when source [Entity] emitted any value.
  */
 fun <T> Entity<T>.whenAnyValue(): Entity<Boolean> {
-    return Value<Boolean>(getContext()).also {
+    return Value<Boolean>(context).also {
         it.set(false)
         it.setAs(anyValue())
     }
@@ -86,7 +86,7 @@ fun <T> Entity<T>.whenAnyValue(): Entity<Boolean> {
  * and emits true when [filterFunction] returned true for [Entity] value.
  */
 fun <T> Entity<T>.whenAny(filterFunction: (T) -> Boolean): Entity<Boolean> {
-    return Value<Boolean>(getContext()).also {
+    return Value<Boolean>(context).also {
         it.set(false)
         it.setAs(filter(filterFunction).anyValue())
     }

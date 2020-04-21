@@ -20,11 +20,13 @@ private class WhenNotNullTransformationEntity<Source, Result>(
     transformation: (Entity<Source>) -> Entity<Result>
 ) : Entity<Result?> {
 
+    override val context: Context = source.context
+
     private val sourceSubject = BehaviorSubject<Source>()
-    private val resultSubject = ContextSubjectWrapper(getContext(), BehaviorSubject<Result?>())
+    private val resultSubject = ContextSubjectWrapper(context, BehaviorSubject<Result?>())
 
     init {
-        transformation.invoke(sourceSubject.bindContext(source.getContext())).subscribe {
+        transformation.invoke(sourceSubject.bindContext(context)).subscribe {
             resultSubject.update(it)
         }
         source.subscribe {
@@ -34,10 +36,6 @@ private class WhenNotNullTransformationEntity<Source, Result>(
                 resultSubject.update(null)
             }
         }
-    }
-
-    override fun getContext(): Context {
-        return source.getContext()
     }
 
     override fun subscribe(context: Context, observer: Observer<Result?>): EntitySubscription {

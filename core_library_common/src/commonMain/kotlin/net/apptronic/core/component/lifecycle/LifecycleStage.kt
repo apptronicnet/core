@@ -1,8 +1,19 @@
 package net.apptronic.core.component.lifecycle
 
+import kotlinx.coroutines.CoroutineScope
 import net.apptronic.core.component.entity.EntitySubscription
 
 interface LifecycleStage {
+
+    fun coroutineScope(): CoroutineScope
+
+    /**
+     * Launch coroutine in [CoroutineScope], bound to active state of this stage. Coroutine will not be launched
+     * if stage is not entered and automatically will be cancelled on stage exit. In case of stage exit cancellation
+     * exception is handled internally inside [LifecycleStage]. To handle it manually use [coroutineScope] method
+     * to get instance of scope and launch coroutine manually.
+     */
+    fun launchCoroutine(block: suspend CoroutineScope.() -> Unit)
 
     fun doOnce(action: () -> Unit)
 

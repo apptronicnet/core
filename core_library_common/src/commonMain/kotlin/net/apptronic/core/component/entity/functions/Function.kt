@@ -1,5 +1,6 @@
 package net.apptronic.core.component.entity.functions
 
+import kotlinx.coroutines.CoroutineDispatcher
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.base.observable.subject.BehaviorSubject
 import net.apptronic.core.base.observable.subject.ValueHolder
@@ -10,15 +11,12 @@ import net.apptronic.core.component.entity.EntitySubscription
 import net.apptronic.core.component.entity.EntityValue
 import net.apptronic.core.component.entity.collectContext
 import net.apptronic.core.component.entity.subscriptions.ContextSubscriptionFactory
-import net.apptronic.core.threading.Worker
-import net.apptronic.core.threading.WorkerDefinition
 
 abstract class Function<T> : EntityValue<T> {
 
     private val subject = BehaviorSubject<T>()
     private val observable = subject
-    protected abstract val functionContext: Context
-    protected abstract var worker: Worker
+    protected var coroutineDispatcher: CoroutineDispatcher? = null
     protected abstract val subscriptions: ContextSubscriptionFactory<T>
 
     override fun getValueHolder(): ValueHolder<T>? {
@@ -38,13 +36,15 @@ abstract class Function<T> : EntityValue<T> {
      * if worker is not set  function calculation and update will be called synchronously
      * by source value.
      */
-    fun usingWorker(workerDefinition: WorkerDefinition): Function<T> {
-        worker = getContext().getScheduler().getWorker(workerDefinition)
+    fun withDispatcher(coroutineDispatcher: CoroutineDispatcher): Function<T> {
+        this.coroutineDispatcher = coroutineDispatcher
         return this
     }
 
-    override fun getContext(): Context {
-        return functionContext
+    @Deprecated("Should use coroutines")
+    fun usingWorker(coroutineDispatcher: CoroutineDispatcher): Function<T> {
+        this.coroutineDispatcher = coroutineDispatcher
+        return this
     }
 
 }
@@ -112,10 +112,9 @@ private class SingleFunction<T, X>(
     private val method: (X) -> T
 ) : Function<T>() {
 
+    override val context = sourceEntity.context
     private var sourceSubject = BehaviorSubject<X>()
-    override val functionContext = sourceEntity.getContext()
-    override var worker = functionContext.getScheduler().getWorker(WorkerDefinition.SYNCHRONOUS)
-    override val subscriptions: ContextSubscriptionFactory<T> = ContextSubscriptionFactory(functionContext)
+    override val subscriptions: ContextSubscriptionFactory<T> = ContextSubscriptionFactory(context)
 
     init {
         sourceEntity.subscribe {
@@ -142,11 +141,10 @@ private class DoubleFunction<T, A, B>(
     private val method: (A, B) -> T
 ) : Function<T>() {
 
+    override val context = collectContext(left, right)
     private var leftValue = BehaviorSubject<A>()
     private var rightValue = BehaviorSubject<B>()
-    override val functionContext = collectContext(left, right)
-    override var worker = functionContext.getScheduler().getWorker(WorkerDefinition.SYNCHRONOUS)
-    override val subscriptions: ContextSubscriptionFactory<T> = ContextSubscriptionFactory(functionContext)
+    override val subscriptions: ContextSubscriptionFactory<T> = ContextSubscriptionFactory(context)
 
     init {
         left.subscribe {
@@ -175,11 +173,10 @@ private class ArrayFunction<T>(
     private val method: (Array<Any?>) -> T
 ) : Function<T>() {
 
-    override val functionContext = collectContext(*sources)
-    override var worker = functionContext.getScheduler().getWorker(WorkerDefinition.SYNCHRONOUS)
-    override val subscriptions: ContextSubscriptionFactory<T> = ContextSubscriptionFactory(functionContext)
+    override val context = collectContext(*sources)
+    override val subscriptions: ContextSubscriptionFactory<T> = ContextSubscriptionFactory(context)
     private val sourceValues: List<BehaviorSubject<Any?>> =
-        sources.map { BehaviorSubject<Any?>() }
+            sources.map { BehaviorSubject<Any?>() }
 
     init {
         sourceValues.forEachIndexed { index, subject ->

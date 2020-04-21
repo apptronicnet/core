@@ -5,7 +5,6 @@ import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.EntitySubscription
 import net.apptronic.core.component.entity.subscribe
-import net.apptronic.core.platform.pauseCurrentThread
 
 fun <T> Entity<T>.suspendOn(timeInMillis: Long): Entity<T> {
     return SuspendEntity(this) { timeInMillis }
@@ -20,17 +19,18 @@ private class SuspendEntity<T>(
         private val timeInMillisProvider: (T) -> Long
 ) : Entity<T> {
 
-    override fun getContext(): Context {
-        return source.getContext()
-    }
+    override val context: Context = source.context
 
     override fun subscribe(context: Context, observer: Observer<T>): EntitySubscription {
+        val activeStage = context.getLifecycle().getActiveStage()
         return source.subscribe(context) {
-            val timeInMillis = timeInMillisProvider.invoke(it)
-            if (timeInMillis > 0L) {
-                pauseCurrentThread(timeInMillis)
+            activeStage?.launchCoroutine {
+                val timeInMillis = timeInMillisProvider.invoke(it)
+                if (timeInMillis > 0L) {
+                    kotlinx.coroutines.delay(timeInMillis)
+                }
+                observer.notify(it)
             }
-            observer.notify(it)
         }
     }
 

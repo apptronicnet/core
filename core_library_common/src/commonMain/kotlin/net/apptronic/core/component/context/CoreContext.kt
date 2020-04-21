@@ -1,5 +1,7 @@
 package net.apptronic.core.component.context
 
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import net.apptronic.core.base.concurrent.requireNeverFrozen
 import net.apptronic.core.component.di.DependencyProvider
 import net.apptronic.core.component.lifecycle.Lifecycle
@@ -7,8 +9,11 @@ import net.apptronic.core.threading.Scheduler
 import net.apptronic.core.threading.createCoreScheduler
 
 open class CoreContext(
-        private val lifecycle: Lifecycle = Lifecycle()
+        private val lifecycle: Lifecycle = Lifecycle(),
+        coroutineDispatcher: CoroutineDispatcher = Dispatchers.Main
 ) : Context {
+
+    override val defaultDispatcher: CoroutineDispatcher = coroutineDispatcher
 
     init {
         requireNeverFrozen()

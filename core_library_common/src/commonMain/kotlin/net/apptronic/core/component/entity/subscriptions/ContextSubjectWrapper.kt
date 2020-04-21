@@ -8,7 +8,7 @@ import net.apptronic.core.component.entity.EntitySubscription
 import net.apptronic.core.component.entity.UpdateEntity
 
 class ContextSubjectWrapper<T, E : Subject<T>>(
-        private val context: Context,
+        override val context: Context,
         val wrapped: E
 ) : UpdateEntity<T> {
 
@@ -17,10 +17,6 @@ class ContextSubjectWrapper<T, E : Subject<T>>(
     }
 
     private val subscriptions = ContextSubscriptionFactory<T>(context)
-
-    override fun getContext(): Context {
-        return context
-    }
 
     override fun update(value: T) {
         wrapped.update(value)

@@ -11,17 +11,13 @@ import net.apptronic.core.component.entity.subscriptions.ContextSubscriptionFact
  * Entity with constant value
  */
 class ConstantEntity<T>(
-        private val context: Context,
+        override val context: Context,
         private val value: T
 ) : EntityValue<T> {
 
     private val subscriptionFactory = ContextSubscriptionFactory<T>(context)
 
     private val valueHolder = ValueHolder(value)
-
-    override fun getContext(): Context {
-        return context
-    }
 
     override fun getValueHolder(): ValueHolder<T>? {
         return valueHolder

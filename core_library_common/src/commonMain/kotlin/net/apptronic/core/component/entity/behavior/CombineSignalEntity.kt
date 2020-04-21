@@ -16,7 +16,7 @@ fun Context.combineAsSignals(vararg sources: Entity<*>): Entity<Unit> {
 }
 
 private class CombineSignalEntity(
-        private val context: Context,
+        override val context: Context,
         private val sources: Array<out Entity<*>>
 ) : Entity<Unit> {
 
@@ -28,10 +28,6 @@ private class CombineSignalEntity(
                 subject.update(Unit)
             }
         }
-    }
-
-    override fun getContext(): Context {
-        return context
     }
 
     override fun subscribe(context: Context, observer: Observer<Unit>): EntitySubscription {

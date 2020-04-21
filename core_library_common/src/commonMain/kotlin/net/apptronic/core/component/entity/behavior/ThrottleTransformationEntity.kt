@@ -38,6 +38,8 @@ private class ThrottleTransformationEntity<Source, Result>(
         private val throttledTransformation: (Entity<Source>) -> Entity<Result>
 ) : Entity<Result> {
 
+    override val context: Context = sourceEntity.context
+
     private val sourceObservable = BehaviorSubject<Source>()
     private val resultObservable = BehaviorSubject<Result>()
 
@@ -51,8 +53,8 @@ private class ThrottleTransformationEntity<Source, Result>(
             }
             takeNext()
         }
-        val sourceEntity = sourceObservable.bindContext(sourceEntity.getContext())
-            .switchWorker(transformWorkerDefinition)
+        val sourceEntity = sourceObservable.bindContext(context)
+                .switchWorker(transformWorkerDefinition)
         throttledTransformation.invoke(sourceEntity).subscribe { nextResult ->
             resultObservable.update(nextResult)
             awaitingValue.perform {
@@ -73,14 +75,10 @@ private class ThrottleTransformationEntity<Source, Result>(
         }
     }
 
-    override fun getContext(): Context {
-        return sourceEntity.getContext()
-    }
-
     override fun subscribe(observer: Observer<Result>): EntitySubscription {
-        return resultObservable.bindContext(sourceEntity.getContext())
-            .switchWorker(subscribeWorkerDefinition)
-            .subscribe(observer)
+        return resultObservable.bindContext(context)
+                .switchWorker(subscribeWorkerDefinition)
+                .subscribe(observer)
     }
 
     override fun subscribe(context: Context, observer: Observer<Result>): EntitySubscription {

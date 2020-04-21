@@ -9,26 +9,26 @@ import net.apptronic.core.threading.Action
 import net.apptronic.core.threading.Worker
 import net.apptronic.core.threading.WorkerDefinition
 
+@Deprecated("Should use coroutines")
 fun <T> Entity<T>.switchWorker(worker: Worker): Entity<T> {
     return WorkerSwitchEntity(this, worker)
 }
 
+@Deprecated("Should use coroutines")
 fun <T> Entity<T>.switchWorker(
         workerDefinition: WorkerDefinition
 ): Entity<T> {
-    val worker = getContext().getScheduler().getWorker(workerDefinition)
+    val worker = context.getScheduler().getWorker(workerDefinition)
     return WorkerSwitchEntity(this, worker)
 }
 
-
+@Deprecated("Should use coroutines")
 private class WorkerSwitchEntity<T>(
         private val target: Entity<T>,
         private val worker: Worker
 ) : Entity<T> {
 
-    override fun getContext(): Context {
-        return target.getContext()
-    }
+    override val context: Context = target.context
 
     override fun subscribe(context: Context, observer: Observer<T>): EntitySubscription {
         return target.subscribe(context) { value ->

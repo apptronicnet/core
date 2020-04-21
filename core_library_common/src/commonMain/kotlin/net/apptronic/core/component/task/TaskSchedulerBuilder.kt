@@ -47,9 +47,9 @@ internal fun <T> taskSchedulerBuilder(
 }
 
 private class TaskSchedulerBuilder<T>(
-    private val context: Context,
-    private val mode: SchedulerMode,
-    builder: TaskBuilder<T>.() -> Unit
+        override val context: Context,
+        private val mode: SchedulerMode,
+        builder: TaskBuilder<T>.() -> Unit
 ) : TaskScheduler<T>,
     TaskBuilder<T> {
 
@@ -93,10 +93,6 @@ private class TaskSchedulerBuilder<T>(
 
     override fun update(value: T) {
         execute(value)
-    }
-
-    override fun getContext(): Context {
-        return context
     }
 
     override fun subscribe(context: Context, observer: Observer<T>): EntitySubscription {

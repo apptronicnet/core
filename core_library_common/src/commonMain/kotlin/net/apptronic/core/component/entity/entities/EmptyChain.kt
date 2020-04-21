@@ -7,14 +7,10 @@ import net.apptronic.core.component.entity.EntitySubscription
 import net.apptronic.core.component.entity.subscriptions.ContextSubscriptionFactory
 
 class EmptyChain(
-        private val context: Context
+        override val context: Context
 ) : Entity<Unit> {
 
     private val subscriptionFactory = ContextSubscriptionFactory<Unit>(context)
-
-    override fun getContext(): Context {
-        return context
-    }
 
     override fun subscribe(context: Context, observer: Observer<Unit>): EntitySubscription {
         observer.notify(Unit)

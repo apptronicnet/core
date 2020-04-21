@@ -2,6 +2,7 @@ package net.apptronic.core.threading
 
 import net.apptronic.core.component.context.Context
 
+@Deprecated("Should use coroutines")
 class ContextScheduler(
         private val context: Context,
         private val parent: Scheduler? = null

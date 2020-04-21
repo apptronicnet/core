@@ -35,9 +35,7 @@ private class DebounceEntity<T>(
         val targetWorker: WorkerDefinition
 ) : Entity<T> {
 
-    override fun getContext(): Context {
-        return target.getContext()
-    }
+    override val context: Context = target.context
 
     override fun subscribe(context: Context, observer: Observer<T>): EntitySubscription {
         val delayWorker = context.getScheduler().getWorker(WorkerDefinition.TIMER)

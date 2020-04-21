@@ -41,7 +41,7 @@ private class EventFromEntity<T>(
     source: Entity<T>
 ) : Entity<T> {
 
-    private val context = collectContext(signal, source)
+    override val context = collectContext(signal, source)
     private var value: ValueHolder<T>? = null
     private val subject = ContextSubjectWrapper(context, PublishSubject<T>())
 
@@ -54,10 +54,6 @@ private class EventFromEntity<T>(
                 subject.update(it.value)
             }
         }
-    }
-
-    override fun getContext(): Context {
-        return context
     }
 
     override fun subscribe(context: Context, observer: Observer<T>): EntitySubscription {

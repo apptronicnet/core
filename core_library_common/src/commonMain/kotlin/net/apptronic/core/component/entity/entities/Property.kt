@@ -51,7 +51,7 @@ abstract class Property<T>(context: Context) : ComponentEntity<T>(context), Enti
  * Subscribe to updates of [source] and set all new values automatically
  */
 fun <E : UpdateEntity<T>, T> E.setAs(source: Entity<T>): E {
-    source.subscribe(getContext()) {
+    source.subscribe(context) {
         update(it)
     }
     return this

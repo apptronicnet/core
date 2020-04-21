@@ -6,7 +6,6 @@ import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.EntitySubscription
 import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.component.entity.subscriptions.EntitySubscriptionListener
-import kotlin.reflect.KClass
 
 inline fun <reified T> Entity<T>.record(): EntityRecorder<T> {
     return EntityRecorder(T::class.java, this)
@@ -31,9 +30,7 @@ class EntityRecorder<T> constructor(
         isUnsubscribed = true
     }
 
-    override fun getContext(): Context {
-        return source.getContext()
-    }
+    override val context: Context = source.context
 
     override fun subscribe(context: Context, observer: Observer<Nothing>): EntitySubscription {
         throw UnsupportedOperationException()

@@ -9,6 +9,7 @@ import net.apptronic.core.component.lifecycle.LifecycleSubscription
  * After exit from stage actions are cancelled so it can be useful to wrap queue actioned workers to prevent executing
  * actions for which context was destroyed
  */
+@Deprecated("Should use coroutines")
 class ContextBoundWorkerProvider(
         private val targetWorker: Worker
 ) : WorkerProvider {
@@ -20,6 +21,7 @@ class ContextBoundWorkerProvider(
 
 }
 
+@Deprecated("Should use coroutines")
 private class WorkerWrapper(
         val context: Context,
         val defaultWorker: Worker,
@@ -32,6 +34,7 @@ private class WorkerWrapper(
 
 }
 
+@Deprecated("Should use coroutines")
 private class ActionWrapper(
         val defaultWorker: Worker,
         val context: Context,

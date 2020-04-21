@@ -8,32 +8,32 @@ import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.EntitySubscription
 import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.component.entity.subscriptions.ContextSubjectWrapper
-import net.apptronic.core.threading.WorkerDefinition
-import net.apptronic.core.threading.execute
 
 /**
  * Consumes source entity asynchronously taking only last emitted value on each change synchronous. If source value
  * changing synchronously many times it will emit only last value.
  */
 fun <T> Entity<T>.throttleAsync(): Entity<T> {
-    return ThrottleAsyncEntity(switchWorker(WorkerDefinition.DEFAULT))
+    return ThrottleAsyncEntity(this)
 }
 
 private class ThrottleAsyncEntity<T>(
         private val source: Entity<T>
 ) : Entity<T> {
 
-    private val asyncWorker = source.getContext().getScheduler().getWorker(WorkerDefinition.DEFAULT_ASYNC)
+    override val context: Context = source.context
+
     private var nextValue: ValueHolder<T>? = null
     private var isProcessing = false
-    private val subject = ContextSubjectWrapper(source.getContext(), BehaviorSubject<T>())
+    private val subject = ContextSubjectWrapper(context, BehaviorSubject<T>())
 
     init {
+        val activeStage = context.getLifecycle().getActiveStage()
         source.subscribe {
             nextValue = ValueHolder(it)
             if (!isProcessing) {
                 isProcessing = true
-                asyncWorker.execute {
+                activeStage?.launchCoroutine {
                     isProcessing = false
                     nextValue?.let {
                         subject.update(it.value)
@@ -42,10 +42,6 @@ private class ThrottleAsyncEntity<T>(
                 }
             }
         }
-    }
-
-    override fun getContext(): Context {
-        return subject.getContext()
     }
 
     override fun subscribe(context: Context, observer: Observer<T>): EntitySubscription {

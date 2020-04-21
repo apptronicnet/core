@@ -5,46 +5,36 @@ import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.EntitySubscription
 import net.apptronic.core.component.entity.subscribe
-import net.apptronic.core.threading.WorkerDefinition
-import net.apptronic.core.threading.execute
 
 fun <T> Entity<T>.switchContext(
-        context: Context,
-        workerDefinition: WorkerDefinition = WorkerDefinition.DEFAULT
+        targetContext: Context
 ): Entity<T> {
-    return if (getContext().getToken() != context.getToken()) {
-        ContextSwitchEntity(
-                this, context, workerDefinition
-        )
+    return if (this.context.getToken() != targetContext.getToken()) {
+        ContextSwitchEntity(this, targetContext)
     } else {
         this
     }
 }
 
 private class ContextSwitchEntity<T>(
-        private val target: Entity<T>,
-        private val targetContext: Context,
-        private val targetWorkerDefinition: WorkerDefinition
+        private val source: Entity<T>,
+        private val targetContext: Context
 ) : Entity<T> {
 
-    private val worker = targetContext.getScheduler().getWorker(targetWorkerDefinition)
-
-    override fun getContext(): Context {
-        return targetContext
-    }
+    override val context: Context = targetContext
 
     override fun subscribe(observer: Observer<T>): EntitySubscription {
-        return target.subscribe(targetContext) { value ->
-            worker.execute {
+        return source.subscribe(targetContext) { value ->
+            targetContext.getLifecycle().getActiveStage()?.launchCoroutine {
                 observer.notify(value)
             }
         }.also {
-            getContext().getLifecycle().getRootStage().registerSubscription(it)
+            context.getLifecycle().getRootStage().registerSubscription(it)
         }
     }
 
     override fun subscribe(context: Context, observer: Observer<T>): EntitySubscription {
-        return target.subscribe(context, observer)
+        return source.subscribe(context, observer)
     }
 
 }

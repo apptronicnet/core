@@ -18,11 +18,7 @@ private class OnSubscribeSendEntity<T>(
         private val onSubscribeValueProvider: () -> T
 ) : Entity<T> {
 
-    private val context = source.getContext()
-
-    override fun getContext(): Context {
-        return context
-    }
+    override val context = source.context
 
     override fun subscribe(context: Context, observer: Observer<T>): EntitySubscription {
         observer.notify(onSubscribeValueProvider.invoke())

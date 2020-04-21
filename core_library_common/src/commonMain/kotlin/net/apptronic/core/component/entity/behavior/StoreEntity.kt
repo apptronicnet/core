@@ -17,12 +17,10 @@ private class StoreEntity<T>(
         val target: Entity<T>
 ) : EntityValue<T> {
 
-    private val behaviorSubject = BehaviorSubject<T>()
-    private val subject = ContextSubjectWrapper(target.getContext(), behaviorSubject)
+    override val context: Context = target.context
 
-    override fun getContext(): Context {
-        return target.getContext()
-    }
+    private val behaviorSubject = BehaviorSubject<T>()
+    private val subject = ContextSubjectWrapper(context, behaviorSubject)
 
     init {
         target.subscribe(subject)

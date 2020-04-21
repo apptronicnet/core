@@ -1,5 +1,6 @@
 package net.apptronic.core.component.context
 
+import kotlinx.coroutines.CoroutineDispatcher
 import net.apptronic.core.component.di.DependencyProvider
 import net.apptronic.core.component.lifecycle.Lifecycle
 import net.apptronic.core.threading.Scheduler
@@ -10,6 +11,8 @@ import net.apptronic.core.threading.Scheduler
  * contains [Lifecycle], specifies own [Scheduler] and provides [DependencyProvider]
  */
 interface Context {
+
+    val defaultDispatcher: CoroutineDispatcher
 
     fun getParent(): Context?
 

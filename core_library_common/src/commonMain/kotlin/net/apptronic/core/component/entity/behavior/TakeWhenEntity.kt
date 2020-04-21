@@ -24,9 +24,7 @@ private class TakeWhenEntity<T>(
         }
     }
 
-    override fun getContext(): Context {
-        return source.getContext()
-    }
+    override val context: Context = source.context
 
     override fun subscribe(context: Context, observer: Observer<T>): EntitySubscription {
         return source.subscribe(context, ChooserObserver(observer))

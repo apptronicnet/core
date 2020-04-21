@@ -6,6 +6,7 @@ import net.apptronic.core.platform.getPlatform
 /**
  * [Worker] implementation which executes actions one after another in single thread.
  */
+@Deprecated("Should use coroutines")
 internal class SerialWorker(
         private val maxCount: Int = NO_LIMIT
 ) : Worker {

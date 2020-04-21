@@ -3,6 +3,7 @@ package net.apptronic.core.threading
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.platform.getPlatform
 
+@Deprecated("Should use coroutines")
 fun createCoreScheduler(context: Context): Scheduler {
     val scheduler = ContextScheduler(context)
     with(scheduler) {
@@ -46,11 +47,12 @@ fun createCoreScheduler(context: Context): Scheduler {
     return scheduler
 }
 
+@Deprecated("Should use coroutines")
 fun createSubScheduler(context: Context, parent: Scheduler): Scheduler {
     return ContextScheduler(context, parent)
 }
 
-
+@Deprecated("Should use coroutines")
 interface Scheduler {
 
     fun getDefaultWorker(): WorkerDefinition

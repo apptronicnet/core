@@ -1,5 +1,7 @@
 package net.apptronic.core.testutils
 
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.di.DependencyProvider
 import net.apptronic.core.component.lifecycle.Lifecycle
@@ -11,8 +13,11 @@ import net.apptronic.core.threading.WorkerDefinition
 val TestWorker = WorkerDefinition.DEFAULT
 
 open class TestContext(
-        private val parent: Context? = null
+        private val parent: Context? = null,
+        coroutineDispatcher: CoroutineDispatcher = Dispatchers.Unconfined
 ) : Context {
+
+    override val defaultDispatcher: CoroutineDispatcher = coroutineDispatcher
 
     init {
         initializePlatform(TestPlatform)

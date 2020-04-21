@@ -10,10 +10,12 @@ fun defaultWorkerProvider(): WorkerProvider {
     return getPlatform().defaultWorkerProvider()
 }
 
+@Deprecated("Coroutines")
 fun runInNewThread(action: () -> Unit) {
     getPlatform().runInNewThread(action)
 }
 
+@Deprecated("Coroutines")
 fun pauseCurrentThread(timeInMillis: Long) {
     getPlatform().pauseCurrentThread(timeInMillis)
 }

@@ -4,6 +4,7 @@ import net.apptronic.core.base.collections.LinkedQueue
 import net.apptronic.core.base.concurrent.AtomicEntity
 import net.apptronic.core.platform.getPlatform
 
+@Deprecated("Should use coroutines")
 internal class QueueWorker(
         private val threadsCount: Int
 ) : Worker {

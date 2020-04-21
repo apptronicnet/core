@@ -12,7 +12,7 @@ import net.apptronic.core.threading.Worker
 import net.apptronic.core.threading.WorkerDefinition
 
 abstract class ComponentEntity<T>(
-        private val context: Context
+        override val context: Context
 ) : Entity<T>, WorkerSource {
 
     init {
@@ -24,10 +24,6 @@ abstract class ComponentEntity<T>(
 
     fun setWorker(workerDefinition: WorkerDefinition) {
         worker = context.getScheduler().getWorker(workerDefinition)
-    }
-
-    override fun getContext(): Context {
-        return context
     }
 
     protected abstract fun getObservable(): Observable<T>

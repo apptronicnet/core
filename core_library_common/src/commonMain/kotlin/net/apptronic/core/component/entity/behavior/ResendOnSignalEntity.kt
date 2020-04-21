@@ -25,7 +25,8 @@ private class ResendOnSignalEntity<T>(
     private val wrappedEntity: Entity<T>
 ) : ResendEntity<T> {
 
-    private val subject = ContextSubjectWrapper(wrappedEntity.getContext(), BehaviorSubject<T>())
+    override val context: Context = wrappedEntity.context
+    private val subject = ContextSubjectWrapper(context, BehaviorSubject<T>())
 
     init {
         wrappedEntity.subscribe(subject)
@@ -39,10 +40,6 @@ private class ResendOnSignalEntity<T>(
         subject.wrapped.getValue()?.let {
             subject.update(it.value)
         }
-    }
-
-    override fun getContext(): Context {
-        return wrappedEntity.getContext()
     }
 
     override fun subscribe(context: Context, observer: Observer<T>): EntitySubscription {

@@ -15,11 +15,9 @@ private class EventEntity<T>(
         val target: Entity<T>
 ) : Entity<T> {
 
-    private val subject = ContextSubjectWrapper(target.getContext(), PublishSubject<T>())
+    override val context: Context = target.context
 
-    override fun getContext(): Context {
-        return target.getContext()
-    }
+    private val subject = ContextSubjectWrapper(target.context, PublishSubject<T>())
 
     init {
         target.subscribe(subject)

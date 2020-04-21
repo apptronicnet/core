@@ -34,9 +34,7 @@ class ViewModelListBuilder<T, Id, VM : ViewModel>(
         subject.update(emptyList())
     }
 
-    override fun getContext(): Context {
-        return parent
-    }
+    override val context: Context = parent
 
     /**
      * Update list of [ViewModel]s automatically from given [Entity]

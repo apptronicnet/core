@@ -10,10 +10,10 @@ import net.apptronic.core.component.lifecycle.Lifecycle
  */
 interface Entity<T> : Observable<T> {
 
-    fun getContext(): Context
+    val context: Context
 
     override fun subscribe(observer: Observer<T>): EntitySubscription {
-        return subscribe(getContext(), observer)
+        return subscribe(context, observer)
     }
 
     fun subscribe(context: Context, observer: Observer<T>): EntitySubscription

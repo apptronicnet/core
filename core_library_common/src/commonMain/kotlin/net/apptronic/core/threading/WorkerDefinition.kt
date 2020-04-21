@@ -1,5 +1,6 @@
 package net.apptronic.core.threading
 
+@Deprecated("Should use coroutines")
 class WorkerDefinition internal constructor(private val name: String) {
 
     companion object {
