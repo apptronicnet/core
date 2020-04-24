@@ -4,6 +4,7 @@ import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.base.observable.subject.BehaviorSubject
 import net.apptronic.core.base.observable.subject.ValueHolder
 import net.apptronic.core.component.context.Context
+import net.apptronic.core.component.coroutines.coroutineLauncherScoped
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.EntitySubscription
 import net.apptronic.core.component.entity.subscribe
@@ -28,15 +29,15 @@ private class ThrottleAsyncEntity<T>(
     private val subject = ContextSubjectWrapper(context, BehaviorSubject<T>())
 
     init {
-        val activeStage = context.getLifecycle().getActiveStage()
+        val coroutineLauncher = context.coroutineLauncherScoped()
         source.subscribe {
             nextValue = ValueHolder(it)
             if (!isProcessing) {
                 isProcessing = true
-                activeStage?.launchCoroutine {
+                coroutineLauncher.launch {
                     isProcessing = false
-                    nextValue?.let {
-                        subject.update(it.value)
+                    nextValue?.let { valueHolder ->
+                        subject.update(valueHolder.value)
                     }
                     nextValue = null
                 }

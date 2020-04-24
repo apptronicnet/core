@@ -2,6 +2,7 @@ package net.apptronic.core.component.entity.behavior
 
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.component.context.Context
+import net.apptronic.core.component.coroutines.coroutineLauncherScoped
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.EntitySubscription
 import net.apptronic.core.component.entity.subscribe
@@ -24,8 +25,9 @@ private class ContextSwitchEntity<T>(
     override val context: Context = targetContext
 
     override fun subscribe(observer: Observer<T>): EntitySubscription {
+        val coroutineLauncher = targetContext.coroutineLauncherScoped()
         return source.subscribe(targetContext) { value ->
-            targetContext.getLifecycle().getActiveStage()?.launchCoroutine {
+            coroutineLauncher.launch {
                 observer.notify(value)
             }
         }.also {

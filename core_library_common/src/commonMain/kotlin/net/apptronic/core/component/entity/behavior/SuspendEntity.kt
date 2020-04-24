@@ -2,6 +2,7 @@ package net.apptronic.core.component.entity.behavior
 
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.component.context.Context
+import net.apptronic.core.component.coroutines.coroutineLauncherScoped
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.EntitySubscription
 import net.apptronic.core.component.entity.subscribe
@@ -22,9 +23,9 @@ private class SuspendEntity<T>(
     override val context: Context = source.context
 
     override fun subscribe(context: Context, observer: Observer<T>): EntitySubscription {
-        val activeStage = context.getLifecycle().getActiveStage()
+        val coroutineLauncher = context.coroutineLauncherScoped()
         return source.subscribe(context) {
-            activeStage?.launchCoroutine {
+            coroutineLauncher.launch {
                 val timeInMillis = timeInMillisProvider.invoke(it)
                 if (timeInMillis > 0L) {
                     kotlinx.coroutines.delay(timeInMillis)

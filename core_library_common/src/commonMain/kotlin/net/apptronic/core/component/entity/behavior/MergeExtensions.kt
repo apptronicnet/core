@@ -1,16 +1,23 @@
 package net.apptronic.core.component.entity.behavior
 
+import kotlinx.coroutines.CoroutineScope
 import net.apptronic.core.component.entity.Entity
-import net.apptronic.core.component.entity.functions.Function
-import net.apptronic.core.component.entity.functions.entityArrayFunction
-import net.apptronic.core.component.entity.functions.entityFunction
+import net.apptronic.core.component.entity.functions.*
 
 fun <R, A, B> merge(
         a: Entity<A>,
         b: Entity<B>,
         method: (A, B) -> R
-): Function<R> {
+): EntityFunction<R> {
     return entityFunction(a, b, method)
+}
+
+fun <R, A, B> mergeSuspend(
+        a: Entity<A>,
+        b: Entity<B>,
+        method: suspend CoroutineScope.(A, B) -> R
+): EntityFunction<R> {
+    return entityFunctionSuspend(a, b, method)
 }
 
 fun <R, A, B, C> merge(
@@ -18,8 +25,17 @@ fun <R, A, B, C> merge(
         b: Entity<B>,
         c: Entity<C>,
         method: (A, B, C) -> R
-): Function<R> {
+): EntityFunction<R> {
     return entityFunction(a, b, c, method)
+}
+
+fun <R, A, B, C> mergeSuspend(
+        a: Entity<A>,
+        b: Entity<B>,
+        c: Entity<C>,
+        method: suspend CoroutineScope.(A, B, C) -> R
+): EntityFunction<R> {
+    return entityFunctionSuspend(a, b, c, method)
 }
 
 fun <R, A, B, C, D> merge(
@@ -28,8 +44,18 @@ fun <R, A, B, C, D> merge(
         c: Entity<C>,
         d: Entity<D>,
         method: (A, B, C, D) -> R
-): Function<R> {
+): EntityFunction<R> {
     return entityFunction(a, b, c, d, method)
+}
+
+fun <R, A, B, C, D> mergeSuspend(
+        a: Entity<A>,
+        b: Entity<B>,
+        c: Entity<C>,
+        d: Entity<D>,
+        method: suspend CoroutineScope.(A, B, C, D) -> R
+): EntityFunction<R> {
+    return entityFunctionSuspend(a, b, c, d, method)
 }
 
 fun <R, A, B, C, D, E> merge(
@@ -39,34 +65,75 @@ fun <R, A, B, C, D, E> merge(
         d: Entity<D>,
         e: Entity<E>,
         method: (A, B, C, D, E) -> R
-): Function<R> {
+): EntityFunction<R> {
     return entityFunction(a, b, c, d, e, method)
 }
 
+fun <R, A, B, C, D, E> mergeSuspend(
+        a: Entity<A>,
+        b: Entity<B>,
+        c: Entity<C>,
+        d: Entity<D>,
+        e: Entity<E>,
+        method: suspend CoroutineScope.(A, B, C, D, E) -> R
+): EntityFunction<R> {
+    return entityFunctionSuspend(a, b, c, d, e, method)
+}
+
+@Suppress("UNCHECKED_CAST")
 fun <R, T> mergeArray(
         vararg array: Entity<out T>,
         method: (List<T>) -> R
-): Function<R> {
+): EntityFunction<R> {
     val sources = array.map { it as Entity<*> }.toTypedArray()
-    return entityArrayFunction(sources) {
+    val function: (Array<*>) -> R = {
         val list = it.map { it as T }.toList()
-        method.invoke(list)
+        method(list)
     }
+    return entityArrayFunction(sources, function)
+}
+
+@Suppress("UNCHECKED_CAST")
+fun <R, T> mergeArraySuspend(
+        vararg array: Entity<out T>,
+        method: suspend CoroutineScope.(List<T>) -> R
+): EntityFunction<R> {
+    val sources = array.map { it as Entity<*> }.toTypedArray()
+    val function: suspend CoroutineScope.(Array<*>) -> R = {
+        val list = it.map { it as T }.toList()
+        method(list)
+    }
+    return entityArrayFunctionSuspend(sources, function)
 }
 
 fun <R, A, B> Entity<A>.mergeWith(
         b: Entity<B>,
         method: (A, B) -> R
-): Function<R> {
+): EntityFunction<R> {
     return merge(this, b, method)
+}
+
+fun <R, A, B> Entity<A>.mergeSuspendWith(
+        b: Entity<B>,
+        method: suspend CoroutineScope.(A, B) -> R
+): EntityFunction<R> {
+    return mergeSuspend(this, b, method)
 }
 
 fun <R, A, B, C> Entity<A>.mergeWith(
         b: Entity<B>,
         c: Entity<C>,
         method: (A, B, C) -> R
-): Function<R> {
+): EntityFunction<R> {
     return merge(this, b, c, method)
+}
+
+fun <R, A, B, C> Entity<A>.mergeSuspendWith(
+        b: Entity<B>,
+        c: Entity<C>,
+        method: suspend CoroutineScope.(A, B, C) -> R
+): EntityFunction<R> {
+    return mergeSuspend(this, b, c, method)
 }
 
 fun <R, A, B, C, D> Entity<A>.mergeWith(
@@ -74,8 +141,17 @@ fun <R, A, B, C, D> Entity<A>.mergeWith(
         c: Entity<C>,
         d: Entity<D>,
         method: (A, B, C, D) -> R
-): Function<R> {
+): EntityFunction<R> {
     return merge(this, b, c, d, method)
+}
+
+fun <R, A, B, C, D> Entity<A>.mergeSuspendWith(
+        b: Entity<B>,
+        c: Entity<C>,
+        d: Entity<D>,
+        method: suspend CoroutineScope.(A, B, C, D) -> R
+): EntityFunction<R> {
+    return mergeSuspend(this, b, c, d, method)
 }
 
 fun <R, A, B, C, D, E> Entity<A>.mergeWith(
@@ -84,19 +160,38 @@ fun <R, A, B, C, D, E> Entity<A>.mergeWith(
         d: Entity<D>,
         e: Entity<E>,
         method: (A, B, C, D, E) -> R
-): Function<R> {
+): EntityFunction<R> {
     return merge(this, b, c, d, e, method)
 }
 
+fun <R, A, B, C, D, E> Entity<A>.mergeSuspendWith(
+        b: Entity<B>,
+        c: Entity<C>,
+        d: Entity<D>,
+        e: Entity<E>,
+        method: suspend CoroutineScope.(A, B, C, D, E) -> R
+): EntityFunction<R> {
+    return mergeSuspend(this, b, c, d, e, method)
+}
 
 fun <R, S, T> Entity<S>.mergeWithArray(
         vararg array: Entity<out T>,
         method: (S, List<T>) -> R
-): Function<R> {
+): EntityFunction<R> {
     val listEntity = mergeArray(*array) {
         it
     }
     return merge(this, listEntity, method)
+}
+
+fun <R, S, T> Entity<S>.mergeSuspendWithArray(
+        vararg array: Entity<out T>,
+        method: suspend CoroutineScope.(S, List<T>) -> R
+): EntityFunction<R> {
+    val listEntity = mergeArray(*array) {
+        it
+    }
+    return mergeSuspend(this, listEntity, method)
 }
 
 class MergeTwoResult<A, B>(val first: A, val second: B)
@@ -108,7 +203,7 @@ class MergeArrayResult<S, T>(val value: S, val list: List<T>)
 fun <A, B> merge(
         a: Entity<A>,
         b: Entity<B>
-): Function<MergeTwoResult<A, B>> {
+): EntityFunction<MergeTwoResult<A, B>> {
     return merge(a, b) { first, second ->
         MergeTwoResult(first, second)
     }
@@ -118,7 +213,7 @@ fun <A, B, C> merge(
         a: Entity<A>,
         b: Entity<B>,
         c: Entity<C>
-): Function<MergeThreeResult<A, B, C>> {
+): EntityFunction<MergeThreeResult<A, B, C>> {
     return merge(a, b, c) { first, second, third ->
         MergeThreeResult(first, second, third)
     }
@@ -129,7 +224,7 @@ fun <A, B, C, D> merge(
         b: Entity<B>,
         c: Entity<C>,
         d: Entity<D>
-): Function<MergeFourResult<A, B, C, D>> {
+): EntityFunction<MergeFourResult<A, B, C, D>> {
     return merge(a, b, c, d) { first, second, third, fourth ->
         MergeFourResult(first, second, third, fourth)
     }
@@ -141,7 +236,7 @@ fun <A, B, C, D, E> merge(
         c: Entity<C>,
         d: Entity<D>,
         e: Entity<E>
-): Function<MergeFiveResult<A, B, C, D, E>> {
+): EntityFunction<MergeFiveResult<A, B, C, D, E>> {
     return merge(a, b, c, d, e) { first, second, third, fourth, fifth ->
         MergeFiveResult(first, second, third, fourth, fifth)
     }
@@ -149,13 +244,13 @@ fun <A, B, C, D, E> merge(
 
 fun <T> mergeArray(
         vararg array: Entity<out T>
-): Function<List<T>> {
+): EntityFunction<List<T>> {
     return mergeArray(*array) { it }
 }
 
 fun <A, B> Entity<A>.mergeWith(
         b: Entity<B>
-): Function<MergeTwoResult<A, B>> {
+): EntityFunction<MergeTwoResult<A, B>> {
     return merge(this, b) { first, second ->
         MergeTwoResult(first, second)
     }
@@ -164,7 +259,7 @@ fun <A, B> Entity<A>.mergeWith(
 fun <A, B, C> Entity<A>.mergeWith(
         b: Entity<B>,
         c: Entity<C>
-): Function<MergeThreeResult<A, B, C>> {
+): EntityFunction<MergeThreeResult<A, B, C>> {
     return merge(this, b, c) { first, second, third ->
         MergeThreeResult(first, second, third)
     }
@@ -174,7 +269,7 @@ fun <A, B, C, D> Entity<A>.mergeWith(
         b: Entity<B>,
         c: Entity<C>,
         d: Entity<D>
-): Function<MergeFourResult<A, B, C, D>> {
+): EntityFunction<MergeFourResult<A, B, C, D>> {
     return merge(this, b, c, d) { first, second, third, fourth ->
         MergeFourResult(first, second, third, fourth)
     }
@@ -185,7 +280,7 @@ fun <A, B, C, D, E> Entity<A>.mergeWith(
         c: Entity<C>,
         d: Entity<D>,
         e: Entity<E>
-): Function<MergeFiveResult<A, B, C, D, E>> {
+): EntityFunction<MergeFiveResult<A, B, C, D, E>> {
     return merge(this, b, c, d, e) { first, second, third, fourth, fifth ->
         MergeFiveResult(first, second, third, fourth, fifth)
     }
@@ -193,7 +288,7 @@ fun <A, B, C, D, E> Entity<A>.mergeWith(
 
 fun <S, T> Entity<S>.mergeWithArray(
         vararg array: Entity<out T>
-): Function<MergeArrayResult<S, T>> {
+): EntityFunction<MergeArrayResult<S, T>> {
     return mergeWithArray(*array) { value, list ->
         MergeArrayResult(value, list)
     }

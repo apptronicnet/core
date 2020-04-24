@@ -1,6 +1,5 @@
 package net.apptronic.core.component.lifecycle
 
-import kotlinx.coroutines.CoroutineScope
 import net.apptronic.core.base.concurrent.Volatile
 import net.apptronic.core.base.concurrent.requireNeverFrozen
 import net.apptronic.core.component.context.Context
@@ -35,18 +34,6 @@ open class Lifecycle {
     }
 
     private val isTerminated = Volatile(false)
-
-    fun currentStageCoroutineScope(): CoroutineScope {
-        return getActiveStage()?.coroutineScope() ?: rootStage.coroutineScope()
-    }
-
-    fun launchCoroutine(block: suspend CoroutineScope.() -> Unit) {
-        rootStage.launchCoroutine(block)
-    }
-
-    fun launchStagedCoroutine(block: suspend CoroutineScope.() -> Unit) {
-        getActiveStage()?.launchCoroutine(block)
-    }
 
     private val rootStage: LifecycleStageImpl = LifecycleStageImpl(baseParent, ROOT_STAGE)
 

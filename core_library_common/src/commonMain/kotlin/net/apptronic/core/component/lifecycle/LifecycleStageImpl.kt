@@ -1,6 +1,5 @@
 package net.apptronic.core.component.lifecycle
 
-import kotlinx.coroutines.*
 import net.apptronic.core.base.concurrent.AtomicEntity
 import net.apptronic.core.base.concurrent.Volatile
 import net.apptronic.core.base.concurrent.requireNeverFrozen
@@ -12,28 +11,6 @@ internal class LifecycleStageImpl(val parent: LifecycleStageParent, val name: St
 
     init {
         requireNeverFrozen()
-    }
-
-    private fun newCoroutineScope(): CoroutineScope {
-        return CoroutineScope(CoroutineName(name))
-    }
-
-    private var coroutineScope: CoroutineScope = newCoroutineScope()
-
-    override fun coroutineScope(): CoroutineScope {
-        return coroutineScope
-    }
-
-    override fun launchCoroutine(block: suspend CoroutineScope.() -> Unit) {
-        if (coroutineScope.isActive) {
-            coroutineScope.launch {
-                try {
-                    block.invoke(this)
-                } catch (e: ExitStageCancellationException) {
-                    // ignore
-                }
-            }
-        }
     }
 
     private val childStage = AtomicEntity<LifecycleStageImpl?>(null)
@@ -123,9 +100,6 @@ internal class LifecycleStageImpl(val parent: LifecycleStageParent, val name: St
         if (isTerminated || isEntered) {
             return
         }
-        if (!coroutineScope.isActive) {
-            coroutineScope = newCoroutineScope()
-        }
         parent.onChildEnter()
         enterHandler.set(OnEnterHandlerImpl())
         exitHandler.set(OnExitHandlerImpl())
@@ -150,7 +124,6 @@ internal class LifecycleStageImpl(val parent: LifecycleStageParent, val name: St
         exitCallback.execute()
         inStageCallbacks.forEach { it.cancel() }
         inStageCallbacks.clear()
-        coroutineScope.cancel(ExitStageCancellationException(name))
     }
 
     private fun subscribeEnter(callback: LifecycleStage.OnEnterHandler.() -> Unit): EventCallback {
