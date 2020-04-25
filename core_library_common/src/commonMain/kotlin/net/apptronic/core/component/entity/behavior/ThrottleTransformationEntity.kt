@@ -1,90 +1,118 @@
 package net.apptronic.core.component.entity.behavior
 
-import net.apptronic.core.base.concurrent.AtomicEntity
+import kotlinx.coroutines.CoroutineDispatcher
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.base.observable.subject.BehaviorSubject
 import net.apptronic.core.base.observable.subject.ValueHolder
 import net.apptronic.core.component.context.Context
+import net.apptronic.core.component.context.local.LocalContext
+import net.apptronic.core.component.context.local.createLocalContext
+import net.apptronic.core.component.coroutines.coroutineLauncherContextual
+import net.apptronic.core.component.coroutines.coroutineLauncherScoped
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.EntitySubscription
-import net.apptronic.core.component.entity.bindContext
+import net.apptronic.core.component.entity.entities.Value
+import net.apptronic.core.component.entity.functions.onNext
 import net.apptronic.core.component.entity.subscribe
-import net.apptronic.core.threading.WorkerDefinition
 
 /**
  * Throttles source observable to prevent parallel processing many items at same time. Emits next item for processing
  * only when previous item was processed. Throws out from chain old items if new arrived before previous started
  * processing.
- * @param throttledTransformation method tpo operate throttled input, should returns result entity to be processet
- * after throttling
+ * @param throttledTransformation method to operate throttled input, should returns result entity to be processed
+ * after throttling of throttling chain will be broken and never emit next value.
  */
 fun <Source, Result> Entity<Source>.throttle(
-        transformWith: WorkerDefinition = WorkerDefinition.BACKGROUND_PARALLEL_SHARED,
-        subscribeWith: WorkerDefinition = WorkerDefinition.DEFAULT,
-        throttledTransformation: (Entity<Source>) -> Entity<Result>
+        dispatcher: CoroutineDispatcher = context.defaultDispatcher,
+        throttledTransformation: LocalContext.(Entity<Source>) -> Entity<Result>
 ): Entity<Result> {
+    val localContext = context.createLocalContext(dispatcher)
     return ThrottleTransformationEntity(
-        this,
-        transformWith,
-        subscribeWith,
+            this,
+            localContext,
             throttledTransformation
     )
 }
 
 private class ThrottleTransformationEntity<Source, Result>(
         private val sourceEntity: Entity<Source>,
-        private val transformWorkerDefinition: WorkerDefinition,
-        private val subscribeWorkerDefinition: WorkerDefinition,
-        private val throttledTransformation: (Entity<Source>) -> Entity<Result>
-) : Entity<Result> {
+        private val localContext: LocalContext,
+        private val throttledTransformation: LocalContext.(Entity<Source>) -> Entity<Result>
+) : Entity<Result>, Observer<Result> {
 
     override val context: Context = sourceEntity.context
 
-    private val sourceObservable = BehaviorSubject<Source>()
-    private val resultObservable = BehaviorSubject<Result>()
+    private val resultObservable = Value<Result>(context)
 
-    private val awaitingValue = AtomicEntity<ValueHolder<Source>?>(null)
-    private val isProcessing = AtomicEntity(false)
+    private val coroutineLauncher = context.coroutineLauncherScoped()
 
     init {
-        sourceEntity.subscribe { nextSource ->
-            awaitingValue.perform {
-                set(ValueHolder(nextSource))
-            }
-            takeNext()
-        }
-        val sourceEntity = sourceObservable.bindContext(context)
-                .switchWorker(transformWorkerDefinition)
-        throttledTransformation.invoke(sourceEntity).subscribe { nextResult ->
-            resultObservable.update(nextResult)
-            awaitingValue.perform {
-                isProcessing.set(false)
-            }
-            takeNext()
-        }
-    }
-
-    private fun takeNext() {
-        awaitingValue.perform {
-            val valueHolder = get()
-            if (valueHolder != null && isProcessing.get().not()) {
-                sourceObservable.update(valueHolder.value)
-                isProcessing.set(true)
-                this.set(null)
+        val localCoroutineLauncher = localContext.coroutineLauncherContextual()
+        localCoroutineLauncher.launch {
+            val throttledTransformation = ThrottledTransformation(localContext, throttledTransformation)
+            throttledTransformation.observe(this@ThrottleTransformationEntity)
+            coroutineLauncher.launch {
+                sourceEntity.onNext { nextValue ->
+                    localCoroutineLauncher.launch {
+                        throttledTransformation.onNext(nextValue)
+                    }
+                }
             }
         }
     }
 
     override fun subscribe(observer: Observer<Result>): EntitySubscription {
-        return resultObservable.bindContext(context)
-                .switchWorker(subscribeWorkerDefinition)
-                .subscribe(observer)
+        return resultObservable.subscribe(observer)
     }
 
     override fun subscribe(context: Context, observer: Observer<Result>): EntitySubscription {
-        return resultObservable.bindContext(context)
-                .switchWorker(subscribeWorkerDefinition)
-                .subscribe(observer)
+        return resultObservable.subscribe(context, observer)
+    }
+
+    override fun notify(value: Result) {
+        coroutineLauncher.launch {
+            resultObservable.notify(value)
+        }
+    }
+
+}
+
+private class ThrottledTransformation<Source, Result>(
+        localContext: LocalContext,
+        throttledTransformation: LocalContext.(Entity<Source>) -> Entity<Result>
+) {
+
+    private val sourceEntity = Value<Source>(localContext)
+    private val resultObservable = BehaviorSubject<Result>()
+
+    private var awaitingValue: ValueHolder<Source>? = null
+    private var isProcessing = false
+
+    fun onNext(value: Source) {
+        awaitingValue = ValueHolder(value)
+        takeNext()
+    }
+
+    fun observe(observer: Observer<Result>) {
+        resultObservable.subscribe(observer)
+    }
+
+    init {
+        localContext.throttledTransformation(sourceEntity).subscribe { nextResult ->
+            resultObservable.update(nextResult)
+            isProcessing = false
+            takeNext()
+        }
+    }
+
+    private fun takeNext() {
+        awaitingValue?.let {
+            if (!isProcessing) {
+                sourceEntity.update(it.value)
+                isProcessing = true
+                awaitingValue = null
+            }
+        }
     }
 
 }

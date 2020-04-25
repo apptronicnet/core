@@ -13,12 +13,12 @@ import net.apptronic.core.component.entity.subscriptions.ContextSubjectWrapper
 /**
  * Use current entity as signal source and when it emits any value - send last value from [source]
  */
-fun <T> Entity<*>.onNextMap(source: Entity<T>): Entity<T> {
+fun <T> Entity<*>.onNextSend(source: Entity<T>): Entity<T> {
     return EventFromEntity(this, source)
 }
 
-fun <T> Entity<*>.onNextMap(source: Entity<T>, action: (T) -> Unit): Entity<T> {
-    return onNextMap(source).also {
+fun <T> Entity<*>.onNextSend(source: Entity<T>, action: (T) -> Unit): Entity<T> {
+    return onNextSend(source).also {
         it.subscribe(action)
     }
 }

@@ -1,97 +1,85 @@
 package net.apptronic.core.component.entity.behavior
 
-import net.apptronic.core.base.concurrent.Synchronized
-import net.apptronic.core.base.concurrent.Volatile
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.component.context.Context
+import net.apptronic.core.component.coroutines.CoroutineLauncher
+import net.apptronic.core.component.coroutines.coroutineLauncherScoped
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.EntitySubscription
 import net.apptronic.core.platform.elapsedRealtimeMillis
-import net.apptronic.core.platform.pauseCurrentThread
-import net.apptronic.core.threading.Worker
-import net.apptronic.core.threading.WorkerDefinition
-import net.apptronic.core.threading.execute
 
+// TODO missing documentation
 fun <T> Entity<T>.debounce(
         interval: Long,
-        delay: Long = 0,
-        targetWorker: WorkerDefinition = WorkerDefinition.DEFAULT
+        delay: Long = 0
 ): Entity<T> {
-    return DebounceEntity(this, interval, delay, targetWorker)
+    return DebounceEntity(this, interval, delay)
 }
 
 fun <T> Entity<T>.debounceAndStore(
         interval: Long,
-        delay: Long = 0,
-        targetWorker: WorkerDefinition = WorkerDefinition.DEFAULT
+        delay: Long = 0
 ): Entity<T> {
-    return debounce(interval, delay, targetWorker).storeLatest()
+    return debounce(interval, delay).storeLatest()
 }
 
 private class DebounceEntity<T>(
         val target: Entity<T>,
         val interval: Long,
-        val delay: Long,
-        val targetWorker: WorkerDefinition
+        val delay: Long
 ) : Entity<T> {
 
     override val context: Context = target.context
 
     override fun subscribe(context: Context, observer: Observer<T>): EntitySubscription {
-        val delayWorker = context.getScheduler().getWorker(WorkerDefinition.TIMER)
-        val resultWorker = context.getScheduler().getWorker(targetWorker)
-        val targetObserver = DebounceObserver(delayWorker, resultWorker, observer, interval, delay)
+        val coroutineLauncher = context.coroutineLauncherScoped()
+        val targetObserver = DebounceObserver(coroutineLauncher, observer, interval, delay)
         return target.subscribe(context, targetObserver)
     }
 
 }
 
 private class DebounceObserver<T>(
-        val timerWorker: Worker,
-        val resultWorker: Worker,
+        private val coroutineLauncher: CoroutineLauncher,
         val target: Observer<T>,
         val interval: Long,
         val delay: Long
 ) : Observer<T> {
 
-    class Update<T>(val time: Long, val value: T)
+    private class Update<T>(val time: Long, val value: T)
 
-    val sync = Synchronized()
-    val update = Volatile<Update<T>?>(null)
-    val isWaiting = Volatile(false)
+    private var update: Update<T>? = null
+    private var isWaiting = false
 
     override fun notify(value: T) {
-        sync.executeBlock {
-            onNext(value)
-        }
+        onNext(value)
     }
 
     private fun onNext(value: T) {
-        val lastUpdate = update.get()
+        val lastUpdate = update
         if (lastUpdate == null || elapsedRealtimeMillis() - lastUpdate.time >= interval) {
-            update.set(Update(elapsedRealtimeMillis(), value))
+            update = Update(elapsedRealtimeMillis(), value)
             if (delay > 0) {
-                timerWorker.execute {
+                coroutineLauncher.launch {
                     if (delay > 0) {
-                        pauseCurrentThread(delay)
+                        kotlinx.coroutines.delay(delay)
                     }
                     sendNext()
+
                 }
             } else {
-                resultWorker.execute {
-                    target.notify(value)
-                }
+                target.notify(value)
             }
         } else {
-            update.set(Update(lastUpdate.time, value))
-            if (isWaiting.get().not()) {
-                isWaiting.set(true)
+            update = Update(lastUpdate.time, value)
+            if (!isWaiting) {
+                isWaiting = true
                 val timeFromLast = elapsedRealtimeMillis() - lastUpdate.time
                 val timeToNext = interval - timeFromLast
                 val waitTime = if (timeToNext < delay) delay else timeToNext
-                timerWorker.execute {
+                coroutineLauncher.launch {
                     if (waitTime > 0) {
-                        pauseCurrentThread(waitTime)
+                        kotlinx.coroutines.delay(waitTime)
                     }
                     sendNext()
                 }
@@ -100,14 +88,10 @@ private class DebounceObserver<T>(
     }
 
     private fun sendNext() {
-        sync.executeBlock {
-            isWaiting.set(true)
-            val next = update.get()
-            if (next != null) {
-                resultWorker.execute {
-                    target.notify(next.value)
-                }
-            }
+        isWaiting = true
+        val next = update
+        if (next != null) {
+            target.notify(next.value)
         }
     }
 

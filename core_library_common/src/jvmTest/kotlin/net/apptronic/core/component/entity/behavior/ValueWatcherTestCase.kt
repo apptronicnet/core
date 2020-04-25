@@ -12,7 +12,7 @@ class ValueWatcherTestCase : BaseTestComponent() {
         val eachNew = mutableListOf<Int>()
         val eachReplaced = mutableListOf<Int>()
         val eachRecycled = mutableListOf<Int>()
-        value.watch().forEachNewValue {
+        value.watch().forEachValue {
             eachNew.add(it)
         }
         value.watch().forEachReplacedValue {
@@ -57,7 +57,7 @@ class ValueWatcherTestCase : BaseTestComponent() {
         val eachNew = mutableListOf<Int>()
         val eachReplaced = mutableListOf<Int>()
         val eachRecycled = mutableListOf<Int>()
-        value.watch().forEachNewValue {
+        value.watch().forEachValue {
             eachNew.add(it)
         }
         value.watch().forEachReplacedValue {
@@ -102,9 +102,13 @@ class ValueWatcherTestCase : BaseTestComponent() {
         val any3 = Any()
         val value = mutableValue<Any>(any1)
 
+        val each = mutableListOf<Any>()
         val eachNew = mutableListOf<Any>()
         val eachReplaced = mutableListOf<Any>()
         val eachRecycled = mutableListOf<Any>()
+        value.watch().forEachValue {
+            each.add(it)
+        }
         value.watch().forEachNewValue {
             eachNew.add(it)
         }
@@ -114,28 +118,32 @@ class ValueWatcherTestCase : BaseTestComponent() {
         value.watch().forEachRecycledValue {
             eachRecycled.add(it)
         }
-        assert(eachNew.toTypedArray().contentDeepEquals(arrayOf(any1)))
+        assert(each.toTypedArray().contentDeepEquals(arrayOf(any1)))
+        assert(eachNew.toTypedArray().contentDeepEquals(arrayOf()))
         assert(eachReplaced.toTypedArray().contentDeepEquals(arrayOf()))
         assert(eachRecycled.toTypedArray().contentDeepEquals(arrayOf()))
 
         value.set(any2)
-        assert(eachNew.toTypedArray().contentDeepEquals(arrayOf(any1, any2)))
+        assert(each.toTypedArray().contentDeepEquals(arrayOf(any1, any2)))
+        assert(eachNew.toTypedArray().contentDeepEquals(arrayOf(any2)))
         assert(eachReplaced.toTypedArray().contentDeepEquals(arrayOf(any1)))
         assert(eachRecycled.toTypedArray().contentDeepEquals(arrayOf(any1)))
 
         value.set(any2)
-        assert(eachNew.toTypedArray().contentDeepEquals(arrayOf(any1, any2)))
+        assert(each.toTypedArray().contentDeepEquals(arrayOf(any1, any2)))
         assert(eachReplaced.toTypedArray().contentDeepEquals(arrayOf(any1)))
         assert(eachRecycled.toTypedArray().contentDeepEquals(arrayOf(any1)))
 
         value.set(any3)
-        assert(eachNew.toTypedArray().contentDeepEquals(arrayOf(any1, any2, any3)))
+        assert(each.toTypedArray().contentDeepEquals(arrayOf(any1, any2, any3)))
+        assert(eachNew.toTypedArray().contentDeepEquals(arrayOf(any2, any3)))
         assert(eachReplaced.toTypedArray().contentDeepEquals(arrayOf(any1, any2)))
         assert(eachRecycled.toTypedArray().contentDeepEquals(arrayOf(any1, any2)))
 
         terminate()
 
-        assert(eachNew.toTypedArray().contentDeepEquals(arrayOf(any1, any2, any3)))
+        assert(each.toTypedArray().contentDeepEquals(arrayOf(any1, any2, any3)))
+        assert(eachNew.toTypedArray().contentDeepEquals(arrayOf(any2, any3)))
         assert(eachReplaced.toTypedArray().contentDeepEquals(arrayOf(any1, any2)))
         assert(eachRecycled.toTypedArray().contentDeepEquals(arrayOf(any1, any2, any3)))
     }

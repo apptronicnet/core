@@ -7,25 +7,30 @@ import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.EntitySubscription
 import net.apptronic.core.component.entity.subscribe
 
-fun <T> Entity<T>.delay(
-        delay: Long = 0
-): Entity<T> {
-    return DelayEntity(this, delay)
+fun <T> Entity<T>.delay(timeInMillis: Long): Entity<T> {
+    return DelayEntity(this) { timeInMillis }
+}
+
+fun <T> Entity<T>.delay(timeInMillisProvider: (T) -> Long): Entity<T> {
+    return DelayEntity(this, timeInMillisProvider)
 }
 
 private class DelayEntity<T>(
-        val target: Entity<T>,
-        val delay: Long
+        private val source: Entity<T>,
+        private val timeInMillisProvider: (T) -> Long
 ) : Entity<T> {
 
-    override val context: Context = target.context
+    override val context: Context = source.context
 
     override fun subscribe(context: Context, observer: Observer<T>): EntitySubscription {
         val coroutineLauncher = context.coroutineLauncherScoped()
-        return target.subscribe(context) { next ->
+        return source.subscribe(context) {
             coroutineLauncher.launch {
-                kotlinx.coroutines.delay(delay)
-                observer.notify(next)
+                val timeInMillis = timeInMillisProvider.invoke(it)
+                if (timeInMillis > 0L) {
+                    kotlinx.coroutines.delay(timeInMillis)
+                }
+                observer.notify(it)
             }
         }
     }

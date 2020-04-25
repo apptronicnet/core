@@ -3,8 +3,7 @@ package net.apptronic.core.component.entity.behavior
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.base.observable.subject.ValueHolder
 import net.apptronic.core.component.entity.Entity
-import net.apptronic.core.component.entity.EntityValue
-import net.apptronic.core.component.lifecycle.Lifecycle
+import net.apptronic.core.component.lifecycle.LifecycleStage
 
 fun <T> Entity<T>.watch(): ValueWatcher<T> {
     return ValueWatcherImpl(this)
@@ -13,20 +12,26 @@ fun <T> Entity<T>.watch(): ValueWatcher<T> {
 interface ValueWatcher<T> {
 
     /**
-     * Execute some [action] for each new value in target [EntityValue]
+     * Execute some [action] for each value in target [Entity], but ignoring case when new values is same as
+     * existing value
      */
-    fun forEachNewValue(action: (T) -> Unit)
+    fun forEachValue(action: (T) -> Unit): ValueWatcher<T>
 
     /**
-     * Execute some [action] for each old value in target [EntityValue] when new value is set
+     * Same as [forEachValue] but ignoring first (or currently set) value.
      */
-    fun forEachReplacedValue(action: (T) -> Unit)
+    fun forEachNewValue(action: (T) -> Unit): ValueWatcher<T>
 
     /**
-     * Execute some [action] for each old value in target [EntityValue] when new value is set and for current value
-     * when [Lifecycle] exits from active stage
+     * Execute some [action] for each old value in target [Entity] when new value is set
      */
-    fun forEachRecycledValue(action: (T) -> Unit)
+    fun forEachReplacedValue(action: (T) -> Unit): ValueWatcher<T>
+
+    /**
+     * Execute some [action] for same values as [forEachReplacedValue], but in addition calls for current value
+     * when entity is recycled by exiting for corresponding [LifecycleStage]
+     */
+    fun forEachRecycledValue(action: (T) -> Unit): ValueWatcher<T>
 
 }
 
@@ -34,11 +39,12 @@ private class ValueWatcherImpl<T>(
         private val source: Entity<T>
 ) : ValueWatcher<T> {
 
-    override fun forEachNewValue(action: (T) -> Unit) {
-        source.subscribe(NewValueActionHolder(action))
+    override fun forEachValue(action: (T) -> Unit): ValueWatcher<T> {
+        source.subscribe(ValueActionHolder(action))
+        return this
     }
 
-    private class NewValueActionHolder<T>(val action: (T) -> Unit) : Observer<T> {
+    private class ValueActionHolder<T>(val action: (T) -> Unit) : Observer<T> {
         private var valueHolder: ValueHolder<T>? = null
         override fun notify(value: T) {
             val current = valueHolder
@@ -50,17 +56,35 @@ private class ValueWatcherImpl<T>(
         }
     }
 
-    override fun forEachReplacedValue(action: (T) -> Unit) {
-        val holder = OldValueActionHolder(action)
-        source.subscribe(holder)
+    override fun forEachNewValue(action: (T) -> Unit): ValueWatcher<T> {
+        source.subscribe(NewValueActionHolder(action))
+        return this
     }
 
-    override fun forEachRecycledValue(action: (T) -> Unit) {
+    private class NewValueActionHolder<T>(val action: (T) -> Unit) : Observer<T> {
+        private var valueHolder: ValueHolder<T>? = null
+        override fun notify(value: T) {
+            val current = valueHolder
+            valueHolder = ValueHolder(value)
+            if (current != null && current.value !== value) {
+                action.invoke(value)
+            }
+        }
+    }
+
+    override fun forEachReplacedValue(action: (T) -> Unit): ValueWatcher<T> {
+        val holder = OldValueActionHolder(action)
+        source.subscribe(holder)
+        return this
+    }
+
+    override fun forEachRecycledValue(action: (T) -> Unit): ValueWatcher<T> {
         val holder = OldValueActionHolder(action)
         source.subscribe(holder)
         source.context.getLifecycle().onExitFromActiveStage {
             holder.doForLast()
         }
+        return this
     }
 
     private class OldValueActionHolder<T>(val action: (T) -> Unit) : Observer<T> {

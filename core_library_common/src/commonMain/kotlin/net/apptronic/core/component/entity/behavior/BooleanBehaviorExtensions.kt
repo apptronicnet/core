@@ -1,5 +1,6 @@
 package net.apptronic.core.component.entity.behavior
 
+import kotlinx.coroutines.CoroutineScope
 import net.apptronic.core.base.observable.subscribe
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.entities.Value
@@ -89,5 +90,12 @@ fun <T> Entity<T>.whenAny(filterFunction: (T) -> Boolean): Entity<Boolean> {
     return Value<Boolean>(context).also {
         it.set(false)
         it.setAs(filter(filterFunction).anyValue())
+    }
+}
+
+fun <T> Entity<T>.whenAnySuspend(filterFunction: suspend CoroutineScope.(T) -> Boolean): Entity<Boolean> {
+    return Value<Boolean>(context).also {
+        it.set(false)
+        it.setAs(filterSuspend(filterFunction).anyValue())
     }
 }
