@@ -4,7 +4,6 @@ import net.apptronic.core.base.observable.Observable
 import net.apptronic.core.base.observable.subject.BehaviorSubject
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelStackAdapter
-import net.apptronic.core.threading.execute
 
 class StackNavigator(
         private val parent: ViewModel
@@ -94,7 +93,7 @@ class StackNavigator(
     }
 
     private fun postRefreshState() {
-        uiAsyncWorker.execute {
+        coroutineLauncher.launch {
             refreshState()
         }
     }
@@ -180,16 +179,14 @@ class StackNavigator(
      * Set [ViewModelStackAdapter] to create view controllers for [ViewModel]s
      */
     fun setAdapter(adapter: ViewModelStackAdapter) {
-        uiWorker.execute {
-            currentAdapter = CurrentAdapter(adapter)
-            invalidateAdapter(newItem = currentState.visibleItem, transitionInfo = null)
-            parent.getLifecycle().onExitFromActiveStage {
-                val currentItem = currentState.visibleItem
-                if (currentItem != null) {
-                    onUnbind(currentItem)
-                }
-                currentAdapter = null
+        currentAdapter = CurrentAdapter(adapter)
+        invalidateAdapter(newItem = currentState.visibleItem, transitionInfo = null)
+        parent.getLifecycle().onExitFromActiveStage {
+            val currentItem = currentState.visibleItem
+            if (currentItem != null) {
+                onUnbind(currentItem)
             }
+            currentAdapter = null
         }
     }
 
@@ -230,7 +227,7 @@ class StackNavigator(
     }
 
     private fun clearAndSet(viewModel: ViewModel?, transitionInfo: Any? = null) {
-        uiWorker.execute {
+        coroutineLauncher.launch {
             removeFromStack(stack)
             addStackItem(viewModel)
             postRefreshState(transitionInfo)
@@ -241,24 +238,20 @@ class StackNavigator(
      * Add [ViewModel] to stack
      */
     fun add(viewModel: ViewModel, transitionInfo: Any? = null) {
-        uiWorker.execute {
-            addStackItem(viewModel)
-            postRefreshState(transitionInfo)
-        }
+        addStackItem(viewModel)
+        postRefreshState(transitionInfo)
     }
 
     /**
      * Replace last [ViewModel] in stack
      */
     fun replace(viewModel: ViewModel, transitionInfo: Any? = null) {
-        uiWorker.execute {
-            val actualItem = currentState.actualItem
-            if (actualItem != null) {
-                removeFromStack(actualItem)
-            }
-            addStackItem(viewModel)
-            postRefreshState(transitionInfo)
+        val actualItem = currentState.actualItem
+        if (actualItem != null) {
+            removeFromStack(actualItem)
         }
+        addStackItem(viewModel)
+        postRefreshState(transitionInfo)
     }
 
     /**
@@ -266,17 +259,15 @@ class StackNavigator(
      * @param transitionInfo will be used only if this [ViewModel] is now active
      */
     fun remove(viewModel: ViewModel, transitionInfo: Any? = null) {
-        uiWorker.execute {
-            val currentItem = stack.lastOrNull {
-                it.getViewModel() == viewModel
-            }
-            if (currentItem != null) {
-                removeFromStack(currentItem)
-                if (currentItem.getViewModel() == viewModel) {
-                    postRefreshState(transitionInfo)
-                } else {
-                    postRefreshState()
-                }
+        val currentItem = stack.lastOrNull {
+            it.getViewModel() == viewModel
+        }
+        if (currentItem != null) {
+            removeFromStack(currentItem)
+            if (currentItem.getViewModel() == viewModel) {
+                postRefreshState(transitionInfo)
+            } else {
+                postRefreshState()
             }
         }
     }
@@ -309,12 +300,10 @@ class StackNavigator(
      * last or no model in stack
      */
     fun navigateBack(transitionInfo: Any?, actionIfEmpty: () -> Unit) {
-        uiWorker.execute {
-            if (stack.size > 1) {
-                popBackStack(transitionInfo)
-            } else {
-                actionIfEmpty()
-            }
+        if (stack.size > 1) {
+            popBackStack(transitionInfo)
+        } else {
+            actionIfEmpty()
         }
     }
 

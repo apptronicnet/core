@@ -1,6 +1,6 @@
 package net.apptronic.core.mvvm
 
-import net.apptronic.core.component.context.Context
+import net.apptronic.core.component.terminate
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 import net.apptronic.core.mvvm.viewmodel.navigation.ViewModelLifecycleController
@@ -24,8 +24,8 @@ class SubModelLifecycleTest {
 
     }
 
-    private class ChildModel(root: Context) :
-        LifecycleTestViewModel(ViewModelContext(root)) {
+    private class ChildModel(root: ViewModel) :
+            LifecycleTestViewModel(ViewModelContext(root.context)) {
 
         val children = stackNavigator()
 

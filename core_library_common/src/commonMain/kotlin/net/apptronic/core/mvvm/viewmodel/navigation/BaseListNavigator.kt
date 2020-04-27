@@ -2,7 +2,6 @@ package net.apptronic.core.mvvm.viewmodel.navigation
 
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelListAdapter
-import net.apptronic.core.threading.execute
 
 abstract class BaseListNavigator<T>(
         private val parent: ViewModel
@@ -14,13 +13,11 @@ abstract class BaseListNavigator<T>(
     private var postRefreshingAdapter = false
 
     fun setAdapter(adapter: ViewModelListAdapter) {
-        uiWorker.execute {
-            this.adapter = adapter
-            onSetAdapter(adapter)
-            onNotifyAdapter(adapter)
-            parent.getLifecycle().onExitFromActiveStage {
-                this.adapter = null
-            }
+        this.adapter = adapter
+        onSetAdapter(adapter)
+        onNotifyAdapter(adapter)
+        parent.getLifecycle().onExitFromActiveStage {
+            this.adapter = null
         }
     }
 
@@ -29,8 +26,8 @@ abstract class BaseListNavigator<T>(
     fun notifyAdapter() {
         if (!postRefreshingAdapter) {
             postRefreshingAdapter = true
-            uiAsyncWorker.execute {
-                val adapter = this.adapter
+            coroutineLauncher.launch {
+                val adapter = this@BaseListNavigator.adapter
                 if (adapter != null) {
                     onNotifyAdapter(adapter)
                 }
@@ -44,7 +41,7 @@ abstract class BaseListNavigator<T>(
     internal fun postRefreshVisibility() {
         if (!postRefreshingVisibility) {
             postRefreshingVisibility = true
-            uiAsyncWorker.execute {
+            coroutineLauncher.launch {
                 refreshVisibility()
                 postRefreshingVisibility = false
             }

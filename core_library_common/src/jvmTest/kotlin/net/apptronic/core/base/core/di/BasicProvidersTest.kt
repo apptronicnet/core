@@ -1,7 +1,8 @@
 package net.apptronic.core.base.core.di
 
-import net.apptronic.core.testutils.BaseTestComponent
 import net.apptronic.core.component.di.declareModule
+import net.apptronic.core.component.di.inject
+import net.apptronic.core.testutils.BaseTestComponent
 import org.junit.Test
 
 class BasicProvidersTest {
@@ -49,17 +50,17 @@ class BasicProvidersTest {
 
     private class TestComponent : BaseTestComponent(
         contextInitializer = {
-            getProvider().addModule(sampleModule)
+            dependencyDispatcher().addModule(sampleModule)
         }
     ) {
 
-        val manyInstances1: ManyInstances = getProvider().inject()
-        val manyInstances2: ManyInstances = getProvider().inject()
-        val manyInstances3: ManyInstances = getProvider().inject()
+        val manyInstances1: ManyInstances = provider().inject()
+        val manyInstances2: ManyInstances = provider().inject()
+        val manyInstances3: ManyInstances = provider().inject()
 
-        val singleInstance1: SingleInstance = getProvider().inject()
-        val singleInstance2: SingleInstance = getProvider().inject()
-        val singleInstance3: SingleInstance = getProvider().inject()
+        val singleInstance1: SingleInstance = provider().inject()
+        val singleInstance2: SingleInstance = provider().inject()
+        val singleInstance3: SingleInstance = provider().inject()
 
     }
 

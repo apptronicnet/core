@@ -1,7 +1,7 @@
 package net.apptronic.core.component.entity.functions
 
 import kotlinx.coroutines.CoroutineScope
-import net.apptronic.core.component.context.Context
+import net.apptronic.core.component.Component
 import net.apptronic.core.component.coroutines.coroutineLauncherScoped
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.base.ConstantEntity
@@ -59,11 +59,11 @@ fun <T> Entity<T?>.ifNull(entity: Entity<T>): Entity<T> =
             value ?: ifNull
         }
 
-fun <T> Context.nullValue(): Entity<T?> =
-        ConstantEntity<T?>(this, null)
+fun <T> Component.nullValue(): Entity<T?> =
+        ConstantEntity<T?>(context, null)
 
-fun <T> Context.ofValue(value: T): Entity<T> =
-        ConstantEntity(this, value)
+fun <T> Component.ofValue(value: T): Entity<T> =
+        ConstantEntity(context, value)
 
 fun <T> Entity<T>.isTrueThat(test: (T) -> Boolean): Entity<Boolean> =
         entityFunction(this) {

@@ -1,5 +1,6 @@
 package net.apptronic.core.mvvm
 
+import net.apptronic.core.component.terminate
 import net.apptronic.core.record
 import kotlin.test.Test
 

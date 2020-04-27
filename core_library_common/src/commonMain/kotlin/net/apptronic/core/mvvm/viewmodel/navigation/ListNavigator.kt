@@ -8,7 +8,6 @@ import net.apptronic.core.component.entity.subscriptions.ContextSubjectWrapper
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.adapter.ItemStateNavigator
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelListAdapter
-import net.apptronic.core.threading.execute
 
 class ListNavigator(
         private val parent: ViewModel
@@ -22,7 +21,7 @@ class ListNavigator(
         update(emptyList())
     }
 
-    private val viewModelListEntity = ContextSubjectWrapper(parent, BehaviorSubject<ListNavigatorStatus>())
+    private val viewModelListEntity = ContextSubjectWrapper(context, BehaviorSubject<ListNavigatorStatus>())
 
     private fun updateSubject() {
         subject.update(items)
@@ -94,35 +93,31 @@ class ListNavigator(
     }
 
     private fun ViewModel.getContainer(): ViewModelContainer? {
-        return containers[getId()]
+        return containers[id]
     }
 
     fun update(action: (MutableList<ViewModel>) -> Unit) {
-        uiWorker.execute {
-            val list = items.toTypedArray().toMutableList()
-            action.invoke(list)
-            set(list)
-        }
+        val list = items.toTypedArray().toMutableList()
+        action.invoke(list)
+        set(list)
     }
 
     fun set(value: List<ViewModel>) {
-        uiWorker.execute {
-            val diff = getDiff(items, value)
-            diff.removed.forEach {
-                onRemoved(it)
-            }
-            items = value.toTypedArray().toList()
-            diff.added.forEach {
-                onAdded(it)
-            }
-            refreshVisibility()
-            updateSubject()
+        val diff = getDiff(items, value)
+        diff.removed.forEach {
+            onRemoved(it)
         }
+        items = value.toTypedArray().toList()
+        diff.added.forEach {
+            onAdded(it)
+        }
+        refreshVisibility()
+        updateSubject()
     }
 
     private fun onAdded(viewModel: ViewModel) {
         val container = ViewModelContainer(viewModel, parent, visibilityFilters.isReadyToShow(viewModel))
-        containers[viewModel.getId()] = container
+        containers[viewModel.id] = container
         container.getViewModel().onAttachToParent(this)
         container.observeVisibilityChanged(::postRefreshVisibility)
         container.setCreated(true)
@@ -148,7 +143,7 @@ class ListNavigator(
         adapter.setNavigator(itemStateNavigator)
         parent.getLifecycle().onExitFromActiveStage {
             items.forEach {
-                if (boundIds.contains(it.getId())) {
+                if (boundIds.contains(it.id)) {
                     itemStateNavigator.setFocused(it, false)
                     itemStateNavigator.setVisible(it, false)
                     itemStateNavigator.setBound(it, false)
@@ -166,9 +161,9 @@ class ListNavigator(
         override fun setBound(viewModel: ViewModel, isBound: Boolean) {
             viewModel.getContainer()?.setBound(isBound)
             if (isBound) {
-                boundIds.add(viewModel.getId())
+                boundIds.add(viewModel.id)
             } else {
-                boundIds.remove(viewModel.getId())
+                boundIds.remove(viewModel.id)
             }
         }
 

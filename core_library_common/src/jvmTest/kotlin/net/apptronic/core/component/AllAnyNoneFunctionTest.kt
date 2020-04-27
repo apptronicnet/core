@@ -1,13 +1,14 @@
 package net.apptronic.core.component
 
-import net.apptronic.core.testutils.TestContext
 import net.apptronic.core.component.entity.entities.setAs
 import net.apptronic.core.component.entity.functions.*
+import net.apptronic.core.component.extensions.BaseComponent
+import net.apptronic.core.testutils.TestContext
 import org.junit.Test
 
 class AllAnyNoneFunctionTest {
 
-    class TestComponent : Component(TestContext()) {
+    class TestComponent : BaseComponent(TestContext()) {
 
         val val1 = value(1)
         val val2 = value(2)

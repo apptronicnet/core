@@ -3,8 +3,8 @@ package net.apptronic.core.base.collections
 class LinkedQueue<T> {
 
     private class Node<T>(
-        val value: T,
-        var next: Node<T>?
+            val value: T,
+            var next: Node<T>?
     )
 
     private var size = 0;
@@ -44,6 +44,12 @@ class LinkedQueue<T> {
 
     fun size(): Int {
         return size
+    }
+
+    fun trim(maxSize: Int) {
+        while (size > maxSize) {
+            take()
+        }
     }
 
 }

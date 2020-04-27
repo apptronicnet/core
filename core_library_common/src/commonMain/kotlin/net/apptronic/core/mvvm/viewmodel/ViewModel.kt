@@ -3,62 +3,67 @@ package net.apptronic.core.mvvm.viewmodel
 import net.apptronic.core.base.observable.Observable
 import net.apptronic.core.base.observable.subject.BehaviorSubject
 import net.apptronic.core.component.Component
+import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.behavior.doWhen
 import net.apptronic.core.component.entity.behavior.setup
 import net.apptronic.core.component.entity.bindContext
 import net.apptronic.core.component.entity.entities.setAs
 import net.apptronic.core.component.entity.subscribe
+import net.apptronic.core.component.extensions.ContextDefinition
+import net.apptronic.core.component.genericEvent
 import net.apptronic.core.component.lifecycle.Lifecycle
 import net.apptronic.core.component.lifecycle.LifecycleStage
 import net.apptronic.core.mvvm.viewmodel.navigation.*
 import net.apptronic.core.platform.getPlatform
-import net.apptronic.core.threading.WorkerDefinition
 
 open class ViewModel : Component {
 
-    private val viewModelContext: ViewModelContext
-
-    constructor(context: ViewModelContext) : super(context) {
-        viewModelContext = context
-    }
-
-    constructor(parent: ViewModel) : super(parent.viewModelContext) {
-        viewModelContext = parent.viewModelContext
-    }
-
-    override fun getContext(): ViewModelContext {
-        return viewModelContext
-    }
-
-    override fun getDefaultWorker(): WorkerDefinition {
-        return WorkerDefinition.DEFAULT
-    }
-
-    override fun getLifecycle(): ViewModelLifecycle {
-        return super.getLifecycle() as ViewModelLifecycle
-    }
-
-    init {
-        getLifecycle().getStage(Lifecycle.ROOT_STAGE)?.doOnce {
-            getPlatform().logMessage("ViewModelLifecycle: $this initialized")
-        }
-        doOnTerminate {
-            getPlatform().logMessage("ViewModelLifecycle: ${this@ViewModel} terminated")
-        }
-    }
+    final override val context: ViewModelContext
 
     /**
      * Platform-specific instance of object which responsible for view binding. Do not touch, it is used for debugging.
      */
     var boundView: Any? = null
 
-    private val isCreated = stateOfStage(ViewModelLifecycle.STAGE_CREATED)
-    private val isBound = stateOfStage(ViewModelLifecycle.STAGE_BOUND)
-    private val isVisible = stateOfStage(ViewModelLifecycle.STAGE_VISIBLE)
-    private val isFocused = stateOfStage(ViewModelLifecycle.STAGE_FOCUSED)
+    private val isCreated = BehaviorSubject<Boolean>()
+    private val isBound = BehaviorSubject<Boolean>()
+    private val isVisible = BehaviorSubject<Boolean>()
+    private val isFocused = BehaviorSubject<Boolean>()
 
     private var savedState: SavedState? = null
+
+    constructor(context: ViewModelContext) {
+        this.context = context
+        doInit()
+    }
+
+    constructor(parent: ViewModel) {
+        context = parent.context
+        doInit()
+    }
+
+    constructor(parent: Context, contextDefinition: ContextDefinition<ViewModelContext>) {
+        context = contextDefinition.createContext(parent)
+        doInit()
+    }
+
+    override fun getLifecycle(): ViewModelLifecycle {
+        return super.getLifecycle() as ViewModelLifecycle
+    }
+
+    private fun doInit() {
+        context.getLifecycle().getStage(Lifecycle.ROOT_STAGE)?.doOnce {
+            getPlatform().logMessage("ViewModelLifecycle: $this initialized")
+        }
+        doOnTerminate {
+            getPlatform().logMessage("ViewModelLifecycle: ${this@ViewModel} terminated")
+        }
+        stateOfStage(isCreated, ViewModelLifecycle.STAGE_CREATED)
+        stateOfStage(isBound, ViewModelLifecycle.STAGE_BOUND)
+        stateOfStage(isVisible, ViewModelLifecycle.STAGE_VISIBLE)
+        stateOfStage(isFocused, ViewModelLifecycle.STAGE_FOCUSED)
+    }
 
     fun newSavedState(): SavedState {
         return SavedState().also {
@@ -70,8 +75,7 @@ open class ViewModel : Component {
         return savedState
     }
 
-    private fun stateOfStage(stageName: String): Observable<Boolean> {
-        val target = BehaviorSubject<Boolean>()
+    private fun stateOfStage(target: BehaviorSubject<Boolean>, stageName: String): Observable<Boolean> {
         onEnterStage(stageName) {
             getPlatform().logMessage("ViewModelLifecycle: ${this@ViewModel} entered stage$stageName")
             target.update(true)
@@ -173,7 +177,7 @@ open class ViewModel : Component {
 
     private fun whenEntered(observable: Observable<Boolean>): Entity<Unit> {
         return genericEvent().also { event ->
-            doWhen(observable.bindContext(this)) {
+            doWhen(observable.bindContext(context)) {
                 event.sendEvent()
             }
         }
@@ -248,10 +252,7 @@ open class ViewModel : Component {
      */
     fun closeSelf(transitionInfo: Any? = null): Boolean {
         return parent?.let {
-            val defaultWorker = getScheduler().getDefaultWorker()
-            getScheduler().execute(defaultWorker) {
-                it.requestCloseSelf(this, transitionInfo)
-            }
+            it.requestCloseSelf(this, transitionInfo)
             true
         } ?: false
     }

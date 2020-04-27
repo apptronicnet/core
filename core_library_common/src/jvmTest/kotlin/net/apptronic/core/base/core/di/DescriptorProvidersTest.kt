@@ -1,8 +1,9 @@
 package net.apptronic.core.base.core.di
 
-import net.apptronic.core.testutils.BaseTestComponent
 import net.apptronic.core.component.di.createDescriptor
 import net.apptronic.core.component.di.declareModule
+import net.apptronic.core.component.di.inject
+import net.apptronic.core.testutils.BaseTestComponent
 import org.junit.Test
 
 class DescriptorProvidersTest {
@@ -58,27 +59,27 @@ class DescriptorProvidersTest {
 
     private class TestComponent : BaseTestComponent(
         contextInitializer = {
-            getProvider().addModule(sampleModule)
+            dependencyDispatcher().addModule(sampleModule)
         }
     ) {
 
-        val multiBase_1 = getProvider().inject<MultiInterface>()
-        val multiBase_2 = getProvider().inject<MultiInterface>()
+        val multiBase_1 = provider().inject<MultiInterface>()
+        val multiBase_2 = provider().inject<MultiInterface>()
 
-        val multiOne_1 = getProvider().inject(MultiOneDescriptor)
-        val multiOne_2 = getProvider().inject(MultiOneDescriptor)
+        val multiOne_1 = provider().inject(MultiOneDescriptor)
+        val multiOne_2 = provider().inject(MultiOneDescriptor)
 
-        val multiTwo_1 = getProvider().inject(MultiTwoDescriptor)
-        val multiTwo_2 = getProvider().inject(MultiTwoDescriptor)
+        val multiTwo_1 = provider().inject(MultiTwoDescriptor)
+        val multiTwo_2 = provider().inject(MultiTwoDescriptor)
 
-        val singleBase_1 = getProvider().inject<SingleInterface>()
-        val singleBase_2 = getProvider().inject<SingleInterface>()
+        val singleBase_1 = provider().inject<SingleInterface>()
+        val singleBase_2 = provider().inject<SingleInterface>()
 
-        val singleOne_1 = getProvider().inject(SingleOneDescriptor)
-        val singleOne_2 = getProvider().inject(SingleOneDescriptor)
+        val singleOne_1 = provider().inject(SingleOneDescriptor)
+        val singleOne_2 = provider().inject(SingleOneDescriptor)
 
-        val singleTwo_1 = getProvider().inject(SingleTwoDescriptor)
-        val singleTwo_2 = getProvider().inject(SingleTwoDescriptor)
+        val singleTwo_1 = provider().inject(SingleTwoDescriptor)
+        val singleTwo_2 = provider().inject(SingleTwoDescriptor)
 
     }
 

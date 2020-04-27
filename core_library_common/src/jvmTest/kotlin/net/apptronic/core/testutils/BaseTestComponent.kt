@@ -1,25 +1,23 @@
 package net.apptronic.core.testutils
 
-import net.apptronic.core.component.Component
+import net.apptronic.core.component.extensions.BaseComponent
 import net.apptronic.core.component.lifecycle.LifecycleStage
 
-open class BaseTestComponent : Component {
+open class BaseTestComponent : BaseComponent {
 
     constructor() : super(TestContext())
 
     constructor(contextInitializer: TestContext.() -> Unit = {}) : super(
-        TestContext().apply(
-            contextInitializer
-        )
+            TestContext().apply(
+                    contextInitializer
+            )
     )
 
     constructor(context: TestContext) : super(context)
 
-    override fun getContext(): TestContext {
-        return super.getContext() as TestContext
-    }
+    override val context: TestContext = super.context as TestContext
 
-    override fun getLifecycle(): TestLifecycle = getContext().getLifecycle() as TestLifecycle
+    override fun getLifecycle(): TestLifecycle = context.getLifecycle() as TestLifecycle
 
     fun doOnCreate(callback: LifecycleStage.OnEnterHandler.() -> Unit) {
         getLifecycle().created.doOnEnter(callback)

@@ -10,7 +10,7 @@ import net.apptronic.core.component.entity.subscribe
 fun <T> Entity<T>.switchContext(
         targetContext: Context
 ): Entity<T> {
-    return if (this.context.getToken() != targetContext.getToken()) {
+    return if (this.context != targetContext) {
         ContextSwitchEntity(this, targetContext)
     } else {
         this

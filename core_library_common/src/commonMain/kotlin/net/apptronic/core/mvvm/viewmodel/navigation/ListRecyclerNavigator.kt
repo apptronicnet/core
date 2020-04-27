@@ -4,13 +4,14 @@ import net.apptronic.core.base.collections.lazyListOf
 import net.apptronic.core.base.collections.simpleLazyListOf
 import net.apptronic.core.base.observable.Observable
 import net.apptronic.core.base.observable.subject.BehaviorSubject
+import net.apptronic.core.component.coroutines.coroutineLauncherContextual
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.UpdateEntity
 import net.apptronic.core.component.entity.subscribe
+import net.apptronic.core.component.value
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.adapter.ItemStateNavigator
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelListAdapter
-import net.apptronic.core.threading.execute
 
 const val RECYCLER_NAVIGATOR_DEFAULT_SAVED_ITEMS_SIZE = 10
 
@@ -107,15 +108,13 @@ class ListRecyclerNavigator<T : Any, Id, VM : ViewModel>(
      * Set source items list.
      */
     fun set(value: List<T>, listDescription: Any? = null) {
-        uiWorker.execute {
-            clearSaved()
-            containers.markAllRequiresUpdate()
-            items = value
-            this.listDescription = listDescription
-            refreshVisibility()
-            updateSubject()
-            notifyAdapter()
-        }
+        clearSaved()
+        containers.markAllRequiresUpdate()
+        items = value
+        this.listDescription = listDescription
+        refreshVisibility()
+        updateSubject()
+        notifyAdapter()
     }
 
     override fun onNotifyAdapter(adapter: ViewModelListAdapter) {
@@ -153,34 +152,32 @@ class ListRecyclerNavigator<T : Any, Id, VM : ViewModel>(
      * will not be removed when item is unbound.
      */
     fun setStaticItems(value: List<out T>) {
-        uiWorker.execute {
-            fun Id.getKey(): T? {
-                return value.firstOrNull { key ->
-                    key.getId() == this
-                }
+        fun Id.getKey(): T? {
+            return value.firstOrNull { key ->
+                key.getId() == this
             }
-            uiAsyncWorker.execute {
-                val oldIds = staticItems.map { it.getId() }
-                val newIds = value.map { it.getId() }
-                val diff = getDiff(oldIds, newIds)
-                diff.removed.forEach { id ->
-                    containers.findRecordForId(id)?.let { record ->
-                        if (!record.container.getViewModel().isBound()) {
-                            val key = id.getKey()
-                            if (key != null) {
-                                onReadyToRemove(key)
-                            }
+        }
+        context.coroutineLauncherContextual().launch {
+            val oldIds = staticItems.map { it.getId() }
+            val newIds = value.map { it.getId() }
+            val diff = getDiff(oldIds, newIds)
+            diff.removed.forEach { id ->
+                containers.findRecordForId(id)?.let { record ->
+                    if (!record.container.getViewModel().isBound()) {
+                        val key = id.getKey()
+                        if (key != null) {
+                            onReadyToRemove(key)
                         }
                     }
                 }
-                staticItems = value
-                diff.added.forEach { id ->
-                    id.getKey()?.let {
-                        onAdded(it)
-                    }
-                }
-                refreshVisibility()
             }
+            staticItems = value
+            diff.added.forEach { id ->
+                id.getKey()?.let {
+                    onAdded(it)
+                }
+            }
+            refreshVisibility()
         }
     }
 
@@ -193,7 +190,7 @@ class ListRecyclerNavigator<T : Any, Id, VM : ViewModel>(
     }
 
     private fun onAdded(key: T): ViewModelContainer {
-        val viewModel = builder.onCreateViewModel(parent, key)
+        val viewModel = builder.onCreateViewModel(context, key)
         val container = ViewModelContainer(viewModel, parent, visibilityFilters.isReadyToShow(viewModel))
         containers.add(key.getId(), container, key)
         container.getViewModel().onAttachToParent(this)
@@ -313,32 +310,26 @@ class ListRecyclerNavigator<T : Any, Id, VM : ViewModel>(
     private inner class ItemStateNavigatorImpl : ItemStateNavigator {
 
         override fun setBound(viewModel: ViewModel, isBound: Boolean) {
-            uiWorker.execute {
-                if (isBound) {
-                    containers.findRecordForModel(viewModel)?.let { record ->
-                        record.container.setBound(true)
-                    }
-                } else {
-                    containers.findRecordForModel(viewModel)?.let { record ->
-                        record.container.setBound(false)
-                        if (!shouldRetainInstance(record.item, viewModel as VM)) {
-                            onReadyToRemove(record.item)
-                        }
+            if (isBound) {
+                containers.findRecordForModel(viewModel)?.let { record ->
+                    record.container.setBound(true)
+                }
+            } else {
+                containers.findRecordForModel(viewModel)?.let { record ->
+                    record.container.setBound(false)
+                    if (!shouldRetainInstance(record.item, viewModel as VM)) {
+                        onReadyToRemove(record.item)
                     }
                 }
             }
         }
 
         override fun setVisible(viewModel: ViewModel, isBound: Boolean) {
-            uiWorker.execute {
-                containers.findRecordForModel(viewModel)?.container?.setVisible(isBound)
-            }
+            containers.findRecordForModel(viewModel)?.container?.setVisible(isBound)
         }
 
         override fun setFocused(viewModel: ViewModel, isBound: Boolean) {
-            uiWorker.execute {
-                containers.findRecordForModel(viewModel)?.container?.setFocused(isBound)
-            }
+            containers.findRecordForModel(viewModel)?.container?.setFocused(isBound)
         }
 
     }

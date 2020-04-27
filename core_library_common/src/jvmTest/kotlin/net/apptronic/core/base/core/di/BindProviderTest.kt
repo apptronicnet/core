@@ -1,9 +1,9 @@
 package net.apptronic.core.base.core.di
 
-import net.apptronic.core.testutils.TestContext
 import net.apptronic.core.component.di.alsoAs
 import net.apptronic.core.component.di.createDescriptor
 import net.apptronic.core.component.di.declareModule
+import net.apptronic.core.testutils.TestContext
 import org.junit.Test
 
 class BindProviderTest {
@@ -32,7 +32,7 @@ class BindProviderTest {
 
     private class Context : TestContext() {
         init {
-            getProvider().addModule(module)
+            dependencyDispatcher().addModule(module)
         }
     }
 

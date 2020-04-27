@@ -1,17 +1,17 @@
 package net.apptronic.core.mvvm.viewmodel
 
-import net.apptronic.core.component.Component
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.behavior.whenever
 import net.apptronic.core.component.entity.behavior.wheneverNot
 import net.apptronic.core.component.entity.entities.setAs
 import net.apptronic.core.component.entity.functions.and
+import net.apptronic.core.component.extensions.BaseComponent
+import net.apptronic.core.component.value
 
 class ViewModelRoot(
-    val coreViewModel: ViewModel,
-    context: Context
-) : Component(context),
-    ViewModelParent {
+        val coreViewModel: ViewModel,
+        override val context: Context
+) : BaseComponent(context), ViewModelParent {
 
     private val isCreated = value(false)
     private val isVisible = value(false)
@@ -19,10 +19,10 @@ class ViewModelRoot(
 
     private val isCreatedStage = value<Boolean>().setAs(isCreated)
     private val isVisibleStage = value<Boolean>().setAs(
-        isCreatedStage and isVisible
+            isCreatedStage and isVisible
     )
     private val isFocusedStage = value<Boolean>().setAs(
-        isVisibleStage and isFocused
+            isVisibleStage and isFocused
     )
 
     private var onCloseListener: () -> Unit = {}

@@ -21,20 +21,20 @@ class ViewModelListBuilder<T, Id, VM : ViewModel>(
     private val builder: ViewModelBuilder<T, Id, VM>
 ) : Entity<List<ViewModel>>, ViewModelBuilder<T, Id, VM> by builder {
 
+    override val context: Context = parent.context
+
     private inner class ViewModelHolder(
-        val id: Id,
-        val viewModel: VM
+            val id: Id,
+            val viewModel: VM
     )
 
     private val viewModelHolders = arrayListOf<ViewModelHolder>()
 
-    private val subject = ContextSubjectWrapper(parent, BehaviorSubject<List<ViewModel>>())
+    private val subject = ContextSubjectWrapper(context, BehaviorSubject<List<ViewModel>>())
 
     init {
         subject.update(emptyList())
     }
-
-    override val context: Context = parent
 
     /**
      * Update list of [ViewModel]s automatically from given [Entity]
@@ -81,7 +81,7 @@ class ViewModelListBuilder<T, Id, VM : ViewModel>(
         }
         addedItems.forEach { item ->
             val id = getId(item)
-            val viewModel = onCreateViewModel(parent, item)
+            val viewModel = onCreateViewModel(context, item)
             viewModelHolders.add(ViewModelHolder(id, viewModel))
         }
         viewModelHolders.sortWith(PostArrangeComparator(newList))

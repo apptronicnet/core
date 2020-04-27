@@ -3,6 +3,7 @@ package net.apptronic.core.mvvm.viewmodel.navigation
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.subscribe
+import net.apptronic.core.component.value
 import net.apptronic.core.mvvm.TestViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext

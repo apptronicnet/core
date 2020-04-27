@@ -5,12 +5,12 @@ import net.apptronic.core.base.addTo
 import net.apptronic.core.base.observable.Observable
 import net.apptronic.core.base.observable.subscribe
 import net.apptronic.core.component.entity.Entity
-import net.apptronic.core.component.entity.entities.Value
 import net.apptronic.core.component.entity.entities.distinctUntilChanged
 import net.apptronic.core.component.entity.functions.and
 import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.component.lifecycle.enterStage
 import net.apptronic.core.component.lifecycle.exitStage
+import net.apptronic.core.component.value
 import net.apptronic.core.debugError
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelLifecycle
@@ -40,7 +40,7 @@ internal class ViewModelContainer(
     private var shouldShowValue = true
 
     private fun from(parent: Observable<Boolean>): Entity<Boolean> {
-        val property = Value<Boolean>(viewModel).apply { set(false) }
+        val property = viewModel.value<Boolean>().apply { set(false) }
         parent.subscribe {
             property.set(it)
         }.addTo(subscriptionHolders)
@@ -111,16 +111,16 @@ internal class ViewModelContainer(
     private fun bindStage(viewModel: ViewModel, stageName: String, entity: Entity<Boolean>) {
         entity.distinctUntilChanged().subscribe {
             if (it) {
-                enterStage(viewModel, stageName)
+                enterStage(viewModel.context, stageName)
             } else {
-                exitStage(viewModel, stageName)
+                exitStage(viewModel.context, stageName)
             }
         }
     }
 
     fun terminate() {
         subscriptionHolders.unsubscribe()
-        viewModel.terminate()
+        viewModel.context.getLifecycle().terminate()
     }
 
     fun shouldShow(): Boolean {

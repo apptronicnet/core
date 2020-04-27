@@ -7,9 +7,9 @@ import kotlin.reflect.KClass
  * Context of creating methods in module definition
  */
 abstract class ObjectBuilderContext internal constructor(
-    protected val definitionContext: Context,
-    protected val dependencyProvider: DependencyProvider,
-    protected val parameters: Parameters
+        protected val definitionContext: Context,
+        protected val dependencyDispatcher: DependencyDispatcher,
+        protected val parameters: Parameters
 ) {
 
     inline fun <reified ObjectType : Any> inject(): ObjectType {
@@ -66,31 +66,31 @@ abstract class ObjectBuilderContext internal constructor(
     internal fun <ObjectType> performInjection(
         objectKey: ObjectKey
     ): ObjectType {
-        return parameters.get(objectKey) ?: dependencyProvider.inject(objectKey)
+        return parameters.get(objectKey) ?: dependencyDispatcher.inject(objectKey)
     }
 
     internal fun <ObjectType> optionalInjection(
             objectKey: ObjectKey
     ): ObjectType? {
-        return parameters.get(objectKey) ?: dependencyProvider.optional(objectKey)
+        return parameters.get(objectKey) ?: dependencyDispatcher.optional(objectKey)
     }
 
 }
 
 class FactoryContext(
-    definitionContext: Context,
-    private val injectionContext: Context,
-    dependencyProvider: DependencyProvider,
-    parameters: Parameters
-) : ObjectBuilderContext(definitionContext, dependencyProvider, parameters) {
+        definitionContext: Context,
+        private val injectionContext: Context,
+        dependencyDispatcher: DependencyDispatcher,
+        parameters: Parameters
+) : ObjectBuilderContext(definitionContext, dependencyDispatcher, parameters) {
 
-    private val requestorProvider = injectionContext.getProvider()
+    private val requestorProvider = injectionContext.dependencyDispatcher()
 
     /**
      * Request injection from injection context. Allows to override instances in child context
      */
     fun <ObjectType : Any> provided(
-        clazz: KClass<ObjectType>
+            clazz: KClass<ObjectType>
     ): ObjectType {
         if (clazz == Context::class) {
             throw  IllegalArgumentException("Cannot inject [Context]. Please use definitionContext() or providedContext() instead")
@@ -123,7 +123,7 @@ class FactoryContext(
 }
 
 class SingleContext(
-    definitionContext: Context,
-    dependencyProvider: DependencyProvider,
-    parameters: Parameters
-) : ObjectBuilderContext(definitionContext, dependencyProvider, parameters)
+        definitionContext: Context,
+        dependencyDispatcher: DependencyDispatcher,
+        parameters: Parameters
+) : ObjectBuilderContext(definitionContext, dependencyDispatcher, parameters)

@@ -29,8 +29,8 @@ internal class SearchSpec(
             appendListFormatted("Parameters", "", params.getInstanceNames())
             contextChain.forEach { context ->
                 append("${context::class.qualifiedName}\n")
-                appendListFormatted("Instances", "    ", context.getProvider().getInstanceNames())
-                appendListFormatted("Modules", "    ", context.getProvider().getModuleNames())
+                appendListFormatted("Instances", "    ", context.dependencyDispatcher().getInstanceNames())
+                appendListFormatted("Modules", "    ", context.dependencyDispatcher().getModuleNames())
             }
         }.toString()
     }

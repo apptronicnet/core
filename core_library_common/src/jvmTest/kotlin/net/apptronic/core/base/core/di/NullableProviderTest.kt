@@ -1,7 +1,7 @@
 package net.apptronic.core.base.core.di
 
-import net.apptronic.core.testutils.TestContext
 import net.apptronic.core.component.di.createNullableDescriptor
+import net.apptronic.core.testutils.TestContext
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertNull
@@ -17,14 +17,14 @@ class NullableProviderTest {
 
     @Before
     fun before() {
-        context.getProvider().addNullableInstance(NullableStringDescriptor, null)
-        context.getProvider().addNullableInstance(NullableIntDescriptor, null)
+        context.dependencyDispatcher().addNullableInstance(NullableStringDescriptor, null)
+        context.dependencyDispatcher().addNullableInstance(NullableIntDescriptor, null)
     }
 
     @Test
     fun shouldInjectNulls() {
-        val nullString = context.getProvider().inject(NullableStringDescriptor)
-        val nullInt = context.getProvider().inject(NullableIntDescriptor)
+        val nullString = context.dependencyDispatcher().inject(NullableStringDescriptor)
+        val nullInt = context.dependencyDispatcher().inject(NullableIntDescriptor)
         assertNull(nullString)
         assertNull(nullInt)
     }

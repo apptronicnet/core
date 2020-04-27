@@ -11,9 +11,9 @@ open class ViewModelLifecycleController(
 
     private fun setStage(value: Boolean, stageName: String) {
         if (value) {
-            enterStage(viewModel, stageName)
+            enterStage(viewModel.context, stageName)
         } else {
-            exitStage(viewModel, stageName)
+            exitStage(viewModel.context, stageName)
         }
     }
 
@@ -34,7 +34,7 @@ open class ViewModelLifecycleController(
     }
 
     open fun terminate() {
-        viewModel.terminate()
+        viewModel.getLifecycle().terminate()
     }
 
 }

@@ -1,5 +1,6 @@
 package net.apptronic.core.mvvm.viewmodel.navigation
 
+import net.apptronic.core.component.terminate
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 import net.apptronic.core.testutils.TestContext

@@ -1,4 +1,4 @@
-package net.apptronic.core.mvvm.viewmodel
+package net.apptronic.core.component
 
 import net.apptronic.core.base.SerialIdGenerator
 

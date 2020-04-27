@@ -44,9 +44,9 @@ internal abstract class ObjectProvider<TypeDeclaration>(
     }
 
     abstract fun provide(
-        definitionContext: Context,
-        provider: DependencyProvider,
-        searchSpec: SearchSpec
+            definitionContext: Context,
+            dispatcher: DependencyDispatcher,
+            searchSpec: SearchSpec
     ): TypeDeclaration
 
     protected fun recycle(instance: TypeDeclaration) {
@@ -97,11 +97,11 @@ private class SingleProvider<TypeDeclaration>(
     private val entity = AtomicEntity<TypeDeclaration?>(null)
 
     override fun provide(
-        definitionContext: Context,
-        provider: DependencyProvider,
-        searchSpec: SearchSpec
+            definitionContext: Context,
+            dispatcher: DependencyDispatcher,
+            searchSpec: SearchSpec
     ): TypeDeclaration {
-        val singleContext = SingleContext(definitionContext, provider, searchSpec.params)
+        val singleContext = SingleContext(definitionContext, dispatcher, searchSpec.params)
         return entity.perform {
             if (get() == null) {
                 val created = builder.invoke(singleContext)
@@ -131,12 +131,12 @@ private class FactoryProvider<TypeDeclaration>(
 ) : ObjectBuilderProvider<TypeDeclaration, FactoryContext>(objectKey, builder, recycleOn) {
 
     override fun provide(
-        definitionContext: Context,
-        provider: DependencyProvider,
-        searchSpec: SearchSpec
+            definitionContext: Context,
+            dispatcher: DependencyDispatcher,
+            searchSpec: SearchSpec
     ): TypeDeclaration {
         val factoryContext =
-            FactoryContext(definitionContext, searchSpec.context, provider, searchSpec.params)
+                FactoryContext(definitionContext, searchSpec.context, dispatcher, searchSpec.params)
         val instance = builder.invoke(factoryContext)
         /**
          * Factory instance recycled when on exit from caller stage
@@ -154,11 +154,11 @@ private class BindProvider<TypeDeclaration>(
 ) : ObjectProvider<TypeDeclaration>(objectKey) {
 
     override fun provide(
-        definitionContext: Context,
-        provider: DependencyProvider,
-        searchSpec: SearchSpec
+            definitionContext: Context,
+            dispatcher: DependencyDispatcher,
+            searchSpec: SearchSpec
     ): TypeDeclaration {
-        return provider.inject(objectKey) as TypeDeclaration
+        return dispatcher.inject(objectKey) as TypeDeclaration
     }
 
 }

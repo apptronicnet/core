@@ -1,10 +1,10 @@
 package net.apptronic.core.base.core.di
 
-import net.apptronic.core.testutils.TestContext
 import net.apptronic.core.component.context.SubContext
 import net.apptronic.core.component.di.InjectionFailedException
 import net.apptronic.core.component.di.createDescriptor
 import net.apptronic.core.component.di.declareModule
+import net.apptronic.core.testutils.TestContext
 import org.junit.Test
 
 class ParentContextProviderTest {
@@ -49,14 +49,14 @@ class ParentContextProviderTest {
 
     private class Context : TestContext() {
         init {
-            getProvider().addModule(parentModule)
+            dependencyDispatcher().addModule(parentModule)
         }
     }
 
     private class ChildContext(parent: net.apptronic.core.component.context.Context) :
         SubContext(parent) {
         init {
-            getProvider().addModule(childModule)
+            dependencyDispatcher().addModule(childModule)
         }
     }
 
@@ -65,21 +65,21 @@ class ParentContextProviderTest {
 
     @Test
     fun parentShouldHave() {
-        val one = parent.getProvider().inject(OneDescriptor)
-        val two = parent.getProvider().inject(TwoDescriptor)
+        val one = parent.dependencyDispatcher().inject(OneDescriptor)
+        val two = parent.dependencyDispatcher().inject(TwoDescriptor)
     }
 
     @Test
     fun childShouldHave() {
-        val one = child.getProvider().inject(OneDescriptor)
-        val two = child.getProvider().inject(TwoDescriptor)
-        val three = child.getProvider().inject(ThreeDescriptor)
+        val one = child.dependencyDispatcher().inject(OneDescriptor)
+        val two = child.dependencyDispatcher().inject(TwoDescriptor)
+        val three = child.dependencyDispatcher().inject(ThreeDescriptor)
         assert(one is OneChild)
     }
 
     @Test(expected = InjectionFailedException::class)
     fun parentShouldNotHave() {
-        val three = parent.getProvider().inject(ThreeDescriptor)
+        val three = parent.dependencyDispatcher().inject(ThreeDescriptor)
     }
 
 }

@@ -1,5 +1,8 @@
 package net.apptronic.core.component.entity.behavior
 
+import net.apptronic.core.component.mutableValue
+import net.apptronic.core.component.terminate
+import net.apptronic.core.component.value
 import net.apptronic.core.testutils.BaseTestComponent
 import org.junit.Test
 
