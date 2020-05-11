@@ -20,6 +20,7 @@ class Timer(
         val INFINITE = -1L
     }
 
+    private val context = component.context
     private val coroutineLauncher = component.context.coroutineLauncherScoped()
     private val isRunning = component.value(false)
     private val limit = component.value(initialLimit)
@@ -35,7 +36,7 @@ class Timer(
                 }
             }
         }
-        component.getLifecycle().onExitFromActiveStage {
+        context.lifecycle.onExitFromActiveStage {
             isRunning.set(false)
         }
     }
@@ -78,7 +79,7 @@ class Timer(
 
     fun start() {
         isRunning.set(true)
-        component.getLifecycle().onExitFromActiveStage {
+        context.lifecycle.onExitFromActiveStage {
             stop()
         }
     }

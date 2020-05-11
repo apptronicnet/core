@@ -32,6 +32,7 @@ class VisibilityFilters<VM : ViewModel> : VisibilityFilter<VM> {
         return viewModel.ofValue(true)
     }
 
+    @Suppress("UNCHECKED_CAST")
     private class VisibilityFilterWrapper<VM : ViewModel, SubVM : VM>(
             private val type: KClass<SubVM>,
             private val wrapped: VisibilityFilter<SubVM>

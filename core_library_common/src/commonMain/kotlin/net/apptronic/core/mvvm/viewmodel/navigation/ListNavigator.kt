@@ -141,7 +141,7 @@ class ListNavigator(
 
     override fun onSetAdapter(adapter: ViewModelListAdapter) {
         adapter.setNavigator(itemStateNavigator)
-        parent.getLifecycle().onExitFromActiveStage {
+        parent.context.lifecycle.onExitFromActiveStage {
             items.forEach {
                 if (boundIds.contains(it.id)) {
                     itemStateNavigator.setFocused(it, false)

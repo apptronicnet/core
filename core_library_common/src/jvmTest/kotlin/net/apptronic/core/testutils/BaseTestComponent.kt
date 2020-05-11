@@ -1,58 +1,38 @@
 package net.apptronic.core.testutils
 
-import net.apptronic.core.component.extensions.BaseComponent
+import net.apptronic.core.component.Component
+import net.apptronic.core.component.lifecycle.Lifecycle
 import net.apptronic.core.component.lifecycle.LifecycleStage
 
-open class BaseTestComponent : BaseComponent {
+open class BaseTestComponent : Component {
 
-    constructor() : super(TestContext())
+    final override val context: TestContext
 
-    constructor(contextInitializer: TestContext.() -> Unit = {}) : super(
-            TestContext().apply(
-                    contextInitializer
-            )
-    )
-
-    constructor(context: TestContext) : super(context)
-
-    override val context: TestContext = super.context as TestContext
-
-    override fun getLifecycle(): TestLifecycle = context.getLifecycle() as TestLifecycle
-
-    fun doOnCreate(callback: LifecycleStage.OnEnterHandler.() -> Unit) {
-        getLifecycle().created.doOnEnter(callback)
+    constructor(contextInitializer: TestContext.() -> Unit = {}) {
+        context = TestContext().apply(
+                contextInitializer
+        )
     }
 
-    fun doOnDestroy(callback: LifecycleStage.OnExitHandler.() -> Unit) {
-        getLifecycle().created.doOnExit(callback)
-    }
 
-    fun doOnceCreated(key: String, action: () -> Unit) {
-        getLifecycle().created.doOnce(key, action)
-    }
+    fun getLifecycle(): Lifecycle = context.lifecycle
 
-    fun doOnActivated(callback: LifecycleStage.OnEnterHandler.() -> Unit) {
-        getLifecycle().activated.doOnEnter(callback)
-    }
+    fun doOnCreate(callback: LifecycleStage.OnEnterHandler.() -> Unit) = onEnterStage(TestLifecycle.STAGE_CREATED, callback)
 
-    fun doOnDeactivated(callback: LifecycleStage.OnExitHandler.() -> Unit) {
-        getLifecycle().activated.doOnExit(callback)
-    }
+    fun doOnDestroy(callback: LifecycleStage.OnExitHandler.() -> Unit) = onExitStage(TestLifecycle.STAGE_CREATED, callback)
 
-    fun doOnceActivated(key: String, action: () -> Unit) {
-        getLifecycle().activated.doOnce(key, action)
-    }
+    fun doOnceCreated(key: String, action: () -> Unit) = onceStage(TestLifecycle.STAGE_CREATED, key, action)
 
-    fun doOnWorking(callback: LifecycleStage.OnEnterHandler.() -> Unit) {
-        getLifecycle().working.doOnEnter(callback)
-    }
+    fun doOnActivated(callback: LifecycleStage.OnEnterHandler.() -> Unit) = onEnterStage(TestLifecycle.STAGE_ACTIVATED, callback)
 
-    fun doOnStopped(callback: LifecycleStage.OnExitHandler.() -> Unit) {
-        getLifecycle().working.doOnExit(callback)
-    }
+    fun doOnDeactivated(callback: LifecycleStage.OnExitHandler.() -> Unit) = onExitStage(TestLifecycle.STAGE_ACTIVATED, callback)
 
-    fun doOnceWorking(key: String, action: () -> Unit) {
-        getLifecycle().working.doOnce(key, action)
-    }
+    fun doOnceActivated(key: String, action: () -> Unit) = onceStage(TestLifecycle.STAGE_ACTIVATED, key, action)
+
+    fun doOnWorking(callback: LifecycleStage.OnEnterHandler.() -> Unit) = onEnterStage(TestLifecycle.STAGE_WORKING, callback)
+
+    fun doOnStopped(callback: LifecycleStage.OnExitHandler.() -> Unit) = onExitStage(TestLifecycle.STAGE_WORKING, callback)
+
+    fun doOnceWorking(key: String, action: () -> Unit) = onceStage(TestLifecycle.STAGE_WORKING, key, action)
 
 }

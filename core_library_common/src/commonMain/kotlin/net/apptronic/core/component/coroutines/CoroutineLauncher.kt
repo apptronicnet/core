@@ -37,7 +37,7 @@ interface CoroutineLauncher {
  * exit throwing [CoroutineLauncherCancellationException]
  */
 fun Context.coroutineLauncherScoped(): CoroutineLauncher {
-    val boundStage = getLifecycle().getActiveStage()
+    val boundStage = lifecycle.getActiveStage()
     val name = "${this::class.simpleName}/{${boundStage?.getStageName() ?: "[terminated]"}"
     val coroutineContext: CoroutineContext = CoroutineName(name)
     boundStage?.doOnExit {
@@ -56,9 +56,9 @@ fun Context.coroutineLauncherScoped(): CoroutineLauncher {
  */
 fun Context.coroutineLauncherContextual(): CoroutineLauncher {
     val name = "${this::class.simpleName}"
-    val coroutineContext = if (!getLifecycle().isTerminated()) {
+    val coroutineContext = if (!lifecycle.isTerminated()) {
         CoroutineName(name).also {
-            getLifecycle().doOnTerminate {
+            lifecycle.doOnTerminate {
                 it.cancel(CoroutineLauncherCancellationException("Context terminated"))
             }
         }

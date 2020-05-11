@@ -2,7 +2,6 @@ package net.apptronic.core.component
 
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.base.observable.subscribe
-import net.apptronic.core.component.di.Descriptor
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.behavior.setup
 import net.apptronic.core.component.entity.entities.*
@@ -128,8 +127,4 @@ fun Component.timer(
             it.observe(action)
         }
     }
-}
-
-fun <T> Component.inject(descriptor: Descriptor<T>): T {
-    return context.dependencyDispatcher().inject(descriptor)
 }

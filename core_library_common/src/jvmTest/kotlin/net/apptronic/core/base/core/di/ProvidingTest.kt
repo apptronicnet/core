@@ -1,7 +1,7 @@
 package net.apptronic.core.base.core.di
 
 import net.apptronic.core.component.Component
-import net.apptronic.core.component.context.SubContext
+import net.apptronic.core.component.context.EMPTY_CONTEXT
 import net.apptronic.core.component.di.InjectionFailedException
 import net.apptronic.core.component.di.createDescriptor
 import net.apptronic.core.component.di.declareModule
@@ -46,8 +46,7 @@ class ProvidingTest {
     @Before
     fun before() {
         val coreContext = CoreContext()
-        val childContext = SubContext(coreContext)
-        component = BaseComponent(childContext)
+        component = BaseComponent(coreContext, EMPTY_CONTEXT)
         component.context.dependencyDispatcher().addInstance(SomeThingTextDescriptor, EXPECTED_TEXT)
     }
 

@@ -15,6 +15,7 @@ import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelListAdapter
 
 const val RECYCLER_NAVIGATOR_DEFAULT_SAVED_ITEMS_SIZE = 10
 
+@Suppress("UNCHECKED_CAST")
 class ListRecyclerNavigator<T : Any, Id, VM : ViewModel>(
         private val parent: ViewModel,
         private val builder: ViewModelBuilder<T, Id, VM>
@@ -262,7 +263,7 @@ class ListRecyclerNavigator<T : Any, Id, VM : ViewModel>(
 
     override fun onSetAdapter(adapter: ViewModelListAdapter) {
         adapter.setNavigator(itemStateNavigator)
-        parent.getLifecycle().onExitFromActiveStage {
+        parent.context.lifecycle.onExitFromActiveStage {
             adapter.setNavigator(null)
             containers.getAll().forEach {
                 onRemoved(it.item)

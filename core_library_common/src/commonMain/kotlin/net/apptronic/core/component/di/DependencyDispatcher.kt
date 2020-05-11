@@ -41,7 +41,7 @@ class DependencyDispatcher(
         }
         val key = objectKey(clazz)
         externalInstances[key] = ValueHolder(instance)
-        context.getLifecycle().onExitFromActiveStage {
+        context.lifecycle.onExitFromActiveStage {
             externalInstances.remove(key)
         }
     }

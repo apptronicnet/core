@@ -8,7 +8,7 @@ import net.apptronic.core.component.entity.EntitySubscription
 /**
  * Def
  */
-open class Lifecycle {
+class Lifecycle internal constructor() {
 
     init {
         requireNeverFrozen()
@@ -30,19 +30,17 @@ open class Lifecycle {
     private val baseParent = BaseParent()
 
     companion object {
-        const val ROOT_STAGE = "_root"
+        val ROOT_STAGE = lifecycleStage("default_root_stage")
     }
 
     private val isTerminated = Volatile(false)
 
-    private val rootStage: LifecycleStageImpl = LifecycleStageImpl(baseParent, ROOT_STAGE)
+    private val rootStageImpl: LifecycleStageImpl = LifecycleStageImpl(baseParent, ROOT_STAGE)
 
-    fun getRootStage(): LifecycleStage {
-        return rootStage
-    }
+    val rootStage: LifecycleStage = rootStageImpl
 
     init {
-        rootStage.apply {
+        rootStageImpl.apply {
             enter()
             doOnExit {
                 isTerminated.set(true)
@@ -51,20 +49,20 @@ open class Lifecycle {
         }
     }
 
-    fun getStage(name: String): LifecycleStage? {
-        return rootStage.stageByName(name)
+    operator fun get(definition: LifecycleStageDefinition): LifecycleStage? {
+        return rootStageImpl.findStage(definition)
     }
 
     fun getActiveStage(): LifecycleStage? {
-        return rootStage.lastEntered()
+        return rootStageImpl.lastEntered()
     }
 
-    fun isStageEntered(name: String): Boolean {
-        return rootStage.stageByName(name)?.isEntered() ?: false
+    fun isStageEntered(definition: LifecycleStageDefinition): Boolean {
+        return rootStageImpl.findStage(definition)?.isEntered() ?: false
     }
 
-    fun addStage(name: String): LifecycleStage {
-        return rootStage.last().addStage(name)
+    internal fun addStage(definition: LifecycleStageDefinition): LifecycleStage {
+        return rootStageImpl.last().addStage(definition)
     }
 
     fun onExitFromActiveStage(action: () -> Unit) {
@@ -76,8 +74,8 @@ open class Lifecycle {
     }
 
     fun doOnTerminate(action: () -> Unit) {
-        if (rootStage.isEntered()) {
-            rootStage.doOnExit {
+        if (rootStageImpl.isEntered()) {
+            rootStageImpl.doOnExit {
                 action.invoke()
             }
         } else {
@@ -110,20 +108,20 @@ open class Lifecycle {
         return isTerminated.get()
     }
 
-    internal fun enterStage(name: String) {
-        rootStage.stageByName(name)?.enter()
+    internal fun enterStage(definition: LifecycleStageDefinition) {
+        rootStageImpl.findStage(definition)?.enter()
     }
 
-    internal fun exitStage(name: String) {
-        rootStage.stageByName(name)?.exit()
+    internal fun exitStage(definition: LifecycleStageDefinition) {
+        rootStageImpl.findStage(definition)?.exit()
     }
 
     fun terminate() {
-        rootStage.terminate()
+        rootStageImpl.terminate()
     }
 
     fun registerSubscription(subscription: EntitySubscription) {
-        rootStage.lastEntered()?.let {
+        rootStageImpl.lastEntered()?.let {
             it.registerSubscription(subscription)
         } ?: run {
             subscription.unsubscribe()
@@ -132,10 +130,10 @@ open class Lifecycle {
 
 }
 
-fun enterStage(context: Context?, name: String) {
-    context?.getLifecycle()?.enterStage(name)
+fun enterStage(context: Context?, definition: LifecycleStageDefinition) {
+    context?.lifecycle?.enterStage(definition)
 }
 
-fun exitStage(context: Context?, name: String) {
-    context?.getLifecycle()?.exitStage(name)
+fun exitStage(context: Context?, definition: LifecycleStageDefinition) {
+    context?.lifecycle?.exitStage(definition)
 }

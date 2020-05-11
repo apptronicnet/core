@@ -1,5 +1,6 @@
 package net.apptronic.core.mvvm.viewmodel.navigation
 
+import net.apptronic.core.component.lifecycle.LifecycleStageDefinition
 import net.apptronic.core.component.lifecycle.enterStage
 import net.apptronic.core.component.lifecycle.exitStage
 import net.apptronic.core.mvvm.viewmodel.ViewModel
@@ -9,11 +10,11 @@ open class ViewModelLifecycleController(
     private val viewModel: ViewModel
 ) {
 
-    private fun setStage(value: Boolean, stageName: String) {
+    private fun setStage(value: Boolean, definition: LifecycleStageDefinition) {
         if (value) {
-            enterStage(viewModel.context, stageName)
+            enterStage(viewModel.context, definition)
         } else {
-            exitStage(viewModel.context, stageName)
+            exitStage(viewModel.context, definition)
         }
     }
 
@@ -34,7 +35,7 @@ open class ViewModelLifecycleController(
     }
 
     open fun terminate() {
-        viewModel.getLifecycle().terminate()
+        viewModel.context.lifecycle.terminate()
     }
 
 }

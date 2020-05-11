@@ -4,6 +4,7 @@ import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.di.DependencyProvider
 import net.apptronic.core.component.lifecycle.Lifecycle
 import net.apptronic.core.component.lifecycle.LifecycleStage
+import net.apptronic.core.component.lifecycle.LifecycleStageDefinition
 
 abstract class Component {
 
@@ -13,28 +14,24 @@ abstract class Component {
 
     val id: Long = ComponentRegistry.nextId()
 
-    fun onceStage(stageName: String, key: String, action: () -> Unit) {
-        getLifecycle().getStage(stageName)?.doOnce(key, action)
+    fun onceStage(definition: LifecycleStageDefinition, key: String, action: () -> Unit) {
+        context.lifecycle[definition]?.doOnce(key, action)
     }
 
-    fun onEnterStage(stageName: String, callback: LifecycleStage.OnEnterHandler.() -> Unit) {
-        getLifecycle().getStage(stageName)?.doOnEnter(callback)
+    fun onEnterStage(definition: LifecycleStageDefinition, callback: LifecycleStage.OnEnterHandler.() -> Unit) {
+        context.lifecycle[definition]?.doOnEnter(callback)
     }
 
-    fun onExitStage(stageName: String, callback: LifecycleStage.OnExitHandler.() -> Unit) {
-        getLifecycle().getStage(stageName)?.doOnExit(callback)
+    fun onExitStage(definition: LifecycleStageDefinition, callback: LifecycleStage.OnExitHandler.() -> Unit) {
+        context.lifecycle[definition]?.doOnExit(callback)
     }
 
     fun doOnTerminate(callback: LifecycleStage.OnExitHandler.() -> Unit) {
         onExitStage(Lifecycle.ROOT_STAGE, callback)
     }
 
-    open fun getLifecycle(): Lifecycle {
-        return context.getLifecycle()
-    }
-
 }
 
 fun Component.terminate() {
-    context.getLifecycle().terminate()
+    context.lifecycle.terminate()
 }

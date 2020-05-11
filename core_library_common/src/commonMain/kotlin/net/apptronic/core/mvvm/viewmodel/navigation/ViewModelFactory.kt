@@ -60,6 +60,7 @@ class ViewModelFactory<T : Any, Id, VM : ViewModel> : ViewModelBuilder<T, Id, VM
         }
     }
 
+    @Suppress("UNCHECKED_CAST")
     private class ViewModelBuilderWrapper<T : Any, Id, VM : ViewModel, SubT : T, SubId : Id, SubVM : VM>(
             private val type: KClass<SubT>,
             private val wrapped: ViewModelBuilder<SubT, SubId, SubVM>

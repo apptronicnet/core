@@ -15,8 +15,8 @@ internal class SearchSpec(
     val params: Parameters
 ) {
 
-    val lifecycleStage = context.getLifecycle().getActiveStage()
-        ?: throw IllegalStateException("Lifecycle was terminated")
+    val lifecycleStage = context.lifecycle.getActiveStage()
+            ?: throw IllegalStateException("Lifecycle was terminated")
 
     private val contextChain = mutableListOf<Context>()
 

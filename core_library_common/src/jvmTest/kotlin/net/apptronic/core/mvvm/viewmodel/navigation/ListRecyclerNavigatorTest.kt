@@ -82,7 +82,7 @@ class ListRecyclerNavigatorTest : TestViewModel() {
         }
 
         override fun onCreateViewModel(parent: Context, item: Item.Static): StaticItemViewModel {
-            val context = ViewModelContext(parent)
+            val context = ViewModelContext(parent, "item")
             return StaticItemViewModel(context, item)
         }
 
@@ -95,7 +95,7 @@ class ListRecyclerNavigatorTest : TestViewModel() {
         }
 
         override fun onCreateViewModel(parent: Context, item: Item.Dynamic): DynamicItemViewModel {
-            val context = ViewModelContext(parent)
+            val context = ViewModelContext(parent, "item")
             return DynamicItemViewModel(context, item)
         }
 

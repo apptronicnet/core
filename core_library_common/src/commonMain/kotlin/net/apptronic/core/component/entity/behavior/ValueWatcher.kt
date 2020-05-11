@@ -81,7 +81,7 @@ private class ValueWatcherImpl<T>(
     override fun forEachRecycledValue(action: (T) -> Unit): ValueWatcher<T> {
         val holder = OldValueActionHolder(action)
         source.subscribe(holder)
-        source.context.getLifecycle().onExitFromActiveStage {
+        source.context.lifecycle.onExitFromActiveStage {
             holder.doForLast()
         }
         return this

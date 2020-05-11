@@ -4,22 +4,22 @@ import net.apptronic.core.base.observable.Observable
 import net.apptronic.core.base.observable.subject.BehaviorSubject
 import net.apptronic.core.component.Component
 import net.apptronic.core.component.context.Context
+import net.apptronic.core.component.context.ContextDefinition
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.behavior.doWhen
 import net.apptronic.core.component.entity.behavior.setup
 import net.apptronic.core.component.entity.bindContext
 import net.apptronic.core.component.entity.entities.setAs
 import net.apptronic.core.component.entity.subscribe
-import net.apptronic.core.component.extensions.ContextDefinition
 import net.apptronic.core.component.genericEvent
-import net.apptronic.core.component.lifecycle.Lifecycle
 import net.apptronic.core.component.lifecycle.LifecycleStage
+import net.apptronic.core.component.lifecycle.LifecycleStageDefinition
 import net.apptronic.core.mvvm.viewmodel.navigation.*
 import net.apptronic.core.platform.getPlatform
 
 open class ViewModel : Component {
 
-    final override val context: ViewModelContext
+    final override val context: Context
 
     /**
      * Platform-specific instance of object which responsible for view binding. Do not touch, it is used for debugging.
@@ -48,12 +48,8 @@ open class ViewModel : Component {
         doInit()
     }
 
-    override fun getLifecycle(): ViewModelLifecycle {
-        return super.getLifecycle() as ViewModelLifecycle
-    }
-
     private fun doInit() {
-        context.getLifecycle().getStage(Lifecycle.ROOT_STAGE)?.doOnce {
+        context.lifecycle.rootStage.doOnce {
             getPlatform().logMessage("ViewModelLifecycle: $this initialized")
         }
         doOnTerminate {
@@ -75,14 +71,14 @@ open class ViewModel : Component {
         return savedState
     }
 
-    private fun stateOfStage(target: BehaviorSubject<Boolean>, stageName: String): Observable<Boolean> {
-        onEnterStage(stageName) {
-            getPlatform().logMessage("ViewModelLifecycle: ${this@ViewModel} entered stage$stageName")
+    private fun stateOfStage(target: BehaviorSubject<Boolean>, definition: LifecycleStageDefinition): Observable<Boolean> {
+        onEnterStage(definition) {
+            getPlatform().logMessage("ViewModelLifecycle: ${this@ViewModel} entered stage${definition.name}")
             target.update(true)
         }
-        onExitStage(stageName) {
+        onExitStage(definition) {
             target.update(false)
-            getPlatform().logMessage("ViewModelLifecycle: ${this@ViewModel} exited stage$stageName")
+            getPlatform().logMessage("ViewModelLifecycle: ${this@ViewModel} exited stage${definition.name}")
         }
         return target
     }
@@ -142,11 +138,11 @@ open class ViewModel : Component {
     }
 
     internal fun onAddedToContainer(parent: ViewModelParent) {
-        getLifecycle().enterStage(ViewModelLifecycle.STAGE_CREATED)
+        context.lifecycle.enterStage(ViewModelLifecycle.STAGE_CREATED)
     }
 
     internal fun onRemovedFromContainer(parent: ViewModelParent) {
-        getLifecycle().exitStage(ViewModelLifecycle.STAGE_CREATED)
+        context.lifecycle.exitStage(ViewModelLifecycle.STAGE_CREATED)
     }
 
     private var parent: ViewModelParent? = null
@@ -159,19 +155,19 @@ open class ViewModel : Component {
         this.parent = null
     }
 
-    fun isCreated() = getLifecycle().isStageEntered(ViewModelLifecycle.STAGE_CREATED)
+    fun isCreated() = context.lifecycle.isStageEntered(ViewModelLifecycle.STAGE_CREATED)
 
     fun observeCreated(): Observable<Boolean> = isCreated
 
-    fun isBound() = getLifecycle().isStageEntered(ViewModelLifecycle.STAGE_BOUND)
+    fun isBound() = context.lifecycle.isStageEntered(ViewModelLifecycle.STAGE_BOUND)
 
     fun observeBound(): Observable<Boolean> = isBound
 
-    fun isVisible() = getLifecycle().isStageEntered(ViewModelLifecycle.STAGE_VISIBLE)
+    fun isVisible() = context.lifecycle.isStageEntered(ViewModelLifecycle.STAGE_VISIBLE)
 
     fun observeVisible(): Observable<Boolean> = isVisible
 
-    fun isFocused() = getLifecycle().isStageEntered(ViewModelLifecycle.STAGE_FOCUSED)
+    fun isFocused() = context.lifecycle.isStageEntered(ViewModelLifecycle.STAGE_FOCUSED)
 
     fun observeFocused(): Observable<Boolean> = isFocused
 
@@ -243,7 +239,7 @@ open class ViewModel : Component {
      * Check is current [ViewModel] and it's [ViewModelLifecycle] is terminated
      */
     fun isTerminated(): Boolean {
-        return getLifecycle().isTerminated()
+        return context.lifecycle.isTerminated()
     }
 
     /**

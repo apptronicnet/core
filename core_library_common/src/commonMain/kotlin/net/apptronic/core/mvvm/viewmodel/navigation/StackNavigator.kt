@@ -181,7 +181,7 @@ class StackNavigator(
     fun setAdapter(adapter: ViewModelStackAdapter) {
         currentAdapter = CurrentAdapter(adapter)
         invalidateAdapter(newItem = currentState.visibleItem, transitionInfo = null)
-        parent.getLifecycle().onExitFromActiveStage {
+        parent.context.lifecycle.onExitFromActiveStage {
             val currentItem = currentState.visibleItem
             if (currentItem != null) {
                 onUnbind(currentItem)

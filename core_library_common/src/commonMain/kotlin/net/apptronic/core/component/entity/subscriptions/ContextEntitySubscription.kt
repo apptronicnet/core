@@ -33,7 +33,7 @@ public class ContextEntitySubscription<T>(
     }
 
     override fun attachToContext(context: Context) {
-        context.getLifecycle().registerSubscription(this)
+        context.lifecycle.registerSubscription(this)
     }
 
     override fun isUnsubscribed(): Boolean {

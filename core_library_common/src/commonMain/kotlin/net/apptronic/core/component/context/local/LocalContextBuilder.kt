@@ -2,13 +2,10 @@ package net.apptronic.core.component.context.local
 
 import kotlinx.coroutines.CoroutineDispatcher
 import net.apptronic.core.component.context.Context
+import net.apptronic.core.component.lifecycle.BASE_LIFECYCLE
 
 fun Context.createLocalContext(
         dispatcher: CoroutineDispatcher = defaultDispatcher
 ): LocalContext {
-    val stageName = getLifecycle().let {
-        it.getActiveStage() ?: it.getRootStage()
-    }.getStageName()
-    val localLifecycle = LocalLifecycle(stageName)
-    return LocalContext(parent = this, defaultDispatcher = dispatcher, lifecycle = localLifecycle)
+    return LocalContext(parent = this, defaultDispatcher = dispatcher, lifecycleDefinition = BASE_LIFECYCLE)
 }

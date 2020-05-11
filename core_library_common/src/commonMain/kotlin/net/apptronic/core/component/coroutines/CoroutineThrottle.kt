@@ -1,10 +1,25 @@
 package net.apptronic.core.component.coroutines
 
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.launch
 import net.apptronic.core.base.collections.LinkedQueue
+import net.apptronic.core.component.context.Context
+import kotlin.coroutines.CoroutineContext
 
-fun CoroutineScope.throttler(size: Int = 1): CoroutineThrottler {
+/**
+ * Create [CoroutineLauncher] which executes all coroutines one after another.
+ */
+fun CoroutineLauncher.debouncer(): CoroutineLauncher {
+    return throttler(Int.MAX_VALUE)
+}
+
+/**
+ * Create [CoroutineLauncher] which executes all coroutines one after another throttling it'x maximum number in queue to
+ * [size]
+ */
+fun CoroutineLauncher.throttler(size: Int = 1): CoroutineLauncher {
     return CoroutineThrottler(this, if (size > 1) size else 1)
 }
 
@@ -14,15 +29,24 @@ fun CoroutineScope.throttler(size: Int = 1): CoroutineThrottler {
  * queue if it's size exceeds limit.
  */
 class CoroutineThrottler internal constructor(
-        private val coroutineScope: CoroutineScope,
+        target: CoroutineLauncher,
         private val size: Int
-) {
+) : CoroutineLauncher {
+
+    override val context: Context = target.context
+    override val coroutineScope: CoroutineScope = target.coroutineScope
+
+    private class Task(
+            val coroutineContext: CoroutineContext,
+            val start: CoroutineStart,
+            val block: suspend CoroutineScope.() -> Unit
+    )
 
     private var isRunning: Boolean = false
-    private var queue = LinkedQueue<suspend CoroutineScope.() -> Unit>()
+    private var queue = LinkedQueue<Task>()
 
-    fun launch(block: suspend CoroutineScope.() -> Unit) {
-        queue.add(block)
+    override fun launch(coroutineContext: CoroutineContext, start: CoroutineStart, block: suspend CoroutineScope.() -> Unit) {
+        queue.add(Task(coroutineContext, start, block))
         queue.trim(size)
         launchNext()
     }
@@ -33,7 +57,14 @@ class CoroutineThrottler internal constructor(
                 isRunning = true
                 do {
                     val next = queue.take()
-                    next?.invoke(this)
+                    if (next != null) {
+                        try {
+                            val job = coroutineScope.launch(next.coroutineContext, next.start, next.block)
+                            job.join()
+                        } catch (e: CancellationException) {
+                            // ignore
+                        }
+                    }
                 } while (next != null)
                 isRunning = false
             }

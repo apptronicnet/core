@@ -1,17 +1,18 @@
 package net.apptronic.core.testutils
 
-import net.apptronic.core.component.lifecycle.Lifecycle
+import net.apptronic.core.component.lifecycle.defineLifecycle
+import net.apptronic.core.component.lifecycle.lifecycleStage
 
-class TestLifecycle : Lifecycle() {
+val TEST_LIFECYCLE = defineLifecycle {
+    addStage(TestLifecycle.STAGE_CREATED)
+    addStage(TestLifecycle.STAGE_ACTIVATED)
+    addStage(TestLifecycle.STAGE_WORKING)
+}
 
-    companion object {
-        const val STAGE_CREATED = "test_created";
-        const val STAGE_ACTIVATED = "test_activated";
-        const val STAGE_WORKING = "test_working";
-    }
+object TestLifecycle {
 
-    val created = addStage(STAGE_CREATED)
-    val activated = addStage(STAGE_ACTIVATED)
-    val working = addStage(STAGE_WORKING)
+    val STAGE_CREATED = lifecycleStage("test_created")
+    val STAGE_ACTIVATED = lifecycleStage("test_activated")
+    val STAGE_WORKING = lifecycleStage("test_working")
 
 }

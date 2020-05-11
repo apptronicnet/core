@@ -16,9 +16,9 @@ interface Context {
     fun getParent(): Context?
 
     /**
-     * Get [Lifecycle] of current [Context]
+     * [Lifecycle] of current [Context]
      */
-    fun getLifecycle(): Lifecycle
+    val lifecycle: Lifecycle
 
     /**
      * Get [DependencyDispatcher] for current [Context]

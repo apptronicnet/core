@@ -1,39 +1,31 @@
 package net.apptronic.core.mvvm
 
-import net.apptronic.core.testutils.TestContext
+import net.apptronic.core.component.lifecycle.LifecycleStageDefinition
 import net.apptronic.core.component.lifecycle.enterStage
 import net.apptronic.core.component.lifecycle.exitStage
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 import net.apptronic.core.mvvm.viewmodel.ViewModelLifecycle
 
-class TestViewModelContext : ViewModelContext(TestContext()) {
-
-    private fun setStage(stageName: String, value: Boolean) {
-        if (value) {
-            enterStage(this, stageName)
-        } else {
-            exitStage(this, stageName)
-        }
+private fun ViewModelContext.setStage(stage: LifecycleStageDefinition, value: Boolean) {
+    if (value) {
+        enterStage(this, stage)
+    } else {
+        exitStage(this, stage)
     }
+}
 
-    fun terminate() {
-        getLifecycle().terminate()
-    }
+fun ViewModelContext.setCreated(value: Boolean) {
+    setStage(ViewModelLifecycle.STAGE_CREATED, value)
+}
 
-    fun setCreated(value: Boolean) {
-        setStage(ViewModelLifecycle.STAGE_CREATED, value)
-    }
+fun ViewModelContext.setBound(value: Boolean) {
+    setStage(ViewModelLifecycle.STAGE_BOUND, value)
+}
 
-    fun setBound(value: Boolean) {
-        setStage(ViewModelLifecycle.STAGE_BOUND, value)
-    }
+fun ViewModelContext.setVisible(value: Boolean) {
+    setStage(ViewModelLifecycle.STAGE_VISIBLE, value)
+}
 
-    fun setVisible(value: Boolean) {
-        setStage(ViewModelLifecycle.STAGE_VISIBLE, value)
-    }
-
-    fun setFocused(value: Boolean) {
-        setStage(ViewModelLifecycle.STAGE_FOCUSED, value)
-    }
-
+fun ViewModelContext.setFocused(value: Boolean) {
+    setStage(ViewModelLifecycle.STAGE_FOCUSED, value)
 }

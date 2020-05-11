@@ -1,34 +1,35 @@
 package net.apptronic.core.mvvm.viewmodel
 
-import net.apptronic.core.component.lifecycle.Lifecycle
+import net.apptronic.core.component.lifecycle.defineLifecycle
+import net.apptronic.core.component.lifecycle.lifecycleStage
 
-class ViewModelLifecycle : Lifecycle() {
+val VIEW_MODEL_LIFECYCLE = defineLifecycle {
+    addStage(ViewModelLifecycle.STAGE_CREATED)
+    addStage(ViewModelLifecycle.STAGE_BOUND)
+    addStage(ViewModelLifecycle.STAGE_VISIBLE)
+    addStage(ViewModelLifecycle.STAGE_FOCUSED)
+}
 
-    companion object {
-        /**
-         * Lifecycle stage definition: [ViewModel] is created and working
-         */
-        const val STAGE_CREATED = "_created"
+object ViewModelLifecycle {
 
-        /**
-         * Lifecycle stage definition: [ViewModel] is bound to view
-         */
-        const val STAGE_BOUND = "_bound"
+    /**
+     * Lifecycle stage definition: [ViewModel] is created and working
+     */
+    val STAGE_CREATED = lifecycleStage("created")
 
-        /**
-         * Lifecycle stage definition: [ViewModel] view is visible for user
-         */
-        const val STAGE_VISIBLE = "_visible"
+    /**
+     * Lifecycle stage definition: [ViewModel] is bound to view
+     */
+    val STAGE_BOUND = lifecycleStage("bound")
 
-        /**
-         * Lifecycle stage definition: [ViewModel] view is focused and user can interact with it
-         */
-        const val STAGE_FOCUSED = "_focused"
-    }
+    /**
+     * Lifecycle stage definition: [ViewModel] view is visible for user
+     */
+    val STAGE_VISIBLE = lifecycleStage("visible")
 
-    val created = addStage(STAGE_CREATED)
-    val bound = addStage(STAGE_BOUND)
-    val visible = addStage(STAGE_VISIBLE)
-    val focused = addStage(STAGE_FOCUSED)
+    /**
+     * Lifecycle stage definition: [ViewModel] view is focused and user can interact with it
+     */
+    val STAGE_FOCUSED = lifecycleStage("focused")
 
 }

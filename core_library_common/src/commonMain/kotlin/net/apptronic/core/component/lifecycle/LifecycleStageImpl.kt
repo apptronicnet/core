@@ -6,7 +6,8 @@ import net.apptronic.core.base.concurrent.requireNeverFrozen
 import net.apptronic.core.component.entity.EntitySubscription
 import net.apptronic.core.component.entity.subscriptions.EntitySubscriptionListener
 
-internal class LifecycleStageImpl(val parent: LifecycleStageParent, val name: String) :
+internal class LifecycleStageImpl(val parent: LifecycleStageParent,
+                                  private val definition: LifecycleStageDefinition) :
         LifecycleStage, LifecycleStageParent, EntitySubscriptionListener {
 
     init {
@@ -32,7 +33,7 @@ internal class LifecycleStageImpl(val parent: LifecycleStageParent, val name: St
     private val inStageCallbacks = mutableListOf<EventCallback>()
 
     override fun toString(): String {
-        return super.toString() + " $name isEntered=${isEntered}"
+        return super.toString() + " ${definition.name} isEntered=${isEntered}"
     }
 
     override fun onUnsubscribed(subscription: EntitySubscription) {
@@ -79,18 +80,18 @@ internal class LifecycleStageImpl(val parent: LifecycleStageParent, val name: St
         } else null
     }
 
-    fun stageByName(name: String): LifecycleStageImpl? {
-        return if (name == this.name) {
+    fun findStage(stageDefinition: LifecycleStageDefinition): LifecycleStageImpl? {
+        return if (stageDefinition === this.definition) {
             this
         } else {
-            childStage.get()?.stageByName(name)
+            childStage.get()?.findStage(stageDefinition)
         }
     }
 
-    fun addStage(name: String): LifecycleStage {
+    fun addStage(stageDefinition: LifecycleStageDefinition): LifecycleStage {
         return childStage.perform {
             get()?.terminate()
-            LifecycleStageImpl(this@LifecycleStageImpl, name).also {
+            LifecycleStageImpl(this@LifecycleStageImpl, stageDefinition).also {
                 set(it)
             }
         }
@@ -216,7 +217,7 @@ internal class LifecycleStageImpl(val parent: LifecycleStageParent, val name: St
     }
 
     override fun getStageName(): String {
-        return this.name
+        return this.definition.name
     }
 
 }

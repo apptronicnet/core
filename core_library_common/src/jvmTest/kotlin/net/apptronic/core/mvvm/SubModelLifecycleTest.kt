@@ -1,6 +1,9 @@
 package net.apptronic.core.mvvm
 
+import kotlinx.coroutines.Dispatchers
+import net.apptronic.core.component.context.coreContext
 import net.apptronic.core.component.terminate
+import net.apptronic.core.mvvm.viewmodel.EMPTY_VIEW_MODEL_CONTEXT
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 import net.apptronic.core.mvvm.viewmodel.navigation.ViewModelLifecycleController
@@ -8,7 +11,11 @@ import org.junit.Test
 
 class SubModelLifecycleTest {
 
-    private class ParentModel : LifecycleTestViewModel(TestViewModelContext()) {
+    private val baseContext = coreContext(
+            coroutineDispatcher = Dispatchers.Unconfined
+    )
+
+    private inner class ParentModel : LifecycleTestViewModel(EMPTY_VIEW_MODEL_CONTEXT.createContext(baseContext)) {
 
         val children = stackNavigator()
 
@@ -25,7 +32,7 @@ class SubModelLifecycleTest {
     }
 
     private class ChildModel(root: ViewModel) :
-            LifecycleTestViewModel(ViewModelContext(root.context)) {
+            LifecycleTestViewModel(ViewModelContext(root.context, " child")) {
 
         val children = stackNavigator()
 
@@ -43,7 +50,7 @@ class SubModelLifecycleTest {
 
     private val root = ParentModel()
     private val controller =
-        ViewModelLifecycleController(root)
+            ViewModelLifecycleController(root)
 
     @Test
     fun shouldRunLifecycle() {

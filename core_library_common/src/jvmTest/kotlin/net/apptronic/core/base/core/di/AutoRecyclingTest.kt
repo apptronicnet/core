@@ -1,6 +1,8 @@
 package net.apptronic.core.base.core.di
 
 import net.apptronic.core.component.context.Context
+import net.apptronic.core.component.context.EMPTY_CONTEXT
+import net.apptronic.core.component.context.close
 import net.apptronic.core.component.di.AutoRecycling
 import net.apptronic.core.component.di.createDescriptor
 import net.apptronic.core.component.di.declareModule
@@ -38,7 +40,7 @@ class AutoRecyclingTest {
 
     }
 
-    class TestComponent(context: Context) : BaseComponent(context) {
+    class TestComponent(context: Context) : BaseComponent(context, EMPTY_CONTEXT) {
 
         val instance = provider().inject(DeclarationDescriptor)
 
@@ -52,7 +54,7 @@ class AutoRecyclingTest {
         assert(component.instance is Implementation)
         assert((component.instance as Implementation).isRecycled.not())
 
-        context.getLifecycle().terminate()
+        context.close()
         assert((component.instance).isRecycled)
     }
 

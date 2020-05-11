@@ -4,10 +4,15 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import net.apptronic.core.base.concurrent.requireNeverFrozen
 import net.apptronic.core.component.di.DependencyDispatcher
+import net.apptronic.core.component.lifecycle.BASE_LIFECYCLE
 import net.apptronic.core.component.lifecycle.Lifecycle
 
-open class CoreContext(
-        private val lifecycle: Lifecycle = Lifecycle(),
+fun coreContext(coroutineDispatcher: CoroutineDispatcher = Dispatchers.Main, builder: Context.() -> Unit = {}): Context {
+    return CoreContext(BASE_LIFECYCLE.createLifecycle(), coroutineDispatcher).apply(builder)
+}
+
+private class CoreContext(
+        override val lifecycle: Lifecycle = Lifecycle(),
         coroutineDispatcher: CoroutineDispatcher = Dispatchers.Main
 ) : Context {
 
@@ -21,10 +26,6 @@ open class CoreContext(
 
     override fun getParent(): Context? {
         return null
-    }
-
-    override fun getLifecycle(): Lifecycle {
-        return lifecycle
     }
 
     override fun dependencyDispatcher(): DependencyDispatcher {

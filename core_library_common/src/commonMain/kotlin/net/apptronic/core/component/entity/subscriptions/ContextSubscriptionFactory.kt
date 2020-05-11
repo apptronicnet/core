@@ -11,20 +11,20 @@ class ContextSubscriptionFactory<T>(
 
     fun using(targetContext: Context): ContextSubscriptionBuilder<T> {
         if (targetContext == context) {
-            val shouldSubscribe = context.getLifecycle().isTerminated().not()
+            val shouldSubscribe = context.lifecycle.isTerminated().not()
             return ContextSubscriptionBuilder(shouldSubscribe) { createdSubscription ->
-                context.getLifecycle().getActiveStage()?.let {
+                context.lifecycle.getActiveStage()?.let {
                     it.registerSubscription(createdSubscription)
                 } ?: run {
                     createdSubscription.unsubscribe()
                 }
             }
         } else {
-            val shouldSubscribe = context.getLifecycle().isTerminated().not()
-                    && targetContext.getLifecycle().isTerminated().not()
+            val shouldSubscribe = context.lifecycle.isTerminated().not()
+                    && targetContext.lifecycle.isTerminated().not()
             return ContextSubscriptionBuilder(shouldSubscribe) { createdSubscription ->
-                context.getLifecycle().getRootStage().registerSubscription(createdSubscription)
-                targetContext.getLifecycle().getActiveStage()?.let {
+                context.lifecycle.rootStage.registerSubscription(createdSubscription)
+                targetContext.lifecycle.getActiveStage()?.let {
                     it.registerSubscription(createdSubscription)
                 } ?: run {
                     createdSubscription.unsubscribe()

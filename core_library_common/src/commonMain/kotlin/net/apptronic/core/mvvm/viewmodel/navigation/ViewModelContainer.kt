@@ -8,6 +8,7 @@ import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.entities.distinctUntilChanged
 import net.apptronic.core.component.entity.functions.and
 import net.apptronic.core.component.entity.subscribe
+import net.apptronic.core.component.lifecycle.LifecycleStageDefinition
 import net.apptronic.core.component.lifecycle.enterStage
 import net.apptronic.core.component.lifecycle.exitStage
 import net.apptronic.core.component.value
@@ -108,19 +109,19 @@ internal class ViewModelContainer(
         }
     }
 
-    private fun bindStage(viewModel: ViewModel, stageName: String, entity: Entity<Boolean>) {
+    private fun bindStage(viewModel: ViewModel, definition: LifecycleStageDefinition, entity: Entity<Boolean>) {
         entity.distinctUntilChanged().subscribe {
             if (it) {
-                enterStage(viewModel.context, stageName)
+                enterStage(viewModel.context, definition)
             } else {
-                exitStage(viewModel.context, stageName)
+                exitStage(viewModel.context, definition)
             }
         }
     }
 
     fun terminate() {
         subscriptionHolders.unsubscribe()
-        viewModel.context.getLifecycle().terminate()
+        viewModel.context.lifecycle.terminate()
     }
 
     fun shouldShow(): Boolean {
@@ -132,7 +133,7 @@ internal class ViewModelContainer(
     }
 
     override fun toString(): String {
-        return "ViewModel=$viewModel stage=${viewModel.getLifecycle().getActiveStage()?.getStageName()} shouldShowValue=$shouldShowValue"
+        return "ViewModel=$viewModel stage=${viewModel.context.lifecycle.getActiveStage()?.getStageName()} shouldShowValue=$shouldShowValue"
     }
 
 }

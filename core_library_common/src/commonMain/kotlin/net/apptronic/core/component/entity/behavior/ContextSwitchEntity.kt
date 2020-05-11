@@ -31,7 +31,7 @@ private class ContextSwitchEntity<T>(
                 observer.notify(value)
             }
         }.also {
-            context.getLifecycle().getRootStage().registerSubscription(it)
+            context.lifecycle.rootStage.registerSubscription(it)
         }
     }
 

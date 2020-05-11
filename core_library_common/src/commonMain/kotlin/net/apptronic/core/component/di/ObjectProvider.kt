@@ -7,12 +7,12 @@ enum class RecycleOn {
 
     OnTerminate {
         override fun registerRecycle(context: Context, recycle: () -> Unit) {
-            context.getLifecycle().doOnTerminate(recycle)
+            context.lifecycle.doOnTerminate(recycle)
         }
     },
     OnExitCurrentStage {
         override fun registerRecycle(context: Context, recycle: () -> Unit) {
-            context.getLifecycle().onExitFromActiveStage(recycle)
+            context.lifecycle.onExitFromActiveStage(recycle)
         }
     };
 

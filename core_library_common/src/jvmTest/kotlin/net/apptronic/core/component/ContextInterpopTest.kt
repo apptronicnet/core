@@ -1,6 +1,7 @@
 package net.apptronic.core.component
 
 import net.apptronic.core.component.context.Context
+import net.apptronic.core.component.context.close
 import net.apptronic.core.component.entity.entities.setAs
 import net.apptronic.core.component.extensions.BaseComponent
 import net.apptronic.core.component.lifecycle.enterStage
@@ -86,9 +87,9 @@ class ContextInterpopTest {
         assert(parent.dataReflection.get() == "Two")
         assert(child.dataReflection.get() == "Two")
 
-        parent.context.getLifecycle().terminate()
+        parent.context.lifecycle.terminate()
         assert(parent.getLifecycle().isTerminated())
-        assert(child.getLifecycle().isTerminated())
+        assert(child.context.lifecycle.isTerminated())
 
         parent.data.set("Three")
         assert(parent.dataReflection.get() == "Two")
@@ -215,7 +216,7 @@ class ContextInterpopTest {
 
         assert(parent.dataReflection.get() == "One")
 
-        another.getLifecycle().terminate()
+        another.context.close()
 
         another.dataReflection.setAs(parent.data)
 

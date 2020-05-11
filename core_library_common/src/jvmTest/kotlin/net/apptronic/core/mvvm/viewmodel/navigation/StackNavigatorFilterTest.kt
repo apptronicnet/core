@@ -33,10 +33,10 @@ class StackNavigatorFilterTest : TestContext() {
     }
 
     private fun createViewModel(name: String): FilterableViewModel {
-        return FilterableViewModel(ViewModelContext(this), name)
+        return FilterableViewModel(ViewModelContext(this, "filterable"), name)
     }
 
-    private val root = RootViewModel(ViewModelContext(this))
+    private val root = RootViewModel(ViewModelContext(this, "root"))
     private val lifecycleController = ViewModelLifecycleController(root)
     private val adapter = TestStackAdapter()
 

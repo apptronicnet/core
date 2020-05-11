@@ -16,7 +16,7 @@ abstract class BaseListNavigator<T>(
         this.adapter = adapter
         onSetAdapter(adapter)
         onNotifyAdapter(adapter)
-        parent.getLifecycle().onExitFromActiveStage {
+        parent.context.lifecycle.onExitFromActiveStage {
             this.adapter = null
         }
     }
