@@ -54,7 +54,7 @@ fun Context.coroutineLauncherScoped(): CoroutineLauncher {
  * [CoroutineScope] wil be automatically cancelled when [Lifecycle] will be terminated
  * throwing [CoroutineLauncherCancellationException]
  */
-fun Context.coroutineLauncherContextual(): CoroutineLauncher {
+fun Context.coroutineLauncherLocal(): CoroutineLauncher {
     val name = "${this::class.simpleName}"
     val coroutineContext = if (!lifecycle.isTerminated()) {
         CoroutineName(name).also {
@@ -72,10 +72,10 @@ fun Context.coroutineLauncherContextual(): CoroutineLauncher {
 }
 
 /**
- * Same as [coroutineLauncherContextual] except it will be created in top level [Context] of current context tree
+ * Same as [coroutineLauncherLocal] except it will be created in top level [Context] of current context tree
  */
 fun Context.coroutineLauncherGlobal(): CoroutineLauncher {
-    return getGlobalContext().coroutineLauncherContextual()
+    return getGlobalContext().coroutineLauncherLocal()
 }
 
 internal class CoroutineLauncherImpl(override val context: Context, override val coroutineScope: CoroutineScope) : CoroutineLauncher {

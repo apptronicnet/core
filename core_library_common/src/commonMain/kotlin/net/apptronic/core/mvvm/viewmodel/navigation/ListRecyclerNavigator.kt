@@ -4,7 +4,7 @@ import net.apptronic.core.base.collections.lazyListOf
 import net.apptronic.core.base.collections.simpleLazyListOf
 import net.apptronic.core.base.observable.Observable
 import net.apptronic.core.base.observable.subject.BehaviorSubject
-import net.apptronic.core.component.coroutines.coroutineLauncherContextual
+import net.apptronic.core.component.coroutines.coroutineLauncherLocal
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.UpdateEntity
 import net.apptronic.core.component.entity.subscribe
@@ -158,7 +158,7 @@ class ListRecyclerNavigator<T : Any, Id, VM : ViewModel>(
                 key.getId() == this
             }
         }
-        context.coroutineLauncherContextual().launch {
+        context.coroutineLauncherLocal().launch {
             val oldIds = staticItems.map { it.getId() }
             val newIds = value.map { it.getId() }
             val diff = getDiff(oldIds, newIds)

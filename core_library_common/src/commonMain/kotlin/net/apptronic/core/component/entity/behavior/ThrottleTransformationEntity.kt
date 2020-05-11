@@ -7,7 +7,7 @@ import net.apptronic.core.base.observable.subject.ValueHolder
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.context.local.LocalContext
 import net.apptronic.core.component.context.local.createLocalContext
-import net.apptronic.core.component.coroutines.coroutineLauncherContextual
+import net.apptronic.core.component.coroutines.coroutineLauncherLocal
 import net.apptronic.core.component.coroutines.coroutineLauncherScoped
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.EntitySubscription
@@ -47,7 +47,7 @@ private class ThrottleTransformationEntity<Source, Result>(
     private val coroutineLauncher = context.coroutineLauncherScoped()
 
     init {
-        val localCoroutineLauncher = localContext.coroutineLauncherContextual()
+        val localCoroutineLauncher = localContext.coroutineLauncherLocal()
         localCoroutineLauncher.launch {
             val throttledTransformation = ThrottledTransformation(localContext, throttledTransformation)
             throttledTransformation.observe(this@ThrottleTransformationEntity)
