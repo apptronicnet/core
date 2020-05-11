@@ -1,7 +1,6 @@
 package net.apptronic.test.commons_sample_app.lazylistfiltering
 
 import net.apptronic.core.component.context.Context
-import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 import net.apptronic.core.mvvm.viewmodel.navigation.ViewModelBuilder
 
 class StaticItem(
@@ -21,7 +20,7 @@ class StaticViewModelBuilder : ViewModelBuilder<StaticItem, String, StaticFilter
     }
 
     override fun onCreateViewModel(parent: Context, item: StaticItem): StaticFilteredItemViewModel {
-        return StaticFilteredItemViewModel(ViewModelContext(parent), item.id, item.delay)
+        return StaticFilteredItemViewModel(parent, item.id, item.delay)
     }
 
 }
@@ -33,7 +32,7 @@ class DynamicViewModelBuilder : ViewModelBuilder<DynamicItem, Int, DynamicItemVi
     }
 
     override fun onCreateViewModel(parent: Context, item: DynamicItem): DynamicItemViewModel {
-        return DynamicItemViewModel(ViewModelContext(parent), item.text)
+        return DynamicItemViewModel(parent, item.text)
     }
 
 }

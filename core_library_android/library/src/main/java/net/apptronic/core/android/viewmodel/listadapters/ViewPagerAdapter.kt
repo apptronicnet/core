@@ -25,7 +25,7 @@ class ViewPagerAdapter(
         val view = viewModelAdapter.createView(viewModel, container)
         val androidView = viewModelAdapter.bindView(viewModel, position, view)
         container.addView(view)
-        androidViews[viewModel.getId()] = androidView
+        androidViews[viewModel.id] = androidView
         return androidView
     }
 
@@ -33,7 +33,7 @@ class ViewPagerAdapter(
         val androidView = obj as AndroidView<*>
         viewModelAdapter.unbindView(androidView)
         collection.removeView(androidView.getView())
-        androidViews.remove(androidView.getViewModel().getId())
+        androidViews.remove(androidView.getViewModel().id)
     }
 
     override fun getCount(): Int {

@@ -11,16 +11,17 @@ class SampleAndroidApplication : Application() {
         initializePlatform(AndroidPlatform)
     }
 
-    private val coreContext = ApplicationContext(
-            object : HttpClientFactory {
-                override fun createHttpClient(): HttpClient {
-                    return object : HttpClient {}
-                }
-            },
-            PlatformDefinition.Android
-    )
     val appComponent by lazy {
-        ApplicationComponent(coreContext)
+        ApplicationComponent(
+            applicationContext(
+                object : HttpClientFactory {
+                    override fun createHttpClient(): HttpClient {
+                        return object : HttpClient {}
+                    }
+                },
+                PlatformDefinition.Android
+            )
+        )
     }
 
 }
@@ -28,10 +29,3 @@ class SampleAndroidApplication : Application() {
 fun Context.getApplicationComponent(): ApplicationComponent {
     return (applicationContext as SampleAndroidApplication).appComponent
 }
-
-fun Context.lazyApplicationComponent(): Lazy<ApplicationComponent> {
-    return lazy {
-        getApplicationComponent()
-    }
-}
-

@@ -65,9 +65,14 @@ abstract class AndroidView<T : ViewModel> : BindingContainer {
             debugError(Error("$viewModel already have bound view!!!"))
         }
         if (!viewModel.isStateBound()) {
-            debugError(Error("$viewModel in stage ${viewModel.getLifecycle().getActiveStage()?.getStageName()}"))
+            debugError(
+                Error(
+                    "$viewModel in stage ${viewModel.context.lifecycle.getActiveStage()
+                        ?.getStageName()}"
+                )
+            )
         }
-        val stateKey = "view_state_${viewModel.getId()}"
+        val stateKey = "view_state_${viewModel.id}"
         this.view = view
         this.viewModel = viewModel
         bindings = Bindings(viewModel, this)

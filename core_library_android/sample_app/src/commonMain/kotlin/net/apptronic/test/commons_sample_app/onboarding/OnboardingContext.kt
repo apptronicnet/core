@@ -1,24 +1,16 @@
 package net.apptronic.test.commons_sample_app.onboarding
 
-import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.di.createDescriptor
 import net.apptronic.core.component.di.declareModule
-import net.apptronic.core.mvvm.viewmodel.ViewModelContext
-import net.apptronic.test.commons_sample_app.onboarding.OnboardingContext.Companion.OnboardingDataDescriptor
+import net.apptronic.core.mvvm.viewmodel.defineViewModelContext
 
-class OnboardingContext(parent: Context) : ViewModelContext(parent) {
+val OnboardingDataDescriptor = createDescriptor<OnboadingData>()
 
-    companion object {
-        val OnboardingDataDescriptor = createDescriptor<OnboadingData>()
-    }
-
-    init {
-        getProvider().addModule(OnboardingModule)
-    }
-
+val OnboardingContext = defineViewModelContext("Onboarding") {
+    dependencyDispatcher().addModule(OnboardingModule)
 }
 
-val OnboardingModule = declareModule {
+private val OnboardingModule = declareModule {
 
     single(OnboardingDataDescriptor) {
         OnboadingData()

@@ -24,7 +24,7 @@ class RecyclerViewAdapter(
     }
 
     override fun getItemId(position: Int): Long {
-        return viewModelAdapter.getItemAt(position).getId()
+        return viewModelAdapter.getItemAt(position).id
     }
 
     override fun getItemCount(): Int {
@@ -41,10 +41,13 @@ class RecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: ViewModelHolder, position: Int) {
         val viewModel = viewModelAdapter.getItemAt(position)
-        if (bindingStrategy == BindingStrategy.UntilReused) {
-            unbindViewHolder(holder)
+        if (viewModel != holder.viewModel) {
+            if (bindingStrategy == BindingStrategy.UntilReused) {
+                unbindViewHolder(holder)
+            }
+            holder.viewModel = viewModel
+            holder.androidView = viewModelAdapter.bindView(viewModel, position, holder.itemView)
         }
-        holder.androidView = viewModelAdapter.bindView(viewModel, position, holder.itemView)
     }
 
     override fun onViewRecycled(holder: ViewModelHolder) {
@@ -58,11 +61,13 @@ class RecyclerViewAdapter(
         val androidView = holder.androidView
         if (androidView != null) {
             viewModelAdapter.unbindView(androidView)
+            holder.viewModel = null
             holder.androidView = null
         }
     }
 
     inner class ViewModelHolder(view: View) : RecyclerView.ViewHolder(view) {
+        var viewModel: ViewModel? = null
         var androidView: AndroidView<*>? = null
     }
 

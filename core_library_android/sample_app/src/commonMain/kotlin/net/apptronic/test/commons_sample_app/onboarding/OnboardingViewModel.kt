@@ -1,29 +1,28 @@
 package net.apptronic.test.commons_sample_app.onboarding
 
+import net.apptronic.core.component.context.Context
+import net.apptronic.core.component.inject
 import net.apptronic.core.mvvm.viewmodel.ViewModel
-import net.apptronic.test.commons_sample_app.onboarding.OnboardingContext.Companion.OnboardingDataDescriptor
 import net.apptronic.test.commons_sample_app.onboarding.balance.BalanceRouter
 import net.apptronic.test.commons_sample_app.onboarding.balance.BalanceViewModel
-import net.apptronic.test.commons_sample_app.onboarding.balance.BalanceViewModelContext
 import net.apptronic.test.commons_sample_app.onboarding.currency.CurrencyRouter
 import net.apptronic.test.commons_sample_app.onboarding.currency.CurrencyViewModel
-import net.apptronic.test.commons_sample_app.onboarding.currency.CurrencyViewModelContext
 
-class OnboardingViewModel(context: OnboardingContext) : ViewModel(context) {
+class OnboardingViewModel(parent: Context) : ViewModel(parent, OnboardingContext) {
 
-    val data = getProvider().inject(OnboardingDataDescriptor)
+    val data = inject(OnboardingDataDescriptor)
 
     val stepScreen = stackNavigator()
 
     init {
-        val currencyContext = CurrencyViewModelContext(this, CurrencyRouterImpl(this))
-        val currencyViewModel = CurrencyViewModel(currencyContext)
+        val currencyRouter = CurrencyRouterImpl(this)
+        val currencyViewModel = CurrencyViewModel(context, currencyRouter)
         stepScreen.set(currencyViewModel)
     }
 
     fun openBalanceScreen() {
-        val balanceContext = BalanceViewModelContext(this, BalanceRouterImpl(this))
-        val currencyViewModel = BalanceViewModel(balanceContext)
+        val balanceRouter = BalanceRouterImpl(this)
+        val currencyViewModel = BalanceViewModel(context, balanceRouter)
         stepScreen.add(currencyViewModel)
     }
 

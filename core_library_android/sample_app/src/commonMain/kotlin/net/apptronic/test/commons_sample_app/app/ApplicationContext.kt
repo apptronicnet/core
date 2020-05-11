@@ -1,31 +1,26 @@
 package net.apptronic.test.commons_sample_app.app
 
-import net.apptronic.core.component.context.CoreContext
+import net.apptronic.core.component.context.Context
+import net.apptronic.core.component.context.coreContext
 import net.apptronic.core.component.di.createDescriptor
 import net.apptronic.core.component.di.declareModule
-import net.apptronic.test.commons_sample_app.app.ApplicationContext.Companion.HttpClientDescriptor
-import net.apptronic.test.commons_sample_app.app.ApplicationContext.Companion.HttpClientFactoryDescriptor
 
-class ApplicationContext(
-        httpClientFactory: HttpClientFactory,
-        platformDefinition: PlatformDefinition
-) : CoreContext() {
+val HttpClientFactoryDescriptor = createDescriptor<HttpClientFactory>()
+val HttpClientDescriptor = createDescriptor<HttpClient>()
+val PlatformDescriptor = createDescriptor<PlatformDefinition>()
 
-    companion object {
-        val HttpClientFactoryDescriptor = createDescriptor<HttpClientFactory>()
-        val HttpClientDescriptor = createDescriptor<HttpClient>()
-        val PlatformDescriptor = createDescriptor<PlatformDefinition>()
+fun applicationContext(
+    httpClientFactory: HttpClientFactory,
+    platformDefinition: PlatformDefinition
+): Context {
+    return coreContext {
+        dependencyDispatcher().addInstance(HttpClientFactoryDescriptor, httpClientFactory)
+        dependencyDispatcher().addInstance(PlatformDescriptor, platformDefinition)
+        dependencyDispatcher().addModule(coreModule)
     }
-
-    init {
-        getProvider().addInstance(HttpClientFactoryDescriptor, httpClientFactory)
-        getProvider().addInstance(PlatformDescriptor, platformDefinition)
-        getProvider().addModule(coreModule)
-    }
-
 }
 
-val coreModule = declareModule {
+private val coreModule = declareModule {
 
     factory(HttpClientDescriptor) {
         inject(HttpClientFactoryDescriptor).createHttpClient()

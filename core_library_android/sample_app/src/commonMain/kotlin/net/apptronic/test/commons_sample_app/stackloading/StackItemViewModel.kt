@@ -1,18 +1,24 @@
 package net.apptronic.test.commons_sample_app.stackloading
 
+import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.behavior.delay
 import net.apptronic.core.component.entity.entities.setAs
 import net.apptronic.core.component.entity.functions.anyValue
 import net.apptronic.core.component.entity.subscribe
+import net.apptronic.core.component.genericEvent
+import net.apptronic.core.component.inject
+import net.apptronic.core.component.newChain
+import net.apptronic.core.component.value
+import net.apptronic.core.mvvm.viewmodel.EMPTY_VIEW_MODEL_CONTEXT
 import net.apptronic.core.mvvm.viewmodel.ViewModel
-import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 import net.apptronic.core.mvvm.viewmodel.navigation.ViewModelWithVisibility
 
-class StackItemViewModel(context: ViewModelContext, val name: String) : ViewModel(context),
+class StackItemViewModel(parent: Context, val name: String) :
+    ViewModel(parent, EMPTY_VIEW_MODEL_CONTEXT),
     ViewModelWithVisibility {
 
-    private val router = getProvider().inject(StackRouterDescriptor)
+    private val router = inject(StackRouterDescriptor)
 
     override fun isReadyToShow(): Entity<Boolean> {
         return isReadyToShow

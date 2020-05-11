@@ -1,43 +1,43 @@
 package net.apptronic.test.commons_sample_app.pager
 
+import net.apptronic.core.component.context.Context
 import net.apptronic.core.mvvm.viewmodel.ViewModel
-import net.apptronic.core.mvvm.viewmodel.ViewModelContext
-import net.apptronic.test.commons_sample_app.pager.pages.createImagePage
-import net.apptronic.test.commons_sample_app.pager.pages.createTextPage
+import net.apptronic.test.commons_sample_app.pager.pages.ImagePageViewModel
+import net.apptronic.test.commons_sample_app.pager.pages.TextPageViewModel
 
-class PagerViewModel(context: ViewModelContext) : ViewModel(context) {
+class PagerViewModel(parent: Context) : ViewModel(parent, PagerContext) {
 
     val pages = listNavigator()
 
     init {
         pages.update { list ->
-            list.add(createTextPage(this))
-            list.add(createTextPage(this))
-            list.add(createTextPage(this))
+            list.add(TextPageViewModel(this.context))
+            list.add(TextPageViewModel(this.context))
+            list.add(TextPageViewModel(this.context))
         }
     }
 
     fun addTextStart() {
         pages.update { list ->
-            list.add(0, createTextPage(this))
+            list.add(0, TextPageViewModel(this.context))
         }
     }
 
     fun addTextEnd() {
         pages.update { list ->
-            list.add(createTextPage(this))
+            list.add(TextPageViewModel(this.context))
         }
     }
 
     fun addImageStart() {
         pages.update { list ->
-            list.add(0, createImagePage(this))
+            list.add(0, ImagePageViewModel(this.context))
         }
     }
 
     fun addImageEnd() {
         pages.update { list ->
-            list.add(createImagePage(this))
+            list.add(ImagePageViewModel(this.context))
         }
     }
 

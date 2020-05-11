@@ -1,26 +1,19 @@
 package net.apptronic.test.commons_sample_app.login
 
-import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.di.createDescriptor
 import net.apptronic.core.component.di.declareModule
-import net.apptronic.core.mvvm.viewmodel.ViewModelContext
+import net.apptronic.core.mvvm.viewmodel.defineViewModelContext
 
-class LoginViewModelContext(
-    parent: Context,
+val LoginRouterDescriptor = createDescriptor<LoginRouter>()
+
+fun loginContext(
     loginRouter: LoginRouter
-) : ViewModelContext(parent) {
-
-    companion object {
-        val LoginRouterDescriptor = createDescriptor<LoginRouter>()
-    }
-
-    init {
-        getProvider().addModule(LoginModule)
-        getProvider().addInstance(LoginRouterDescriptor, loginRouter)
-    }
+) = defineViewModelContext("Login") {
+    dependencyDispatcher().addModule(LoginModule)
+    dependencyDispatcher().addInstance(LoginRouterDescriptor, loginRouter)
 
 }
 
-val LoginModule = declareModule {
+private val LoginModule = declareModule {
 
 }

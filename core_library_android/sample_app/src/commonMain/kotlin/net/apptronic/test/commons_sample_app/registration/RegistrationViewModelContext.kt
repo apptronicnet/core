@@ -1,18 +1,10 @@
 package net.apptronic.test.commons_sample_app.registration
 
-import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.di.createDescriptor
-import net.apptronic.core.mvvm.viewmodel.ViewModelContext
+import net.apptronic.core.mvvm.viewmodel.defineViewModelContext
 
-class RegistrationViewModelContext(parent: Context, router: RegistrationRouter) :
-    ViewModelContext(parent) {
+val RegistrationRouterDescriptor = createDescriptor<RegistrationRouter>()
 
-    companion object {
-        val RegistrationRouterDescriptor = createDescriptor<RegistrationRouter>()
-    }
-
-    init {
-        getProvider().addInstance(RegistrationRouterDescriptor, router)
-    }
-
+fun registrationViewModelContext(router: RegistrationRouter) = defineViewModelContext {
+    dependencyDispatcher().addInstance(RegistrationRouterDescriptor, router)
 }

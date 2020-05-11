@@ -1,37 +1,32 @@
 package net.apptronic.test.commons_sample_app
 
+import net.apptronic.core.component.context.Context
+import net.apptronic.core.mvvm.viewmodel.EMPTY_VIEW_MODEL_CONTEXT
 import net.apptronic.core.mvvm.viewmodel.ViewModel
-import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 import net.apptronic.core.mvvm.viewmodel.adapter.BasicTransition
-import net.apptronic.core.mvvm.viewmodel.createViewModel
 import net.apptronic.test.commons_sample_app.convert.ConvertScreenViewModel
-import net.apptronic.test.commons_sample_app.lazylist.createLazyListItemViewModel
+import net.apptronic.test.commons_sample_app.lazylist.LazyListViewModel
 import net.apptronic.test.commons_sample_app.lazylistfiltering.LazyListFilterViewModel
-import net.apptronic.test.commons_sample_app.list.ListContext
 import net.apptronic.test.commons_sample_app.list.ListScreenViewModel
 import net.apptronic.test.commons_sample_app.loadfilterlist.LoadFilterListViewModel
 import net.apptronic.test.commons_sample_app.login.LoginRouter
 import net.apptronic.test.commons_sample_app.login.LoginViewModel
-import net.apptronic.test.commons_sample_app.login.LoginViewModelContext
 import net.apptronic.test.commons_sample_app.login.RegistrationListener
-import net.apptronic.test.commons_sample_app.navigation.NavigationContext
 import net.apptronic.test.commons_sample_app.navigation.NavigationRouter
 import net.apptronic.test.commons_sample_app.navigation.NavigationScreenViewModel
-import net.apptronic.test.commons_sample_app.pager.createPagerViewModel
+import net.apptronic.test.commons_sample_app.pager.PagerViewModel
 import net.apptronic.test.commons_sample_app.registration.RegistrationRouter
 import net.apptronic.test.commons_sample_app.registration.RegistrationViewModel
-import net.apptronic.test.commons_sample_app.registration.RegistrationViewModelContext
 import net.apptronic.test.commons_sample_app.stackloading.StackLoadingViewModel
-import net.apptronic.test.commons_sample_app.throttle.createThrottleSampleViewModel
+import net.apptronic.test.commons_sample_app.throttle.ThrottleSampleViewModel
 
-class ApplicationScreenViewModel(context: ViewModelContext) : ViewModel(context) {
+class ApplicationScreenViewModel(parent: Context) : ViewModel(parent, EMPTY_VIEW_MODEL_CONTEXT) {
 
     val rootPage = stackNavigator()
 
     init {
         val router = ApplicationScreenNavigationRouterImpl(this)
-        val navigationContext = NavigationContext(this, router)
-        rootPage.set(NavigationScreenViewModel(navigationContext))
+        rootPage.set(NavigationScreenViewModel(context, router))
     }
 
     fun onBackPressed(actionIfEmpty: () -> Unit) {
@@ -45,65 +40,62 @@ class ApplicationScreenNavigationRouterImpl(
 ) : NavigationRouter {
 
     override fun openLoginDemo() {
-        val loginContext = LoginViewModelContext(
-            parent,
-            ApplicationScreenLoginRouterImpl(parent)
-        )
-        parent.rootPage.add(LoginViewModel(loginContext), BasicTransition.Forward)
+        val router = ApplicationScreenLoginRouterImpl(parent)
+        parent.rootPage.add(LoginViewModel(parent.context, router), BasicTransition.Forward)
     }
 
     override fun openConverterDemo() {
         parent.rootPage.add(
-            ConvertScreenViewModel(ViewModelContext(parent)),
+            ConvertScreenViewModel(parent.context),
             BasicTransition.Forward
         )
     }
 
     override fun openListDemo() {
         parent.rootPage.add(
-            ListScreenViewModel(ListContext(parent)),
+            ListScreenViewModel(parent.context),
             BasicTransition.Forward
         )
     }
 
     override fun openPagerDemo() {
         parent.rootPage.add(
-            createPagerViewModel(parent),
+            PagerViewModel(parent.context),
             BasicTransition.Forward
         )
     }
 
     override fun openThrottleDemo() {
         parent.rootPage.add(
-            createThrottleSampleViewModel(parent),
+            ThrottleSampleViewModel(parent.context),
             BasicTransition.Forward
         )
     }
 
     override fun openLazyListDemo() {
         parent.rootPage.add(
-            createLazyListItemViewModel(parent),
+            LazyListViewModel(parent.context),
             BasicTransition.Forward
         )
     }
 
     override fun openListFilterDemo() {
         parent.rootPage.add(
-            parent.createViewModel(::LoadFilterListViewModel),
+            LoadFilterListViewModel(parent.context),
             BasicTransition.Forward
         )
     }
 
     override fun openStackLoadingDemo() {
         parent.rootPage.add(
-            parent.createViewModel(::StackLoadingViewModel),
+            StackLoadingViewModel(parent.context),
             BasicTransition.Forward
         )
     }
 
     override fun openDynamicFilterListDemo() {
         parent.rootPage.add(
-            parent.createViewModel(::LazyListFilterViewModel),
+            LazyListFilterViewModel(parent.context),
             BasicTransition.Forward
         )
     }
@@ -116,9 +108,8 @@ class ApplicationScreenLoginRouterImpl(
 
     override fun openRegistrationScreen(listener: RegistrationListener) {
         val router = ApplicationScreenRegistrationRouterImpl(parent, listener)
-        val registrationContext = RegistrationViewModelContext(parent, router)
         parent.rootPage.add(
-            RegistrationViewModel(registrationContext),
+            RegistrationViewModel(parent.context, router),
             BasicTransition.Forward
         )
     }

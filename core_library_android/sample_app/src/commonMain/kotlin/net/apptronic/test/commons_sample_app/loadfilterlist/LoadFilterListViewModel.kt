@@ -2,18 +2,15 @@ package net.apptronic.test.commons_sample_app.loadfilterlist
 
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.functions.map
+import net.apptronic.core.component.value
+import net.apptronic.core.mvvm.viewmodel.EMPTY_VIEW_MODEL_CONTEXT
 import net.apptronic.core.mvvm.viewmodel.ViewModel
-import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 import net.apptronic.core.mvvm.viewmodel.navigation.addVisibilityFilter
 import net.apptronic.core.mvvm.viewmodel.navigation.notifyNextFilter
 import net.apptronic.core.mvvm.viewmodel.navigation.simpleFilter
 import net.apptronic.core.mvvm.viewmodel.navigation.takeUntilVisibleFilter
 
-fun createLoadFilterListViewModel(parent: Context): LoadFilterListViewModel {
-    return LoadFilterListViewModel(ViewModelContext(parent))
-}
-
-class LoadFilterListViewModel(context: ViewModelContext) : ViewModel(context) {
+class LoadFilterListViewModel(parent: Context) : ViewModel(parent, EMPTY_VIEW_MODEL_CONTEXT) {
 
     val loadFilterMode = value<LoadFilterMode>(LoadFilterMode.Simple)
 
@@ -25,22 +22,22 @@ class LoadFilterListViewModel(context: ViewModelContext) : ViewModel(context) {
             when (mode) {
                 LoadFilterMode.Simple -> {
                     val times = (1..40).map { it * 500L }
-                    list.set(times.map { createLoadItemViewModel(this, it, true) })
+                    list.set(times.map { LoadItemViewModel(context, it, true) })
                     list.setListFilter(simpleFilter())
                 }
                 LoadFilterMode.Random -> {
                     val times = (1..40).map { it * 500L }.shuffled()
-                    list.set(times.map { createLoadItemViewModel(this, it, true) })
+                    list.set(times.map { LoadItemViewModel(context, it, true) })
                     list.setListFilter(simpleFilter())
                 }
                 LoadFilterMode.RandomTakeFirst -> {
                     val times = (1..20).map { it * 200L }.shuffled()
-                    list.set(times.map { createLoadItemViewModel(this, it, true) })
+                    list.set(times.map { LoadItemViewModel(context, it, true) })
                     list.setListFilter(takeUntilVisibleFilter())
                 }
                 LoadFilterMode.RandomWithNotifyReady -> {
                     val times = (1..40).map { 250L + it * 12L }.shuffled()
-                    list.set(times.map { createLoadItemViewModel(this, it, false) })
+                    list.set(times.map { LoadItemViewModel(context, it, false) })
                     list.setListFilter(notifyNextFilter(true, 3))
                 }
             }

@@ -1,6 +1,8 @@
 package net.apptronic.test.commons_sample_app.list
 
 import net.apptronic.core.component.context.Context
+import net.apptronic.core.component.toggle
+import net.apptronic.core.component.value
 import kotlin.random.Random
 
 private val TEXT_VARIANTS =

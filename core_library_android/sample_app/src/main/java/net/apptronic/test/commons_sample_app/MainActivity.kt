@@ -2,59 +2,51 @@ package net.apptronic.test.commons_sample_app
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import net.apptronic.core.android.viewmodel.lifecycleController
-import net.apptronic.test.commons_sample_app.app.lazyApplicationComponent
+import net.apptronic.core.android.viewmodel.activityUiContainer
+import net.apptronic.test.commons_sample_app.app.getApplicationComponent
 
 class MainActivity : AppCompatActivity() {
 
-    private val appComponent by lazyApplicationComponent()
-    private val viewModel by lazy {
-        appComponent.getApplicationScreenModel()
-    }
-    private val lifecycleController by lazy {
-        lifecycleController(viewModel, AppViewFactory, this)
+    private val uiContainer by lazy {
+        activityUiContainer(
+            getApplicationComponent().appUI, AppViewFactory
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        lifecycleController.setCreated(true)
-        setContentView(R.layout.activity_main)
-        lifecycleController.setBound(true)
+        uiContainer.onActivityCreate()
     }
 
     override fun onStart() {
         super.onStart()
-        lifecycleController.setVisible(true)
+        uiContainer.onActivityStart()
     }
 
     override fun onResume() {
         super.onResume()
-        lifecycleController.setFocused(true)
+        uiContainer.onActivityResume()
     }
 
     override fun onPause() {
         super.onPause()
-        lifecycleController.setFocused(false)
+        uiContainer.onActivityPause()
     }
 
     override fun onStop() {
         super.onStop()
-        lifecycleController.setVisible(false)
+        uiContainer.onActivityStop()
     }
 
     override fun onBackPressed() {
-        viewModel.onBackPressed {
+        getApplicationComponent().appUI.getViewModel().onBackPressed {
             finish()
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        lifecycleController.setBound(false)
-        if (isFinishing) {
-            lifecycleController.setCreated(false)
-            appComponent.applicationScreenClosed()
-        }
+        uiContainer.onActivityDestroy()
     }
 
 }

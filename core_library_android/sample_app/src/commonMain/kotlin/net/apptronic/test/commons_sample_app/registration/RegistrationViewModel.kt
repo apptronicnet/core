@@ -1,20 +1,24 @@
 package net.apptronic.test.commons_sample_app.registration
 
-import net.apptronic.core.base.observable.subscribe
+import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.entities.setAs
+import net.apptronic.core.component.entity.entities.subscribe
 import net.apptronic.core.component.entity.functions.*
+import net.apptronic.core.component.genericEvent
+import net.apptronic.core.component.inject
+import net.apptronic.core.component.value
 import net.apptronic.core.mvvm.viewmodel.ViewModel
-import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 import net.apptronic.core.mvvm.viewmodel.extensions.forEachChangeAnyOf
-import net.apptronic.test.commons_sample_app.app.ApplicationContext
+import net.apptronic.test.commons_sample_app.app.HttpClientDescriptor
 import net.apptronic.test.commons_sample_app.app.PlatformDefinition
+import net.apptronic.test.commons_sample_app.app.PlatformDescriptor
 
-class RegistrationViewModel(context: ViewModelContext) : ViewModel(context) {
+class RegistrationViewModel(parent: Context, router: RegistrationRouter) :
+    ViewModel(parent, registrationViewModelContext(router)) {
 
-    private val httpClient = getProvider().inject(ApplicationContext.HttpClientDescriptor)
-    private val platform = getProvider().inject(ApplicationContext.PlatformDescriptor)
-    private val router =
-        getProvider().inject(RegistrationViewModelContext.RegistrationRouterDescriptor)
+    private val httpClient = inject(HttpClientDescriptor)
+    private val platform = inject(PlatformDescriptor)
+    private val router = inject(RegistrationRouterDescriptor)
 
     val email = value("")
     val password = value("")

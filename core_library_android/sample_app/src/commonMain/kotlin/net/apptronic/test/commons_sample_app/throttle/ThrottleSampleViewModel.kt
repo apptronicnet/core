@@ -1,25 +1,24 @@
 package net.apptronic.test.commons_sample_app.throttle
 
+import kotlinx.coroutines.delay
 import net.apptronic.core.base.concurrent.AtomicEntity
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.behavior.throttle
 import net.apptronic.core.component.entity.entities.setTo
 import net.apptronic.core.component.entity.functions.map
 import net.apptronic.core.component.entity.functions.mapOr
+import net.apptronic.core.component.entity.functions.mapSuspend
 import net.apptronic.core.component.entity.functions.onNext
+import net.apptronic.core.component.genericEvent
+import net.apptronic.core.component.value
+import net.apptronic.core.mvvm.viewmodel.EMPTY_VIEW_MODEL_CONTEXT
 import net.apptronic.core.mvvm.viewmodel.ViewModel
-import net.apptronic.core.mvvm.viewmodel.ViewModelContext
-import net.apptronic.core.platform.pauseCurrentThread
 
-fun createThrottleSampleViewModel(parent: Context): ThrottleSampleViewModel {
-    return ThrottleSampleViewModel(ViewModelContext(parent))
-}
-
-class ThrottleSampleViewModel(context: ViewModelContext) : ViewModel(context) {
+class ThrottleSampleViewModel(parent: Context) : ViewModel(parent, EMPTY_VIEW_MODEL_CONTEXT) {
 
     private val serialGenerator = AtomicEntity(1)
 
-    val onClickEmitNewItem = genericEvent() {
+    val onClickEmitNewItem = genericEvent {
         currentItemIndex.set(
             Source(serialGenerator.perform {
                 val current = get()
@@ -42,11 +41,11 @@ class ThrottleSampleViewModel(context: ViewModelContext) : ViewModel(context) {
     init {
         currentItemIndex.throttle { source ->
             source.onNext { processingItemIndex.set(Processing(it.index)) }
-                .map {
+                .mapSuspend {
                     var remaining = 10
                     while (remaining > 0) {
                         processingTimer.set(remaining)
-                        pauseCurrentThread(300)
+                        delay(300)
                         remaining--
                     }
                     processingTimer.set(null)

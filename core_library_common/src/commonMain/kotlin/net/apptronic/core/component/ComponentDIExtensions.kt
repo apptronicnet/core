@@ -5,32 +5,28 @@ import net.apptronic.core.component.di.Parameters
 import net.apptronic.core.component.di.emptyParameters
 import kotlin.reflect.KClass
 
-fun <TypeDeclaration : Any> Component.inject(
-        clazz: KClass<TypeDeclaration>,
+inline fun <reified TypeDeclaration : Any> Component.inject(
         params: Parameters = emptyParameters()
 ): TypeDeclaration {
-    return provider().inject(clazz, params)
+    return provider().inject(TypeDeclaration::class, params)
 }
 
-fun <TypeDeclaration : Any> Component.optional(
-        clazz: KClass<TypeDeclaration>,
+inline fun <reified TypeDeclaration : Any> Component.optional(
         params: Parameters = emptyParameters()
 ): TypeDeclaration? {
-    return provider().optional(clazz, params)
+    return provider().optional(TypeDeclaration::class, params)
 }
 
-fun <TypeDeclaration : Any> Component.injectLazy(
-        clazz: KClass<TypeDeclaration>,
+inline fun <reified TypeDeclaration : Any> Component.injectLazy(
         params: Parameters = emptyParameters()
 ): Lazy<TypeDeclaration> {
-    return provider().injectLazy(clazz, params)
+    return provider().injectLazy(TypeDeclaration::class, params)
 }
 
-fun <TypeDeclaration : Any> Component.optionalLazy(
-        clazz: KClass<TypeDeclaration>,
+inline fun <reified TypeDeclaration : Any> Component.optionalLazy(
         params: Parameters = emptyParameters()
 ): Lazy<TypeDeclaration?> {
-    return provider().optionalLazy(clazz, params)
+    return provider().optionalLazy(TypeDeclaration::class, params)
 }
 
 fun <TypeDeclaration> Component.inject(

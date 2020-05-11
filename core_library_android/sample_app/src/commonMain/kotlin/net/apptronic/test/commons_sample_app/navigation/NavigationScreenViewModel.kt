@@ -1,11 +1,12 @@
 package net.apptronic.test.commons_sample_app.navigation
 
+import net.apptronic.core.component.context.Context
 import net.apptronic.core.mvvm.viewmodel.ViewModel
-import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 
-class NavigationScreenViewModel(context: ViewModelContext) : ViewModel(context) {
+class NavigationScreenViewModel(parent: Context, router: NavigationRouter) :
+    ViewModel(parent, navigationContext(router)) {
 
-    private val router = getProvider().inject(NavigationContext.NavigationRouterDescriptor)
+    private val router = provider().inject(NavigationRouterDescriptor)
 
     fun onClickLoginDemo() {
         router.openLoginDemo()

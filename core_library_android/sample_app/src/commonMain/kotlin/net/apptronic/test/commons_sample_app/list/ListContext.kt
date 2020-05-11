@@ -1,10 +1,9 @@
 package net.apptronic.test.commons_sample_app.list
 
 import net.apptronic.core.base.concurrent.AtomicEntity
-import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.di.createDescriptor
 import net.apptronic.core.component.di.declareModule
-import net.apptronic.core.mvvm.viewmodel.ViewModelContext
+import net.apptronic.core.mvvm.viewmodel.defineViewModelContext
 
 val ListControllerDescriptor = createDescriptor<ListController>()
 val ListItemSerialGeneratorDescriptor = createDescriptor<AtomicEntity<Int>>()
@@ -12,12 +11,8 @@ val GenerateNextListItemIndexDescriptor = createDescriptor<Int>()
 val ListItemTextViewModelDescriptor = createDescriptor<ListItemTextViewModel>()
 val ListItemImageViewModelDescriptor = createDescriptor<ListItemImageViewModel>()
 
-class ListContext(parent: Context) : ViewModelContext(parent) {
-
-    init {
-        getProvider().addModule(listModule)
-    }
-
+val listContext = defineViewModelContext {
+    dependencyDispatcher().addModule(listModule)
 }
 
 private val listModule = declareModule {
