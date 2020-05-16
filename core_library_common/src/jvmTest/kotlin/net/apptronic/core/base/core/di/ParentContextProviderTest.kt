@@ -51,14 +51,14 @@ class ParentContextProviderTest {
 
     private class ThisTestContext : TestContext() {
         init {
-            dependencyDispatcher().addModule(parentModule)
+            dependencyDispatcher.addModule(parentModule)
         }
     }
 
     private class ChildContext(parent: Context) :
             SubContext(parent, BASE_LIFECYCLE) {
         init {
-            dependencyDispatcher().addModule(childModule)
+            dependencyDispatcher.addModule(childModule)
         }
     }
 
@@ -67,21 +67,21 @@ class ParentContextProviderTest {
 
     @Test
     fun parentShouldHave() {
-        val one = parent.dependencyDispatcher().inject(OneDescriptor)
-        val two = parent.dependencyDispatcher().inject(TwoDescriptor)
+        val one = parent.dependencyDispatcher.inject(OneDescriptor)
+        val two = parent.dependencyDispatcher.inject(TwoDescriptor)
     }
 
     @Test
     fun childShouldHave() {
-        val one = child.dependencyDispatcher().inject(OneDescriptor)
-        val two = child.dependencyDispatcher().inject(TwoDescriptor)
-        val three = child.dependencyDispatcher().inject(ThreeDescriptor)
+        val one = child.dependencyDispatcher.inject(OneDescriptor)
+        val two = child.dependencyDispatcher.inject(TwoDescriptor)
+        val three = child.dependencyDispatcher.inject(ThreeDescriptor)
         assert(one is OneChild)
     }
 
     @Test(expected = InjectionFailedException::class)
     fun parentShouldNotHave() {
-        val three = parent.dependencyDispatcher().inject(ThreeDescriptor)
+        val three = parent.dependencyDispatcher.inject(ThreeDescriptor)
     }
 
 }

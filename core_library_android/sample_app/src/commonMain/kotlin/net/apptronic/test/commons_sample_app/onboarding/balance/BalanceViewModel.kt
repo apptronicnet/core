@@ -13,7 +13,7 @@ import net.apptronic.test.commons_sample_app.app.HttpClientDescriptor
 import net.apptronic.test.commons_sample_app.onboarding.OnboardingDataDescriptor
 
 private fun balanceContext(router: BalanceRouter) = defineViewModelContext {
-    dependencyDispatcher().addInstance(router)
+    dependencyDispatcher.addInstance(router)
 }
 
 class BalanceViewModel(parent: Context, router: BalanceRouter) :

@@ -17,7 +17,7 @@ const val RECYCLER_NAVIGATOR_DEFAULT_SAVED_ITEMS_SIZE = 10
 
 @Suppress("UNCHECKED_CAST")
 class ListRecyclerNavigator<T : Any, Id, VM : ViewModel>(
-        private val parent: ViewModel,
+        parent: ViewModel,
         private val builder: ViewModelBuilder<T, Id, VM>
 ) : BaseListNavigator<T>(parent),
         UpdateEntity<List<T>>, VisibilityFilterableNavigator {

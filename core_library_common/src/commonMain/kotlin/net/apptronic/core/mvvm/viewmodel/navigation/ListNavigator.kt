@@ -10,7 +10,7 @@ import net.apptronic.core.mvvm.viewmodel.adapter.ItemStateNavigator
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelListAdapter
 
 class ListNavigator(
-        private val parent: ViewModel
+        parent: ViewModel
 ) : BaseListNavigator<ViewModel>(parent),
         UpdateEntity<List<ViewModel>>, VisibilityFilterableNavigator {
 

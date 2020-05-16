@@ -3,6 +3,7 @@ package net.apptronic.core.mvvm.viewmodel
 import net.apptronic.core.base.observable.Observable
 import net.apptronic.core.base.observable.subject.BehaviorSubject
 import net.apptronic.core.component.Component
+import net.apptronic.core.component.applyPlugins
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.context.ContextDefinition
 import net.apptronic.core.component.entity.Entity
@@ -15,7 +16,6 @@ import net.apptronic.core.component.genericEvent
 import net.apptronic.core.component.lifecycle.LifecycleStage
 import net.apptronic.core.component.lifecycle.LifecycleStageDefinition
 import net.apptronic.core.mvvm.viewmodel.navigation.*
-import net.apptronic.core.platform.getPlatform
 
 open class ViewModel : Component {
 
@@ -49,16 +49,11 @@ open class ViewModel : Component {
     }
 
     private fun doInit() {
-        context.lifecycle.rootStage.doOnce {
-            getPlatform().logMessage("ViewModelLifecycle: $this initialized")
-        }
-        doOnTerminate {
-            getPlatform().logMessage("ViewModelLifecycle: ${this@ViewModel} terminated")
-        }
         stateOfStage(isCreated, ViewModelLifecycle.STAGE_CREATED)
         stateOfStage(isBound, ViewModelLifecycle.STAGE_BOUND)
         stateOfStage(isVisible, ViewModelLifecycle.STAGE_VISIBLE)
         stateOfStage(isFocused, ViewModelLifecycle.STAGE_FOCUSED)
+        applyPlugins()
     }
 
     fun newSavedState(): SavedState {
@@ -73,12 +68,10 @@ open class ViewModel : Component {
 
     private fun stateOfStage(target: BehaviorSubject<Boolean>, definition: LifecycleStageDefinition): Observable<Boolean> {
         onEnterStage(definition) {
-            getPlatform().logMessage("ViewModelLifecycle: ${this@ViewModel} entered stage${definition.name}")
             target.update(true)
         }
         onExitStage(definition) {
             target.update(false)
-            getPlatform().logMessage("ViewModelLifecycle: ${this@ViewModel} exited stage${definition.name}")
         }
         return target
     }

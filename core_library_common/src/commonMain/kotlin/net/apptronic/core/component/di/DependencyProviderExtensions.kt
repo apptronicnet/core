@@ -7,7 +7,7 @@ import net.apptronic.core.component.context.Context
  */
 fun <T, R> DependencyDispatcher.isolatedExecuteOn(descriptor: Descriptor<T>, action: (T) -> R): R {
     return context.isolatedExecute {
-        val instance = dependencyDispatcher().inject(descriptor)
+        val instance = dependencyDispatcher.inject(descriptor)
         action.invoke(instance)
     }
 }

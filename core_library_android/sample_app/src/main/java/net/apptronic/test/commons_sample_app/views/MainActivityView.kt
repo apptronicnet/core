@@ -14,7 +14,7 @@ class MainActivityView : AndroidView<ApplicationScreenViewModel>() {
 
     override fun onBindView(view: View, viewModel: ApplicationScreenViewModel) {
         with(view) {
-            +stackNavigatorBinding(container, viewModel.rootPage, AppViewFactory)
+            stackNavigatorBinding(container, viewModel.rootPage)
         }
     }
 

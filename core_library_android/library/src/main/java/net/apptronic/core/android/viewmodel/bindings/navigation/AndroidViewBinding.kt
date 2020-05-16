@@ -2,6 +2,7 @@ package net.apptronic.core.android.viewmodel.bindings.navigation
 
 import android.view.View
 import android.view.ViewGroup
+import net.apptronic.core.android.plugins.getAndroidViewFactoryFromExtension
 import net.apptronic.core.android.viewmodel.AndroidView
 import net.apptronic.core.android.viewmodel.AndroidViewFactory
 import net.apptronic.core.android.viewmodel.Binding
@@ -30,25 +31,28 @@ enum class BindingType(
     CREATE_CONTENT_AND_CLEAR(false, true, true)
 }
 
-fun androidViewBinding(
+fun AndroidView<*>.androidViewBinding(
     view: View,
     viewModel: ViewModel,
     androidView: AndroidView<*>,
     bindingType: BindingType = BindingType.AUTO
-): AndroidViewBinding {
-    return AndroidViewBinding(view, viewModel, { androidView }, bindingType)
+) {
+    add(AndroidViewBinding(view, viewModel, { androidView }, bindingType))
 }
 
-fun androidViewBinding(
+fun AndroidView<*>.androidViewBinding(
     view: View,
     viewModel: ViewModel,
-    factory: AndroidViewFactory,
+    factory: AndroidViewFactory? = null,
     bindingType: BindingType = BindingType.AUTO
-): AndroidViewBinding {
-    return AndroidViewBinding(view, viewModel, factory::getAndroidView, bindingType)
+) {
+    val resultFactory = factory
+        ?: viewModel.getAndroidViewFactoryFromExtension()
+        ?: throw IllegalArgumentException("AndroidViewFactory should be provided by parameters or Context.installViewFactoryPlugin()")
+    add(AndroidViewBinding(view, viewModel, resultFactory::getAndroidView, bindingType))
 }
 
-class AndroidViewBinding(
+private class AndroidViewBinding(
     private val view: View,
     private val targetViewModel: ViewModel,
     private val factory: (ViewModel) -> AndroidView<*>,

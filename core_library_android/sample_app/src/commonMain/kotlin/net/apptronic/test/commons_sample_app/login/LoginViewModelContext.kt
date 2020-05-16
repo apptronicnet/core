@@ -9,8 +9,8 @@ val LoginRouterDescriptor = createDescriptor<LoginRouter>()
 fun loginContext(
     loginRouter: LoginRouter
 ) = defineViewModelContext("Login") {
-    dependencyDispatcher().addModule(LoginModule)
-    dependencyDispatcher().addInstance(LoginRouterDescriptor, loginRouter)
+    dependencyDispatcher.addModule(LoginModule)
+    dependencyDispatcher.addInstance(LoginRouterDescriptor, loginRouter)
 
 }
 

@@ -20,7 +20,7 @@ class ListScreenView : AndroidView<ListScreenViewModel>() {
         with(view) {
             +(listTitle setTextFrom viewModel.title)
 
-            +listNavigatorBinding(listOfItems, viewModel.listNavigator, AppViewFactory)
+            listNavigatorBinding(listOfItems, viewModel.listNavigator)
             listOfItems.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
 
             +(addTextTop sendClicksTo viewModel::onClickAddTextToStart)

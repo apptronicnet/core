@@ -1,8 +1,8 @@
 package net.apptronic.core.mvvm.viewmodel.dispatcher
 
-import net.apptronic.core.component.Component
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.context.close
+import net.apptronic.core.component.extensions.BaseComponent
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelParent
 
@@ -11,11 +11,15 @@ import net.apptronic.core.mvvm.viewmodel.ViewModelParent
  * can can be attached only to one container at same time. In case if app UI wants to destoroy
  */
 abstract class BaseViewModelDispatcher<T : ViewModel>(
-        override val context: Context
-) : Component(), ViewModelDispatcher<T>, ViewModelParent {
+        context: Context
+) : BaseComponent(context), ViewModelDispatcher<T>, ViewModelParent {
 
     private var viewModel: T? = null
-    private var uiContainer: UiContainer<T>? = null
+    private var viewContainer: ViewContainer<T>? = null
+
+    override fun haveActiveViewModel(): Boolean {
+        return viewModel != null
+    }
 
     override fun getViewModel(): T {
         return viewModel ?: onCreateViewModelRequested().also {
@@ -23,23 +27,23 @@ abstract class BaseViewModelDispatcher<T : ViewModel>(
         }
     }
 
-    override fun registerContainer(container: UiContainer<T>) {
-        if (uiContainer != null) {
+    override fun registerContainer(container: ViewContainer<T>) {
+        if (viewContainer != null) {
             throw IllegalStateException("UiContainer already set")
         }
-        this.uiContainer = container
+        this.viewContainer = container
         val viewModel = getViewModel()
         container.onAddedViewModel(viewModel)
     }
 
-    override fun unregisterContainer(container: UiContainer<T>) {
-        if (uiContainer == null) {
+    override fun unregisterContainer(container: ViewContainer<T>) {
+        if (viewContainer == null) {
             throw IllegalStateException("UiContainer was not set")
         }
-        if (uiContainer != container) {
+        if (viewContainer != container) {
             throw IllegalStateException("Should unregister same UiContainer")
         }
-        uiContainer = null
+        viewContainer = null
     }
 
     abstract fun onCreateViewModelRequested(): T
@@ -50,7 +54,7 @@ abstract class BaseViewModelDispatcher<T : ViewModel>(
     }
 
     override fun requestCloseSelf(viewModel: ViewModel, transitionInfo: Any?) {
-        uiContainer?.onViewModelRequestedCloseSelf()
+        viewContainer?.onViewModelRequestedCloseSelf()
     }
 
 }

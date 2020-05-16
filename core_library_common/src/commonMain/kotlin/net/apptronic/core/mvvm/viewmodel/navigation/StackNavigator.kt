@@ -6,7 +6,7 @@ import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelStackAdapter
 
 class StackNavigator(
-        private val parent: ViewModel
+        parent: ViewModel
 ) : Navigator<StackNavigatorStatus>(
         parent
 ), VisibilityFilterableNavigator {
@@ -181,7 +181,7 @@ class StackNavigator(
     fun setAdapter(adapter: ViewModelStackAdapter) {
         currentAdapter = CurrentAdapter(adapter)
         invalidateAdapter(newItem = currentState.visibleItem, transitionInfo = null)
-        parent.context.lifecycle.onExitFromActiveStage {
+        context.lifecycle.onExitFromActiveStage {
             val currentItem = currentState.visibleItem
             if (currentItem != null) {
                 onUnbind(currentItem)

@@ -17,14 +17,14 @@ class NullableProviderTest {
 
     @Before
     fun before() {
-        context.dependencyDispatcher().addNullableInstance(NullableStringDescriptor, null)
-        context.dependencyDispatcher().addNullableInstance(NullableIntDescriptor, null)
+        context.dependencyDispatcher.addNullableInstance(NullableStringDescriptor, null)
+        context.dependencyDispatcher.addNullableInstance(NullableIntDescriptor, null)
     }
 
     @Test
     fun shouldInjectNulls() {
-        val nullString = context.dependencyDispatcher().inject(NullableStringDescriptor)
-        val nullInt = context.dependencyDispatcher().inject(NullableIntDescriptor)
+        val nullString = context.dependencyDispatcher.inject(NullableStringDescriptor)
+        val nullInt = context.dependencyDispatcher.inject(NullableIntDescriptor)
         assertNull(nullString)
         assertNull(nullInt)
     }

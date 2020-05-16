@@ -6,7 +6,7 @@ import net.apptronic.core.component.di.declareModule
 import net.apptronic.core.mvvm.viewmodel.defineViewModelContext
 
 val PagerContext = defineViewModelContext("PagerContext") {
-    dependencyDispatcher().addModule(PagerModule)
+    dependencyDispatcher.addModule(PagerModule)
 }
 
 private val NumberGeneratorDescriptor = createDescriptor<AtomicEntity<Int>>()

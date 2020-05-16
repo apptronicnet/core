@@ -4,6 +4,7 @@ import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.context.coreContext
 import net.apptronic.core.component.di.createDescriptor
 import net.apptronic.core.component.di.declareModule
+import net.apptronic.core.plugins.installViewModelLogPlugin
 
 val HttpClientFactoryDescriptor = createDescriptor<HttpClientFactory>()
 val HttpClientDescriptor = createDescriptor<HttpClient>()
@@ -14,9 +15,9 @@ fun applicationContext(
     platformDefinition: PlatformDefinition
 ): Context {
     return coreContext {
-        dependencyDispatcher().addInstance(HttpClientFactoryDescriptor, httpClientFactory)
-        dependencyDispatcher().addInstance(PlatformDescriptor, platformDefinition)
-        dependencyDispatcher().addModule(coreModule)
+        dependencyDispatcher.addInstance(HttpClientFactoryDescriptor, httpClientFactory)
+        dependencyDispatcher.addInstance(PlatformDescriptor, platformDefinition)
+        dependencyDispatcher.addModule(coreModule)
     }
 }
 

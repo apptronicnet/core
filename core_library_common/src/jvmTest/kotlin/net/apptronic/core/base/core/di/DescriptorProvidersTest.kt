@@ -59,7 +59,7 @@ class DescriptorProvidersTest {
 
     private class TestComponent : BaseTestComponent(
         contextInitializer = {
-            dependencyDispatcher().addModule(sampleModule)
+            dependencyDispatcher.addModule(sampleModule)
         }
     ) {
 

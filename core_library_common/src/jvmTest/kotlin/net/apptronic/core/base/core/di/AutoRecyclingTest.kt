@@ -49,7 +49,7 @@ class AutoRecyclingTest {
     @Test
     fun shouldAutoRecycle() {
         val context = TestContext()
-        context.dependencyDispatcher().addModule(module)
+        context.dependencyDispatcher.addModule(module)
         val component = TestComponent(context)
         assert(component.instance is Implementation)
         assert((component.instance as Implementation).isRecycled.not())

@@ -2,14 +2,14 @@ package net.apptronic.test.commons_sample_app
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import net.apptronic.core.android.viewmodel.activityUiContainer
+import net.apptronic.core.android.viewmodel.activityContainer
 import net.apptronic.test.commons_sample_app.app.getApplicationComponent
 
 class MainActivity : AppCompatActivity() {
 
     private val uiContainer by lazy {
-        activityUiContainer(
-            getApplicationComponent().appUI, AppViewFactory
+        activityContainer(
+            getApplicationComponent().appUI
         )
     }
 

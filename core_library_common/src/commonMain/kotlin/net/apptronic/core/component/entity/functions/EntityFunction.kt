@@ -7,6 +7,7 @@ import net.apptronic.core.base.observable.subject.ValueHolder
 import net.apptronic.core.base.observable.subscribe
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.coroutines.coroutineLauncherScoped
+import net.apptronic.core.component.coroutines.debouncer
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.EntitySubscription
 import net.apptronic.core.component.entity.EntityValue
@@ -39,7 +40,7 @@ private class CoroutineFunctionAction<T, R>(
         private val calculation: suspend CoroutineScope.(T) -> R
 ) : FunctionAction<T, R> {
 
-    private val coroutineLauncher = context.coroutineLauncherScoped()
+    private val coroutineLauncher = context.coroutineLauncherScoped().debouncer()
 
     override fun execute(input: T, resultCallback: (R) -> Unit) {
         coroutineLauncher.launch {
@@ -176,7 +177,7 @@ fun <T, A, B, C, D> entityFunction(
     val functionAction = syncAction<Array<Any?>, T> {
         method(it[0] as A, it[1] as B, it[2] as C, it[3] as D)
     }
-    return ArrayFunction(context, arrayOf(a, b, c), functionAction)
+    return ArrayFunction(context, arrayOf(a, b, c, d), functionAction)
 }
 
 @Suppress("UNCHECKED_CAST")
@@ -191,7 +192,7 @@ fun <T, A, B, C, D> entityFunctionSuspend(
     val functionAction = suspendAction<Array<Any?>, T>(context) {
         method(it[0] as A, it[1] as B, it[2] as C, it[3] as D)
     }
-    return ArrayFunction(context, arrayOf(a, b, c), functionAction)
+    return ArrayFunction(context, arrayOf(a, b, c, d), functionAction)
 }
 
 @Suppress("UNCHECKED_CAST")
@@ -207,7 +208,7 @@ fun <T, A, B, C, D, E> entityFunction(
     val functionAction = syncAction<Array<Any?>, T> {
         method(it[0] as A, it[1] as B, it[2] as C, it[3] as D, it[4] as E)
     }
-    return ArrayFunction(context, arrayOf(a, b, c), functionAction)
+    return ArrayFunction(context, arrayOf(a, b, c, d, e), functionAction)
 }
 
 @Suppress("UNCHECKED_CAST")
@@ -223,7 +224,7 @@ fun <T, A, B, C, D, E> entityFunctionSuspend(
     val functionAction = suspendAction<Array<Any?>, T>(context) {
         method(it[0] as A, it[1] as B, it[2] as C, it[3] as D, it[4] as E)
     }
-    return ArrayFunction(context, arrayOf(a, b, c), functionAction)
+    return ArrayFunction(context, arrayOf(a, b, c, d, e), functionAction)
 }
 
 private class SingleFunction<T, X>(

@@ -6,5 +6,5 @@ import net.apptronic.core.mvvm.viewmodel.defineViewModelContext
 val RegistrationRouterDescriptor = createDescriptor<RegistrationRouter>()
 
 fun registrationViewModelContext(router: RegistrationRouter) = defineViewModelContext {
-    dependencyDispatcher().addInstance(RegistrationRouterDescriptor, router)
+    dependencyDispatcher.addInstance(RegistrationRouterDescriptor, router)
 }

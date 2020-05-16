@@ -5,12 +5,22 @@ import net.apptronic.core.component.di.DependencyProvider
 import net.apptronic.core.component.lifecycle.Lifecycle
 import net.apptronic.core.component.lifecycle.LifecycleStage
 import net.apptronic.core.component.lifecycle.LifecycleStageDefinition
+import net.apptronic.core.component.plugin.Extendable
+import net.apptronic.core.component.plugin.Extensions
 
-abstract class Component {
+fun Component.applyPlugins() {
+    context.plugins.plugins.forEach {
+        it.onComponent(this)
+    }
+}
+
+abstract class Component : Extendable {
+
+    override val extensions: Extensions = Extensions()
 
     abstract val context: Context
 
-    fun provider(): DependencyProvider = context.dependencyDispatcher()
+    fun provider(): DependencyProvider = context.dependencyDispatcher
 
     val id: Long = ComponentRegistry.nextId()
 

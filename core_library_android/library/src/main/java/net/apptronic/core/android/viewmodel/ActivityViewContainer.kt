@@ -1,16 +1,17 @@
 package net.apptronic.core.android.viewmodel
 
 import android.app.Activity
+import net.apptronic.core.android.plugins.getAndroidViewFactoryFromExtension
 import net.apptronic.core.mvvm.viewmodel.ViewModel
-import net.apptronic.core.mvvm.viewmodel.dispatcher.UiContainer
+import net.apptronic.core.mvvm.viewmodel.dispatcher.ViewContainer
 import net.apptronic.core.mvvm.viewmodel.dispatcher.ViewModelDispatcher
 import net.apptronic.core.mvvm.viewmodel.navigation.ViewModelLifecycleController
 
-fun <T : ViewModel> Activity.activityUiContainer(
+fun <T : ViewModel> Activity.activityContainer(
     dispatcher: ViewModelDispatcher<T>,
     activityView: AndroidView<T>
-): ActivityUiContainer<T> {
-    return ActivityUiContainerImpl<T>(
+): ActivityViewContainer<T> {
+    return ActivityViewContainerImpl<T>(
         this, dispatcher
     ) {
         val view = activityView.onCreateActivityView(this)
@@ -19,21 +20,24 @@ fun <T : ViewModel> Activity.activityUiContainer(
     }
 }
 
-fun <T : ViewModel> Activity.activityUiContainer(
+fun <T : ViewModel> Activity.activityContainer(
     dispatcher: ViewModelDispatcher<T>,
-    factory: AndroidViewFactory
-): ActivityUiContainer<T> {
-    return ActivityUiContainerImpl<T>(
+    factory: AndroidViewFactory? = null
+): ActivityViewContainer<T> {
+    return ActivityViewContainerImpl<T>(
         this, dispatcher
     ) {
-        val activityView = factory.getAndroidView(it) as AndroidView<T>
+        val useFactory = factory
+            ?: it.getAndroidViewFactoryFromExtension()
+            ?: throw IllegalArgumentException("AndroidViewFactory should be provided by parameters or Context.installViewFactoryPlugin()")
+        val activityView = useFactory.getAndroidView(it) as AndroidView<T>
         val view = activityView.onCreateActivityView(this)
         setContentView(view)
         activityView.bindView(view, it)
     }
 }
 
-interface ActivityUiContainer<T : ViewModel> {
+interface ActivityViewContainer<T : ViewModel> {
 
     enum class DestroyBehavior {
         TerminateAlways,
@@ -57,11 +61,11 @@ interface ActivityUiContainer<T : ViewModel> {
 
 }
 
-private class ActivityUiContainerImpl<T : ViewModel>(
+private class ActivityViewContainerImpl<T : ViewModel>(
     private val activity: Activity,
     private val dispatcher: ViewModelDispatcher<T>,
     private val onBindAction: (T) -> Unit
-) : ActivityUiContainer<T>, UiContainer<T> {
+) : ActivityViewContainer<T>, ViewContainer<T> {
 
     private lateinit var lifecycleController: ViewModelLifecycleController
 
@@ -98,18 +102,18 @@ private class ActivityUiContainerImpl<T : ViewModel>(
         lifecycleController.setVisible(false)
     }
 
-    override fun onActivityDestroy(destroyBehavior: ActivityUiContainer.DestroyBehavior) {
+    override fun onActivityDestroy(destroyBehavior: ActivityViewContainer.DestroyBehavior) {
         lifecycleController.setBound(false)
         when (destroyBehavior) {
-            ActivityUiContainer.DestroyBehavior.TerminateAlways -> {
+            ActivityViewContainer.DestroyBehavior.TerminateAlways -> {
                 dispatcher.recycleViewModel()
             }
-            ActivityUiContainer.DestroyBehavior.TerminateIfFinishing -> {
+            ActivityViewContainer.DestroyBehavior.TerminateIfFinishing -> {
                 if (activity.isFinishing) {
                     dispatcher.recycleViewModel()
                 }
             }
-            ActivityUiContainer.DestroyBehavior.KeepAlive -> {
+            ActivityViewContainer.DestroyBehavior.KeepAlive -> {
                 // do nothing
             }
         }

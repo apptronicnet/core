@@ -1,12 +1,12 @@
 package net.apptronic.core.component.entity.behavior
 
+import net.apptronic.core.base.elapsedRealtimeMillis
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.coroutines.CoroutineLauncher
 import net.apptronic.core.component.coroutines.coroutineLauncherScoped
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.EntitySubscription
-import net.apptronic.core.platform.elapsedRealtimeMillis
 
 // TODO missing documentation
 fun <T> Entity<T>.debounce(

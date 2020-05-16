@@ -14,7 +14,7 @@ fun coreContext(coroutineDispatcher: CoroutineDispatcher = Dispatchers.Main, bui
 private class CoreContext(
         override val lifecycle: Lifecycle = Lifecycle(),
         coroutineDispatcher: CoroutineDispatcher = Dispatchers.Main
-) : Context {
+) : BaseContext() {
 
     override val defaultDispatcher: CoroutineDispatcher = coroutineDispatcher
 
@@ -22,14 +22,8 @@ private class CoreContext(
         requireNeverFrozen()
     }
 
-    private val dependencyProvider = DependencyDispatcher(this, null)
+    override val dependencyDispatcher = DependencyDispatcher(this, null)
 
-    override fun getParent(): Context? {
-        return null
-    }
-
-    override fun dependencyDispatcher(): DependencyDispatcher {
-        return dependencyProvider
-    }
+    override val parent: Context? = null
 
 }

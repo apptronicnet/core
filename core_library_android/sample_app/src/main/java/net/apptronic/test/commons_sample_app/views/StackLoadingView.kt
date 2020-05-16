@@ -18,7 +18,7 @@ class StackLoadingView : AndroidView<StackLoadingViewModel>() {
 
     override fun onBindView(view: View, viewModel: StackLoadingViewModel) {
         with(view) {
-            +stackNavigatorBinding(container, viewModel.navigator, AppViewFactory)
+            stackNavigatorBinding(container, viewModel.navigator)
             +(txtLoading setTextFrom viewModel.loadingIndicatorText)
             +(txtVisible setTextFrom viewModel.visibleIndicatorText)
             +(txtActual setTextFrom viewModel.actualIndicatorText)

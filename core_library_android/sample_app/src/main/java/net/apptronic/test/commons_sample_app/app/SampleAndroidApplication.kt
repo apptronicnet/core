@@ -2,14 +2,12 @@ package net.apptronic.test.commons_sample_app.app
 
 import android.app.Application
 import android.content.Context
-import net.apptronic.core.android.platform.AndroidPlatform
-import net.apptronic.core.platform.initializePlatform
+import android.util.Log
+import net.apptronic.core.android.plugins.installViewFactoryPlugin
+import net.apptronic.core.plugins.installViewModelLogPlugin
+import net.apptronic.test.commons_sample_app.AppViewFactory
 
 class SampleAndroidApplication : Application() {
-
-    init {
-        initializePlatform(AndroidPlatform)
-    }
 
     val appComponent by lazy {
         ApplicationComponent(
@@ -20,7 +18,12 @@ class SampleAndroidApplication : Application() {
                     }
                 },
                 PlatformDefinition.Android
-            )
+            ).apply {
+                installViewModelLogPlugin {
+                    Log.i("ViewModelLog", it)
+                }
+                installViewFactoryPlugin(AppViewFactory)
+            }
         )
     }
 

@@ -1,19 +1,14 @@
 package net.apptronic.core.testutils
 
-import net.apptronic.core.component.Component
+import net.apptronic.core.component.extensions.BaseComponent
 import net.apptronic.core.component.lifecycle.Lifecycle
 import net.apptronic.core.component.lifecycle.LifecycleStage
 
-open class BaseTestComponent : Component {
+open class BaseTestComponent : BaseComponent {
 
-    final override val context: TestContext
-
-    constructor(contextInitializer: TestContext.() -> Unit = {}) {
-        context = TestContext().apply(
-                contextInitializer
-        )
-    }
-
+    constructor(contextInitializer: TestContext.() -> Unit = {}) : super(TestContext().apply(
+            contextInitializer
+    ))
 
     fun getLifecycle(): Lifecycle = context.lifecycle
 

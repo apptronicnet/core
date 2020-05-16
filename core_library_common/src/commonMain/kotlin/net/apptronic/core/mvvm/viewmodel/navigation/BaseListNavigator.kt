@@ -4,7 +4,7 @@ import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelListAdapter
 
 abstract class BaseListNavigator<T>(
-        private val parent: ViewModel
+        parent: ViewModel
 ) : Navigator<List<T>>(parent) {
 
     private var adapter: ViewModelListAdapter? = null
@@ -16,7 +16,7 @@ abstract class BaseListNavigator<T>(
         this.adapter = adapter
         onSetAdapter(adapter)
         onNotifyAdapter(adapter)
-        parent.context.lifecycle.onExitFromActiveStage {
+        context.lifecycle.onExitFromActiveStage {
             this.adapter = null
         }
     }

@@ -4,7 +4,7 @@ fun Context.getGlobalContext(): Context {
     var global = this
     var complete = false
     do {
-        global.getParent()?.let {
+        global.parent?.let {
             global = it
         } ?: run {
             complete = true

@@ -12,7 +12,7 @@ val ListItemTextViewModelDescriptor = createDescriptor<ListItemTextViewModel>()
 val ListItemImageViewModelDescriptor = createDescriptor<ListItemImageViewModel>()
 
 val listContext = defineViewModelContext {
-    dependencyDispatcher().addModule(listModule)
+    dependencyDispatcher.addModule(listModule)
 }
 
 private val listModule = declareModule {

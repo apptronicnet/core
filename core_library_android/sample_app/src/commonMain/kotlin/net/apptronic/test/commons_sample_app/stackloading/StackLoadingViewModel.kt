@@ -15,7 +15,7 @@ class StackLoadingViewModel(parent: Context) : ViewModel(parent, EMPTY_VIEW_MODE
     StackRouter {
 
     init {
-        context.dependencyDispatcher().addInstance(StackRouterDescriptor, this)
+        context.dependencyDispatcher.addInstance(StackRouterDescriptor, this)
     }
 
     private var index = 1

@@ -7,7 +7,7 @@ import net.apptronic.core.component.entity.entities.ComponentEntity
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelParent
 
-abstract class Navigator<T>(viewModel: ViewModel) : ComponentEntity<T>(viewModel.context),
+abstract class Navigator<T>(val parent: ViewModel) : ComponentEntity<T>(parent.context),
         EntityValue<T>, ViewModelParent {
 
     protected val coroutineLauncher = context.coroutineLauncherLocal()

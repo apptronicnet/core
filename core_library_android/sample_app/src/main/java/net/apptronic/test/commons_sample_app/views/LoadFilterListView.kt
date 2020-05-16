@@ -21,7 +21,7 @@ class LoadFilterListView : AndroidView<LoadFilterListViewModel>() {
 
     override fun onBindView(view: View, viewModel: LoadFilterListViewModel) {
         with(view) {
-            +listNavigatorBinding(loadFilterList, viewModel.list, AppViewFactory)
+            listNavigatorBinding(loadFilterList, viewModel.list)
             loadFilterList.layoutManager = LinearLayoutManager(context)
             LoadFilterMode.values().forEachIndexed { index, mode ->
                 val textView = modes.getChildAt(index) as TextView

@@ -1,6 +1,7 @@
 package net.apptronic.core.component.timer
 
 import kotlinx.coroutines.delay
+import net.apptronic.core.base.elapsedRealtimeMillis
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.component.Component
 import net.apptronic.core.component.coroutines.coroutineLauncherScoped
@@ -8,7 +9,6 @@ import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.component.typedEvent
 import net.apptronic.core.component.value
-import net.apptronic.core.platform.getPlatform
 
 class Timer(
         private val component: Component,
@@ -42,17 +42,16 @@ class Timer(
     }
 
     private suspend fun runTimer() {
-        val platform = getPlatform()
         val interval = interval.get()
         if (interval <= 0) {
             isRunning.set(false)
         }
-        val start = platform.elapsedRealtimeMillis()
+        val start = elapsedRealtimeMillis()
         var counter = 1L;
         while (isRunning.get()) {
             val total = counter * interval
             val next = start + total
-            val current = platform.elapsedRealtimeMillis()
+            val current = elapsedRealtimeMillis()
             val diff = next - current
             if (diff > 0L) {
                 delay(diff)

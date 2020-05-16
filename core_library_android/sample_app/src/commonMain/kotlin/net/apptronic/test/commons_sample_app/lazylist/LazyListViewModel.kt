@@ -3,7 +3,7 @@ package net.apptronic.test.commons_sample_app.lazylist
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.coroutines.coroutineLauncherContextual
+import net.apptronic.core.component.coroutines.coroutineLauncherLocal
 import net.apptronic.core.component.coroutines.debouncer
 import net.apptronic.core.mvvm.viewmodel.EMPTY_VIEW_MODEL_CONTEXT
 import net.apptronic.core.mvvm.viewmodel.ViewModel
@@ -20,13 +20,13 @@ private fun randomString(): String {
 class LazyListViewModel(parent: Context) : ViewModel(parent, EMPTY_VIEW_MODEL_CONTEXT),
     LazyListItemClickListener {
 
-    private val debouncer = context.coroutineLauncherContextual().debouncer()
+    private val debouncer = context.coroutineLauncherLocal().debouncer()
 
     val items = listRecyclerNavigator(LazyListBuilder())
 
     init {
-        context.dependencyDispatcher().addInstance(LazyListItemClickListenerDescriptor, this)
-        context.coroutineLauncherContextual().launch {
+        context.dependencyDispatcher.addInstance(LazyListItemClickListenerDescriptor, this)
+        context.coroutineLauncherLocal().launch {
             val result = withContext(Dispatchers.Default) {
                 mutableListOf<Any>().apply {
                     add(StaticItem("start", "Start", randomString()))

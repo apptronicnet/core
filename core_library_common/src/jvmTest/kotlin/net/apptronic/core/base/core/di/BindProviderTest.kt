@@ -32,7 +32,7 @@ class BindProviderTest {
 
     private class Context : TestContext() {
         init {
-            dependencyDispatcher().addModule(module)
+            dependencyDispatcher.addModule(module)
         }
     }
 

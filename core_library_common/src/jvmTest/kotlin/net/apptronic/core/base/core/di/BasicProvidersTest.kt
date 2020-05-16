@@ -50,7 +50,7 @@ class BasicProvidersTest {
 
     private class TestComponent : BaseTestComponent(
         contextInitializer = {
-            dependencyDispatcher().addModule(sampleModule)
+            dependencyDispatcher.addModule(sampleModule)
         }
     ) {
 

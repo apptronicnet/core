@@ -6,28 +6,43 @@ import net.apptronic.core.component.di.DependencyDispatcher
 import net.apptronic.core.component.lifecycle.Lifecycle
 import net.apptronic.core.component.lifecycle.LifecycleDefinition
 
-open class SubContext(
-        private val parent: Context,
-        lifecycleDefinition: LifecycleDefinition
-) : Context {
+open class SubContext : BaseContext {
 
-    final override val lifecycle: Lifecycle = lifecycleDefinition.createLifecycle()
+    final override val parent: Context
+    final override val lifecycle: Lifecycle
+    final override val defaultDispatcher: CoroutineDispatcher
+    final override val dependencyDispatcher: DependencyDispatcher
+
+    constructor(parent: Context, lifecycleDefinition: LifecycleDefinition) : super() {
+        this.parent = parent
+        this.lifecycle = lifecycleDefinition.createLifecycle()
+        this.defaultDispatcher = parent.defaultDispatcher
+        this.dependencyDispatcher = DependencyDispatcher(this, parent.dependencyDispatcher)
+        init()
+    }
+
+    constructor(parent: Context, lifecycle: Lifecycle) : super() {
+        this.parent = parent
+        this.lifecycle = lifecycle
+        this.defaultDispatcher = parent.defaultDispatcher
+        this.dependencyDispatcher = DependencyDispatcher(this, parent.dependencyDispatcher)
+        init()
+    }
 
     init {
         requireNeverFrozen()
+    }
+
+    private fun init() {
         parent.lifecycle.registerChildLifecycle(lifecycle)
-    }
-
-    override val defaultDispatcher: CoroutineDispatcher = parent.defaultDispatcher
-
-    private val dependencyProvider = DependencyDispatcher(this, parent.dependencyDispatcher())
-
-    override fun getParent(): Context? {
-        return parent
-    }
-
-    final override fun dependencyDispatcher(): DependencyDispatcher {
-        return dependencyProvider
+        parent.plugins.let { parentPlugins ->
+            parentPlugins.descriptors.forEach { descriptor ->
+                parentPlugins[descriptor]?.let { plugin ->
+                    pluginsImpl.add(descriptor, plugin)
+                    plugin.onContext(this)
+                }
+            }
+        }
     }
 
 }

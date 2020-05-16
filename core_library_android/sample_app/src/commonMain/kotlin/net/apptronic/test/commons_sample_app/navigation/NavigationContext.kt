@@ -7,5 +7,5 @@ val NavigationRouterDescriptor = createDescriptor<NavigationRouter>()
 
 fun navigationContext(navigationRouter: NavigationRouter) =
     defineViewModelContext("NavigationContext") {
-        dependencyDispatcher().addInstance(NavigationRouterDescriptor, navigationRouter)
+        dependencyDispatcher.addInstance(NavigationRouterDescriptor, navigationRouter)
     }

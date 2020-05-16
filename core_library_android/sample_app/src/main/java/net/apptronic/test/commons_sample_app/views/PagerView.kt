@@ -15,7 +15,7 @@ class PagerView : AndroidView<PagerViewModel>() {
 
     override fun onBindView(view: View, viewModel: PagerViewModel) {
         with(view) {
-            +pagerNavigatorBinding(viewPager, viewModel.pages, AppViewFactory)
+            pagerNavigatorBinding(viewPager, viewModel.pages)
             +(addTextStart sendClicksTo viewModel::addTextStart)
             +(addTextEnd sendClicksTo viewModel::addTextEnd)
             +(addImageStart sendClicksTo viewModel::addImageStart)

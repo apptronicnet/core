@@ -1,12 +1,9 @@
 package net.apptronic.core.component.entity.behavior
 
-import kotlinx.coroutines.CoroutineDispatcher
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.base.observable.subject.BehaviorSubject
 import net.apptronic.core.base.observable.subject.ValueHolder
 import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.context.local.LocalContext
-import net.apptronic.core.component.context.local.createLocalContext
 import net.apptronic.core.component.coroutines.coroutineLauncherLocal
 import net.apptronic.core.component.coroutines.coroutineLauncherScoped
 import net.apptronic.core.component.entity.Entity
@@ -23,21 +20,17 @@ import net.apptronic.core.component.entity.subscribe
  * after throttling of throttling chain will be broken and never emit next value.
  */
 fun <Source, Result> Entity<Source>.throttle(
-        dispatcher: CoroutineDispatcher = context.defaultDispatcher,
-        throttledTransformation: LocalContext.(Entity<Source>) -> Entity<Result>
+        throttledTransformation: (Entity<Source>) -> Entity<Result>
 ): Entity<Result> {
-    val localContext = context.createLocalContext(dispatcher)
     return ThrottleTransformationEntity(
             this,
-            localContext,
             throttledTransformation
     )
 }
 
 private class ThrottleTransformationEntity<Source, Result>(
         private val sourceEntity: Entity<Source>,
-        private val localContext: LocalContext,
-        private val throttledTransformation: LocalContext.(Entity<Source>) -> Entity<Result>
+        private val throttledTransformation: (Entity<Source>) -> Entity<Result>
 ) : Entity<Result>, Observer<Result> {
 
     override val context: Context = sourceEntity.context
@@ -47,9 +40,9 @@ private class ThrottleTransformationEntity<Source, Result>(
     private val coroutineLauncher = context.coroutineLauncherScoped()
 
     init {
-        val localCoroutineLauncher = localContext.coroutineLauncherLocal()
+        val localCoroutineLauncher = context.coroutineLauncherLocal()
         localCoroutineLauncher.launch {
-            val throttledTransformation = ThrottledTransformation(localContext, throttledTransformation)
+            val throttledTransformation = ThrottledTransformation(context, throttledTransformation)
             throttledTransformation.observe(this@ThrottleTransformationEntity)
             coroutineLauncher.launch {
                 sourceEntity.onNext { nextValue ->
@@ -78,11 +71,11 @@ private class ThrottleTransformationEntity<Source, Result>(
 }
 
 private class ThrottledTransformation<Source, Result>(
-        localContext: LocalContext,
-        throttledTransformation: LocalContext.(Entity<Source>) -> Entity<Result>
+        context: Context,
+        throttledTransformation: (Entity<Source>) -> Entity<Result>
 ) {
 
-    private val sourceEntity = Value<Source>(localContext)
+    private val sourceEntity = Value<Source>(context)
     private val resultObservable = BehaviorSubject<Result>()
 
     private var awaitingValue: ValueHolder<Source>? = null
@@ -98,7 +91,7 @@ private class ThrottledTransformation<Source, Result>(
     }
 
     init {
-        localContext.throttledTransformation(sourceEntity).subscribe { nextResult ->
+        throttledTransformation(sourceEntity).subscribe { nextResult ->
             resultObservable.update(nextResult)
             isProcessing = false
             takeNext()

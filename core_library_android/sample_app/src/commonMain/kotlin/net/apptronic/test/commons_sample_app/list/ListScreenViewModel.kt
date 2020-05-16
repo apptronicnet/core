@@ -22,7 +22,7 @@ class ListScreenViewModel(parent: Context) : ViewModel(parent, listContext), Lis
     }
 
     init {
-        context.dependencyDispatcher().addInstance(ListControllerDescriptor, this)
+        context.dependencyDispatcher.addInstance(ListControllerDescriptor, this)
     }
 
     override fun onRemoveRequest(viewModel: ViewModel) {

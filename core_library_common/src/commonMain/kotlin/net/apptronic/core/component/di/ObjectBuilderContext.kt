@@ -84,7 +84,7 @@ class FactoryContext(
         parameters: Parameters
 ) : ObjectBuilderContext(definitionContext, dependencyDispatcher, parameters) {
 
-    private val requestorProvider = injectionContext.dependencyDispatcher()
+    private val requestorProvider = injectionContext.dependencyDispatcher
 
     /**
      * Request injection from injection context. Allows to override instances in child context

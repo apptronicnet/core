@@ -1,6 +1,7 @@
 package net.apptronic.core.android.viewmodel.bindings.navigation
 
 import androidx.recyclerview.widget.RecyclerView
+import net.apptronic.core.android.plugins.getAndroidViewFactoryFromExtension
 import net.apptronic.core.android.viewmodel.AndroidView
 import net.apptronic.core.android.viewmodel.AndroidViewFactory
 import net.apptronic.core.android.viewmodel.AndroidViewModelListAdapter
@@ -12,14 +13,17 @@ import net.apptronic.core.android.viewmodel.style.list.emptyStyleAdapter
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.navigation.BaseListNavigator
 
-fun listNavigatorBinding(
+fun AndroidView<*>.listNavigatorBinding(
     recyclerView: RecyclerView,
     navigator: BaseListNavigator<*>,
-    factory: AndroidViewFactory,
+    factory: AndroidViewFactory? = null,
     styleAdapter: ListItemStyleAdapter = emptyStyleAdapter(),
     bindingStrategy: BindingStrategy = BindingStrategy.MatchRecycle
-): ListNavigatorBinding {
-    return ListNavigatorBinding(recyclerView, navigator, factory, styleAdapter, bindingStrategy)
+) {
+    val resultFactory = factory
+        ?: navigator.parent.getAndroidViewFactoryFromExtension()
+        ?: throw IllegalArgumentException("AndroidViewFactory should be provided by parameters or Context.installViewFactoryPlugin()")
+    add(ListNavigatorBinding(recyclerView, navigator, resultFactory, styleAdapter, bindingStrategy))
 }
 
 class ListNavigatorBinding(

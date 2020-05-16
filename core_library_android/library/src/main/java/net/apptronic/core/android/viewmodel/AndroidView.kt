@@ -42,6 +42,12 @@ abstract class AndroidView<T : ViewModel> : BindingContainer {
         return Dialog(context)
     }
 
+    open fun onDialogShown(dialog: Dialog, viewModel: ViewModel) {
+        dialog.setOnDismissListener {
+            viewModel.closeSelf()
+        }
+    }
+
     open fun onCreateDialogView(dialog: Dialog): View {
         val layoutResId = this.layoutResId
             ?: throw IllegalStateException("[layoutResId] is not specified for $this")

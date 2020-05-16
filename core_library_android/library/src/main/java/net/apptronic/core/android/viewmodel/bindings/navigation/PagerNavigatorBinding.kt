@@ -1,6 +1,7 @@
 package net.apptronic.core.android.viewmodel.bindings.navigation
 
 import androidx.viewpager.widget.ViewPager
+import net.apptronic.core.android.plugins.getAndroidViewFactoryFromExtension
 import net.apptronic.core.android.viewmodel.AndroidView
 import net.apptronic.core.android.viewmodel.AndroidViewFactory
 import net.apptronic.core.android.viewmodel.AndroidViewModelListAdapter
@@ -11,16 +12,19 @@ import net.apptronic.core.android.viewmodel.listadapters.ViewPagerAdapter
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.navigation.ListNavigator
 
-fun pagerNavigatorBinding(
+fun AndroidView<*>.pagerNavigatorBinding(
     viewPager: ViewPager,
     navigator: ListNavigator,
-    factory: AndroidViewFactory,
+    factory: AndroidViewFactory? = null,
     titleFactory: TitleFactory? = null
-): PagerNavigatorBinding {
-    return PagerNavigatorBinding(viewPager, navigator, factory, titleFactory)
+) {
+    val resultFactory = factory
+        ?: navigator.parent.getAndroidViewFactoryFromExtension()
+        ?: throw IllegalArgumentException("AndroidViewFactory should be provided by parameters or Context.installViewFactoryPlugin()")
+    add(PagerNavigatorBinding(viewPager, navigator, resultFactory, titleFactory))
 }
 
-class PagerNavigatorBinding(
+private class PagerNavigatorBinding(
     private val viewPager: ViewPager,
     private val navigator: ListNavigator,
     private val factory: AndroidViewFactory,

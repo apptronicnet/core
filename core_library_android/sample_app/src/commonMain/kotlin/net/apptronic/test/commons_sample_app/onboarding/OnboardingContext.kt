@@ -7,7 +7,7 @@ import net.apptronic.core.mvvm.viewmodel.defineViewModelContext
 val OnboardingDataDescriptor = createDescriptor<OnboadingData>()
 
 val OnboardingContext = defineViewModelContext("Onboarding") {
-    dependencyDispatcher().addModule(OnboardingModule)
+    dependencyDispatcher.addModule(OnboardingModule)
 }
 
 private val OnboardingModule = declareModule {

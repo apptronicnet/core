@@ -35,7 +35,7 @@ class ProvidingTest {
 
     class CoreContext : TestContext() {
         init {
-            dependencyDispatcher().addModule(CoreModule)
+            dependencyDispatcher.addModule(CoreModule)
         }
     }
 
@@ -47,7 +47,7 @@ class ProvidingTest {
     fun before() {
         val coreContext = CoreContext()
         component = BaseComponent(coreContext, EMPTY_CONTEXT)
-        component.context.dependencyDispatcher().addInstance(SomeThingTextDescriptor, EXPECTED_TEXT)
+        component.context.dependencyDispatcher.addInstance(SomeThingTextDescriptor, EXPECTED_TEXT)
     }
 
     @Test(expected = InjectionFailedException::class)

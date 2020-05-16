@@ -16,7 +16,7 @@ class LazyListFilterView : AndroidView<LazyListFilterViewModel>() {
 
     override fun onBindView(view: View, viewModel: LazyListFilterViewModel) {
         with(view) {
-            +listNavigatorBinding(lazyFilteredItemsList, viewModel.listNavigator, AppViewFactory)
+            listNavigatorBinding(lazyFilteredItemsList, viewModel.listNavigator)
             lazyFilteredItemsList.layoutManager = LinearLayoutManager(context)
             +(progressBar setVisibleGoneFrom viewModel.isInProgress)
         }
