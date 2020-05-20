@@ -5,17 +5,23 @@ import net.apptronic.core.component.context.close
 import net.apptronic.core.component.extensions.BaseComponent
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelParent
+import kotlin.reflect.KClass
 
 /**
  * Component which handles root [ViewModel] for app UI. This [ViewModel] will be used as root for system UI container
  * can can be attached only to one container at same time. In case if app UI wants to destoroy
  */
 abstract class BaseViewModelDispatcher<T : ViewModel>(
-        context: Context
+        context: Context,
+        private val type: KClass<T>
 ) : BaseComponent(context), ViewModelDispatcher<T>, ViewModelParent {
 
     private var viewModel: T? = null
     private var viewContainer: ViewContainer<T>? = null
+
+    override fun viewModelType(): KClass<T> {
+        return type
+    }
 
     override fun haveActiveViewModel(): Boolean {
         return viewModel != null

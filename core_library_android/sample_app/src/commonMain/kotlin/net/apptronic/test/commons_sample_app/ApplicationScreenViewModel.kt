@@ -29,8 +29,8 @@ class ApplicationScreenViewModel(parent: Context) : ViewModel(parent, EMPTY_VIEW
         rootPage.set(NavigationScreenViewModel(context, router))
     }
 
-    fun onBackPressed(actionIfEmpty: () -> Unit) {
-        rootPage.navigateBack(BasicTransition.Back, actionIfEmpty)
+    fun onBackPressed(): Boolean {
+        return rootPage.popBackStack(BasicTransition.Back)
     }
 
 }

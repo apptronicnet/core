@@ -1,10 +1,13 @@
 package net.apptronic.core.component.timer
 
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import net.apptronic.core.base.elapsedRealtimeMillis
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.component.Component
+import net.apptronic.core.component.coroutines.CoroutineLauncher
 import net.apptronic.core.component.coroutines.coroutineLauncherScoped
+import net.apptronic.core.component.coroutines.coroutineLaunchers
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.component.typedEvent
@@ -13,7 +16,8 @@ import net.apptronic.core.component.value
 class Timer(
         private val component: Component,
         initialInterval: Long,
-        initialLimit: Long = INFINITE
+        initialLimit: Long = INFINITE,
+        private val scopedToStage: Boolean = true
 ) {
 
     companion object {
@@ -21,19 +25,32 @@ class Timer(
     }
 
     private val context = component.context
-    private val coroutineLauncher = component.context.coroutineLauncherScoped()
     private val isRunning = component.value(false)
     private val limit = component.value(initialLimit)
     private val interval = component.value(initialInterval)
 
     private val timerEvent = component.typedEvent<TimerTick>()
+    private var activeLauncher: CoroutineLauncher? = null
+
+    private fun coroutineLauncher(): CoroutineLauncher {
+        return if (scopedToStage) {
+            component.coroutineLaunchers().scoped
+        } else {
+            component.coroutineLaunchers().local
+        }
+    }
 
     init {
         isRunning.subscribe {
             if (it) {
+                val coroutineLauncher = coroutineLauncher()
+                activeLauncher = coroutineLauncher
                 coroutineLauncher.launch {
                     runTimer()
                 }
+            } else {
+                activeLauncher?.coroutineScope?.cancel("Timer stopped")
+                activeLauncher = null
             }
         }
         context.lifecycle.onExitFromActiveStage {
@@ -78,8 +95,10 @@ class Timer(
 
     fun start() {
         isRunning.set(true)
-        context.lifecycle.onExitFromActiveStage {
-            stop()
+        if (scopedToStage) {
+            context.lifecycle.onExitFromActiveStage {
+                stop()
+            }
         }
     }
 

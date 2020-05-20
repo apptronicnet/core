@@ -277,10 +277,24 @@ class StackNavigator(
      * empty
      * @return true if last model removed from stack
      */
-    fun popBackStack(transitionInfo: Any? = null): Boolean {
+    fun removeLast(transitionInfo: Any? = null): Boolean {
         val actualItem = currentState.actualItem
         return if (actualItem != null) {
             remove(actualItem.getViewModel(), transitionInfo)
+            true
+        } else {
+            false
+        }
+    }
+
+    /**
+     * Remove last [ViewModel] from stack and return back to previous. Will do nothing if stack is
+     * empty or if current [ViewModel] is single in stack
+     * @return true if last model removed from stack
+     */
+    fun popBackStack(transitionInfo: Any? = null): Boolean {
+        return if (getSize() > 1) {
+            removeLast(transitionInfo)
             true
         } else {
             false
@@ -300,9 +314,7 @@ class StackNavigator(
      * last or no model in stack
      */
     fun navigateBack(transitionInfo: Any?, actionIfEmpty: () -> Unit) {
-        if (stack.size > 1) {
-            popBackStack(transitionInfo)
-        } else {
+        if (!popBackStack(transitionInfo)) {
             actionIfEmpty()
         }
     }

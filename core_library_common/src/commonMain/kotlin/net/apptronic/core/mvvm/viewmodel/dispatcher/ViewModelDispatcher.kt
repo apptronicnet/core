@@ -1,11 +1,17 @@
 package net.apptronic.core.mvvm.viewmodel.dispatcher
 
 import net.apptronic.core.mvvm.viewmodel.ViewModel
+import kotlin.reflect.KClass
 
 /**
  * Class which managing root [ViewModel] state and provides it to [ViewContainer]
  */
 interface ViewModelDispatcher<T : ViewModel> {
+
+    /**
+     * Get type of view model for this dispatcher
+     */
+    fun viewModelType(): KClass<T>
 
     /**
      * Check is [ViewModelDispatcher] have active view model or not
