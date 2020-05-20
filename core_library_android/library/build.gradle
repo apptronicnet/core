@@ -40,6 +40,13 @@ task sourceJar(type: Jar) {
     classifier "sources"
 }
 
+Properties awsCredentials = new Properties()
+File awsCredentialsFile = file("../../aws.credentials")
+if (awsCredentialsFile.exists()) {
+    awsCredentials.load(awsCredentialsFile.newDataInputStream())
+}
+
+
 publishing {
     publications {
         bar(MavenPublication) {
@@ -54,8 +61,8 @@ publishing {
         maven {
             url "s3://maven.apptronic.net/"
             credentials(AwsCredentials) {
-                accessKey "AKIAQYS4TMFUDDMKIPNL"
-                secretKey "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"
+                accessKey awsCredentials.getProperty("accessKey", "")
+                secretKey awsCredentials.getProperty("secretKey", "")
             }
         }
     }
