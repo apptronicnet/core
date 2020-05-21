@@ -1,8 +1,10 @@
 [Back to Manual](../manual.md)
 
 Previous topic: [Creating Contexts and Components](components.md)
+
 ___
-## Implementation of Components, threading(coroutines) and reactive behavior
+
+## Implementation of Components: threading(coroutines)
 
 ## Working with threads
 
@@ -76,8 +78,48 @@ If async action is getting some data to use inside of **Context** it good idea t
 - when **Context** will be terminated all coroutines will be cancelled as not needed, releasing CPU resources.
 - it not depends on current active **LifecycleStage** in context so can be called at any moment.
 
-TBD: when to use coroutineLauncherScoped
+If async action actual only while **Lifecycle** is inside some **LifecycleStage** (for example, until **ViewModel** is bound to View) it is time to use ```coroutineLauncherScoped()```.
 
-TBD: when to use coroutineLauncherGlobal
+If async action should be independent for current **Context** (for example, sending entered data to backend) it can be interrupted by terminating **Context** (for example, when screen closed). In that case it is needed to use ```coroutineLauncherGlobal()```.
 
-TBD: reactive programming with Entities, Computable properties and using with Coroutines
+When something requires usage of ```coroutineLauncherGlobal()``` it's time to think about moving that action to separate **Component** while works inside of **Code Context** or other top-level **Context** and use Dependency Injection to access to it.
+
+##### Accessing  ```CoroutineLauncher``` from Component
+
+Instead of invoking local ```context``` from **Component** each tme when it needed to create ```CoroutineLauncher``` there is extension for accessing ```CoroutineLauncher``` from ```Component``` class:
+```kotlin
+fun Component.coroutineLaunchers(): CoroutineLaunchers
+
+interface CoroutineLaunchers {
+    val global: CoroutineLauncher
+    val local: CoroutineLauncher
+    val scoped: CoroutineLauncher
+}
+``` 
+```coroutineLaunchers().global``` is same as ```Context.coroutineLauncherGlobal```
+
+```coroutineLaunchers().local``` is same as ```Context.coroutineLauncherLocal```
+
+```coroutineLaunchers().scoped``` is same as ```Context.coroutineLauncherScoped```
+
+##### Working directly with CoroutineScope of CoroutineLauncher
+
+It is possible to use ```CoroutineScope.coroutineScope``` to launch coroutines directly from ```CoroutineScope```. Note, that all these coroutines can be cancelled as ```CoroutineScope``` in ```CoroutineLauncher``` cancelled automatically based on concrete type of```CoroutineLauncher```.
+
+Manual cancellation of ```CoroutineScope``` from ```CoroutineLauncher``` will cancel all coroutines launched by ```CoroutineLauncher``` which may cause unexpected behavior and not recommended.
+
+Note, that each invocation will create a new instance of ```CoroutinaLauncher```. If some async action can be called many times it better to store instance ```CoroutinaLauncher``` and reuse it.
+
+##### Throttling and debouncing action inside CoroutineLauncher
+
+In some cases it needed to guarantee that actions executed one after another, preventing parallel executions.
+
+In that case is possible to call ```CoroutineLauncher.debouncer()``` which returns new instance of ```CoroutineLauncher```, which uses same ```CoroutineScope```, but handles invocation queue inside and launches next coroutine only after the previous coroutine completed its execution.
+
+To limit size of queue it needed to call ```CoroutineLauncher.debouncer(size: Int)``` instead. It will do same as ```CoroutineLauncher.debouncer()``` but with limited size of execution queue. In case of queue overflow the oldest not executed coroutine will be thrown out of queue.
+
+___
+
+[Back to Manual](../manual.md)
+
+Next topic: [Implementation of Components: reactive behavior](reactive_behavior.md)

@@ -1,6 +1,6 @@
 [Back to Manual](../manual.md)
 
-Next topic: [Lifecycle](lifecycle.md)
+Precious topic: [Lifecycle](lifecycle.md)
 ___
 ## Creating Contexts and Components
 
@@ -94,4 +94,4 @@ class MyComponent(parent: Context) : BaseComponent(parent, EmptyContext)
 ___
 [Back to Manual](../manual.md)
 
-Next topic: [Implementation of Componentns, threading(coroutines) and reactive behavior](threading_and_reactive_behavior.md)
+Next topic: [Implementation of Components: threading(coroutines)](threading.md)

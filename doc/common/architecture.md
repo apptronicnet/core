@@ -1,5 +1,7 @@
 [Back to Manual](../manual.md)
+
 ___
+
 ## Architecture of apptronic.net/core
 
 ### Context
@@ -67,7 +69,9 @@ Base architecture brick is **Context**
 As **ViewModelContext** and **ViewModel** commonly hold inside of **Core Context** (or another **Context**, which is child of **Core Context**), it is not depends directly from UI lifecycle (but depends when it explicitly specified by developer) and can be alive as long as needed. For **Android** apps **Core Context** commonly held inside **Application** object and alive all time while app process alive.
 
 It is only <ins>example</ins> interaction. Developer can control interaction as it needed for concrete app project and implement another interaction flow.
+
 ___
+
 [Back to Manual](../manual.md)
 
 Next topic: [Lifecycle](lifecycle.md)

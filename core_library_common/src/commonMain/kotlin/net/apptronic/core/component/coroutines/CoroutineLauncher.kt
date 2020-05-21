@@ -5,6 +5,7 @@ import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.context.getGlobalContext
 import net.apptronic.core.component.lifecycle.Lifecycle
 import net.apptronic.core.component.lifecycle.LifecycleStage
+import net.apptronic.core.component.lifecycle.LifecycleSubscription
 import kotlin.coroutines.CoroutineContext
 
 class CoroutineLauncherCancellationException internal constructor(val reason: String) : CancellationException(reason)
@@ -40,13 +41,14 @@ fun Context.coroutineLauncherScoped(): CoroutineLauncher {
     val boundStage = lifecycle.getActiveStage()
     val name = "${this::class.simpleName}/{${boundStage?.getStageName() ?: "[terminated]"}"
     val coroutineContext: CoroutineContext = CoroutineName(name)
-    boundStage?.doOnExit {
+    val lifecycleSubscription: LifecycleSubscription? = boundStage?.doOnExit {
         coroutineContext.cancel(CoroutineLauncherCancellationException("Stage existed ${boundStage.getStageName()}"))
     } ?: run {
         coroutineContext.cancel(CoroutineLauncherCancellationException("Context was terminated"))
+        null
     }
     val coroutineScope = CoroutineScope(coroutineContext)
-    return CoroutineLauncherImpl(this, coroutineScope)
+    return CoroutineLauncherImpl(this, coroutineScope, lifecycleSubscription)
 }
 
 /**
@@ -56,9 +58,10 @@ fun Context.coroutineLauncherScoped(): CoroutineLauncher {
  */
 fun Context.coroutineLauncherLocal(): CoroutineLauncher {
     val name = "${this::class.simpleName}"
+    var lifecycleSubscription: LifecycleSubscription? = null
     val coroutineContext = if (!lifecycle.isTerminated()) {
         CoroutineName(name).also {
-            lifecycle.doOnTerminate {
+            lifecycleSubscription = lifecycle.rootStage.doOnExit {
                 it.cancel(CoroutineLauncherCancellationException("Context terminated"))
             }
         }
@@ -68,7 +71,7 @@ fun Context.coroutineLauncherLocal(): CoroutineLauncher {
         }
     }
     val coroutineScope = CoroutineScope(coroutineContext)
-    return CoroutineLauncherImpl(this, coroutineScope)
+    return CoroutineLauncherImpl(this, coroutineScope, lifecycleSubscription)
 }
 
 /**
@@ -78,7 +81,24 @@ fun Context.coroutineLauncherGlobal(): CoroutineLauncher {
     return getGlobalContext().coroutineLauncherLocal()
 }
 
-internal class CoroutineLauncherImpl(override val context: Context, override val coroutineScope: CoroutineScope) : CoroutineLauncher {
+internal class CoroutineLauncherImpl(
+        override val context: Context,
+        override val coroutineScope: CoroutineScope,
+        private val lifecycleSubscription: LifecycleSubscription?
+) : CoroutineLauncher {
+
+    init {
+        if (lifecycleSubscription != null) {
+            val job: Job? = coroutineScope.coroutineContext[Job]
+            if (job != null) {
+                job.invokeOnCompletion {
+                    lifecycleSubscription.unsubscribe()
+                }
+            } else {
+                lifecycleSubscription.unsubscribe()
+            }
+        }
+    }
 
     override fun launch(coroutineContext: CoroutineContext, start: CoroutineStart, block: suspend CoroutineScope.() -> Unit) {
         coroutineScope.launch(coroutineContext, start) {
