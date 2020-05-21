@@ -1,5 +1,7 @@
 Read [Manual](manual.md) for complete guide to framework.
+
 ___
+
 ### Create project
 
 First open Intellij Idea / Android Studio and start Kotlin Multiplatform project
@@ -182,4 +184,5 @@ class MainActivity : AppCompatActivity() {
 ```
 
 ___
+
 Read [Manual](manual.md) for complete guide to framework.
