@@ -1,7 +1,7 @@
 package net.apptronic.core.base.core.di
 
 import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.context.EMPTY_CONTEXT
+import net.apptronic.core.component.context.EmptyContext
 import net.apptronic.core.component.context.close
 import net.apptronic.core.component.di.AutoRecycling
 import net.apptronic.core.component.di.createDescriptor
@@ -40,7 +40,7 @@ class AutoRecyclingTest {
 
     }
 
-    class TestComponent(context: Context) : BaseComponent(context, EMPTY_CONTEXT) {
+    class TestComponent(context: Context) : BaseComponent(context, EmptyContext) {
 
         val instance = provider().inject(DeclarationDescriptor)
 

@@ -14,7 +14,7 @@ fun <ContextType : Context> defineTypedContext(builder: (Context) -> ContextType
     return TypedBuilderContextDefinition(builder)
 }
 
-val EMPTY_CONTEXT = defineContext {
+val EmptyContext = defineContext {
     // nothing to add
 }
 

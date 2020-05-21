@@ -3,7 +3,7 @@ package net.apptronic.core.mvvm
 import kotlinx.coroutines.Dispatchers
 import net.apptronic.core.component.context.coreContext
 import net.apptronic.core.component.terminate
-import net.apptronic.core.mvvm.viewmodel.EMPTY_VIEW_MODEL_CONTEXT
+import net.apptronic.core.mvvm.viewmodel.EmptyViewModelContext
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 import net.apptronic.core.mvvm.viewmodel.navigation.ViewModelLifecycleController
@@ -15,7 +15,7 @@ class SubModelLifecycleTest {
             coroutineDispatcher = Dispatchers.Unconfined
     )
 
-    private inner class ParentModel : LifecycleTestViewModel(EMPTY_VIEW_MODEL_CONTEXT.createContext(baseContext)) {
+    private inner class ParentModel : LifecycleTestViewModel(EmptyViewModelContext.createContext(baseContext)) {
 
         val children = stackNavigator()
 

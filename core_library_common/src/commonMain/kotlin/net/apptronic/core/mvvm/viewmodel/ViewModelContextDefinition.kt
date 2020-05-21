@@ -3,7 +3,7 @@ package net.apptronic.core.mvvm.viewmodel
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.context.ContextDefinition
 
-val EMPTY_VIEW_MODEL_CONTEXT = defineViewModelContext(name = "empty")
+val EmptyViewModelContext = defineViewModelContext(name = "empty")
 
 fun defineViewModelContext(
         name: String = "unnamed",

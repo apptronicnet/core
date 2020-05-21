@@ -4,7 +4,7 @@ First open Intellij Idea / Android Studio and start Kotlin Multiplatform project
 
 ##### Setup build.gradle
 
-``` groovy
+```groovy
 kotlin {
     android("android")
     sourceSets {
@@ -33,7 +33,7 @@ kotlin {
 
 AppContext.kt
 
-``` kotlin
+```kotlin
 // this class is renposible for declaring core app Context, which will be alive while
 // app itself alive
 val AppContext = coreContext {
@@ -43,7 +43,7 @@ val AppContext = coreContext {
 
 AppComponent.kt
 
-``` kotlin
+```kotlin
 // this class is declaration of Core-level component, responsible for app behavior
 class AppComponent(context: Context) : BaseComponent(context) {
 
@@ -58,7 +58,7 @@ class AppComponent(context: Context) : BaseComponent(context) {
 
 AppViewModel.kt
 
-``` kotlin
+```kotlin
 // this class contains application UI model.
 // Inner navigation implemented with Navigators (ListNavigator, StackNavigator)
 class AppViewModel(parent: Context) : ViewModel(parent, EMPTY_VIEW_MODEL_CONTEXT) {
@@ -84,7 +84,7 @@ App implementation uses common code and
 
 App.kt
 
-``` kotlin
+```kotlin
 class App : Application() {
     
     lateinit var appComponent: AppComponent
@@ -114,7 +114,7 @@ class App : Application() {
 
 app.xml
 
-``` xml
+```xml
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -134,7 +134,7 @@ app.xml
 
 AppView.kt
 
-``` kotlin
+```kotlin
 // this class declares View layer for concrete ViewModel type
 class AppView : AndroidView<AppViewModel>() {
 
@@ -150,12 +150,11 @@ class AppView : AndroidView<AppViewModel>() {
     }
 
 }
-
 ```
 
 AppViewFactory.kt
 
-``` kotlin
+```kotlin
 // this object is registry ob View to ViewModel bindings
 // it was used on installation of Android plugin and will be used by detault in all navigators
 // and for Activity bindings
@@ -167,7 +166,7 @@ val AppViewFactory = androidViewFactory {
 
 MainActivity.kt
 
-``` kotlin
+```kotlin
 class MainActivity : AppCompatActivity() {
 
     // nothing needed to write here as all integration done by plugin
