@@ -31,7 +31,7 @@ Current status of project: under development
 
 To start project using framework follow to [Getting started guide](doc/getting_started.md)
 
-Project documentation in under development.
+Read [Manual](doc/manual.md) for complete guide to framework.
 
 ##### Contact info
 
