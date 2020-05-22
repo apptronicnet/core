@@ -8,7 +8,7 @@ ___
 
 Base architecture brick is **Context**
 
-![Context crchitecture](../images/architecture_base.svg)
+![Context acrchitecture](../images/architecture_base.svg)
 
 **Context** is "responsibility area" like:
  - whole app

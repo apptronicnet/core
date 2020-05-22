@@ -178,7 +178,7 @@ class MainActivity : AppCompatActivity() {
     // but do not forget to add it to AndroidManifest.xml
 
     // it is possible to made manual integration but not needed for most of cases
-    // what may be needed it window initialization and other features
+    // what may be needed it window initialization and other similar UI features
 
 }
 ```
