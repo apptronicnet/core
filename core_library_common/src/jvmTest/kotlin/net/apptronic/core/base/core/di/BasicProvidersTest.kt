@@ -100,4 +100,9 @@ class BasicProvidersTest {
         }
     }
 
+    @Test
+    fun traceTest() {
+        component.context.dependencyDispatcher.traceDependencyTree().print()
+    }
+
 }

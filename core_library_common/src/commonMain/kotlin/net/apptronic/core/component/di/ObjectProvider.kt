@@ -1,38 +1,22 @@
 package net.apptronic.core.component.di
 
-import net.apptronic.core.base.concurrent.AtomicEntity
 import net.apptronic.core.component.context.Context
 
-enum class RecycleOn {
-
-    OnTerminate {
-        override fun registerRecycle(context: Context, recycle: () -> Unit) {
-            context.lifecycle.doOnTerminate(recycle)
-        }
-    },
-    OnExitCurrentStage {
-        override fun registerRecycle(context: Context, recycle: () -> Unit) {
-            context.lifecycle.onExitFromActiveStage(recycle)
-        }
-    };
-
-    internal abstract fun registerRecycle(context: Context, recycle: () -> Unit)
-
-    companion object {
-        val DEFAULT = OnExitCurrentStage
-    }
-
-}
-
-internal abstract class ObjectProvider<TypeDeclaration>(
-    objectKey: ObjectKey
+internal sealed class ObjectProvider<TypeDeclaration>(
+        objectKey: ObjectKey
 ) {
+
+    abstract val typeName: String
 
     val recyclers = mutableListOf<RecyclerMethod<TypeDeclaration>>()
     private val objectKeys = mutableListOf<ObjectKey>()
 
     internal fun addMapping(additionalKeys: Iterable<ObjectKey>) {
         objectKeys.addAll(additionalKeys)
+    }
+
+    internal fun getMappings(): List<ObjectKey> {
+        return objectKeys
     }
 
     init {
@@ -58,90 +42,82 @@ internal abstract class ObjectProvider<TypeDeclaration>(
 
 }
 
-internal abstract class ObjectBuilderProvider<TypeDeclaration, BuilderContext : ObjectBuilderContext> internal constructor(
-    objectKey: ObjectKey,
-    internal val builder: BuilderMethod<TypeDeclaration, BuilderContext>,
-    val recycleOn: RecycleOn
+internal abstract class ObjectBuilderProvider<TypeDeclaration, BuilderScope : ObjectBuilderScope> internal constructor(
+        objectKey: ObjectKey,
+        internal val builder: BuilderMethod<TypeDeclaration, BuilderScope>
 ) : ObjectProvider<TypeDeclaration>(objectKey) {
 
 }
 
 internal fun <TypeDeclaration> singleProvider(
-    objectKey: ObjectKey,
-    builder: BuilderMethod<TypeDeclaration, SingleContext>,
-    recycleOn: RecycleOn
+        objectKey: ObjectKey,
+        builder: BuilderMethod<TypeDeclaration, SingleScope>
 ): ObjectProvider<TypeDeclaration> {
-    return SingleProvider(objectKey, builder, recycleOn)
+    return SingleProvider(objectKey, builder)
+}
+
+internal fun <TypeDeclaration> sharedProvider(
+        objectKey: ObjectKey,
+        builder: BuilderMethod<TypeDeclaration, SharedScope>
+): ObjectProvider<TypeDeclaration> {
+    return SharedProvider(objectKey, builder)
 }
 
 internal fun <TypeDeclaration> factoryProvider(
-    objectKey: ObjectKey,
-    builder: BuilderMethod<TypeDeclaration, FactoryContext>,
-    recycleOn: RecycleOn
+        objectKey: ObjectKey,
+        builder: BuilderMethod<TypeDeclaration, FactoryScope>
 ): ObjectProvider<TypeDeclaration> {
-    return FactoryProvider(objectKey, builder, recycleOn)
+    return FactoryProvider(objectKey, builder)
 }
 
 internal fun <TypeDeclaration> bindProvider(
-    objectKey: ObjectKey
+        objectKey: ObjectKey
 ): ObjectProvider<TypeDeclaration> {
     return BindProvider(objectKey)
 }
 
 private class SingleProvider<TypeDeclaration>(
-    objectKey: ObjectKey,
-    builder: BuilderMethod<TypeDeclaration, SingleContext>,
-    recycleOn: RecycleOn
-) : ObjectBuilderProvider<TypeDeclaration, SingleContext>(objectKey, builder, recycleOn) {
+        objectKey: ObjectKey,
+        builder: BuilderMethod<TypeDeclaration, SingleScope>
+) : ObjectBuilderProvider<TypeDeclaration, SingleScope>(objectKey, builder) {
 
-    private val entity = AtomicEntity<TypeDeclaration?>(null)
+    override val typeName: String = "single"
+
+    private var entity: TypeDeclaration? = null
 
     override fun provide(
             definitionContext: Context,
             dispatcher: DependencyDispatcher,
             searchSpec: SearchSpec
     ): TypeDeclaration {
-        val singleContext = SingleContext(definitionContext, dispatcher, searchSpec.params)
-        return entity.perform {
-            if (get() == null) {
-                val created = builder.invoke(singleContext)
-                set(created)
-                /**
-                 * Single instance recycled on exit declared context stage
-                 */
-                recycleOn.registerRecycle(definitionContext) {
-                    perform {
-                        // make instance null. It will be recreated when called again
-                        recycle(created)
-                        set(null)
-                    }
-                }
+        val scope = SingleScope(definitionContext, dispatcher)
+        return entity ?: run {
+            val created: TypeDeclaration = builder.invoke(scope)
+            entity = created
+            definitionContext.lifecycle.doOnTerminate {
+                recycle(created)
             }
-            val instance = get()!!
-            instance
+            created
         }
     }
 
 }
 
 private class FactoryProvider<TypeDeclaration>(
-    objectKey: ObjectKey,
-    builder: BuilderMethod<TypeDeclaration, FactoryContext>,
-    recycleOn: RecycleOn
-) : ObjectBuilderProvider<TypeDeclaration, FactoryContext>(objectKey, builder, recycleOn) {
+        objectKey: ObjectKey,
+        builder: BuilderMethod<TypeDeclaration, FactoryScope>
+) : ObjectBuilderProvider<TypeDeclaration, FactoryScope>(objectKey, builder) {
 
-    override fun provide(
-            definitionContext: Context,
-            dispatcher: DependencyDispatcher,
-            searchSpec: SearchSpec
-    ): TypeDeclaration {
-        val factoryContext =
-                FactoryContext(definitionContext, searchSpec.context, dispatcher, searchSpec.params)
-        val instance = builder.invoke(factoryContext)
+    override val typeName: String = "factory"
+
+    override fun provide(definitionContext: Context, dispatcher: DependencyDispatcher, searchSpec: SearchSpec): TypeDeclaration {
+        val injectionContext = searchSpec.context
+        val scope = FactoryScope(definitionContext, injectionContext, dispatcher, searchSpec.params)
+        val instance = builder.invoke(scope)
         /**
          * Factory instance recycled when on exit from caller stage
          */
-        recycleOn.registerRecycle(searchSpec.context) {
+        injectionContext.lifecycle.onExitFromActiveStage {
             recycle(instance)
         }
         return instance
@@ -149,15 +125,58 @@ private class FactoryProvider<TypeDeclaration>(
 
 }
 
+private class SharedProvider<TypeDeclaration>(
+        objectKey: ObjectKey,
+        builder: BuilderMethod<TypeDeclaration, SharedScope>
+) : ObjectBuilderProvider<TypeDeclaration, SharedScope>(objectKey, builder) {
+
+    override val typeName: String = "shared"
+
+    private inner class SharedInstance(
+            val instance: TypeDeclaration,
+            val sharedContexts: List<Context>
+    ) {
+        var shareCount: Int = 0
+        fun recycle() {
+            sharedContexts.forEach {
+                it.lifecycle.terminate()
+            }
+        }
+    }
+
+    private val shares = mutableMapOf<Parameters, SharedInstance>()
+
+    override fun provide(definitionContext: Context, dispatcher: DependencyDispatcher, searchSpec: SearchSpec): TypeDeclaration {
+        val providedContext = searchSpec.context
+        val parameters = searchSpec.params
+        val share = shares[parameters] ?: run {
+            val scope = SharedScope(definitionContext, dispatcher, parameters)
+            val instance = builder.invoke(scope)
+            val share = SharedInstance(instance, scope.sharedContexts)
+            shares[parameters] = share
+            share
+        }
+        share.shareCount++
+        providedContext.lifecycle.onExitFromActiveStage {
+            share.shareCount--
+            if (share.shareCount == 0) {
+                shares.remove(parameters)
+                share.recycle()
+                recycle(share.instance)
+            }
+        }
+        return share.instance
+    }
+
+}
+
 private class BindProvider<TypeDeclaration>(
-    private val objectKey: ObjectKey
+        private val objectKey: ObjectKey
 ) : ObjectProvider<TypeDeclaration>(objectKey) {
 
-    override fun provide(
-            definitionContext: Context,
-            dispatcher: DependencyDispatcher,
-            searchSpec: SearchSpec
-    ): TypeDeclaration {
+    override val typeName: String = "bind"
+
+    override fun provide(definitionContext: Context, dispatcher: DependencyDispatcher, searchSpec: SearchSpec): TypeDeclaration {
         return dispatcher.inject(objectKey) as TypeDeclaration
     }
 

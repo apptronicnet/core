@@ -3,7 +3,7 @@ package net.apptronic.core.component.di
 import kotlin.reflect.KClass
 
 internal class ObjectDefinition<TypeDeclaration>(
-    private val providerFactory: ProviderFactoryMethod<TypeDeclaration>
+        private val providerFactory: ProviderFactoryMethod<TypeDeclaration>
 ) {
 
     private var recyclers = mutableListOf<RecyclerMethod<TypeDeclaration>>()
@@ -27,7 +27,7 @@ internal class ObjectDefinition<TypeDeclaration>(
 }
 
 class ProviderDefinition<TypeDeclaration> internal constructor(
-    private val objectDefinition: ObjectDefinition<TypeDeclaration>
+        private val objectDefinition: ObjectDefinition<TypeDeclaration>
 ) {
 
     fun onRecycle(recycler: (TypeDeclaration) -> Unit): ProviderDefinition<TypeDeclaration> {
@@ -40,13 +40,13 @@ class ProviderDefinition<TypeDeclaration> internal constructor(
     }
 
     fun <Mapping : Any> addMapping(
-        clazz: KClass<Mapping>
+            clazz: KClass<Mapping>
     ) {
         objectDefinition.addMappings(objectKey(clazz))
     }
 
     fun <Mapping : Any> addMapping(
-        descriptor: Descriptor<Mapping>
+            descriptor: Descriptor<Mapping>
     ) {
         objectDefinition.addMappings(objectKey(descriptor))
     }
@@ -54,23 +54,23 @@ class ProviderDefinition<TypeDeclaration> internal constructor(
 }
 
 class BindDefinition<To : Any>(
-    val from: ObjectKey, val to: ObjectKey
+        val from: ObjectKey, val to: ObjectKey
 )
 
 infix fun <To : Any> KClass<*>.alsoAs(to: KClass<To>) =
-    BindDefinition<To>(objectKey(this), objectKey(to))
+        BindDefinition<To>(objectKey(this), objectKey(to))
 
 infix fun <To : Any> Descriptor<*>.alsoAs(to: KClass<To>) =
-    BindDefinition<To>(objectKey(this), objectKey(to))
+        BindDefinition<To>(objectKey(this), objectKey(to))
 
 infix fun <To : Any> KClass<*>.alsoAs(to: Descriptor<To>) =
-    BindDefinition<To>(objectKey(this), objectKey(to))
+        BindDefinition<To>(objectKey(this), objectKey(to))
 
 infix fun <To : Any> Descriptor<*>.alsoAs(to: Descriptor<To>) =
-    BindDefinition<To>(objectKey(this), objectKey(to))
+        BindDefinition<To>(objectKey(this), objectKey(to))
 
 class ModuleDefinition internal constructor(
-    val name: String
+        val name: String
 ) {
 
     private val definitions = mutableListOf<ObjectDefinition<*>>()
@@ -83,75 +83,93 @@ class ModuleDefinition internal constructor(
     }
 
     inline fun <reified TypeDeclaration : Any> factory(
-        recycleOn: RecycleOn = RecycleOn.DEFAULT,
-        noinline builder: FactoryContext.() -> TypeDeclaration
+            noinline builder: FactoryScope.() -> TypeDeclaration
     ): ProviderDefinition<TypeDeclaration> {
-        return factory(TypeDeclaration::class, recycleOn, builder)
+        return factory(TypeDeclaration::class, builder)
     }
 
     inline fun <reified TypeDeclaration : Any> single(
-        recycleOn: RecycleOn = RecycleOn.DEFAULT,
-        noinline builder: SingleContext.() -> TypeDeclaration
+            noinline builder: SingleScope.() -> TypeDeclaration
     ): ProviderDefinition<TypeDeclaration> {
-        return single(TypeDeclaration::class, recycleOn, builder)
+        return single(TypeDeclaration::class, builder)
+    }
+
+    inline fun <reified TypeDeclaration : Any> shared(
+            noinline builder: SharedScope.() -> TypeDeclaration
+    ): ProviderDefinition<TypeDeclaration> {
+        return shared(TypeDeclaration::class, builder)
     }
 
     fun <TypeDeclaration : Any> factory(
-        clazz: KClass<TypeDeclaration>,
-        recycleOn: RecycleOn = RecycleOn.DEFAULT,
-        builder: FactoryContext.() -> TypeDeclaration
+            clazz: KClass<TypeDeclaration>,
+            builder: FactoryScope.() -> TypeDeclaration
     ): ProviderDefinition<TypeDeclaration> {
         return addDefinition {
-            factoryProvider(objectKey(clazz), BuilderMethod(builder), recycleOn)
+            factoryProvider(objectKey(clazz), BuilderMethod(builder))
         }
     }
 
     fun <TypeDeclaration : Any> factory(
-        descriptor: Descriptor<TypeDeclaration>,
-        recycleOn: RecycleOn = RecycleOn.DEFAULT,
-        builder: FactoryContext.() -> TypeDeclaration
+            descriptor: Descriptor<TypeDeclaration>,
+            builder: FactoryScope.() -> TypeDeclaration
     ): ProviderDefinition<TypeDeclaration> {
         return addDefinition {
-            factoryProvider(objectKey(descriptor), BuilderMethod(builder), recycleOn)
+            factoryProvider(objectKey(descriptor), BuilderMethod(builder))
+        }
+    }
+
+    fun <TypeDeclaration : Any> shared(
+            clazz: KClass<TypeDeclaration>,
+            builder: SharedScope.() -> TypeDeclaration
+    ): ProviderDefinition<TypeDeclaration> {
+        return addDefinition {
+            sharedProvider(objectKey(clazz), BuilderMethod(builder))
+        }
+    }
+
+    fun <TypeDeclaration : Any> shared(
+            descriptor: Descriptor<TypeDeclaration>,
+            builder: SharedScope.() -> TypeDeclaration
+    ): ProviderDefinition<TypeDeclaration> {
+        return addDefinition {
+            sharedProvider(objectKey(descriptor), BuilderMethod(builder))
         }
     }
 
     fun <TypeDeclaration : Any> single(
-        clazz: KClass<TypeDeclaration>,
-        recycleOn: RecycleOn = RecycleOn.DEFAULT,
-        builder: SingleContext.() -> TypeDeclaration
+            clazz: KClass<TypeDeclaration>,
+            builder: SingleScope.() -> TypeDeclaration
     ): ProviderDefinition<TypeDeclaration> {
         return addDefinition {
-            singleProvider(objectKey(clazz), BuilderMethod(builder), recycleOn)
+            singleProvider(objectKey(clazz), BuilderMethod(builder))
         }
     }
 
     fun <TypeDeclaration : Any> single(
-        descriptor: Descriptor<TypeDeclaration>,
-        recycleOn: RecycleOn = RecycleOn.DEFAULT,
-        builder: SingleContext.() -> TypeDeclaration
+            descriptor: Descriptor<TypeDeclaration>,
+            builder: SingleScope.() -> TypeDeclaration
     ): ProviderDefinition<TypeDeclaration> {
         return addDefinition {
-            singleProvider(objectKey(descriptor), BuilderMethod(builder), recycleOn)
+            singleProvider(objectKey(descriptor), BuilderMethod(builder))
         }
     }
 
     inline fun <reified To : Any> bind(
-        descriptor: Descriptor<*>
+            descriptor: Descriptor<*>
     ): ProviderDefinition<To> {
         val clazz = To::class
         return bind(descriptor alsoAs clazz)
     }
 
     inline fun <reified To : Any> bind(
-        fromClazz: KClass<*>
+            fromClazz: KClass<*>
     ): ProviderDefinition<To> {
         val clazz = To::class
         return bind(fromClazz alsoAs clazz)
     }
 
     fun <To : Any> bind(
-        bindDefinition: BindDefinition<To>
+            bindDefinition: BindDefinition<To>
     ): ProviderDefinition<To> {
         return addDefinition {
             bindProvider<To>(bindDefinition.to)
@@ -159,7 +177,7 @@ class ModuleDefinition internal constructor(
     }
 
     private fun <TypeDeclaration> addDefinition(
-        providerFactory: () -> ObjectProvider<TypeDeclaration>
+            providerFactory: () -> ObjectProvider<TypeDeclaration>
     ): ProviderDefinition<TypeDeclaration> {
         val definition = ObjectDefinition(ProviderFactoryMethod(providerFactory))
         definitions.add(definition)
@@ -169,8 +187,8 @@ class ModuleDefinition internal constructor(
 }
 
 internal class Module constructor(
-    val name: String,
-    private val providers: List<ObjectProvider<*>>
+        val name: String,
+        val providers: List<ObjectProvider<*>>
 ) {
 
     fun getProvider(objectKey: ObjectKey): ObjectProvider<*>? {

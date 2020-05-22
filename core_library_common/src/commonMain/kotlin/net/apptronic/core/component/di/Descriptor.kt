@@ -25,7 +25,7 @@ sealed class Descriptor<T>(
         return this === other
     }
 
-    fun toObjectKey(): ObjectKey {
+    internal fun toObjectKey(): ObjectKey {
         return objectKey(this)
     }
 }
@@ -48,17 +48,6 @@ private class KotlinNullableClassDescriptor<T : Any>(
 
     override fun toString(): String {
         return "Descriptor#$descriptorId/class:${clazz.qualifiedName}@$whereCreated"
-    }
-
-}
-
-private class NamedDescriptor<T>(
-    private val name: String,
-    whereCreated: String
-) : Descriptor<T>(whereCreated) {
-
-    override fun toString(): String {
-        return "Descriptor#$descriptorId/name:$name@$whereCreated"
     }
 
 }

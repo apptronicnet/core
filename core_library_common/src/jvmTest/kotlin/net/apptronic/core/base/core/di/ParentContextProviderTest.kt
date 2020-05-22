@@ -84,4 +84,9 @@ class ParentContextProviderTest {
         val three = parent.dependencyDispatcher.inject(ThreeDescriptor)
     }
 
+    @Test
+    fun traceTest() {
+        child.dependencyDispatcher.traceDependencyTree().print()
+    }
+
 }

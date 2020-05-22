@@ -131,4 +131,9 @@ class DescriptorProvidersTest {
         }
     }
 
+    @Test
+    fun traceTest() {
+        component.context.dependencyDispatcher.traceDependencyTree().print()
+    }
+
 }

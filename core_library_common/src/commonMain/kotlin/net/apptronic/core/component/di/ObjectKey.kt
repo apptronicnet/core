@@ -6,36 +6,24 @@ import kotlin.reflect.KClass
  * Unique key for object in DI context
  */
 data class ObjectKey internal constructor(
-    val className: String,
-    val descriptor: Descriptor<*>?
-) {
+        val clazz: KClass<*>?,
+        val descriptor: Descriptor<*>?
+) : Comparable<ObjectKey> {
 
     override fun toString(): String {
-        return if (descriptor != null) {
-            descriptor.toString()
-        } else {
-            "Class=$className"
-        }
+        return descriptor?.toString() ?: "Class=$clazz"
+    }
+
+    override fun compareTo(other: ObjectKey): Int {
+        return toString().compareTo(other.toString())
     }
 
 }
 
-fun objectKey(
-    name: String
-): ObjectKey {
-    return ObjectKey(name, null)
+internal fun objectKey(clazz: KClass<*>): ObjectKey {
+    return ObjectKey(clazz, null)
 }
 
-fun objectKey(
-    clazz: KClass<*>
-): ObjectKey {
-    val className = clazz.qualifiedName
-        ?: throw IllegalArgumentException("Cannot work with anonymous classes")
-    return ObjectKey(className, null)
-}
-
-fun objectKey(
-    descriptor: Descriptor<*>
-): ObjectKey {
-    return ObjectKey("", descriptor)
+internal fun objectKey(descriptor: Descriptor<*>): ObjectKey {
+    return ObjectKey(null, descriptor)
 }

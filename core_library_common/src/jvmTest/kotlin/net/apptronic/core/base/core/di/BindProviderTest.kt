@@ -45,4 +45,10 @@ class BindProviderTest {
 //        assert(two is Impl)
     }
 
+    @Test
+    fun traceTest() {
+        val context = Context()
+        context.dependencyDispatcher.traceDependencyTree().print()
+    }
+
 }

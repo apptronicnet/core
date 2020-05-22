@@ -2,6 +2,7 @@ package net.apptronic.core.component.di
 
 import net.apptronic.core.base.observable.subject.ValueHolder
 import net.apptronic.core.component.context.Context
+import net.apptronic.core.component.di.util.*
 import kotlin.reflect.KClass
 
 /**
@@ -260,6 +261,40 @@ class DependencyDispatcher(
             }
         }
         return null
+    }
+
+    fun traceDependencyTree(): DependencyTrace {
+        val traces = mutableListOf<DependencyTraceElement>()
+        var dispatcher: DependencyDispatcher? = this
+        while (dispatcher != null) {
+            traces.add(dispatcher.traceCurrent())
+            dispatcher = dispatcher.parent
+        }
+        return DependencyTrace(traces)
+    }
+
+    private fun traceCurrent(): DependencyTraceElement {
+        val name = context.toString()
+        val instanceTraces = externalInstances.entries.map {
+            DependencyTraceInstance(
+                    it.key.toString(),
+                    it.value
+            )
+        }
+        val moduleTraces = this.modules.map { module ->
+            DependencyTraceModule(
+                    name = module.name,
+                    providers = module.providers.map { provider ->
+                        DependencyTraceProvider(
+                                type = provider.typeName,
+                                keys = provider.getMappings().map { objectKey ->
+                                    objectKey.toString()
+                                }
+                        )
+                    }
+            )
+        }
+        return DependencyTraceElement(name, instanceTraces, moduleTraces)
     }
 
 }

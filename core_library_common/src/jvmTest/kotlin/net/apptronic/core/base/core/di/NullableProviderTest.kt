@@ -29,4 +29,9 @@ class NullableProviderTest {
         assertNull(nullInt)
     }
 
+    @Test
+    fun traceTest() {
+        context.dependencyDispatcher.traceDependencyTree().print()
+    }
+
 }

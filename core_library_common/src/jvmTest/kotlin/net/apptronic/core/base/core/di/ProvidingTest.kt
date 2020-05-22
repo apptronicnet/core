@@ -61,4 +61,9 @@ class ProvidingTest {
         assert(result.text == EXPECTED_TEXT)
     }
 
+    @Test
+    fun traceTest() {
+        component.context.dependencyDispatcher.traceDependencyTree().print()
+    }
+
 }
