@@ -5,15 +5,13 @@ import android.text.TextWatcher
 import android.widget.EditText
 import net.apptronic.core.android.viewmodel.AndroidView
 import net.apptronic.core.android.viewmodel.Binding
+import net.apptronic.core.android.viewmodel.BindingContainer
 import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.mvvm.common.TextInputViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 
-fun textInputBinding(
-    source: EditText,
-    target: TextInputViewModel
-): Binding {
-    return TextInputBinding(source, target)
+fun BindingContainer.bindTextInput(source: EditText, target: TextInputViewModel) {
+    add(TextInputBinding(source, target))
 }
 
 private class TextInputBinding(

@@ -5,7 +5,7 @@ import kotlinx.coroutines.withContext
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.coroutines.coroutineLauncherLocal
 import net.apptronic.core.component.coroutines.debouncer
-import net.apptronic.core.mvvm.viewmodel.EMPTY_VIEW_MODEL_CONTEXT
+import net.apptronic.core.mvvm.viewmodel.EmptyViewModelContext
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import kotlin.random.Random
 
@@ -17,7 +17,7 @@ private fun randomString(): String {
     }.toCharArray())
 }
 
-class LazyListViewModel(parent: Context) : ViewModel(parent, EMPTY_VIEW_MODEL_CONTEXT),
+class LazyListViewModel(parent: Context) : ViewModel(parent, EmptyViewModelContext),
     LazyListItemClickListener {
 
     private val debouncer = context.coroutineLauncherLocal().debouncer()

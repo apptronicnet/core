@@ -6,7 +6,7 @@ import net.apptronic.core.component.entity.functions.map
 import net.apptronic.core.component.genericEvent
 import net.apptronic.core.component.inject
 import net.apptronic.core.component.value
-import net.apptronic.core.mvvm.viewmodel.EMPTY_VIEW_MODEL_CONTEXT
+import net.apptronic.core.mvvm.viewmodel.EmptyViewModelContext
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 
 val LazyListItemClickListenerDescriptor = createDescriptor<LazyListItemClickListener>()
@@ -19,7 +19,7 @@ interface LazyListItemClickListener {
 
 class LazyListItemViewModel(
     parent: Context
-) : ViewModel(parent, EMPTY_VIEW_MODEL_CONTEXT) {
+) : ViewModel(parent, EmptyViewModelContext) {
 
     private val listener = inject(LazyListItemClickListenerDescriptor)
 

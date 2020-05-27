@@ -8,13 +8,13 @@ import net.apptronic.core.component.entity.functions.anyValue
 import net.apptronic.core.component.entity.functions.not
 import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.component.value
-import net.apptronic.core.mvvm.viewmodel.EMPTY_VIEW_MODEL_CONTEXT
+import net.apptronic.core.mvvm.viewmodel.EmptyViewModelContext
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.navigation.OnReadyForLoad
 
 class LoadItemViewModel(
     parent: Context, time: Long, initialReady: Boolean
-) : ViewModel(parent, EMPTY_VIEW_MODEL_CONTEXT), OnReadyForLoad {
+) : ViewModel(parent, EmptyViewModelContext), OnReadyForLoad {
 
     private val readyToLoad = value(initialReady)
 

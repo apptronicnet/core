@@ -4,9 +4,8 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.lazy_list.view.*
 import net.apptronic.core.android.viewmodel.AndroidView
-import net.apptronic.core.android.viewmodel.bindings.navigation.listNavigatorBinding
+import net.apptronic.core.android.viewmodel.bindings.navigation.bindListNavigator
 import net.apptronic.core.android.viewmodel.listadapters.BindingStrategy
-import net.apptronic.test.commons_sample_app.AppViewFactory
 import net.apptronic.test.commons_sample_app.R
 import net.apptronic.test.commons_sample_app.lazylist.LazyListViewModel
 
@@ -16,7 +15,7 @@ class LazyListView : AndroidView<LazyListViewModel>() {
 
     override fun onBindView(view: View, viewModel: LazyListViewModel) {
         with(view) {
-            listNavigatorBinding(
+            bindListNavigator(
                 lazyList, viewModel.items,
                 bindingStrategy = BindingStrategy.UntilReused
             )

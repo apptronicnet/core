@@ -11,10 +11,10 @@ import net.apptronic.core.component.entity.functions.mapSuspend
 import net.apptronic.core.component.entity.functions.onNext
 import net.apptronic.core.component.genericEvent
 import net.apptronic.core.component.value
-import net.apptronic.core.mvvm.viewmodel.EMPTY_VIEW_MODEL_CONTEXT
+import net.apptronic.core.mvvm.viewmodel.EmptyViewModelContext
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 
-class ThrottleSampleViewModel(parent: Context) : ViewModel(parent, EMPTY_VIEW_MODEL_CONTEXT) {
+class ThrottleSampleViewModel(parent: Context) : ViewModel(parent, EmptyViewModelContext) {
 
     private val serialGenerator = AtomicEntity(1)
 

@@ -5,12 +5,22 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import net.apptronic.core.android.viewmodel.AndroidView
 import net.apptronic.core.android.viewmodel.AndroidViewModelListAdapter
+import net.apptronic.core.component.entity.functions.concat
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 
 class RecyclerViewAdapter(
     private val viewModelAdapter: AndroidViewModelListAdapter,
     private val bindingStrategy: BindingStrategy
 ) : RecyclerView.Adapter<RecyclerViewAdapter.ViewModelHolder>() {
+
+    private var isBound = true
+
+    private val NO_TYPE = -1
+    private val NO_ID = -1L
+
+    fun onUnbound() {
+        isBound = false
+    }
 
     init {
         setHasStableIds(true)
@@ -24,7 +34,9 @@ class RecyclerViewAdapter(
     }
 
     override fun getItemId(position: Int): Long {
-        return viewModelAdapter.getItemAt(position).id
+        return if (isBound) {
+            viewModelAdapter.getItemAt(position).id
+        } else NO_ID
     }
 
     override fun getItemCount(): Int {
@@ -32,21 +44,27 @@ class RecyclerViewAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        return viewModelAdapter.getViewType(position)
+        return if (isBound) {
+            viewModelAdapter.getViewType(position)
+        } else NO_TYPE
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewModelHolder {
-        return ViewModelHolder(viewModelAdapter.createView(viewType, parent))
+        return if (isBound) {
+            ViewModelHolder(viewModelAdapter.createView(viewType, parent))
+        } else ViewModelHolder(View(parent.context))
     }
 
     override fun onBindViewHolder(holder: ViewModelHolder, position: Int) {
-        val viewModel = viewModelAdapter.getItemAt(position)
-        if (viewModel != holder.viewModel) {
-            if (bindingStrategy == BindingStrategy.UntilReused) {
-                unbindViewHolder(holder)
+        if (isBound) {
+            val viewModel = viewModelAdapter.getItemAt(position)
+            if (viewModel != holder.viewModel) {
+                if (bindingStrategy == BindingStrategy.UntilReused) {
+                    unbindViewHolder(holder)
+                }
+                holder.viewModel = viewModel
+                holder.androidView = viewModelAdapter.bindView(viewModel, position, holder.itemView)
             }
-            holder.viewModel = viewModel
-            holder.androidView = viewModelAdapter.bindView(viewModel, position, holder.itemView)
         }
     }
 

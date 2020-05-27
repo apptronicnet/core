@@ -12,15 +12,21 @@ import net.apptronic.core.component.value
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.adapter.ItemStateNavigator
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelListAdapter
+import kotlin.reflect.KClass
 
 const val RECYCLER_NAVIGATOR_DEFAULT_SAVED_ITEMS_SIZE = 10
 
 @Suppress("UNCHECKED_CAST")
-class ListRecyclerNavigator<T : Any, Id, VM : ViewModel>(
+class ListRecyclerNavigator<T : Any, Id: Any, VM : ViewModel>(
         parent: ViewModel,
         private val builder: ViewModelBuilder<T, Id, VM>
 ) : BaseListNavigator<T>(parent),
         UpdateEntity<List<T>>, VisibilityFilterableNavigator {
+
+    private data class RecyclerItemId(
+            val clazz: KClass<*>,
+            val typeId: Any
+    )
 
     private val subject = BehaviorSubject<List<T>>().apply {
         update(emptyList())
@@ -37,10 +43,10 @@ class ListRecyclerNavigator<T : Any, Id, VM : ViewModel>(
     private var listDescription: Any? = null
     private var staticItems: List<T> = emptyList()
     private val viewModels = LazyList()
-    private val containers = ViewModelContainers<T, Id>()
+    private val containers = ViewModelContainers<T, RecyclerItemId>()
 
     private var savedItemsSize = RECYCLER_NAVIGATOR_DEFAULT_SAVED_ITEMS_SIZE
-    private val savedItemIds = mutableListOf<Id>()
+    private val savedItemIds = mutableListOf<RecyclerItemId>()
 
     override fun getVisibilityFilters(): VisibilityFilters<ViewModel> {
         return visibilityFilters
@@ -153,12 +159,12 @@ class ListRecyclerNavigator<T : Any, Id, VM : ViewModel>(
      * will not be removed when item is unbound.
      */
     fun setStaticItems(value: List<out T>) {
-        fun Id.getKey(): T? {
+        fun RecyclerItemId.getKey(): T? {
             return value.firstOrNull { key ->
                 key.getId() == this
             }
         }
-        context.coroutineLauncherLocal().launch {
+        coroutineLauncher.launch {
             val oldIds = staticItems.map { it.getId() }
             val newIds = value.map { it.getId() }
             val diff = getDiff(oldIds, newIds)
@@ -186,8 +192,9 @@ class ListRecyclerNavigator<T : Any, Id, VM : ViewModel>(
         return staticItems.contains(key) || builder.shouldRetainInstance(key, viewModel as VM)
     }
 
-    private fun T.getId(): Id {
-        return builder.getId(this)
+    private fun T.getId(): RecyclerItemId {
+        val typeId = builder.getId(this)
+        return RecyclerItemId(this::class, typeId)
     }
 
     private fun onAdded(key: T): ViewModelContainer {
@@ -238,7 +245,7 @@ class ListRecyclerNavigator<T : Any, Id, VM : ViewModel>(
         return getViewModelForId(item.getId())
     }
 
-    fun getViewModelForId(id: Id): VM? {
+    private fun getViewModelForId(id: RecyclerItemId): VM? {
         return containers.findRecordForId(id)?.container?.getViewModel() as? VM
     }
 
@@ -246,7 +253,7 @@ class ListRecyclerNavigator<T : Any, Id, VM : ViewModel>(
         onRemovedById(key.getId())
     }
 
-    private fun onRemovedById(id: Id) {
+    private fun onRemovedById(id: RecyclerItemId) {
         containers.removeById(id)?.let { container ->
             container.container.getViewModel().onDetachFromParent()
             container.container.terminate()

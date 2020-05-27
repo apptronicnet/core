@@ -10,12 +10,12 @@ import net.apptronic.core.component.genericEvent
 import net.apptronic.core.component.inject
 import net.apptronic.core.component.newChain
 import net.apptronic.core.component.value
-import net.apptronic.core.mvvm.viewmodel.EMPTY_VIEW_MODEL_CONTEXT
+import net.apptronic.core.mvvm.viewmodel.EmptyViewModelContext
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.navigation.ViewModelWithVisibility
 
 class StackItemViewModel(parent: Context, val name: String) :
-    ViewModel(parent, EMPTY_VIEW_MODEL_CONTEXT),
+    ViewModel(parent, EmptyViewModelContext),
     ViewModelWithVisibility {
 
     private val router = inject(StackRouterDescriptor)

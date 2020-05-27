@@ -111,9 +111,5 @@ abstract class AndroidView<T : ViewModel> : BindingContainer {
         bindings.add(binding)
     }
 
-    operator fun Binding.unaryPlus() {
-        bindings.add(this)
-    }
-
 }
 

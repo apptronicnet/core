@@ -5,13 +5,13 @@ import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.behavior.merge
 import net.apptronic.core.component.entity.functions.map
 import net.apptronic.core.component.value
-import net.apptronic.core.mvvm.viewmodel.EMPTY_VIEW_MODEL_CONTEXT
+import net.apptronic.core.mvvm.viewmodel.EmptyViewModelContext
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.navigation.hasHidden
 import net.apptronic.core.mvvm.viewmodel.navigation.takeWhileVisibleStaticsOnStartFilter
 import net.apptronic.core.mvvm.viewmodel.navigation.viewModelFactory
 
-class LazyListFilterViewModel(parent: Context) : ViewModel(parent, EMPTY_VIEW_MODEL_CONTEXT) {
+class LazyListFilterViewModel(parent: Context) : ViewModel(parent, EmptyViewModelContext) {
 
     private val builder = viewModelFactory {
         addBuilder(StaticViewModelBuilder())

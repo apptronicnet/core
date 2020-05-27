@@ -1,7 +1,7 @@
 package net.apptronic.test.commons_sample_app
 
 import net.apptronic.core.component.context.Context
-import net.apptronic.core.mvvm.viewmodel.EMPTY_VIEW_MODEL_CONTEXT
+import net.apptronic.core.mvvm.viewmodel.EmptyViewModelContext
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.adapter.BasicTransition
 import net.apptronic.test.commons_sample_app.convert.ConvertScreenViewModel
@@ -20,7 +20,7 @@ import net.apptronic.test.commons_sample_app.registration.RegistrationViewModel
 import net.apptronic.test.commons_sample_app.stackloading.StackLoadingViewModel
 import net.apptronic.test.commons_sample_app.throttle.ThrottleSampleViewModel
 
-class ApplicationScreenViewModel(parent: Context) : ViewModel(parent, EMPTY_VIEW_MODEL_CONTEXT) {
+class ApplicationScreenViewModel(parent: Context) : ViewModel(parent, EmptyViewModelContext) {
 
     val rootPage = stackNavigator()
 

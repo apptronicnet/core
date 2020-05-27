@@ -6,7 +6,7 @@ import net.apptronic.core.android.viewmodel.*
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.navigation.StackNavigator
 
-fun AndroidView<*>.stackNavigatorBinding(
+fun BindingContainer.bindStackNavigator(
     viewGroup: ViewGroup,
     navigator: StackNavigator,
     factory: AndroidViewFactory? = null,

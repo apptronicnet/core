@@ -24,6 +24,16 @@ fun <T, R> Entity<T>.map(map: (T) -> R): Entity<R> =
             map(it)
         }
 
+fun <T> Entity<T>.mapToString(): Entity<String> =
+        map {
+            it.toString()
+        }
+
+fun <T> Entity<T?>.mapToStringOrNull(): Entity<String?> =
+        mapOrNull {
+            it.toString()
+        }
+
 fun <T, R> Entity<T>.mapSuspend(map: suspend CoroutineScope.(T) -> R): Entity<R> =
         entityFunctionSuspend(this) {
             map(it)

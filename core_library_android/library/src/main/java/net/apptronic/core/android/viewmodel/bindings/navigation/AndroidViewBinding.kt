@@ -6,6 +6,7 @@ import net.apptronic.core.android.plugins.getAndroidViewFactoryFromExtension
 import net.apptronic.core.android.viewmodel.AndroidView
 import net.apptronic.core.android.viewmodel.AndroidViewFactory
 import net.apptronic.core.android.viewmodel.Binding
+import net.apptronic.core.android.viewmodel.BindingContainer
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 
 enum class BindingType(
@@ -31,7 +32,7 @@ enum class BindingType(
     CREATE_CONTENT_AND_CLEAR(false, true, true)
 }
 
-fun AndroidView<*>.androidViewBinding(
+fun BindingContainer.bindInnerViewModel(
     view: View,
     viewModel: ViewModel,
     androidView: AndroidView<*>,
@@ -40,7 +41,7 @@ fun AndroidView<*>.androidViewBinding(
     add(AndroidViewBinding(view, viewModel, { androidView }, bindingType))
 }
 
-fun AndroidView<*>.androidViewBinding(
+fun BindingContainer.bindInnerViewModel(
     view: View,
     viewModel: ViewModel,
     factory: AndroidViewFactory? = null,

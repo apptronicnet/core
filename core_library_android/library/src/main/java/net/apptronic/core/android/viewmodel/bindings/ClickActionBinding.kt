@@ -3,10 +3,11 @@ package net.apptronic.core.android.viewmodel.bindings
 import android.view.View
 import net.apptronic.core.android.viewmodel.AndroidView
 import net.apptronic.core.android.viewmodel.Binding
+import net.apptronic.core.android.viewmodel.BindingContainer
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 
-infix fun View.sendClicksTo(target: () -> Unit): ClickActionBinding {
-    return ClickActionBinding(this, target)
+fun BindingContainer.bindClickListener(view: View, target: () -> Unit) {
+    add(ClickActionBinding(view, target))
 }
 
 class ClickActionBinding(

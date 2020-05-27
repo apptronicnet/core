@@ -6,7 +6,7 @@ import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.lifecycle.Lifecycle
 
 /**
- * Entity is [Observable] which is bound to context. It automatically works with it's [Lifecycle]
+ * Entity is [Observable] which is bound to [Context] and automatically works with it's [Lifecycle].
  */
 interface Entity<T> : Observable<T> {
 

@@ -5,11 +5,12 @@ import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.screen_convert.view.*
 import net.apptronic.core.android.viewmodel.AndroidView
 import net.apptronic.core.android.viewmodel.Binding
-import net.apptronic.core.android.viewmodel.bindings.asInputFor
-import net.apptronic.core.android.viewmodel.bindings.setTextFrom
+import net.apptronic.core.android.viewmodel.bindings.bindText
+import net.apptronic.core.android.viewmodel.bindings.bindTextInput
 import net.apptronic.core.base.observable.subscribe
 import net.apptronic.core.component.entity.entities.Property
 import net.apptronic.core.component.entity.functions.map
+import net.apptronic.core.component.entity.functions.mapToString
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.test.commons_sample_app.R
 import net.apptronic.test.commons_sample_app.convert.ConvertScreenViewModel
@@ -22,18 +23,18 @@ class ConvertScreenView : AndroidView<ConvertScreenViewModel>() {
 
     override fun onBindView(view: View, viewModel: ConvertScreenViewModel) {
         with(view) {
-            +(inputDistanceInKm asInputFor viewModel.inputDistance)
-            +(inputCostPerKmInUsd asInputFor viewModel.inputCost)
+            bindTextInput(inputDistanceInKm, viewModel.inputDistance)
+            bindTextInput(inputCostPerKmInUsd, viewModel.inputCost)
 
-            +SelectorBinding(unitKM, MeasurementUnit.Km, viewModel.unit)
-            +SelectorBinding(unitMiles, MeasurementUnit.Miles, viewModel.unit)
+            add(SelectorBinding(unitKM, MeasurementUnit.Km, viewModel.unit))
+            add(SelectorBinding(unitMiles, MeasurementUnit.Miles, viewModel.unit))
 
-            +SelectorBinding(currencyUSD, Currency.USD, viewModel.currency)
-            +SelectorBinding(currencyEUR, Currency.EUR, viewModel.currency)
-            +SelectorBinding(currencyGBP, Currency.GBP, viewModel.currency)
+            add(SelectorBinding(currencyUSD, Currency.USD, viewModel.currency))
+            add(SelectorBinding(currencyEUR, Currency.EUR, viewModel.currency))
+            add(SelectorBinding(currencyGBP, Currency.GBP, viewModel.currency))
 
-            +(costPerKm setTextFrom viewModel.distanceCostText)
-            +(totalCost setTextFrom viewModel.costResult.map { it.toString() })
+            bindText(costPerKm, viewModel.distanceCostText)
+            bindText(totalCost, viewModel.costResult.mapToString())
         }
     }
 

@@ -5,10 +5,10 @@ import net.apptronic.core.component.entity.behavior.merge
 import net.apptronic.core.component.entity.functions.map
 import net.apptronic.core.component.entity.functions.mapOrNull
 import net.apptronic.core.component.value
-import net.apptronic.core.mvvm.viewmodel.EMPTY_VIEW_MODEL_CONTEXT
+import net.apptronic.core.mvvm.viewmodel.EmptyViewModelContext
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 
-class ConvertScreenViewModel(parent: Context) : ViewModel(parent, EMPTY_VIEW_MODEL_CONTEXT) {
+class ConvertScreenViewModel(parent: Context) : ViewModel(parent, EmptyViewModelContext) {
 
     /**
      * Input field with user text of distance

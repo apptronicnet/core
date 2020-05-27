@@ -6,13 +6,13 @@ interface BindingContainer {
 
     fun onUnbind(action: () -> Unit)
 
-    infix fun add(binding: Binding)
+    fun add(binding: Binding)
 
 }
 
 internal class Bindings(
-        val viewModel: ViewModel,
-        val androidView: AndroidView<*>
+    val viewModel: ViewModel,
+    val androidView: AndroidView<*>
 ) : BindingContainer {
 
     private val onUnbindActions = mutableListOf<() -> Unit>()
@@ -33,7 +33,7 @@ internal class Bindings(
         onUnbindActions.add(action)
     }
 
-    override infix fun add(binding: Binding) {
+    override fun add(binding: Binding) {
         bindingList.add(binding)
         binding.bind(viewModel, androidView)
     }

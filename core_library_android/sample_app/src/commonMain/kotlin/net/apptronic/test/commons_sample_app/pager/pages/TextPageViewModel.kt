@@ -4,7 +4,7 @@ import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.inject
 import net.apptronic.core.component.toggle
 import net.apptronic.core.component.value
-import net.apptronic.core.mvvm.viewmodel.EMPTY_VIEW_MODEL_CONTEXT
+import net.apptronic.core.mvvm.viewmodel.EmptyViewModelContext
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.test.commons_sample_app.pager.NextPageNumberDescriptor
 import kotlin.random.Random
@@ -19,7 +19,7 @@ private val STRINGS = listOf(
     "Universe in infinite"
 )
 
-class TextPageViewModel(parent: Context) : ViewModel(parent, EMPTY_VIEW_MODEL_CONTEXT) {
+class TextPageViewModel(parent: Context) : ViewModel(parent, EmptyViewModelContext) {
 
     private val pageNumber = inject(NextPageNumberDescriptor)
 

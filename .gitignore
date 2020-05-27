@@ -6,5 +6,8 @@
 /build
 /captures
 /out
+/site
+/_site
 .externalNativeBuild
 aws.credentials
+Gemfile.lock

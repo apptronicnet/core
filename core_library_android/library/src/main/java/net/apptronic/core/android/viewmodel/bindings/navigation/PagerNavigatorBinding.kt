@@ -2,17 +2,14 @@ package net.apptronic.core.android.viewmodel.bindings.navigation
 
 import androidx.viewpager.widget.ViewPager
 import net.apptronic.core.android.plugins.getAndroidViewFactoryFromExtension
-import net.apptronic.core.android.viewmodel.AndroidView
-import net.apptronic.core.android.viewmodel.AndroidViewFactory
-import net.apptronic.core.android.viewmodel.AndroidViewModelListAdapter
-import net.apptronic.core.android.viewmodel.Binding
+import net.apptronic.core.android.viewmodel.*
 import net.apptronic.core.android.viewmodel.listadapters.TitleFactory
 import net.apptronic.core.android.viewmodel.listadapters.TitleProvider
 import net.apptronic.core.android.viewmodel.listadapters.ViewPagerAdapter
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.navigation.ListNavigator
 
-fun AndroidView<*>.pagerNavigatorBinding(
+fun BindingContainer.bindPagerNavigator(
     viewPager: ViewPager,
     navigator: ListNavigator,
     factory: AndroidViewFactory? = null,

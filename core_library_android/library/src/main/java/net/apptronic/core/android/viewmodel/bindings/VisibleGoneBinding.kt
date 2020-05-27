@@ -3,12 +3,13 @@ package net.apptronic.core.android.viewmodel.bindings
 import android.view.View
 import net.apptronic.core.android.viewmodel.AndroidView
 import net.apptronic.core.android.viewmodel.Binding
+import net.apptronic.core.android.viewmodel.BindingContainer
 import net.apptronic.core.base.observable.subscribe
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 
-infix fun View.setVisibleGoneFrom(target: Entity<Boolean>): VisibleGoneBinding {
-    return VisibleGoneBinding(this, target)
+fun BindingContainer.bindVisibleGone(view: View, target: Entity<Boolean>) {
+    add(VisibleGoneBinding(view, target))
 }
 
 class VisibleGoneBinding(

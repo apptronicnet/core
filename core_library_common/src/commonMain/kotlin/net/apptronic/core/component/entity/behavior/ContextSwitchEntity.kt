@@ -25,11 +25,8 @@ private class ContextSwitchEntity<T>(
     override val context: Context = targetContext
 
     override fun subscribe(observer: Observer<T>): EntitySubscription {
-        val coroutineLauncher = targetContext.coroutineLauncherScoped()
         return source.subscribe(targetContext) { value ->
-            coroutineLauncher.launch {
-                observer.notify(value)
-            }
+            observer.notify(value)
         }.also {
             context.lifecycle.rootStage.registerSubscription(it)
         }

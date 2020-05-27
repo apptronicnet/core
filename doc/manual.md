@@ -35,6 +35,10 @@ TBD: Project initialization and Android plugins
 
 TBD ViewModel: features // Overview of all **ViewModel** features for implementation custom behavior
 
+TBD ViewModel binding: specific models and binding types // Pre-defined typed on binding models for common purposes
+
+TBD ViewModel binding: implement custom binding // Implementation of custom models and bindings
+
 TBD Navigation: StackNavigator // Classic navigation: back, forward, replace
 
 TBD Navigation: ListNavigator // Easily create list of any items
@@ -64,4 +68,3 @@ TBD Reactive streams features // Special functions for reactive streams: ```debo
 TBD Reactive streams: watcher // How to react on specific states of stream values
 
 TBD Implementation of custom Entity classes // How to create custom reactive stream function or transformation
-

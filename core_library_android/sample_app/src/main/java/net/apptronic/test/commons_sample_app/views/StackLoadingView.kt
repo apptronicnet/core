@@ -3,12 +3,8 @@ package net.apptronic.test.commons_sample_app.views
 import android.view.View
 import kotlinx.android.synthetic.main.stack_loading.view.*
 import net.apptronic.core.android.viewmodel.AndroidView
-import net.apptronic.core.android.viewmodel.bindings.navigation.stackNavigatorBinding
-import net.apptronic.core.android.viewmodel.bindings.sendClicksTo
-import net.apptronic.core.android.viewmodel.bindings.setEnabledDisabledFrom
-import net.apptronic.core.android.viewmodel.bindings.setTextFrom
-import net.apptronic.core.android.viewmodel.bindings.setVisibleGoneFrom
-import net.apptronic.test.commons_sample_app.AppViewFactory
+import net.apptronic.core.android.viewmodel.bindings.*
+import net.apptronic.core.android.viewmodel.bindings.navigation.bindStackNavigator
 import net.apptronic.test.commons_sample_app.R
 import net.apptronic.test.commons_sample_app.stackloading.StackLoadingViewModel
 
@@ -18,13 +14,13 @@ class StackLoadingView : AndroidView<StackLoadingViewModel>() {
 
     override fun onBindView(view: View, viewModel: StackLoadingViewModel) {
         with(view) {
-            stackNavigatorBinding(container, viewModel.navigator)
-            +(txtLoading setTextFrom viewModel.loadingIndicatorText)
-            +(txtVisible setTextFrom viewModel.visibleIndicatorText)
-            +(txtActual setTextFrom viewModel.actualIndicatorText)
-            +(btnBack setEnabledDisabledFrom viewModel.isBackButtonEnabled)
-            +(btnBack sendClicksTo viewModel.onClickBack)
-            +(progressBar setVisibleGoneFrom viewModel.isInProgress)
+            bindStackNavigator(container, viewModel.navigator)
+            bindText(txtLoading, viewModel.loadingIndicatorText)
+            bindText(txtVisible, viewModel.visibleIndicatorText)
+            bindText(txtActual, viewModel.actualIndicatorText)
+            bindEnabledDisabled(btnBack, viewModel.isBackButtonEnabled)
+            bindClickListener(btnBack, viewModel.onClickBack)
+            bindVisibleGone(progressBar, viewModel.isInProgress)
         }
     }
 
