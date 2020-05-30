@@ -1,7 +1,6 @@
 package net.apptronic.core.component.entity.functions
 
 import kotlinx.coroutines.CoroutineScope
-import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.base.observable.subject.BehaviorSubject
 import net.apptronic.core.base.observable.subject.ValueHolder
 import net.apptronic.core.base.observable.subscribe
@@ -9,10 +8,9 @@ import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.coroutines.coroutineLauncherScoped
 import net.apptronic.core.component.coroutines.debouncer
 import net.apptronic.core.component.entity.Entity
-import net.apptronic.core.component.entity.EntitySubscription
-import net.apptronic.core.component.entity.EntityValue
+import net.apptronic.core.component.entity.base.EntityValue
+import net.apptronic.core.component.entity.base.ObservableEntity
 import net.apptronic.core.component.entity.collectContext
-import net.apptronic.core.component.entity.subscriptions.ContextSubscriptionFactory
 
 interface FunctionAction<T, R> {
 
@@ -57,22 +55,16 @@ private fun <T, R> suspendAction(context: Context, calculation: suspend Coroutin
 
 abstract class EntityFunction<T>(
         override val context: Context
-) : EntityValue<T> {
+) : ObservableEntity<T>(), EntityValue<T> {
 
-    private val subject = BehaviorSubject<T>()
-    private val observable = subject
-    private val subscriptions: ContextSubscriptionFactory<T> = ContextSubscriptionFactory(context)
+    override val observable = BehaviorSubject<T>()
 
     override fun getValueHolder(): ValueHolder<T>? {
-        return subject.getValue()
+        return observable.getValue()
     }
 
     internal fun update(value: T) {
-        subject.update(value)
-    }
-
-    override fun subscribe(context: Context, observer: Observer<T>): EntitySubscription {
-        return subscriptions.using(context).subscribe(observer, observable)
+        observable.update(value)
     }
 
 }
@@ -96,7 +88,7 @@ fun <T, A> entityFunctionSuspend(
 }
 
 fun <T> entityArrayFunction(
-        source: Array<Entity<*>>,
+        source: Array<out Entity<*>>,
         method: (Array<Any?>) -> T
 ): EntityFunction<T> {
     val context = collectContext(*source)
@@ -251,7 +243,6 @@ private class SingleFunction<T, X>(
 
 }
 
-
 private class DoubleFunction<T, A, B>(
         context: Context,
         private val left: Entity<A>,
@@ -285,7 +276,7 @@ private class DoubleFunction<T, A, B>(
 
 private class ArrayFunction<T>(
         context: Context,
-        private val sources: Array<Entity<*>>,
+        private val sources: Array<out Entity<*>>,
         private val functionAction: FunctionAction<Array<Any?>, T>
 ) : EntityFunction<T>(context) {
 

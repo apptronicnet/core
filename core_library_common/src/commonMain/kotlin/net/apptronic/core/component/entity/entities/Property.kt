@@ -1,48 +1,27 @@
 package net.apptronic.core.component.entity.entities
 
-import net.apptronic.core.base.concurrent.requireNeverFrozen
+import net.apptronic.core.base.observable.Observable
 import net.apptronic.core.base.observable.subject.BehaviorSubject
 import net.apptronic.core.base.observable.subject.ValueHolder
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.*
+import net.apptronic.core.component.entity.base.EntityValue
+import net.apptronic.core.component.entity.base.ObservableEntity
+import net.apptronic.core.component.entity.base.UpdateEntity
 
-abstract class Property<T>(context: Context) : ComponentEntity<T>(context), EntityValue<T>,
-    UpdateEntity<T> {
-
-    init {
-        requireNeverFrozen()
-    }
+abstract class Property<T>(override val context: Context) : ObservableEntity<T>(), EntityValue<T> {
 
     protected val subject = BehaviorSubject<T>()
+
+    override val observable: Observable<T> = subject
 
     override fun getValueHolder(): ValueHolder<T>? {
         return subject.getValue()
     }
 
-    fun set(value: T) {
-        subject.update(value)
-    }
-
-    override fun update(value: T) {
-        set(value)
-    }
-
     override fun toString(): String {
         val valueHolder = subject.getValue()
         return super.toString() + if (valueHolder == null) "/not-set" else "=$valueHolder"
-    }
-
-    /**
-     * Set current value from given [source]
-     * @return true if value set, false if no value set inside [source]
-     */
-    fun setFrom(source: Property<T>): Boolean {
-        return try {
-            set(source.get())
-            true
-        } catch (e: ValueNotSetException) {
-            false
-        }
     }
 
 }

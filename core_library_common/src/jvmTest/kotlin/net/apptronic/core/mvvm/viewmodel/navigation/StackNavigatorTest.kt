@@ -15,7 +15,7 @@ class StackNavigatorTest : TestContext() {
     }
 
     private fun createViewModel(): ViewModel {
-        return ViewModel(ViewModelContext(this, "base"))
+        return ViewModel(ViewModelContext(root.context, "base"))
     }
 
     private val root = RootViewModel(ViewModelContext(this, "root"))

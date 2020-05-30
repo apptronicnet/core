@@ -5,7 +5,7 @@ import net.apptronic.core.component.entity.functions.map
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 
 /**
- * Class representing current status of [ListRecyclerNavigator]
+ * Class representing current status of [DynamicListNavigator]
  */
 class ListRecyclerNavigatorStatus(
         /**

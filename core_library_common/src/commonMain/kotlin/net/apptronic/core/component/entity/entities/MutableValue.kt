@@ -1,13 +1,12 @@
 package net.apptronic.core.component.entity.entities
 
 import net.apptronic.core.base.observable.Observable
+import net.apptronic.core.base.observable.distinctUntilChanged
 import net.apptronic.core.component.context.Context
 
-open class MutableValue<T>(context: Context) : Property<T>(context) {
+class MutableValue<T>(context: Context) : AbstractValue<T>(context) {
 
-    override fun getObservable(): Observable<T> {
-        return subject
-    }
+    override val observable: Observable<T> = subject
 
     fun update(action: (T) -> Unit) {
         subject.getValue()?.let {
@@ -15,5 +14,6 @@ open class MutableValue<T>(context: Context) : Property<T>(context) {
             subject.update(it.value)
         }
     }
+
 }
 

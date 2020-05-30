@@ -1,9 +1,8 @@
 package net.apptronic.core.mvvm.viewmodel.navigation
 
-import net.apptronic.core.base.observable.Observable
 import net.apptronic.core.base.observable.subject.BehaviorSubject
 import net.apptronic.core.component.entity.Entity
-import net.apptronic.core.component.entity.UpdateEntity
+import net.apptronic.core.component.entity.base.UpdateEntity
 import net.apptronic.core.component.entity.subscriptions.ContextSubjectWrapper
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.adapter.ItemStateNavigator
@@ -17,7 +16,7 @@ class ListNavigator(
     private val visibilityFilters: VisibilityFilters<ViewModel> = VisibilityFilters<ViewModel>()
     private var listFilter: ListNavigatorFilter = simpleFilter()
 
-    private val subject = BehaviorSubject<List<ViewModel>>().apply {
+    override val subject = BehaviorSubject<List<ViewModel>>().apply {
         update(emptyList())
     }
 
@@ -38,10 +37,6 @@ class ListNavigator(
 
     override fun update(value: List<ViewModel>) {
         set(value)
-    }
-
-    override fun getObservable(): Observable<List<ViewModel>> {
-        return subject
     }
 
     fun observeStatus(): Entity<ListNavigatorStatus> {
@@ -109,6 +104,9 @@ class ListNavigator(
         }
         items = value.toTypedArray().toList()
         diff.added.forEach {
+            if (it.context.parent != context) {
+                throw IllegalArgumentException("$it context should be direct child of Navigator context")
+            }
             onAdded(it)
         }
         refreshVisibility()

@@ -4,7 +4,7 @@ import net.apptronic.core.base.observable.subscribe
 import net.apptronic.core.testutils.BaseTestComponent
 import net.apptronic.core.testutils.TestLifecycle
 import net.apptronic.core.component.entity.ValueNotSetException
-import net.apptronic.core.mvvm.viewmodel.extensions.asFunctionOf
+import net.apptronic.core.mvvm.viewmodel.extensions.functionOf
 import net.apptronic.core.mvvm.viewmodel.extensions.copyValueFrom
 import org.junit.Test
 import kotlin.test.assertFailsWith
@@ -19,14 +19,14 @@ class ViewModelPropertiesTest {
 
         val intValue = value<Int>()
 
-        val compositeValue = value<String>().asFunctionOf(
+        val compositeValue = functionOf(
             stringValue,
             stringValueWithDefault
         ) { str1, str2 ->
             "$str1-$str2"
         }
 
-        val compositeStringInt = value<String>().asFunctionOf(
+        val compositeStringInt = functionOf(
             stringValue,
             intValue
         ) { str1, intVal ->

@@ -14,7 +14,7 @@ inline fun <reified T> Entity<T>.record(): EntityRecorder<T> {
 class EntityRecorder<T> constructor(
         private val clazz: Class<T>,
         private val source: Entity<T>
-) : Entity<Nothing>, EntitySubscriptionListener {
+) : EntitySubscriptionListener {
 
     private val items = mutableListOf<T>()
     private var isUnsubscribed = false
@@ -30,11 +30,7 @@ class EntityRecorder<T> constructor(
         isUnsubscribed = true
     }
 
-    override val context: Context = source.context
-
-    override fun subscribe(context: Context, observer: Observer<Nothing>): EntitySubscription {
-        throw UnsupportedOperationException()
-    }
+    val context: Context = source.context
 
     fun get(): List<T> {
         return items

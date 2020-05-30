@@ -1,14 +1,12 @@
 package net.apptronic.core.component.entity.behavior
 
 import net.apptronic.core.base.observable.Observer
-import net.apptronic.core.base.observable.subject.BehaviorSubject
 import net.apptronic.core.base.observable.subject.ValueHolder
 import net.apptronic.core.component.context.Context
+import net.apptronic.core.component.coroutines.CoroutineLauncher
 import net.apptronic.core.component.coroutines.coroutineLauncherScoped
 import net.apptronic.core.component.entity.Entity
-import net.apptronic.core.component.entity.EntitySubscription
-import net.apptronic.core.component.entity.subscribe
-import net.apptronic.core.component.entity.subscriptions.ContextSubjectWrapper
+import net.apptronic.core.component.entity.base.RelayEntity
 
 /**
  * Consumes source entity asynchronously taking only last emitted value on each change synchronous. If source value
@@ -19,34 +17,35 @@ fun <T> Entity<T>.throttleAsync(): Entity<T> {
 }
 
 private class ThrottleAsyncEntity<T>(
-        private val source: Entity<T>
-) : Entity<T> {
+        source: Entity<T>
+) : RelayEntity<T>(source) {
 
-    override val context: Context = source.context
+    override fun proceedObserver(targetContext: Context, target: Observer<T>): Observer<T> {
+        return ThrottleAsyncObserver(targetContext.coroutineLauncherScoped(), target)
+    }
 
-    private var nextValue: ValueHolder<T>? = null
-    private var isProcessing = false
-    private val subject = ContextSubjectWrapper(context, BehaviorSubject<T>())
+    private class ThrottleAsyncObserver<T>(
+            private val coroutineLauncher: CoroutineLauncher,
+            private val target: Observer<T>
+    ) : Observer<T> {
 
-    init {
-        val coroutineLauncher = context.coroutineLauncherScoped()
-        source.subscribe {
-            nextValue = ValueHolder(it)
+        private var nextValue: ValueHolder<T>? = null
+        private var isProcessing = false
+
+        override fun notify(value: T) {
+            nextValue = ValueHolder(value)
             if (!isProcessing) {
                 isProcessing = true
                 coroutineLauncher.launch {
                     isProcessing = false
                     nextValue?.let { valueHolder ->
-                        subject.update(valueHolder.value)
+                        target.notify(valueHolder.value)
                     }
                     nextValue = null
                 }
             }
         }
-    }
 
-    override fun subscribe(context: Context, observer: Observer<T>): EntitySubscription {
-        return subject.subscribe(context, observer)
     }
 
 }

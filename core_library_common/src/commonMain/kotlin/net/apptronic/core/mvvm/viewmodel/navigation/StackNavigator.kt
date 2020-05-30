@@ -18,7 +18,7 @@ class StackNavigator(
     )
 
     private var currentState = State(false, null, null)
-    private val subject = BehaviorSubject<StackNavigatorStatus>().apply {
+    override val subject = BehaviorSubject<StackNavigatorStatus>().apply {
         update(StackNavigatorStatus(false, null, null, 0, emptyList()))
     }
     private val stack = mutableListOf<ViewModelContainer>()
@@ -44,10 +44,6 @@ class StackNavigator(
             val adapter: ViewModelStackAdapter
     ) {
         var activeItem: ViewModelContainer? = null
-    }
-
-    override fun getObservable(): Observable<StackNavigatorStatus> {
-        return subject
     }
 
     private fun removeFromStack(item: ViewModelContainer) {
@@ -216,6 +212,9 @@ class StackNavigator(
 
     private fun addStackItem(viewModel: ViewModel?) {
         if (viewModel != null) {
+            if (viewModel.context.parent != context) {
+                throw IllegalArgumentException("$viewModel context should be direct child of Navigator context")
+            }
             val item = ViewModelContainer(
                     viewModel,
                     parent,

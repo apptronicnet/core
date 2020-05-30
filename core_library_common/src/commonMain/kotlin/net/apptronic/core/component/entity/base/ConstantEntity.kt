@@ -1,10 +1,11 @@
 package net.apptronic.core.component.entity.base
 
 import net.apptronic.core.base.observable.Observer
+import net.apptronic.core.base.observable.subject.BehaviorSubject
+import net.apptronic.core.base.observable.subject.Subject
 import net.apptronic.core.base.observable.subject.ValueHolder
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.EntitySubscription
-import net.apptronic.core.component.entity.EntityValue
 import net.apptronic.core.component.entity.subscriptions.ContextSubscriptionFactory
 
 /**
@@ -13,20 +14,16 @@ import net.apptronic.core.component.entity.subscriptions.ContextSubscriptionFact
 class ConstantEntity<T>(
         override val context: Context,
         private val value: T
-) : EntityValue<T> {
+) : SubjectEntity<T>(), EntityValue<T> {
 
-    private val subscriptionFactory = ContextSubscriptionFactory<T>(context)
+    override val subject = BehaviorSubject<T>()
 
-    private val valueHolder = ValueHolder(value)
-
-    override fun getValueHolder(): ValueHolder<T>? {
-        return valueHolder
+    init {
+        subject.update(value)
     }
 
-    override fun subscribe(context: Context, observer: Observer<T>): EntitySubscription {
-        return subscriptionFactory.using(context).createSubscription(observer).also {
-            it.notify(value)
-        }
+    override fun getValueHolder(): ValueHolder<T>? {
+        return subject.getValue()
     }
 
 }

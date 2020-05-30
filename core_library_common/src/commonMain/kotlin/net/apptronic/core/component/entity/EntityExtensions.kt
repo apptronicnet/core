@@ -6,6 +6,7 @@ import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.base.observable.subject.ValueHolder
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.coroutines.coroutineLauncherScoped
+import net.apptronic.core.component.entity.base.ObservableEntity
 import net.apptronic.core.component.entity.subscriptions.ContextSubscriptionFactory
 
 fun <T> Observable<T>.bindContext(context: Context): Entity<T> {
@@ -14,16 +15,8 @@ fun <T> Observable<T>.bindContext(context: Context): Entity<T> {
 
 private class EntityObservableWrapper<T>(
         override val context: Context,
-        private val observable: Observable<T>
-) : Entity<T> {
-
-    private val subscriptionFactory = ContextSubscriptionFactory<T>(context)
-
-    override fun subscribe(context: Context, observer: Observer<T>): EntitySubscription {
-        return subscriptionFactory.using(context).subscribe(observer, observable)
-    }
-
-}
+        override val observable: Observable<T>
+) : ObservableEntity<T>()
 
 fun <T> Entity<T>.subscribe(callback: (T) -> Unit): EntitySubscription {
     return subscribe(object : Observer<T> {

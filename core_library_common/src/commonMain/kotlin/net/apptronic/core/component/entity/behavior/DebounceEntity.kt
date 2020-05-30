@@ -7,6 +7,7 @@ import net.apptronic.core.component.coroutines.CoroutineLauncher
 import net.apptronic.core.component.coroutines.coroutineLauncherScoped
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.EntitySubscription
+import net.apptronic.core.component.entity.base.RelayEntity
 
 // TODO missing documentation
 fun <T> Entity<T>.debounce(
@@ -24,17 +25,14 @@ fun <T> Entity<T>.debounceAndStore(
 }
 
 private class DebounceEntity<T>(
-        val target: Entity<T>,
+        source: Entity<T>,
         val interval: Long,
         val delay: Long
-) : Entity<T> {
+) : RelayEntity<T>(source) {
 
-    override val context: Context = target.context
-
-    override fun subscribe(context: Context, observer: Observer<T>): EntitySubscription {
-        val coroutineLauncher = context.coroutineLauncherScoped()
-        val targetObserver = DebounceObserver(coroutineLauncher, observer, interval, delay)
-        return target.subscribe(context, targetObserver)
+    override fun proceedObserver(targetContext: Context, target: Observer<T>): Observer<T> {
+        val coroutineLauncher = targetContext.coroutineLauncherScoped()
+        return DebounceObserver(coroutineLauncher, target, interval, delay)
     }
 
 }

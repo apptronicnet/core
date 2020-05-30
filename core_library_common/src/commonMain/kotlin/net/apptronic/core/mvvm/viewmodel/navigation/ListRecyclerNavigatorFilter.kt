@@ -7,7 +7,7 @@ import net.apptronic.core.mvvm.viewmodel.ViewModel
  */
 class ListItem(
         /**
-         * Source list item used for [ListRecyclerNavigator]
+         * Source list item used for [DynamicListNavigator]
          */
         val item: Any,
         /**
@@ -26,25 +26,25 @@ class ListItem(
 )
 
 /**
- * This class applies filtering for [ListRecyclerNavigator]. In comparison with [ListNavigatorFilter] it does not
+ * This class applies filtering for [DynamicListNavigator]. In comparison with [ListNavigatorFilter] it does not
  * checks whole list as it may have huge size and take too much time to check. Instead of changes list if provides
  * [RecyclerListIndexMapping] for source list transformation dynamically when each concrete item is requested.
  */
 interface ListRecyclerNavigatorFilter {
 
     /**
-     * Perform [ListRecyclerNavigator] source items list filtering. Please note that this is is lazy meaning each item
+     * Perform [DynamicListNavigator] source items list filtering. Please note that this is is lazy meaning each item
      * allocating at the moment if request. It allows to safely filter only part of list without no need to check whole
      * list at same time.
      * @param lazy-allocated list of items
-     * @param listDescription optional value set by [ListRecyclerNavigator.set] to help with list filtering and mapping
+     * @param listDescription optional value set by [DynamicListNavigator.set] to help with list filtering and mapping
      */
     fun filter(items: List<ListItem>, listDescription: Any?): RecyclerListIndexMapping
 
 }
 
 /**
- * This is class for dynamic allocation of size and indexes for list of items contained in [ListRecyclerNavigator].
+ * This is class for dynamic allocation of size and indexes for list of items contained in [DynamicListNavigator].
  * As source items list may be very big it is impossible to filter whole list. Instead of that filtering are performed
  * dynamically by remapping of indexes and list size by instance of this class.
  */

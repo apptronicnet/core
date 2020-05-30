@@ -1,25 +1,22 @@
 package net.apptronic.core.component.entity.entities
 
-import net.apptronic.core.base.observable.subject.ValueHolder
-import net.apptronic.core.base.observable.subscribe
+import net.apptronic.core.component.context.Context
 
-class Toggle<T>(
-    private val target: Property<T>,
-    private vararg val values: T
-) {
+class ToggleProperty<T>(
+        context: Context,
+        private val values: List<T>
+) : Property<T>(context) {
 
-    private var value: ValueHolder<T>? = null
+    private var index = -1
 
-    init {
-        target.subscribe {
-            value = ValueHolder(it)
-        }
+    internal fun setInitValue(initValue: T) {
+        index = values.indexOf(initValue)
+        subject.update(initValue)
     }
 
     fun toggle() {
-        val index = value?.let { values.indexOf(it.value) } ?: -1
-        val next = values[(index + 1) % values.size]
-        target.set(next)
+        index = (index + 1) % values.size
+        subject.update(values[index])
     }
 
 }

@@ -4,9 +4,8 @@ import net.apptronic.core.base.collections.lazyListOf
 import net.apptronic.core.base.collections.simpleLazyListOf
 import net.apptronic.core.base.observable.Observable
 import net.apptronic.core.base.observable.subject.BehaviorSubject
-import net.apptronic.core.component.coroutines.coroutineLauncherLocal
 import net.apptronic.core.component.entity.Entity
-import net.apptronic.core.component.entity.UpdateEntity
+import net.apptronic.core.component.entity.base.UpdateEntity
 import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.component.value
 import net.apptronic.core.mvvm.viewmodel.ViewModel
@@ -14,10 +13,10 @@ import net.apptronic.core.mvvm.viewmodel.adapter.ItemStateNavigator
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelListAdapter
 import kotlin.reflect.KClass
 
-const val RECYCLER_NAVIGATOR_DEFAULT_SAVED_ITEMS_SIZE = 10
+private const val DEFAULT_SAVED_ITEMS_SIZE = 10
 
 @Suppress("UNCHECKED_CAST")
-class ListRecyclerNavigator<T : Any, Id: Any, VM : ViewModel>(
+class DynamicListNavigator<T : Any, Id : Any, VM : ViewModel>(
         parent: ViewModel,
         private val builder: ViewModelBuilder<T, Id, VM>
 ) : BaseListNavigator<T>(parent),
@@ -28,7 +27,7 @@ class ListRecyclerNavigator<T : Any, Id: Any, VM : ViewModel>(
             val typeId: Any
     )
 
-    private val subject = BehaviorSubject<List<T>>().apply {
+    override val subject = BehaviorSubject<List<T>>().apply {
         update(emptyList())
     }
     private val status = parent.value<ListRecyclerNavigatorStatus>()
@@ -45,7 +44,7 @@ class ListRecyclerNavigator<T : Any, Id: Any, VM : ViewModel>(
     private val viewModels = LazyList()
     private val containers = ViewModelContainers<T, RecyclerItemId>()
 
-    private var savedItemsSize = RECYCLER_NAVIGATOR_DEFAULT_SAVED_ITEMS_SIZE
+    private var savedItemsSize = DEFAULT_SAVED_ITEMS_SIZE
     private val savedItemIds = mutableListOf<RecyclerItemId>()
 
     override fun getVisibilityFilters(): VisibilityFilters<ViewModel> {
@@ -93,10 +92,6 @@ class ListRecyclerNavigator<T : Any, Id: Any, VM : ViewModel>(
 
     override fun update(value: List<T>) {
         set(value)
-    }
-
-    override fun getObservable(): Observable<List<T>> {
-        return subject
     }
 
     init {
@@ -199,6 +194,9 @@ class ListRecyclerNavigator<T : Any, Id: Any, VM : ViewModel>(
 
     private fun onAdded(key: T): ViewModelContainer {
         val viewModel = builder.onCreateViewModel(context, key)
+        if (viewModel.context.parent != context) {
+            throw IllegalArgumentException("$viewModel context should be direct child of Navigator context")
+        }
         val container = ViewModelContainer(viewModel, parent, visibilityFilters.isReadyToShow(viewModel))
         containers.add(key.getId(), container, key)
         container.getViewModel().onAttachToParent(this)
@@ -220,7 +218,7 @@ class ListRecyclerNavigator<T : Any, Id: Any, VM : ViewModel>(
     /**
      * Set count of items which [ViewModel]s will be saved when unbound to prevent too frequent recreation
      * of [ViewModel]s. It is in addition to static items which are retained always.
-     * Default value is [RECYCLER_NAVIGATOR_DEFAULT_SAVED_ITEMS_SIZE]
+     * Default value is [DEFAULT_SAVED_ITEMS_SIZE]
      */
     fun setSavedItemsSize(size: Int) {
         savedItemsSize = size

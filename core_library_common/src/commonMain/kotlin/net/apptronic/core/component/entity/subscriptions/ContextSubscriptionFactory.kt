@@ -3,27 +3,32 @@ package net.apptronic.core.component.entity.subscriptions
 import net.apptronic.core.base.observable.Observable
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.component.context.Context
+import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.EntitySubscription
 
+fun <T> Entity<T>.subscriptionBuilder(target: Context): ContextSubscriptionBuilder<T> {
+    return ContextSubscriptionFactory<T>(context).using(target)
+}
+
 class ContextSubscriptionFactory<T>(
-        private val context: Context
+        private val definitionContext: Context
 ) {
 
     fun using(targetContext: Context): ContextSubscriptionBuilder<T> {
-        if (targetContext == context) {
-            val shouldSubscribe = context.lifecycle.isTerminated().not()
+        if (targetContext == definitionContext) {
+            val shouldSubscribe = definitionContext.lifecycle.isTerminated().not()
             return ContextSubscriptionBuilder(shouldSubscribe) { createdSubscription ->
-                context.lifecycle.getActiveStage()?.let {
+                definitionContext.lifecycle.getActiveStage()?.let {
                     it.registerSubscription(createdSubscription)
                 } ?: run {
                     createdSubscription.unsubscribe()
                 }
             }
         } else {
-            val shouldSubscribe = context.lifecycle.isTerminated().not()
+            val shouldSubscribe = definitionContext.lifecycle.isTerminated().not()
                     && targetContext.lifecycle.isTerminated().not()
             return ContextSubscriptionBuilder(shouldSubscribe) { createdSubscription ->
-                context.lifecycle.rootStage.registerSubscription(createdSubscription)
+                definitionContext.lifecycle.rootStage.registerSubscription(createdSubscription)
                 targetContext.lifecycle.getActiveStage()?.let {
                     it.registerSubscription(createdSubscription)
                 } ?: run {

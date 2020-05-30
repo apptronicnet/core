@@ -9,7 +9,7 @@ import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 import org.junit.Test
 
-class ListRecyclerNavigatorTest : TestViewModel() {
+class DynamicListNavigatorTest : TestViewModel() {
 
     val lifecycleController = ViewModelLifecycleController(this)
 
@@ -41,7 +41,7 @@ class ListRecyclerNavigatorTest : TestViewModel() {
     private val sources = value<List<Item>>(emptyList())
     private val statics = value<List<Item>>(emptyList())
 
-    private val navigator = listRecyclerNavigator(sources, factory)
+    private val navigator = listDynamicNavigator(sources, factory)
 
     init {
         statics.subscribe {

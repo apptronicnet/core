@@ -3,11 +3,11 @@ package net.apptronic.core.component.entity.behavior
 import kotlinx.coroutines.CoroutineScope
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.component.context.Context
+import net.apptronic.core.component.coroutines.CoroutineLauncher
 import net.apptronic.core.component.coroutines.coroutineLauncherScoped
 import net.apptronic.core.component.entity.Entity
-import net.apptronic.core.component.entity.EntitySubscription
+import net.apptronic.core.component.entity.base.RelayEntity
 import net.apptronic.core.component.entity.functions.map
-import net.apptronic.core.component.entity.subscribe
 
 fun <T> Entity<T>.filter(filterFunction: (T) -> Boolean): Entity<T> {
     return FilterEntity(this, filterFunction)
@@ -34,55 +34,40 @@ fun <T> Entity<T>.filterNotSuspend(filterNotFunction: (T) -> Boolean): Entity<T>
 }
 
 private class FilterEntity<T>(
-        private val target: Entity<T>,
+        source: Entity<T>,
         private val filterFunction: (T) -> Boolean
-) : Entity<T> {
+) : RelayEntity<T>(source) {
 
-    override val context: Context = target.context
-
-    override fun subscribe(observer: Observer<T>): EntitySubscription {
-        return target.subscribe { value ->
-            if (filterFunction(value)) {
-                observer.notify(value)
-            }
-        }
-    }
-
-    override fun subscribe(context: Context, observer: Observer<T>): EntitySubscription {
-        return target.subscribe(context) { value ->
-            if (filterFunction(value)) {
-                observer.notify(value)
-            }
+    override fun onNext(nextValue: T, observer: Observer<T>) {
+        if (filterFunction(nextValue)) {
+            observer.notify(nextValue)
         }
     }
 
 }
 
 private class FilterEntitySuspend<T>(
-        private val target: Entity<T>,
+        source: Entity<T>,
         private val filterFunction: suspend CoroutineScope.(T) -> Boolean
-) : Entity<T> {
+) : RelayEntity<T>(source) {
 
-    override val context: Context = target.context
-
-    private val coroutineLauncher = context.coroutineLauncherScoped()
-
-    override fun subscribe(observer: Observer<T>): EntitySubscription {
-        return target.subscribe { value ->
-            coroutineLauncher.launch {
-                if (filterFunction(value)) {
-                    observer.notify(value)
-                }
-            }
-        }
+    override fun proceedObserver(targetContext: Context, target: Observer<T>): Observer<T> {
+        val coroutineLauncher = targetContext.coroutineLauncherScoped()
+        return FilterSuspendObserver(target, coroutineLauncher, filterFunction)
     }
 
-    override fun subscribe(context: Context, observer: Observer<T>): EntitySubscription {
-        return target.subscribe(context) { value ->
-            coroutineLauncher.launch {
-                if (filterFunction(value)) {
-                    observer.notify(value)
-                }
+}
+
+private class FilterSuspendObserver<T>(
+        private val target: Observer<T>,
+        private val coroutineLauncher: CoroutineLauncher,
+        private val filterFunction: suspend CoroutineScope.(T) -> Boolean
+) : Observer<T> {
+
+    override fun notify(value: T) {
+        coroutineLauncher.launch {
+            if (filterFunction(value)) {
+                target.notify(value)
             }
         }
     }

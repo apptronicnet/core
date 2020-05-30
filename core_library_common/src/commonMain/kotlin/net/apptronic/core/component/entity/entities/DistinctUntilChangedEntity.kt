@@ -4,28 +4,23 @@ import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.base.observable.subject.ValueHolder
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.Entity
-import net.apptronic.core.component.entity.EntitySubscription
+import net.apptronic.core.component.entity.base.RelayEntity
 
 fun <T> Entity<T>.distinctUntilChanged(): Entity<T> {
     return DistinctUntilChangedEntity(this)
 }
 
 class DistinctUntilChangedEntity<T>(
-        private val source: Entity<T>
-) : Entity<T> {
+        source: Entity<T>
+) : RelayEntity<T>(source) {
 
-    override val context: Context = source.context
-
-    override fun subscribe(context: Context, observer: Observer<T>): EntitySubscription {
-        return source.subscribe(
-                context,
-                DistinctUntilChangedObserverWrapper(observer)
-        )
+    override fun proceedObserver(targetContext: Context, target: Observer<T>): Observer<T> {
+        return DistinctUntilChangedObserver(target)
     }
 
 }
 
-private class DistinctUntilChangedObserverWrapper<T>(
+private class DistinctUntilChangedObserver<T>(
         val target: Observer<T>
 ) : Observer<T> {
 

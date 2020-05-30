@@ -29,6 +29,7 @@ abstract class BaseViewModelDispatcher<T : ViewModel>(
 
     override fun getViewModel(): T {
         return viewModel ?: onCreateViewModelRequested().also {
+            it.onAttachToParent(this)
             viewModel = it
         }
     }
@@ -55,6 +56,7 @@ abstract class BaseViewModelDispatcher<T : ViewModel>(
     abstract fun onCreateViewModelRequested(): T
 
     override fun recycleViewModel() {
+        viewModel?.onDetachFromParent()
         viewModel?.context?.close()
         viewModel = null
     }

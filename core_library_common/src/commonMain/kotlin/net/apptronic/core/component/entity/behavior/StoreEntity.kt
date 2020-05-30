@@ -6,7 +6,8 @@ import net.apptronic.core.base.observable.subject.ValueHolder
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.EntitySubscription
-import net.apptronic.core.component.entity.EntityValue
+import net.apptronic.core.component.entity.base.EntityValue
+import net.apptronic.core.component.entity.base.SubjectEntity
 import net.apptronic.core.component.entity.subscriptions.ContextSubjectWrapper
 
 fun <T> Entity<T>.storeLatest(): EntityValue<T> {
@@ -15,23 +16,18 @@ fun <T> Entity<T>.storeLatest(): EntityValue<T> {
 
 private class StoreEntity<T>(
         val target: Entity<T>
-) : EntityValue<T> {
+) : SubjectEntity<T>(), EntityValue<T> {
 
     override val context: Context = target.context
 
-    private val behaviorSubject = BehaviorSubject<T>()
-    private val subject = ContextSubjectWrapper(context, behaviorSubject)
+    override val subject = BehaviorSubject<T>()
 
     init {
         target.subscribe(subject)
     }
 
     override fun getValueHolder(): ValueHolder<T>? {
-        return behaviorSubject.getValue()
-    }
-
-    override fun subscribe(context: Context, observer: Observer<T>): EntitySubscription {
-        return subject.subscribe(context, observer)
+        return subject.getValue()
     }
 
 }

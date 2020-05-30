@@ -5,6 +5,7 @@ import net.apptronic.core.base.observable.subject.PublishSubject
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.EntitySubscription
+import net.apptronic.core.component.entity.base.SubjectEntity
 import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.component.entity.subscriptions.ContextSubjectWrapper
 
@@ -18,9 +19,9 @@ fun Context.combineAsSignals(vararg sources: Entity<*>): Entity<Unit> {
 private class CombineSignalEntity(
         override val context: Context,
         private val sources: Array<out Entity<*>>
-) : Entity<Unit> {
+) : SubjectEntity<Unit>() {
 
-    private val subject = ContextSubjectWrapper(context, PublishSubject<Unit>())
+    override val subject = PublishSubject<Unit>()
 
     init {
         sources.forEach {
@@ -28,10 +29,6 @@ private class CombineSignalEntity(
                 subject.update(Unit)
             }
         }
-    }
-
-    override fun subscribe(context: Context, observer: Observer<Unit>): EntitySubscription {
-        return subject.subscribe(context, observer)
     }
 
 }

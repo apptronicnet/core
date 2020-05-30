@@ -5,8 +5,8 @@ import net.apptronic.core.component.context.Context
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import kotlin.reflect.KClass
 
-fun viewModelFactory(builder: ViewModelFactory<Any, Any?, ViewModel>.() -> Unit): ViewModelFactory<Any, Any?, ViewModel> {
-    return ViewModelFactory<Any, Any?, ViewModel>().apply(builder)
+fun viewModelFactory(builder: ViewModelFactory<Any, Any, ViewModel>.() -> Unit): ViewModelFactory<Any, Any, ViewModel> {
+    return ViewModelFactory<Any, Any, ViewModel>().apply(builder)
 }
 
 /**

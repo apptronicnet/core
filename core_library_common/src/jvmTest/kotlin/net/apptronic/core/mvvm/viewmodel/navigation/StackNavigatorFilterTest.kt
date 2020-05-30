@@ -33,7 +33,7 @@ class StackNavigatorFilterTest : TestContext() {
     }
 
     private fun createViewModel(name: String): FilterableViewModel {
-        return FilterableViewModel(ViewModelContext(this, "filterable"), name)
+        return FilterableViewModel(ViewModelContext(root.context, "filterable"), name)
     }
 
     private val root = RootViewModel(ViewModelContext(this, "root"))

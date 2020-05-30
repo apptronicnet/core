@@ -1,14 +1,18 @@
 package net.apptronic.core.mvvm.viewmodel.navigation
 
 import net.apptronic.core.base.observable.subject.ValueHolder
+import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.coroutines.coroutineLauncherLocal
-import net.apptronic.core.component.entity.EntityValue
+import net.apptronic.core.component.entity.base.EntityValue
+import net.apptronic.core.component.entity.base.ObservableEntity
+import net.apptronic.core.component.entity.base.SubjectEntity
 import net.apptronic.core.component.entity.entities.ComponentEntity
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelParent
 
-abstract class Navigator<T>(val parent: ViewModel) : ComponentEntity<T>(parent.context),
-        EntityValue<T>, ViewModelParent {
+abstract class Navigator<T>(val parent: ViewModel) : SubjectEntity<T>(), EntityValue<T>, ViewModelParent {
+
+    override val context: Context = parent.context
 
     protected val coroutineLauncher = context.coroutineLauncherLocal()
 

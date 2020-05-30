@@ -8,15 +8,11 @@ import net.apptronic.core.component.lifecycle.Lifecycle
 /**
  * Entity is [Observable] which is bound to [Context] and automatically works with it's [Lifecycle].
  */
-interface Entity<T> : Observable<T> {
+abstract class BaseEntity<T> : Entity<T> {
 
-    val context: Context
-
-    override fun subscribe(observer: Observer<T>): EntitySubscription {
+    final override fun subscribe(observer: Observer<T>): EntitySubscription {
         return subscribe(context, observer)
     }
-
-    fun subscribe(targetContext: Context, observer: Observer<T>): EntitySubscription
 
 }
 

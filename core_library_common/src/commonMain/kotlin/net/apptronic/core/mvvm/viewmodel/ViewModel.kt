@@ -105,17 +105,17 @@ open class ViewModel : Component {
         return listNavigator().setAs(listBuilder)
     }
 
-    fun <T : Any, Id: Any, VM : ViewModel> listRecyclerNavigator(
+    fun <T : Any, Id: Any, VM : ViewModel> listDynamicNavigator(
             builder: ViewModelBuilder<T, Id, VM>
-    ): ListRecyclerNavigator<T, Id, VM> {
-        return ListRecyclerNavigator(this, builder)
+    ): DynamicListNavigator<T, Id, VM> {
+        return DynamicListNavigator(this, builder)
     }
 
-    fun <T : Any, Id: Any, VM : ViewModel> listRecyclerNavigator(
+    fun <T : Any, Id: Any, VM : ViewModel> listDynamicNavigator(
             source: Entity<List<T>>,
             builder: ViewModelBuilder<T, Id, VM>
-    ): ListRecyclerNavigator<T, Id, VM> {
-        val navigator = listRecyclerNavigator(builder)
+    ): DynamicListNavigator<T, Id, VM> {
+        val navigator = listDynamicNavigator(builder)
         source.subscribe {
             navigator.set(it)
         }

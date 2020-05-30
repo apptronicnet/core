@@ -1,31 +1,24 @@
 package net.apptronic.core.component
 
 import net.apptronic.core.base.observable.Observer
-import net.apptronic.core.base.observable.subscribe
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.behavior.setup
 import net.apptronic.core.component.entity.entities.*
+import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.component.timer.Timer
 import net.apptronic.core.component.timer.TimerTick
 
 /**
  * Property of component
  */
-fun <T> Component.value(): Property<T> {
+fun <T> Component.value(): Value<T> {
     return Value(context)
-}
-
-/**
- * Property of component
- */
-fun <T> Component.value(source: Entity<T>): Property<T> {
-    return value<T>().setAs(source)
 }
 
 /**
  * Property of view with some default value
  */
-fun <T> Component.value(defaultValue: T): Property<T> {
+fun <T> Component.value(defaultValue: T): Value<T> {
     return value<T>().setup {
         set(defaultValue)
     }
@@ -41,11 +34,36 @@ fun <T> Component.mutableValue(defaultValue: T): MutableValue<T> {
     }
 }
 
+/**
+ * Property of component
+ */
+fun <T> Component.property(source: Entity<T>): Property<T> {
+    return SourceProperty(context, source)
+}
+
+fun <T> Component.property(source: Entity<T>, defaultValue: T): Property<T> {
+    val value = value(defaultValue).setAs(source)
+    return property(value)
+}
+
+fun <T> Component.property(initialValue: T): Property<T> {
+    val value = value(initialValue)
+    return property(value)
+}
+
 fun <T> Component.valueSet() = mutableValue<MutableSet<T>>(mutableSetOf<T>())
 
 fun <K, V> Component.valueMap() = mutableValue<MutableMap<K, V>>(mutableMapOf<K, V>())
 
 fun <T> Component.valueList() = mutableValue<MutableList<T>>(mutableListOf<T>())
+
+fun <T> Component.event(source: Entity<T>): Event<T> {
+    return typedEvent<T>().also { event ->
+        source.subscribe {
+            event.sendEvent(it)
+        }
+    }
+}
 
 /**
  * User action on screen
@@ -68,6 +86,16 @@ fun Component.genericEvent(callback: () -> Unit): GenericEvent {
     }
 }
 
+fun <T> Entity<T>.asProperty(): Property<T> {
+    return SourceProperty(context, this)
+}
+
+fun <T> Entity<T>.asEvent(): Event<T> {
+    val event = TypedEvent<T>(context)
+    this.subscribe(event)
+    return event
+}
+
 /**
  * User action on screen
  */
@@ -87,34 +115,42 @@ fun <T> Component.typedEvent(callback: (T) -> Unit): Event<T> {
     }
 }
 
-fun <T> Component.toggle(target: Property<T>, vararg values: T): Toggle<T> {
-    return Toggle(target, *values)
+fun <T> Component.toggle(vararg values: T): ToggleProperty<T> {
+    return ToggleProperty(context, listOf(*values))
 }
 
-fun Component.toggle(target: Property<Boolean>): Toggle<Boolean> {
-    return Toggle(target, false, true)
+fun <T> Component.toggle(values: List<T>): ToggleProperty<T> {
+    return ToggleProperty(context, values)
+}
+
+fun <T> Component.toggle(values: List<T>, defaultValue: T): ToggleProperty<T> {
+    return ToggleProperty(context, values).apply {
+        setInitValue(defaultValue)
+    }
+}
+
+fun <T> Component.toggle(values: List<T>, defaultValueProvider: () -> T): ToggleProperty<T> {
+    return ToggleProperty(context, values).apply {
+        setInitValue(defaultValueProvider.invoke())
+    }
+}
+
+fun Component.booleanToggle(defaultValue: Boolean = false): ToggleProperty<Boolean> {
+    return toggle(listOf(false, true), defaultValue)
 }
 
 /**
  * Create [Entity] which simply emits new item on subscribe to allow perform some transformation once.
  */
 fun Component.newChain(): Entity<Unit> {
-    return EmptyChain(context)
+    return UnitEntity(context)
 }
 
 /**
  * Create [Entity] which simply emits new item on subscribe to allow perform some transformation once.
  */
 fun Component.now(): Entity<Unit> {
-    return EmptyChain(context)
-}
-
-fun <T> Component.entity(source: Entity<T>): Entity<T> {
-    return value<T>().setAs(source)
-}
-
-fun <T> Component.entity(source: Entity<T>, defaultValue: T): Entity<T> {
-    return value<T>(defaultValue).setAs(source)
+    return UnitEntity(context)
 }
 
 fun Component.timer(

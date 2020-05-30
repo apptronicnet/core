@@ -6,6 +6,7 @@ import net.apptronic.core.base.observable.subject.ValueHolder
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.coroutines.coroutineLauncherLocal
 import net.apptronic.core.component.coroutines.coroutineLauncherScoped
+import net.apptronic.core.component.entity.BaseEntity
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.EntitySubscription
 import net.apptronic.core.component.entity.entities.Value
@@ -31,7 +32,7 @@ fun <Source, Result> Entity<Source>.throttle(
 private class ThrottleTransformationEntity<Source, Result>(
         private val sourceEntity: Entity<Source>,
         private val throttledTransformation: (Entity<Source>) -> Entity<Result>
-) : Entity<Result>, Observer<Result> {
+) : BaseEntity<Result>(), Observer<Result> {
 
     override val context: Context = sourceEntity.context
 
@@ -54,12 +55,8 @@ private class ThrottleTransformationEntity<Source, Result>(
         }
     }
 
-    override fun subscribe(observer: Observer<Result>): EntitySubscription {
-        return resultObservable.subscribe(observer)
-    }
-
-    override fun subscribe(context: Context, observer: Observer<Result>): EntitySubscription {
-        return resultObservable.subscribe(context, observer)
+    override fun subscribe(targetContext: Context, observer: Observer<Result>): EntitySubscription {
+        return resultObservable.subscribe(targetContext, observer)
     }
 
     override fun notify(value: Result) {

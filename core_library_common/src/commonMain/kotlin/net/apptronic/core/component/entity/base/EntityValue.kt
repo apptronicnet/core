@@ -1,6 +1,7 @@
-package net.apptronic.core.component.entity
+package net.apptronic.core.component.entity.base
 
 import net.apptronic.core.base.observable.subject.ValueHolder
+import net.apptronic.core.component.entity.*
 
 /**
  * Type of [Entity] which holds value.

@@ -6,6 +6,7 @@ import net.apptronic.core.base.observable.subject.ValueHolder
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.EntitySubscription
+import net.apptronic.core.component.entity.base.SubjectEntity
 import net.apptronic.core.component.entity.collectContext
 import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.component.entity.subscriptions.ContextSubjectWrapper
@@ -39,11 +40,11 @@ fun <T> Entity<T>.sendWhen(signal: Entity<*>, action: (T) -> Unit): Entity<T> {
 private class EventFromEntity<T>(
     signal: Entity<*>,
     source: Entity<T>
-) : Entity<T> {
+) : SubjectEntity<T>() {
 
     override val context = collectContext(signal, source)
     private var value: ValueHolder<T>? = null
-    private val subject = ContextSubjectWrapper(context, PublishSubject<T>())
+    override val subject = PublishSubject<T>()
 
     init {
         source.subscribe {
@@ -54,10 +55,6 @@ private class EventFromEntity<T>(
                 subject.update(it.value)
             }
         }
-    }
-
-    override fun subscribe(context: Context, observer: Observer<T>): EntitySubscription {
-        return subject.subscribe(context, observer)
     }
 
 }

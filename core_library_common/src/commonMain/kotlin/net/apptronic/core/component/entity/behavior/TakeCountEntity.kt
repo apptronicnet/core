@@ -4,6 +4,7 @@ import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.EntitySubscription
+import net.apptronic.core.component.entity.base.RelayEntity
 
 fun <T> Entity<T>.takeFirst(): Entity<T> {
     return TakeCountEntity(this, 1)
@@ -18,17 +19,12 @@ fun <T> Entity<T>.takeOne(): Entity<T> {
 }
 
 private class TakeCountEntity<T>(
-        val source: Entity<T>,
+        source: Entity<T>,
         val count: Int
-) : Entity<T> {
+) : RelayEntity<T>(source) {
 
-    override val context: Context = source.context
-
-    override fun subscribe(context: Context, observer: Observer<T>): EntitySubscription {
-        val targetObserver = CountObserver(count, observer)
-        val subscription = source.subscribe(context, targetObserver)
-        targetObserver.subscription = subscription
-        return subscription
+    override fun proceedObserver(targetContext: Context, target: Observer<T>): Observer<T> {
+        return CountObserver(count, target)
     }
 
     private class CountObserver<T>(

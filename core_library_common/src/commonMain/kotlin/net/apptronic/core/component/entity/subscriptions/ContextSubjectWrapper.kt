@@ -5,7 +5,7 @@ import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.base.observable.subject.Subject
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.EntitySubscription
-import net.apptronic.core.component.entity.UpdateEntity
+import net.apptronic.core.component.entity.base.UpdateEntity
 
 class ContextSubjectWrapper<T, E : Subject<T>>(
         override val context: Context,
@@ -22,8 +22,8 @@ class ContextSubjectWrapper<T, E : Subject<T>>(
         wrapped.update(value)
     }
 
-    override fun subscribe(context: Context, observer: Observer<T>): EntitySubscription {
-        return subscriptions.using(context).subscribe(observer, wrapped)
+    override fun subscribe(targetContext: Context, observer: Observer<T>): EntitySubscription {
+        return subscriptions.using(targetContext).subscribe(observer, wrapped)
     }
 
 }
