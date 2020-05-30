@@ -8,7 +8,7 @@ import net.apptronic.core.android.viewmodel.Binding
 import net.apptronic.core.android.viewmodel.bindings.bindText
 import net.apptronic.core.android.viewmodel.bindings.bindTextInput
 import net.apptronic.core.base.observable.subscribe
-import net.apptronic.core.component.entity.entities.Property
+import net.apptronic.core.component.entity.entities.Value
 import net.apptronic.core.component.entity.functions.map
 import net.apptronic.core.component.entity.functions.mapToString
 import net.apptronic.core.mvvm.viewmodel.ViewModel
@@ -41,7 +41,7 @@ class ConvertScreenView : AndroidView<ConvertScreenViewModel>() {
     private class SelectorBinding<T>(
         private val view: View,
         private val value: T,
-        private val target: Property<T>
+        private val target: Value<T>
     ) : Binding() {
 
         override fun onBind(viewModel: ViewModel, androidView: AndroidView<*>) {

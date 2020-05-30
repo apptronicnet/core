@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.load_filter_list.view.*
 import net.apptronic.core.android.viewmodel.AndroidView
 import net.apptronic.core.android.viewmodel.bindings.navigation.bindListNavigator
-import net.apptronic.core.component.entity.UpdateEntity
+import net.apptronic.core.component.entity.base.UpdateEntity
 import net.apptronic.core.component.entity.subscribe
 import net.apptronic.test.commons_sample_app.R
 import net.apptronic.test.commons_sample_app.loadfilterlist.LoadFilterListViewModel

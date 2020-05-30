@@ -22,7 +22,7 @@ class LazyListViewModel(parent: Context) : ViewModel(parent, EmptyViewModelConte
 
     private val debouncer = context.coroutineLauncherLocal().debouncer()
 
-    val items = listRecyclerNavigator(LazyListBuilder())
+    val items = listDynamicNavigator(LazyListBuilder())
 
     init {
         context.dependencyDispatcher.addInstance(LazyListItemClickListenerDescriptor, this)

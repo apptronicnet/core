@@ -23,7 +23,7 @@ class LazyListFilterViewModel(parent: Context) : ViewModel(parent, EmptyViewMode
     private val allItems = merge(staticItems, dynamicItems).map {
         wrapLists(it.first, it.second)
     }
-    val listNavigator = listRecyclerNavigator(allItems, builder).also {
+    val listNavigator = listDynamicNavigator(allItems, builder).also {
         it.setStaticItems(staticItems)
     }
     val isInProgress = listNavigator.observerStatus().hasHidden()
