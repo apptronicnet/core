@@ -7,7 +7,7 @@ ___
 
 **apptronic.net/core** framework contains integrated reactive library.
 
-##### Base architecture
+### Base architecture
 
 The main brick or reactive is ```Entity```
 ```kotlin
@@ -33,7 +33,7 @@ This is main difference from classical ```Observable``` is that it contains refe
 2. ```Entity``` creates subscription and automatically registers it in currently active ```LifecycleStage```.
 3. When specified ```LifecycleStage``` exiting - ```EntitySubscription.unsubscribe()``` called automatically.
 
-##### Working with different Contexts
+### Working with different Contexts
 
 Each ```Entity``` always bound to concrete ```Context```. It means that all ```subscribe()``` calls will register subscription in ```Lifecycle``` of that ```Context```.
 
@@ -51,7 +51,7 @@ Mechanics of that differs from call without context specification:
 
 <ins>This is very important to keep in mind this when using ```Entity``` not inside of same component, but provided externally from any other place.</ins>
 
-##### Switching Entity context
+### Switching Entity context
 
 Not always it needed to use ```subscribe()```, sometimes ```Entity``` used as source for transformations. In that case, instead of using
 ```kotlin
@@ -105,7 +105,7 @@ Ignoring this rule may cause unexpected behavior of automatic subscription manag
 
 One more thing is that any transformation function which uses several **Entities** as its source will fail with runtime Exception as it uses source **Entities** **Context** as its own **Context**. If source **Entities** have different **Contexts** it cannot define which **Context** to use. But when all sources uses same **Context** it will work normally, independently of this **Entities** created in this **Context** or bridget to this **Context** using ```Entity.switchContext(targetContext: Context)``` call.
 
-##### Declaring Entity
+### Declaring Entity
 
 Tho main **Entity** types is:
  - property (store value inside and send it to new subscribers and resend updates to all subscribers)
@@ -142,7 +142,7 @@ class Component(context: Context) : BaseComponent(context) {
         * event can be sent by calling ```sendEvent(event: T)``` when created as ```typedEvent<T>()```
     * ```subscribe()``` call will not emit anything immediately, but will emit each updated value
 
-##### Entity transformation functions
+### Entity transformation functions
 
 Many of transformation functions support synchronous and asynchronous mode.
 
@@ -154,7 +154,7 @@ This approach designed because of 2 reasons:
  - performance: as many transformations is very simple launching Coroutine and switching thread may be more CPU-consuming that transformation itself, so basic transformation are better to perform synchronously
  - debugging: synchronous transformation can be easily debugged and in case or any exceptions full stack trace up to initial ```Entity``` update invocation code.
 
-###### Mapping
+#### Mapping
 
 ```kotlin
 fun <T, R> Entity<T>.map(map: (T) -> R): Entity<R>
@@ -173,7 +173,7 @@ When called on ```Entity<T>``` return ```Entity<R>```, which subscribed to ```En
     }
 ```
 
-###### Filtering
+#### Filtering
 
 ```kotlin
 fun <T> Entity<T>.filter(filterFunction: (T) -> Boolean): Entity<T>
@@ -200,7 +200,7 @@ When called on ```Entity<T>``` return ```Entity<T>```, which subscribed to sourc
     val stringNotNull: Entity<String> = stringValue.filterNotNull()
 ```
 
-###### Combining Entities: functions
+#### Combining Entities: functions
 
 ```kotlin
 // single source function (equals to mapping)
@@ -252,7 +252,7 @@ If any of sources is ```Event``` it will internally cache latest emitted value, 
 
 All sources should be from same ```Context```, in other case it throws ```IllegalArgumentException```.
 
-###### Combining entities: merging
+#### Combining entities: merging
 
 Generally using ```entityFunction()``` or ```entityFunctionSuspend()``` directly not needed.
 
@@ -318,7 +318,7 @@ fun <S, T> Entity<S>.mergeWithArray(
 
 Merge functions combines sources and emits result or merging.
 
-###### Combining entities: other functions
+#### Combining entities: other functions
 
 There is a big amount or predefined functions. It can be found in source code of next files:
 ```kotlin
@@ -348,7 +348,7 @@ Some examples of them:
     val notEmptyList: Entity<List<String>> = list.filterItems { it: String -> it.isNotEmpty() }
 ```
 
-###### Function result is a Property or is an Event?
+#### Function result is a Property or is an Event?
 
 As mentioned before ```EntityFunction``` stores last value, meaning it always works as ```Property```.
 
@@ -365,7 +365,7 @@ val property: Property<Boolean> = property(source1 and source2)
 val event: Event<Boolean> = event(source1 and source2)
 ```
 
-###### Using property from function builder methof
+#### Using property from function builder method
 
 Recommended way to create ```Property``` using custom function:
 
