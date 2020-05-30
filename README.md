@@ -4,6 +4,9 @@
 
 [Documentation page](https://apptronicnet.github.io/core/)
 
+Demo app which demonstrates basics of **apptronic.net/core**:<br/>[https://github.com/apptronicnet/core_demo_android_app](https://github.com/apptronicnet/core_demo_android_app)
+
+
 With this framework it possible to develop most code of application in Kotlin/Multiplatform:
 whole architecture, app model and UI model (using MVVM pattern).
 

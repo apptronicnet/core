@@ -65,11 +65,11 @@ AppViewModel.kt
 ```kotlin
 // this class contains application UI model.
 // Inner navigation implemented with Navigators (ListNavigator, StackNavigator)
-class AppViewModel(parent: Context) : ViewModel(parent, EMPTY_VIEW_MODEL_CONTEXT) {
+class AppViewModel(parent: Context) : ViewModel(parent, EmptyViewModelContext) {
 
     val message = value("Hello from apptronic.net Core")
 
-    fun onBackPressed() {
+    fun onBackPressed(): Boolean {
         // later we can intercept system back pressed button events here (for Android)
         // we can create same methods for each platform which have system-generated events
         return false
@@ -116,7 +116,7 @@ class App : Application() {
 }
 ```
 
-app.xml
+app_view.xml
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -148,7 +148,7 @@ class AppView : AndroidView<AppViewModel>() {
     override fun onBindView(view: View, viewModel: AppViewModel) {
         with(view) {
             // lets bind content of TextView to data inside VideModel
-            +(textView setTextFrom viewModel.message)
+            bindText(textView, viewModel.message)
             // do bindings
         }
     }

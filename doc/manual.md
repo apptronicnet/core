@@ -5,6 +5,8 @@ It needed to create [Kotlin Multiplatform project](https://kotlinlang.org/docs/r
 
 To easy setup **apptronic.net/core** framework in project read [getting started Guide](getting_started.md)
 
+Demo app which demonstrates basics of **apptronic.net/core**:<br/>[https://github.com/apptronicnet/core_demo_android_app](https://github.com/apptronicnet/core_demo_android_app)
+
 ### Documentation
 
 How to implement app architecture with **apptronic.net/core** framework
