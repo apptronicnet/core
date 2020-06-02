@@ -90,12 +90,14 @@ private class SingleProvider<TypeDeclaration>(
             dispatcher: DependencyDispatcher,
             searchSpec: SearchSpec
     ): TypeDeclaration {
-        val scope = SingleScope(definitionContext, dispatcher)
         return entity ?: run {
+            val scope = SingleScope(definitionContext, dispatcher)
             val created: TypeDeclaration = builder.invoke(scope)
             entity = created
             definitionContext.lifecycle.doOnTerminate {
                 recycle(created)
+                scope.finalize()
+                entity = null
             }
             created
         }
@@ -119,6 +121,7 @@ private class FactoryProvider<TypeDeclaration>(
          */
         injectionContext.lifecycle.onExitFromActiveStage {
             recycle(instance)
+            scope.finalize()
         }
         return instance
     }
@@ -134,13 +137,11 @@ private class SharedProvider<TypeDeclaration>(
 
     private inner class SharedInstance(
             val instance: TypeDeclaration,
-            val sharedContexts: List<Context>
+            val scope: SharedScope
     ) {
         var shareCount: Int = 0
         fun recycle() {
-            sharedContexts.forEach {
-                it.lifecycle.terminate()
-            }
+            scope.finalize()
         }
     }
 
@@ -152,7 +153,7 @@ private class SharedProvider<TypeDeclaration>(
         val share = shares[parameters] ?: run {
             val scope = SharedScope(definitionContext, dispatcher, parameters)
             val instance = builder.invoke(scope)
-            val share = SharedInstance(instance, scope.sharedContexts)
+            val share = SharedInstance(instance, scope)
             shares[parameters] = share
             share
         }
@@ -161,8 +162,8 @@ private class SharedProvider<TypeDeclaration>(
             share.shareCount--
             if (share.shareCount == 0) {
                 shares.remove(parameters)
-                share.recycle()
                 recycle(share.instance)
+                share.recycle()
             }
         }
         return share.instance

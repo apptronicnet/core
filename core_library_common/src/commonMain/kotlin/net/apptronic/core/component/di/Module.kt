@@ -1,5 +1,6 @@
 package net.apptronic.core.component.di
 
+import net.apptronic.core.component.context.Context
 import kotlin.reflect.KClass
 
 internal class ObjectDefinition<TypeDeclaration>(
@@ -104,6 +105,9 @@ class ModuleDefinition internal constructor(
             clazz: KClass<TypeDeclaration>,
             builder: FactoryScope.() -> TypeDeclaration
     ): ProviderDefinition<TypeDeclaration> {
+        if (clazz::class == Context::class) {
+            throw IllegalArgumentException("Cannot register [Context] provider. Please use Descriptors.")
+        }
         return addDefinition {
             factoryProvider(objectKey(clazz), BuilderMethod(builder))
         }
@@ -122,6 +126,9 @@ class ModuleDefinition internal constructor(
             clazz: KClass<TypeDeclaration>,
             builder: SharedScope.() -> TypeDeclaration
     ): ProviderDefinition<TypeDeclaration> {
+        if (clazz::class == Context::class) {
+            throw IllegalArgumentException("Cannot register [Context] provider. Please use Descriptors.")
+        }
         return addDefinition {
             sharedProvider(objectKey(clazz), BuilderMethod(builder))
         }
@@ -140,6 +147,9 @@ class ModuleDefinition internal constructor(
             clazz: KClass<TypeDeclaration>,
             builder: SingleScope.() -> TypeDeclaration
     ): ProviderDefinition<TypeDeclaration> {
+        if (clazz::class == Context::class) {
+            throw IllegalArgumentException("Cannot register [Context] provider. Please use Descriptors.")
+        }
         return addDefinition {
             singleProvider(objectKey(clazz), BuilderMethod(builder))
         }

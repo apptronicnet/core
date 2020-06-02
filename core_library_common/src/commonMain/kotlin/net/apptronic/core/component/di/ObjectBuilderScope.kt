@@ -2,6 +2,7 @@ package net.apptronic.core.component.di
 
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.context.ContextDefinition
+import net.apptronic.core.component.context.close
 import kotlin.reflect.KClass
 
 /**
@@ -15,14 +16,14 @@ abstract class ObjectBuilderScope internal constructor(
 
     inline fun <reified ObjectType : Any> inject(): ObjectType {
         if (ObjectType::class == Context::class) {
-            throw  IllegalArgumentException("Cannot inject [Context]. Please use definitionContext() or providedContext() instead")
+            throw IllegalArgumentException("Cannot inject [Context]. Please use definitionContext() or providedContext() instead")
         }
         return inject(ObjectType::class)
     }
 
     inline fun <reified ObjectType : Any> optional(): ObjectType? {
         if (ObjectType::class == Context::class) {
-            throw  IllegalArgumentException("Cannot inject [Context]. Please use definitionContext() or providedContext() instead")
+            throw IllegalArgumentException("Cannot inject [Context]. Please use definitionContext() or providedContext() instead")
         }
         return optional(ObjectType::class)
     }
@@ -31,7 +32,7 @@ abstract class ObjectBuilderScope internal constructor(
             clazz: KClass<ObjectType>
     ): ObjectType {
         if (clazz == Context::class) {
-            throw  IllegalArgumentException("Cannot inject [Context]. Please use definitionContext() or providedContext() instead")
+            throw IllegalArgumentException("Cannot inject [Context]. Please use definitionContext() or providedContext() instead")
         }
         return performInjection(objectKey(clazz))
     }
@@ -40,7 +41,7 @@ abstract class ObjectBuilderScope internal constructor(
             clazz: KClass<ObjectType>
     ): ObjectType? {
         if (clazz == Context::class) {
-            throw  IllegalArgumentException("Cannot inject [Context]. Please use definitionContext() or providedContext() instead")
+            throw IllegalArgumentException("Cannot inject [Context]. Please use definitionContext() or providedContext() instead")
         }
         return optionalInjection(objectKey(clazz))
     }
@@ -76,12 +77,36 @@ abstract class ObjectBuilderScope internal constructor(
         return parameters.get(objectKey) ?: dependencyDispatcher.optional(objectKey)
     }
 
+    internal abstract val defaultBuilderContext: Context
+
+    private val contexts = mutableListOf<Context>()
+
+    /**
+     * Return new instance of [Context] which is bound to this scope and will be automatically cancelled when
+     * this scope ends.
+     */
+    fun <T : Context> scopedContext(contextDefinition: ContextDefinition<T>, parent: Context = defaultBuilderContext): T {
+        val scopedContext = contextDefinition.createContext(definitionContext)
+        contexts.add(scopedContext)
+        return scopedContext
+    }
+
+    internal fun finalize() {
+        contexts.forEach {
+            it.close()
+        }
+    }
+
 }
 
 class SingleScope internal constructor(
         definitionContext: Context,
         dependencyDispatcher: DependencyDispatcher
-) : ObjectBuilderScope(definitionContext, dependencyDispatcher, emptyParameters())
+) : ObjectBuilderScope(definitionContext, dependencyDispatcher, emptyParameters()) {
+
+    override val defaultBuilderContext: Context = definitionContext
+
+}
 
 abstract class ParametersScope(
         definitionContext: Context,
@@ -142,6 +167,8 @@ class FactoryScope internal constructor(
         return parameters.get(objectKey) ?: injectionDispatcher.inject(objectKey)
     }
 
+    override val defaultBuilderContext: Context = injectionContext
+
 }
 
 class SharedScope internal constructor(
@@ -150,17 +177,11 @@ class SharedScope internal constructor(
         parameters: Parameters
 ) : ParametersScope(definitionContext, dependencyDispatcher, parameters) {
 
-    internal val sharedContexts = mutableListOf<Context>()
-
     override fun <ObjectType> performProvide(objectKey: ObjectKey): ObjectType {
         return parameters.get(objectKey)
                 ?: throw InjectionFailedException("Cannot provide $objectKey: this is missing in provided parameters")
     }
 
-    fun <T : Context> createSharedContext(contextDefinition: ContextDefinition<T>): T {
-        return contextDefinition.createContext(definitionContext).also {
-            sharedContexts.add(it)
-        }
-    }
+    override val defaultBuilderContext: Context = definitionContext
 
 }
