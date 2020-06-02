@@ -63,7 +63,7 @@ Scopes in **apptronic.net/core** managed automatically by **Context** and **Life
 
 There are 3 types of scope available in **Module** declaration:
 
-##### Single scope
+#### Single scope
 
 ```kotlin
 val CustomModule = declareModule {
@@ -94,7 +94,7 @@ class MyComponent(parent: Context) : BaseComponent(parent, MyContext) {
 
 }
 ```
-##### Factory scope
+#### Factory scope
 
 ```kotlin
 val CustomModule = declareModule {
@@ -126,7 +126,7 @@ class MyComponent(parent: Context) : BaseComponent(parent, MyContext) {
 }
 ```
 
-##### Shared scope
+#### Shared scope
 
 ```kotlin
 val CustomModule = declareModule {
@@ -263,6 +263,7 @@ Classical approach for Dependency Injection is one of two ways:
  * use reflection to set value of field in some object
  * provide dependencies using constructors
 Both approaches have sme problems. When reflection can cause issues with performance, usage of constructor can cause that number of parameters become too big.
+
 ```kotlin
 interface Dependency1
 interface Dependency2
@@ -292,6 +293,7 @@ val MyModule = declareModule {
     }
 }
 ```
+
 Because of that we recommend to use **Component** as implementation class for any dependencies when possible.
 
 ```kotlin
@@ -454,6 +456,7 @@ val MyModule = declareModule {
 Optionally it possible to provide parent context as second parameter to ```scopedContext()``` if default parent is no match required behavior.
 
 Main purpose of usage of ```scopedContext()``` is that is closed automatically when corresponding scope ends.
+
 ___
 
 [Back to Manual](../manual.md)
