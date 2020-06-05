@@ -10,7 +10,7 @@ class CoroutineThrottlerTest {
     val component = BaseComponent(TestContext())
 
     @Test
-    fun shouldExecuteOnLocal() {
+    fun shouldThrottleCorrectly() {
         val coroutineLauncher = component.coroutineLaunchers().local.throttler()
         val await = CompletableDeferred<Unit>()
         var preInvoke1 = false

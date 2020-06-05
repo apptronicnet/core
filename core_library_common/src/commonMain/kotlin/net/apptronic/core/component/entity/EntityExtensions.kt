@@ -6,8 +6,8 @@ import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.base.observable.subject.ValueHolder
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.coroutines.coroutineLauncherScoped
+import net.apptronic.core.component.coroutines.serial
 import net.apptronic.core.component.entity.base.ObservableEntity
-import net.apptronic.core.component.entity.subscriptions.ContextSubscriptionFactory
 
 fun <T> Observable<T>.bindContext(context: Context): Entity<T> {
     return EntityObservableWrapper(context, this)
@@ -27,7 +27,7 @@ fun <T> Entity<T>.subscribe(callback: (T) -> Unit): EntitySubscription {
 }
 
 fun <T> Entity<T>.subscribeSuspend(callback: suspend CoroutineScope.(T) -> Unit): EntitySubscription {
-    val coroutineLauncher = context.coroutineLauncherScoped()
+    val coroutineLauncher = context.coroutineLauncherScoped().serial()
     return subscribe(object : Observer<T> {
         override fun notify(value: T) {
             coroutineLauncher.launch {
@@ -46,7 +46,7 @@ fun <T> Entity<T>.subscribe(context: Context, callback: (T) -> Unit): EntitySubs
 }
 
 fun <T> Entity<T>.subscribeSuspend(context: Context, callback: suspend CoroutineScope.(T) -> Unit): EntitySubscription {
-    val coroutineLauncher = context.coroutineLauncherScoped()
+    val coroutineLauncher = context.coroutineLauncherScoped().serial()
     return subscribe(context, object : Observer<T> {
         override fun notify(value: T) {
             coroutineLauncher.launch {

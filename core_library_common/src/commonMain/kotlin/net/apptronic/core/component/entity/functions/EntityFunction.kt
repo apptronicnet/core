@@ -6,7 +6,7 @@ import net.apptronic.core.base.observable.subject.ValueHolder
 import net.apptronic.core.base.observable.subscribe
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.coroutines.coroutineLauncherScoped
-import net.apptronic.core.component.coroutines.debouncer
+import net.apptronic.core.component.coroutines.serial
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.base.EntityValue
 import net.apptronic.core.component.entity.base.ObservableEntity
@@ -38,7 +38,7 @@ private class CoroutineFunctionAction<T, R>(
         private val calculation: suspend CoroutineScope.(T) -> R
 ) : FunctionAction<T, R> {
 
-    private val coroutineLauncher = context.coroutineLauncherScoped().debouncer()
+    private val coroutineLauncher = context.coroutineLauncherScoped().serial()
 
     override fun execute(input: T, resultCallback: (R) -> Unit) {
         coroutineLauncher.launch {

@@ -28,7 +28,7 @@ interface CoroutineLauncher {
             coroutineContext: CoroutineContext = context.defaultDispatcher,
             start: CoroutineStart = CoroutineStart.DEFAULT,
             block: suspend CoroutineScope.() -> Unit
-    )
+    ): Job
 
 }
 
@@ -45,33 +45,20 @@ private fun Context.coroutineLauncherStaged(lifecycleStage: LifecycleStage?): Co
     return CoroutineLauncherImpl(this, coroutineScope, lifecycleSubscription)
 }
 
-/**
- * Create [CoroutineLauncher] which [CoroutineScope] is bound to [LifecycleStage] which is active at
- * the creation of [CoroutineLauncher]. [CoroutineScope] wil be automatically cancelled when bound [LifecycleStage] will
- * exit throwing [CoroutineLauncherCancellationException]
- */
-fun Context.coroutineLauncherScoped(): CoroutineLauncher {
+internal fun Context.coroutineLauncherScoped(): CoroutineLauncher {
     return coroutineLauncherStaged(lifecycle.getActiveStage())
 }
 
-/**
- * Create [CoroutineLauncher] which [CoroutineScope] is bound to while [Lifecycle] of [Context].
- * [CoroutineScope] wil be automatically cancelled when [Lifecycle] will be terminated
- * throwing [CoroutineLauncherCancellationException]
- */
-fun Context.coroutineLauncherLocal(): CoroutineLauncher {
+internal fun Context.coroutineLauncherLocal(): CoroutineLauncher {
     val rootStageOrNull = if (lifecycle.isTerminated()) null else lifecycle.rootStage
     return coroutineLauncherStaged(rootStageOrNull)
 }
 
-/**
- * Same as [coroutineLauncherLocal] except it will be created in top level [Context] of current context tree
- */
-fun Context.coroutineLauncherGlobal(): CoroutineLauncher {
+internal fun Context.coroutineLauncherGlobal(): CoroutineLauncher {
     return getGlobalContext().coroutineLauncherLocal()
 }
 
-internal class CoroutineLauncherImpl(
+private class CoroutineLauncherImpl(
         override val context: Context,
         override val coroutineScope: CoroutineScope,
         private val lifecycleSubscription: LifecycleSubscription?
@@ -90,8 +77,8 @@ internal class CoroutineLauncherImpl(
         }
     }
 
-    override fun launch(coroutineContext: CoroutineContext, start: CoroutineStart, block: suspend CoroutineScope.() -> Unit) {
-        coroutineScope.launch(coroutineContext, start) {
+    override fun launch(coroutineContext: CoroutineContext, start: CoroutineStart, block: suspend CoroutineScope.() -> Unit): Job {
+        return coroutineScope.launch(coroutineContext, start) {
             try {
                 block()
             } catch (e: CoroutineLauncherCancellationException) {

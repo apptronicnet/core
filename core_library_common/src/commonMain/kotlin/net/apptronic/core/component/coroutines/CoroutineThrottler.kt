@@ -1,8 +1,6 @@
 package net.apptronic.core.component.coroutines
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import net.apptronic.core.base.collections.LinkedQueue
 import net.apptronic.core.component.context.Context
 import kotlin.coroutines.CoroutineContext
@@ -10,7 +8,7 @@ import kotlin.coroutines.CoroutineContext
 /**
  * Create [CoroutineLauncher] which executes all coroutines one after another.
  */
-fun CoroutineLauncher.debouncer(): CoroutineLauncher {
+fun CoroutineLauncher.serial(): CoroutineLauncher {
     return throttler(Int.MAX_VALUE)
 }
 
@@ -39,15 +37,19 @@ class CoroutineThrottler internal constructor(
             val coroutineContext: CoroutineContext,
             val start: CoroutineStart,
             val block: suspend CoroutineScope.() -> Unit
-    )
+    ) {
+        val deferred = CompletableDeferred<Unit>()
+    }
 
     private var isRunning: Boolean = false
     private var queue = LinkedQueue<Task>()
 
-    override fun launch(coroutineContext: CoroutineContext, start: CoroutineStart, block: suspend CoroutineScope.() -> Unit) {
-        queue.add(Task(coroutineContext, start, block))
+    override fun launch(coroutineContext: CoroutineContext, start: CoroutineStart, block: suspend CoroutineScope.() -> Unit): Job {
+        val task = Task(coroutineContext, start, block)
+        queue.add(task)
         queue.trim(size)
         launchNext()
+        return task.deferred
     }
 
     private fun launchNext() {
@@ -57,7 +59,12 @@ class CoroutineThrottler internal constructor(
             if (next != null) {
                 val job = coroutineScope.launch(next.coroutineContext, next.start, next.block)
                 target.launch {
-                    job.join()
+                    try {
+                        job.join()
+                        next.deferred.complete(Unit)
+                    } catch (e: Exception) {
+                        next.deferred.completeExceptionally(e)
+                    }
                     isRunning = false
                     launchNext()
                 }

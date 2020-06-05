@@ -5,6 +5,7 @@ import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.coroutines.CoroutineLauncher
 import net.apptronic.core.component.coroutines.coroutineLauncherScoped
+import net.apptronic.core.component.coroutines.serial
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.base.RelayEntity
 import net.apptronic.core.component.entity.functions.map
@@ -52,7 +53,7 @@ private class FilterEntitySuspend<T>(
 ) : RelayEntity<T>(source) {
 
     override fun proceedObserver(targetContext: Context, target: Observer<T>): Observer<T> {
-        val coroutineLauncher = targetContext.coroutineLauncherScoped()
+        val coroutineLauncher = targetContext.coroutineLauncherScoped().serial()
         return FilterSuspendObserver(target, coroutineLauncher, filterFunction)
     }
 
