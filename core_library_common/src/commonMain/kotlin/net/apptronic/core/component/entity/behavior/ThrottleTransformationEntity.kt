@@ -4,8 +4,6 @@ import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.base.observable.subject.BehaviorSubject
 import net.apptronic.core.base.observable.subject.ValueHolder
 import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.coroutines.coroutineLauncherLocal
-import net.apptronic.core.component.coroutines.coroutineLauncherScoped
 import net.apptronic.core.component.entity.BaseEntity
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.EntitySubscription
@@ -38,20 +36,11 @@ private class ThrottleTransformationEntity<Source, Result>(
 
     private val resultObservable = Value<Result>(context)
 
-    private val coroutineLauncher = context.coroutineLauncherScoped()
-
     init {
-        val localCoroutineLauncher = context.coroutineLauncherLocal()
-        localCoroutineLauncher.launch {
-            val throttledTransformation = ThrottledTransformation(context, throttledTransformation)
-            throttledTransformation.observe(this@ThrottleTransformationEntity)
-            coroutineLauncher.launch {
-                sourceEntity.onNext { nextValue ->
-                    localCoroutineLauncher.launch {
-                        throttledTransformation.onNext(nextValue)
-                    }
-                }
-            }
+        val throttledTransformationResult = ThrottledTransformation(context, throttledTransformation)
+        throttledTransformationResult.observe(this@ThrottleTransformationEntity)
+        sourceEntity.onNext { nextValue ->
+            throttledTransformationResult.onNext(nextValue)
         }
     }
 
@@ -60,9 +49,7 @@ private class ThrottleTransformationEntity<Source, Result>(
     }
 
     override fun notify(value: Result) {
-        coroutineLauncher.launch {
-            resultObservable.notify(value)
-        }
+        resultObservable.notify(value)
     }
 
 }

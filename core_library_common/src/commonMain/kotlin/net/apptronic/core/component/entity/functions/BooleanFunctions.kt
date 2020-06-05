@@ -108,6 +108,7 @@ fun <T> allOf(
     }
 }
 
+@Suppress("UNCHECKED_CAST")
 fun <T> allOfValues(
         vararg entity: Entity<out T>,
         transformation: (T) -> Boolean
@@ -130,6 +131,7 @@ fun <T> anyOf(
     }
 }
 
+@Suppress("UNCHECKED_CAST")
 fun <T> anyOfValues(
         vararg entity: Entity<out T>,
         transformation: (T) -> Boolean
@@ -152,6 +154,7 @@ fun <T> noneOf(
     }
 }
 
+@Suppress("UNCHECKED_CAST")
 fun <T> noneOfValues(
         vararg entity: Entity<out T>,
         transformation: (T) -> Boolean

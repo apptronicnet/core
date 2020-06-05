@@ -17,7 +17,7 @@ internal class BuilderMethod<TypeDeclaration, BuilderContext : ObjectBuilderScop
  * Method to create factory of object providers
  */
 internal class ProviderFactoryMethod<TypeDeclaration>(
-    private val providerFactory: () -> ObjectProvider<TypeDeclaration>
+        private val providerFactory: () -> ObjectProvider<TypeDeclaration>
 ) {
 
     fun invoke(): ObjectProvider<TypeDeclaration> {
@@ -29,12 +29,13 @@ internal class ProviderFactoryMethod<TypeDeclaration>(
 /**
  * Method to recycle object instance
  */
-internal class RecyclerMethod<TypeDeclaration>(
-    private val recycler: (TypeDeclaration) -> Unit
+internal class RecyclerMethod<T>(
+        private val target: T,
+        private val onRecycle: (T) -> Unit
 ) {
 
-    fun invoke(instance: TypeDeclaration) {
-        recycler.invoke(instance)
+    fun executeRecycle() {
+        onRecycle(target)
     }
 
 }

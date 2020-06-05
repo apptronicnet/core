@@ -2,7 +2,6 @@ package net.apptronic.core.component.entity.functions
 
 import kotlinx.coroutines.CoroutineScope
 import net.apptronic.core.component.Component
-import net.apptronic.core.component.coroutines.coroutineLauncherScoped
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.base.ConstantEntity
 import net.apptronic.core.component.entity.subscribe
@@ -14,7 +13,6 @@ fun <T> Entity<T>.onNext(action: (T) -> Unit): Entity<T> {
 }
 
 fun <T> Entity<T>.onNextSuspend(action: suspend CoroutineScope.(T) -> Unit): Entity<T> {
-    val coroutineLauncher = context.coroutineLauncherScoped()
     subscribeSuspend(action)
     return this
 }

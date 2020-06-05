@@ -92,11 +92,6 @@ internal class ViewModelContainer(
     }
 
     init {
-        viewModel.doOnVisible {
-            if (viewModel.boundView == null) {
-                debugError(Error("$viewModel have no bound view"))
-            }
-        }
         bindStage(viewModel, ViewModelLifecycle.STAGE_CREATED, isCreated)
         bindStage(viewModel, ViewModelLifecycle.STAGE_BOUND, isBound)
         bindStage(viewModel, ViewModelLifecycle.STAGE_VISIBLE, isVisible)

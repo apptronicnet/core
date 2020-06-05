@@ -7,18 +7,12 @@ internal class ObjectDefinition<TypeDeclaration>(
         private val providerFactory: ProviderFactoryMethod<TypeDeclaration>
 ) {
 
-    private var recyclers = mutableListOf<RecyclerMethod<TypeDeclaration>>()
     private var mappings = mutableListOf<ObjectKey>()
 
     internal fun getProvider(): ObjectProvider<TypeDeclaration> {
         return providerFactory.invoke().also {
-            it.recyclers.addAll(this.recyclers)
             it.addMapping(mappings)
         }
-    }
-
-    internal fun addRecycler(recycler: RecyclerMethod<TypeDeclaration>) {
-        this.recyclers.add(recycler)
     }
 
     internal fun addMappings(objectKey: ObjectKey) {
@@ -30,11 +24,6 @@ internal class ObjectDefinition<TypeDeclaration>(
 class ProviderDefinition<TypeDeclaration> internal constructor(
         private val objectDefinition: ObjectDefinition<TypeDeclaration>
 ) {
-
-    fun onRecycle(recycler: (TypeDeclaration) -> Unit): ProviderDefinition<TypeDeclaration> {
-        objectDefinition.addRecycler(RecyclerMethod(recycler))
-        return this
-    }
 
     inline fun <reified Mapping : Any> addMapping() {
         addMapping(Mapping::class)

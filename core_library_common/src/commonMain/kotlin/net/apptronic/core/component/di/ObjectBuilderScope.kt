@@ -14,6 +14,8 @@ abstract class ObjectBuilderScope internal constructor(
         protected val parameters: Parameters
 ) {
 
+    private val recyclers = mutableListOf<RecyclerMethod<*>>()
+
     inline fun <reified ObjectType : Any> inject(): ObjectType {
         if (ObjectType::class == Context::class) {
             throw IllegalArgumentException("Cannot inject [Context]. Please use definitionContext() or providedContext() instead")
@@ -85,13 +87,30 @@ abstract class ObjectBuilderScope internal constructor(
      * Return new instance of [Context] which is bound to this scope and will be automatically cancelled when
      * this scope ends.
      */
+    @Suppress("UNUSED_PARAMETER")
     fun <T : Context> scopedContext(contextDefinition: ContextDefinition<T>, parent: Context = defaultBuilderContext): T {
         val scopedContext = contextDefinition.createContext(definitionContext)
         contexts.add(scopedContext)
         return scopedContext
     }
 
+    fun autoRecycle(isAutoRecycle: Any) {
+        if (isAutoRecycle is AutoRecycling) {
+            isAutoRecycle.onRecycle {
+                it.onAutoRecycle()
+            }
+        }
+    }
+
+    fun <T> T.onRecycle(recycler: (T) -> Unit): T {
+        recyclers.add(RecyclerMethod(this, recycler))
+        return this
+    }
+
     internal fun finalize() {
+        recyclers.forEach {
+            it.executeRecycle()
+        }
         contexts.forEach {
             it.close()
         }

@@ -8,7 +8,6 @@ internal sealed class ObjectProvider<TypeDeclaration>(
 
     abstract val typeName: String
 
-    val recyclers = mutableListOf<RecyclerMethod<TypeDeclaration>>()
     private val objectKeys = mutableListOf<ObjectKey>()
 
     internal fun addMapping(additionalKeys: Iterable<ObjectKey>) {
@@ -33,50 +32,43 @@ internal sealed class ObjectProvider<TypeDeclaration>(
             searchSpec: SearchSpec
     ): TypeDeclaration
 
-    protected fun recycle(instance: TypeDeclaration) {
-        recyclers.forEach { it.invoke(instance) }
-        if (instance is AutoRecycling) {
-            instance.onAutoRecycle()
-        }
-    }
-
 }
 
-internal abstract class ObjectBuilderProvider<TypeDeclaration, BuilderScope : ObjectBuilderScope> internal constructor(
+internal abstract class ObjectBuilderProvider<TypeDeclaration : Any, BuilderScope : ObjectBuilderScope> internal constructor(
         objectKey: ObjectKey,
         internal val builder: BuilderMethod<TypeDeclaration, BuilderScope>
 ) : ObjectProvider<TypeDeclaration>(objectKey) {
 
 }
 
-internal fun <TypeDeclaration> singleProvider(
+internal fun <TypeDeclaration : Any> singleProvider(
         objectKey: ObjectKey,
         builder: BuilderMethod<TypeDeclaration, SingleScope>
 ): ObjectProvider<TypeDeclaration> {
     return SingleProvider(objectKey, builder)
 }
 
-internal fun <TypeDeclaration> sharedProvider(
+internal fun <TypeDeclaration : Any> sharedProvider(
         objectKey: ObjectKey,
         builder: BuilderMethod<TypeDeclaration, SharedScope>
 ): ObjectProvider<TypeDeclaration> {
     return SharedProvider(objectKey, builder)
 }
 
-internal fun <TypeDeclaration> factoryProvider(
+internal fun <TypeDeclaration : Any> factoryProvider(
         objectKey: ObjectKey,
         builder: BuilderMethod<TypeDeclaration, FactoryScope>
 ): ObjectProvider<TypeDeclaration> {
     return FactoryProvider(objectKey, builder)
 }
 
-internal fun <TypeDeclaration> bindProvider(
+internal fun <TypeDeclaration : Any> bindProvider(
         objectKey: ObjectKey
 ): ObjectProvider<TypeDeclaration> {
     return BindProvider(objectKey)
 }
 
-private class SingleProvider<TypeDeclaration>(
+private class SingleProvider<TypeDeclaration : Any>(
         objectKey: ObjectKey,
         builder: BuilderMethod<TypeDeclaration, SingleScope>
 ) : ObjectBuilderProvider<TypeDeclaration, SingleScope>(objectKey, builder) {
@@ -93,9 +85,9 @@ private class SingleProvider<TypeDeclaration>(
         return entity ?: run {
             val scope = SingleScope(definitionContext, dispatcher)
             val created: TypeDeclaration = builder.invoke(scope)
+            scope.autoRecycle(created)
             entity = created
             definitionContext.lifecycle.doOnTerminate {
-                recycle(created)
                 scope.finalize()
                 entity = null
             }
@@ -105,7 +97,7 @@ private class SingleProvider<TypeDeclaration>(
 
 }
 
-private class FactoryProvider<TypeDeclaration>(
+private class FactoryProvider<TypeDeclaration : Any>(
         objectKey: ObjectKey,
         builder: BuilderMethod<TypeDeclaration, FactoryScope>
 ) : ObjectBuilderProvider<TypeDeclaration, FactoryScope>(objectKey, builder) {
@@ -116,11 +108,11 @@ private class FactoryProvider<TypeDeclaration>(
         val injectionContext = searchSpec.context
         val scope = FactoryScope(definitionContext, injectionContext, dispatcher, searchSpec.params)
         val instance = builder.invoke(scope)
+        scope.autoRecycle(instance)
         /**
          * Factory instance recycled when on exit from caller stage
          */
         injectionContext.lifecycle.onExitFromActiveStage {
-            recycle(instance)
             scope.finalize()
         }
         return instance
@@ -128,7 +120,7 @@ private class FactoryProvider<TypeDeclaration>(
 
 }
 
-private class SharedProvider<TypeDeclaration>(
+private class SharedProvider<TypeDeclaration : Any>(
         objectKey: ObjectKey,
         builder: BuilderMethod<TypeDeclaration, SharedScope>
 ) : ObjectBuilderProvider<TypeDeclaration, SharedScope>(objectKey, builder) {
@@ -153,6 +145,7 @@ private class SharedProvider<TypeDeclaration>(
         val share = shares[parameters] ?: run {
             val scope = SharedScope(definitionContext, dispatcher, parameters)
             val instance = builder.invoke(scope)
+            scope.autoRecycle(instance)
             val share = SharedInstance(instance, scope)
             shares[parameters] = share
             share
@@ -162,7 +155,6 @@ private class SharedProvider<TypeDeclaration>(
             share.shareCount--
             if (share.shareCount == 0) {
                 shares.remove(parameters)
-                recycle(share.instance)
                 share.recycle()
             }
         }

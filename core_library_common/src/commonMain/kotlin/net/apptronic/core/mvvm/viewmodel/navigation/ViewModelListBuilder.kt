@@ -1,13 +1,10 @@
 package net.apptronic.core.mvvm.viewmodel.navigation
 
-import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.base.observable.subject.BehaviorSubject
 import net.apptronic.core.base.observable.subscribe
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.Entity
-import net.apptronic.core.component.entity.EntitySubscription
 import net.apptronic.core.component.entity.base.SubjectEntity
-import net.apptronic.core.component.entity.subscriptions.ContextSubjectWrapper
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 
 /**
@@ -101,11 +98,11 @@ class ViewModelListBuilder<T, Id, VM : ViewModel>(
             }
         }
 
-        override fun compare(left: ViewModelHolder, right: ViewModelHolder): Int {
-            val leftIndex = indexes[left.id]
-            val rightIndex = indexes[right.id]
-            return if (leftIndex != null && rightIndex != null) {
-                leftIndex.compareTo(rightIndex)
+        override fun compare(a: ViewModelHolder, b: ViewModelHolder): Int {
+            val aIndex = indexes[a.id]
+            val bIndex = indexes[b.id]
+            return if (aIndex != null && bIndex != null) {
+                aIndex.compareTo(bIndex)
             } else 0
         }
 

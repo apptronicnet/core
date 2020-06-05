@@ -1,6 +1,5 @@
 package net.apptronic.core
 
-import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.EntitySubscription
@@ -36,6 +35,10 @@ class EntityRecorder<T> constructor(
         return items
     }
 
+    operator fun get(index: Int): T {
+        return items[index]
+    }
+
     fun assertSize(size: Int) {
         assert(items.size == size) {
             "Expected size = $size when actual $this"
@@ -44,6 +47,14 @@ class EntityRecorder<T> constructor(
 
     fun assertItems(vararg expected: T) {
         assertItems(expected.toList())
+    }
+
+    fun assertItems(check: (Int, T) -> Boolean) {
+        items.forEachIndexed { index, t ->
+            assert(check(index, t)) {
+                "Item $t at index $index does not match assertion"
+            }
+        }
     }
 
     fun assertItems(expected: List<T>) {

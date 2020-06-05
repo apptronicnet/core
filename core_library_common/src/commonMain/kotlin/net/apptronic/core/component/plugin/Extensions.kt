@@ -13,5 +13,9 @@ class Extensions {
         return map[descriptor] as? T
     }
 
+    @Suppress("UNCHECKED_CAST")
+    fun <T : Any> remove(descriptor: ExtensionDescriptor<T>): T? {
+        return map.remove(descriptor) as? T
+    }
 
 }

@@ -20,6 +20,7 @@ class Parameters {
         instances[descriptor.toObjectKey()] = instance
     }
 
+    @Suppress("UNCHECKED_CAST")
     internal fun <ObjectType> get(objectKey: ObjectKey): ObjectType? {
         return instances[objectKey] as? ObjectType
     }

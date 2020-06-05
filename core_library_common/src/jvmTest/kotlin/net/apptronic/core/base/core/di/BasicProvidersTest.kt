@@ -35,23 +35,23 @@ class BasicProvidersTest {
 
         val sampleModule = declareModule {
             factory<ManyInstances> {
-                ManyInstancesImpl()
-            }.onRecycle {
-                (it as ManyInstancesImpl).clear()
+                ManyInstancesImpl().onRecycle {
+                    it.clear()
+                }
             }
             single<SingleInstance> {
-                SingleInstanceImpl()
-            }.onRecycle {
-                (it as SingleInstanceImpl).clear()
+                SingleInstanceImpl().onRecycle {
+                    it.clear()
+                }
             }
         }
 
     }
 
     private class TestComponent : BaseTestComponent(
-        contextInitializer = {
-            dependencyDispatcher.addModule(sampleModule)
-        }
+            contextInitializer = {
+                dependencyDispatcher.addModule(sampleModule)
+            }
     ) {
 
         val manyInstances1: ManyInstances = provider().inject()

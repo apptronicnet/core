@@ -245,6 +245,7 @@ class DependencyDispatcher(
         return null
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun <TypeDeclaration> obtainLocalInstance(
             searchSpec: SearchSpec
     ): ValueHolder<TypeDeclaration>? {

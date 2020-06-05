@@ -6,8 +6,8 @@ import net.apptronic.core.component.lifecycle.exitStage
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelLifecycle
 
-open class ViewModelLifecycleController(
-    private val viewModel: ViewModel
+class ViewModelLifecycleController(
+        private val viewModel: ViewModel
 ) {
 
     private fun setStage(value: Boolean, definition: LifecycleStageDefinition) {
@@ -18,23 +18,23 @@ open class ViewModelLifecycleController(
         }
     }
 
-    open fun setCreated(value: Boolean) {
+    fun setCreated(value: Boolean) {
         setStage(value, ViewModelLifecycle.STAGE_CREATED)
     }
 
-    open fun setBound(value: Boolean) {
+    fun setBound(value: Boolean) {
         setStage(value, ViewModelLifecycle.STAGE_BOUND)
     }
 
-    open fun setVisible(value: Boolean) {
+    fun setVisible(value: Boolean) {
         setStage(value, ViewModelLifecycle.STAGE_VISIBLE)
     }
 
-    open fun setFocused(value: Boolean) {
+    fun setFocused(value: Boolean) {
         setStage(value, ViewModelLifecycle.STAGE_FOCUSED)
     }
 
-    open fun terminate() {
+    fun terminate() {
         viewModel.context.lifecycle.terminate()
     }
 

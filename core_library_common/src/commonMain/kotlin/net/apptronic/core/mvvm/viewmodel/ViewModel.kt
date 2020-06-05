@@ -21,17 +21,10 @@ open class ViewModel : Component {
 
     final override val context: Context
 
-    /**
-     * Platform-specific instance of object which responsible for view binding. Do not touch, it is used for debugging.
-     */
-    var boundView: Any? = null
-
     private val isCreated = BehaviorSubject<Boolean>()
     private val isBound = BehaviorSubject<Boolean>()
     private val isVisible = BehaviorSubject<Boolean>()
     private val isFocused = BehaviorSubject<Boolean>()
-
-    private var savedState: SavedState? = null
 
     constructor(context: ViewModelContext) {
         this.context = context
@@ -54,16 +47,6 @@ open class ViewModel : Component {
         stateOfStage(isVisible, ViewModelLifecycle.STAGE_VISIBLE)
         stateOfStage(isFocused, ViewModelLifecycle.STAGE_FOCUSED)
         applyPlugins()
-    }
-
-    fun newSavedState(): SavedState {
-        return SavedState().also {
-            savedState = it
-        }
-    }
-
-    fun getSavedState(): SavedState? {
-        return savedState
     }
 
     private fun stateOfStage(target: BehaviorSubject<Boolean>, definition: LifecycleStageDefinition): Observable<Boolean> {
@@ -130,10 +113,12 @@ open class ViewModel : Component {
         }
     }
 
+    @Suppress("UNUSED_PARAMETER")
     internal fun onAddedToContainer(parent: ViewModelParent) {
         context.lifecycle.enterStage(ViewModelLifecycle.STAGE_CREATED)
     }
 
+    @Suppress("UNUSED_PARAMETER")
     internal fun onRemovedFromContainer(parent: ViewModelParent) {
         context.lifecycle.exitStage(ViewModelLifecycle.STAGE_CREATED)
     }

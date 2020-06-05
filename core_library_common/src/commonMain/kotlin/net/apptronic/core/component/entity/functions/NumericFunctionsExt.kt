@@ -1,5 +1,6 @@
 package net.apptronic.core.component.entity.functions
 
+@Suppress("UNCHECKED_CAST")
 internal infix fun <T : Number> T.plus(another: T): T {
     if (this is Byte) {
         return (toByte() + another.toByte()).toByte() as T
@@ -22,6 +23,7 @@ internal infix fun <T : Number> T.plus(another: T): T {
     throw IllegalArgumentException("${this::class}")
 }
 
+@Suppress("UNCHECKED_CAST")
 internal infix fun <T : Number> T.minus(another: T): T {
     if (this is Byte) {
         return (toByte() - another.toByte()).toByte() as T
@@ -44,6 +46,7 @@ internal infix fun <T : Number> T.minus(another: T): T {
     throw IllegalArgumentException("${this::class}")
 }
 
+@Suppress("UNCHECKED_CAST")
 internal infix fun <T : Number> T.mutliply(another: T): T {
     if (this is Byte) {
         return (toByte() * another.toByte()).toByte() as T
@@ -66,6 +69,7 @@ internal infix fun <T : Number> T.mutliply(another: T): T {
     throw IllegalArgumentException("${this::class}")
 }
 
+@Suppress("UNCHECKED_CAST")
 internal infix fun <T : Number> T.divide(another: T): T {
     if (this is Byte) {
         return (toByte() / another.toByte()).toByte() as T
