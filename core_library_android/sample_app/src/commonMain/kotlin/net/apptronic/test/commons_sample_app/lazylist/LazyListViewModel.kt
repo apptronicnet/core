@@ -3,8 +3,8 @@ package net.apptronic.test.commons_sample_app.lazylist
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.coroutines.coroutineLauncherLocal
-import net.apptronic.core.component.coroutines.debouncer
+import net.apptronic.core.component.coroutines.coroutineLaunchers
+import net.apptronic.core.component.coroutines.serial
 import net.apptronic.core.mvvm.viewmodel.EmptyViewModelContext
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import kotlin.random.Random
@@ -20,13 +20,13 @@ private fun randomString(): String {
 class LazyListViewModel(parent: Context) : ViewModel(parent, EmptyViewModelContext),
     LazyListItemClickListener {
 
-    private val debouncer = context.coroutineLauncherLocal().debouncer()
+    private val debouncer = coroutineLaunchers().local.serial()
 
     val items = listDynamicNavigator(LazyListBuilder())
 
     init {
         context.dependencyDispatcher.addInstance(LazyListItemClickListenerDescriptor, this)
-        context.coroutineLauncherLocal().launch {
+        context.coroutineLaunchers().local.launch {
             val result = withContext(Dispatchers.Default) {
                 mutableListOf<Any>().apply {
                     add(StaticItem("start", "Start", randomString()))
@@ -42,13 +42,13 @@ class LazyListViewModel(parent: Context) : ViewModel(parent, EmptyViewModelConte
         }
     }
 
-    override fun onClick(itemId: Long) {
+    override fun onClick(id: Long) {
         debouncer.launch {
             val current = items.get()
             val next = withContext(Dispatchers.Default) {
                 current.map { item ->
                     (item as? LazyListItem)?.let {
-                        if (it.id == itemId) {
+                        if (it.id == id) {
                             LazyListItem(
                                 it.id,
                                 it.number,

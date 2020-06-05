@@ -54,9 +54,9 @@ class CoroutineThrottler internal constructor(
 
     private fun launchNext() {
         if (!isRunning) {
-            isRunning = true
             val next = queue.take()
             if (next != null) {
+                isRunning = true
                 val job = coroutineScope.launch(next.coroutineContext, next.start, next.block)
                 target.launch {
                     try {
