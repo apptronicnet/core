@@ -3,6 +3,8 @@ package net.apptronic.core.android.plugins
 import android.app.Activity
 import android.app.Application
 import net.apptronic.core.android.viewmodel.AndroidViewFactory
+import net.apptronic.core.android.viewmodel.requireBoundView
+import net.apptronic.core.component.Component
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.plugin.Plugin
 import net.apptronic.core.component.plugin.pluginDescriptor
@@ -47,6 +49,13 @@ class AndroidApplicationPlugin internal constructor(
             context.installViewFactoryPlugin(it)
         }
         context.installPlugin(ActivityBindingPluginDescriptor, activityBindingPlugin)
+    }
+
+    override fun onComponent(component: Component) {
+        super.onComponent(component)
+        if (component is ViewModel) {
+            component.requireBoundView()
+        }
     }
 
 }
