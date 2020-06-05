@@ -1,7 +1,6 @@
 package net.apptronic.core.component.lifecycle
 
 import net.apptronic.core.base.concurrent.requireNeverFrozen
-import kotlin.native.concurrent.ThreadLocal
 
 internal class CompositeCallback {
 
@@ -9,11 +8,17 @@ internal class CompositeCallback {
         requireNeverFrozen()
     }
 
-    @ThreadLocal
     private val innerCallbacks = mutableListOf<EventCallback>()
 
     fun execute() {
-        innerCallbacks.forEach { it.execute() }
+        val executed = mutableListOf<EventCallback>()
+        do {
+            val toExecute = innerCallbacks.filterNot {
+                executed.contains(it)
+            }
+            toExecute.forEach { it.execute() }
+            executed.addAll(toExecute)
+        } while (innerCallbacks.size > executed.size)
     }
 
     internal fun add(callback: EventCallback) {

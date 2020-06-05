@@ -1,6 +1,5 @@
 package net.apptronic.core.component.coroutines
 
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.launch
@@ -29,7 +28,7 @@ fun CoroutineLauncher.throttler(size: Int = 1): CoroutineLauncher {
  * queue if it's size exceeds limit.
  */
 class CoroutineThrottler internal constructor(
-        target: CoroutineLauncher,
+        private val target: CoroutineLauncher,
         private val size: Int
 ) : CoroutineLauncher {
 
@@ -53,20 +52,15 @@ class CoroutineThrottler internal constructor(
 
     private fun launchNext() {
         if (!isRunning) {
-            coroutineScope.launch {
-                isRunning = true
-                do {
-                    val next = queue.take()
-                    if (next != null) {
-                        try {
-                            val job = coroutineScope.launch(next.coroutineContext, next.start, next.block)
-                            job.join()
-                        } catch (e: CancellationException) {
-                            // ignore
-                        }
-                    }
-                } while (next != null)
-                isRunning = false
+            isRunning = true
+            val next = queue.take()
+            if (next != null) {
+                val job = coroutineScope.launch(next.coroutineContext, next.start, next.block)
+                target.launch {
+                    job.join()
+                    isRunning = false
+                    launchNext()
+                }
             }
         }
     }

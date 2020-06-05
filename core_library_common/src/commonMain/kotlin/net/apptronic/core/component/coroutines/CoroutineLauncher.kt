@@ -32,23 +32,26 @@ interface CoroutineLauncher {
 
 }
 
+private fun Context.coroutineLauncherStaged(lifecycleStage: LifecycleStage?): CoroutineLauncher {
+    val name = "${this::class.simpleName}/{${lifecycleStage?.getStageName() ?: "[terminated]"}"
+    val coroutineContext: CoroutineContext = CoroutineName(name) + Job()
+    val coroutineScope = CoroutineScope(coroutineContext)
+    val lifecycleSubscription: LifecycleSubscription? = lifecycleStage?.doOnExit {
+        coroutineContext.cancel(CoroutineLauncherCancellationException("Stage existed ${lifecycleStage.getStageName()}"))
+    } ?: run {
+        coroutineContext.cancel(CoroutineLauncherCancellationException("Context was terminated"))
+        null
+    }
+    return CoroutineLauncherImpl(this, coroutineScope, lifecycleSubscription)
+}
+
 /**
  * Create [CoroutineLauncher] which [CoroutineScope] is bound to [LifecycleStage] which is active at
  * the creation of [CoroutineLauncher]. [CoroutineScope] wil be automatically cancelled when bound [LifecycleStage] will
  * exit throwing [CoroutineLauncherCancellationException]
  */
 fun Context.coroutineLauncherScoped(): CoroutineLauncher {
-    val boundStage = lifecycle.getActiveStage()
-    val name = "${this::class.simpleName}/{${boundStage?.getStageName() ?: "[terminated]"}"
-    val coroutineContext: CoroutineContext = CoroutineName(name)
-    val lifecycleSubscription: LifecycleSubscription? = boundStage?.doOnExit {
-        coroutineContext.cancel(CoroutineLauncherCancellationException("Stage existed ${boundStage.getStageName()}"))
-    } ?: run {
-        coroutineContext.cancel(CoroutineLauncherCancellationException("Context was terminated"))
-        null
-    }
-    val coroutineScope = CoroutineScope(coroutineContext)
-    return CoroutineLauncherImpl(this, coroutineScope, lifecycleSubscription)
+    return coroutineLauncherStaged(lifecycle.getActiveStage())
 }
 
 /**
@@ -57,21 +60,8 @@ fun Context.coroutineLauncherScoped(): CoroutineLauncher {
  * throwing [CoroutineLauncherCancellationException]
  */
 fun Context.coroutineLauncherLocal(): CoroutineLauncher {
-    val name = "${this::class.simpleName}"
-    var lifecycleSubscription: LifecycleSubscription? = null
-    val coroutineContext = if (!lifecycle.isTerminated()) {
-        CoroutineName(name).also {
-            lifecycleSubscription = lifecycle.rootStage.doOnExit {
-                it.cancel(CoroutineLauncherCancellationException("Context terminated"))
-            }
-        }
-    } else {
-        CoroutineName("$name [terminated]").also {
-            it.cancel(CoroutineLauncherCancellationException("Context was terminated"))
-        }
-    }
-    val coroutineScope = CoroutineScope(coroutineContext)
-    return CoroutineLauncherImpl(this, coroutineScope, lifecycleSubscription)
+    val rootStageOrNull = if (lifecycle.isTerminated()) null else lifecycle.rootStage
+    return coroutineLauncherStaged(rootStageOrNull)
 }
 
 /**
