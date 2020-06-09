@@ -18,14 +18,17 @@ enum class BindingType(
      * [AndroidView] will create content view if target view is [ViewGroup] and have no children
      */
     AUTO(true, false, false),
+
     /**
      * Perform only binding of content view
      */
     BIND_ONLY(false, false, false),
+
     /**
      * [AndroidView] will create content view before bind
      */
     CREATE_CONTENT(false, true, false),
+
     /**
      * [AndroidView] will create content view before bind and destroy it on unbind
      */
@@ -54,7 +57,7 @@ fun BindingContainer.bindInnerViewModel(
 }
 
 private class AndroidViewBinding(
-    private val view: View,
+    private val targetView: View,
     private val targetViewModel: ViewModel,
     private val factory: (ViewModel) -> AndroidView<*>,
     private val bindingType: BindingType
@@ -62,24 +65,27 @@ private class AndroidViewBinding(
 
     override fun onBind(viewModel: ViewModel, androidView: AndroidView<*>) {
         val targetAndroidView = factory.invoke(targetViewModel)
-        if (bindingType.detectAndCreate) {
-            val container = view as? ViewGroup
+        val contentView: View = if (bindingType.detectAndCreate) {
+            val container = targetView as? ViewGroup
             if (container != null && container.childCount == 0) {
-                targetAndroidView.onAttachView(container)
-            }
-        }
-        if (bindingType.createLayout) {
-            val container = view as ViewGroup
+                val contentView = targetAndroidView.onCreateView(container)
+                targetAndroidView.onAttachView(contentView, container)
+                contentView
+            } else targetView
+        } else if (bindingType.createLayout) {
+            val container = targetView as ViewGroup
             container.removeAllViews()
-            targetAndroidView.onAttachView(container)
-        }
-        targetAndroidView.bindView(view, targetViewModel)
-        onUnbind {
-            if (bindingType.clearLayout) {
-                val container = view as ViewGroup
-                container.removeAllViews()
-            }
-        }
+            val contentView = targetAndroidView.onCreateView(container)
+            targetAndroidView.onAttachView(contentView, container)
+            contentView
+        } else targetView
+        targetAndroidView.bindView(contentView, targetViewModel)
+    }
+
+    override fun onUnbind(action: () -> Unit) {
+        super.onUnbind(action)
+        val container = targetView as? ViewGroup
+        container?.removeAllViews()
     }
 
 }

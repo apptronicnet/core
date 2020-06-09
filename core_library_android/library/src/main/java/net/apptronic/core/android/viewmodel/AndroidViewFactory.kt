@@ -17,6 +17,10 @@ inline fun <reified ViewModelType : ViewModel> androidView(
     }
 }
 
+/**
+ * This class is [AndroidView] registry, which allows to build [AndroidView] to corresponding
+ * [ViewModel] when needed by adapters.
+ */
 class AndroidViewFactory {
 
     private var parent: AndroidViewFactory? = null
