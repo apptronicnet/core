@@ -13,7 +13,7 @@ inline fun <reified ViewModelType : ViewModel> viewBinder(
     noinline builder: () -> ViewBinder<ViewModelType>
 ): ViewBinderFactory {
     return viewBinderFactory {
-        addBinding(builder)
+        add(builder)
     }
 }
 
@@ -49,11 +49,11 @@ class ViewBinderFactory {
      * @param [builder] builder function of constructor reference for [ViewBinder]
      * @param [layoutResId] optional value for layout to be overridden instead of set in [ViewBinder]
      */
-    inline fun <reified ViewModelType : ViewModel> addBinding(
+    inline fun <reified ViewModelType : ViewModel> add(
         noinline builder: () -> ViewBinder<ViewModelType>,
         @LayoutRes layoutResId: Int? = null
     ) {
-        addBinding(
+        add(
             clazz = ViewModelType::class,
             builder = builder,
             layoutResId = layoutResId
@@ -66,7 +66,7 @@ class ViewBinderFactory {
      * @param [builder] builder function of constructor reference for [ViewBinder]
      * @param [layoutResId] optional value for layout to be overridden instead of set in [ViewBinder]
      */
-    fun <ViewModelType : ViewModel> addBinding(
+    fun <ViewModelType : ViewModel> add(
         clazz: KClass<ViewModelType>,
         builder: () -> ViewBinder<ViewModelType>,
         @LayoutRes layoutResId: Int? = null

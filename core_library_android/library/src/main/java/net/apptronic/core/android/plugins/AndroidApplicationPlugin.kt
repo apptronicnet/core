@@ -32,7 +32,7 @@ class AndroidApplicationPlugin internal constructor(
 
         internal val target = AndroidApplicationPlugin(androidApplication)
 
-        fun viewFactory(viewBinderFactory: ViewBinderFactory) {
+        fun binderFactory(viewBinderFactory: ViewBinderFactory) {
             target.viewBinderFactory = viewBinderFactory
         }
 
@@ -46,7 +46,7 @@ class AndroidApplicationPlugin internal constructor(
     override fun onInstall(context: Context) {
         super.onInstall(context)
         viewBinderFactory?.let {
-            context.installViewFactoryPlugin(it)
+            context.installBinderFactoryPlugin(it)
         }
         context.installPlugin(ActivityBindingPluginDescriptor, activityBindingPlugin)
     }

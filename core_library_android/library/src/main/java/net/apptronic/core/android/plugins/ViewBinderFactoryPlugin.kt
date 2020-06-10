@@ -8,7 +8,7 @@ import net.apptronic.core.component.plugin.extensionDescriptor
 import net.apptronic.core.component.plugin.pluginDescriptor
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 
-fun Context.installViewFactoryPlugin(factory: ViewBinderFactory) {
+fun Context.installBinderFactoryPlugin(factory: ViewBinderFactory) {
     installPlugin(ViewBinderFactoryPluginDescriptor, ViewBinderFactoryPlugin(factory))
 }
 
