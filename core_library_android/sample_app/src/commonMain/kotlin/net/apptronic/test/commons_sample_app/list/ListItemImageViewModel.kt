@@ -2,7 +2,6 @@ package net.apptronic.test.commons_sample_app.list
 
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.toggle
-import net.apptronic.core.component.value
 import net.apptronic.test.commons_sample_app.resources.ColorVariant
 import net.apptronic.test.commons_sample_app.resources.ImageVariant
 import kotlin.random.Random
@@ -12,17 +11,14 @@ private val COLOR_VARIANTS = ColorVariant.values().toList()
 
 class ListItemImageViewModel(index: Int, parent: Context) : ListItemBaseViewModel(index, parent) {
 
-    val imageRes = value(IMAGE_VARIANTS[Random.nextInt(IMAGE_VARIANTS.size)])
-    val colorRes = value(COLOR_VARIANTS[Random.nextInt(COLOR_VARIANTS.size)])
-
-    private val imageResToggle = toggle(imageRes, *IMAGE_VARIANTS.toTypedArray())
-    private val colorResToggle = toggle(colorRes, *COLOR_VARIANTS.toTypedArray())
+    val imageRes = toggle(IMAGE_VARIANTS, IMAGE_VARIANTS.random())
+    val colorRes = toggle(COLOR_VARIANTS, COLOR_VARIANTS.random())
 
     fun onBodyClick() {
         if (Random.nextBoolean()) {
-            imageResToggle.toggle()
+            imageRes.toggle()
         } else {
-            colorResToggle.toggle()
+            colorRes.toggle()
         }
     }
 

@@ -7,63 +7,63 @@ import net.apptronic.core.mvvm.viewmodel.navigation.ViewModelLifecycleController
 
 fun <T : ViewModel> lifecycleController(
     viewModel: T,
-    activityView: AndroidView<T>,
+    activityBinder: ViewBinder<T>,
     activity: Activity
 ): ViewModelLifecycleController {
     viewModel.doOnBind {
-        val view = activityView.onCreateActivityView(activity)
+        val view = activityBinder.onCreateActivityView(activity)
         activity.setContentView(view)
-        activityView.bindView(view, viewModel)
+        activityBinder.bindView(view, viewModel)
     }
     return ViewModelLifecycleController(viewModel)
 }
 
 fun <T : ViewModel> lifecycleController(
     viewModel: T,
-    factory: AndroidViewFactory,
+    factory: ViewBinderFactory,
     activity: Activity
 ): ViewModelLifecycleController {
-    val androidView = factory.getAndroidView(viewModel) as AndroidView<T>
+    val androidView = factory.getBinder(viewModel) as ViewBinder<T>
     return lifecycleController(viewModel, androidView, activity)
 }
 
 fun <T : ViewModel> lifecycleController(
-        viewModel: T,
-        androidView: AndroidView<T>,
-        contentViewProvider: () -> View
+    viewModel: T,
+    viewBinder: ViewBinder<T>,
+    contentViewProvider: () -> View
 ): ViewModelLifecycleController {
     viewModel.doOnBind {
-        androidView.bindView(contentViewProvider.invoke(), viewModel)
+        viewBinder.bindView(contentViewProvider.invoke(), viewModel)
     }
     return ViewModelLifecycleController(viewModel)
 }
 
 fun <T : ViewModel> lifecycleController(
     viewModel: T,
-    factory: AndroidViewFactory,
+    factory: ViewBinderFactory,
     contentViewProvider: () -> View
 ): ViewModelLifecycleController {
-    val androidView = factory.getAndroidView(viewModel) as AndroidView<T>
+    val androidView = factory.getBinder(viewModel) as ViewBinder<T>
     return lifecycleController(viewModel, androidView, contentViewProvider)
 }
 
 
 fun <T : ViewModel> lifecycleController(
-        viewModel: T,
-        androidView: AndroidView<T>,
-        contentView: View
+    viewModel: T,
+    viewBinder: ViewBinder<T>,
+    contentView: View
 ): ViewModelLifecycleController {
     viewModel.doOnBind {
-        androidView.bindView(contentView, viewModel)
+        viewBinder.bindView(contentView, viewModel)
     }
     return ViewModelLifecycleController(viewModel)
 }
 
 fun <T : ViewModel> lifecycleController(
     viewModel: T,
-    factory: AndroidViewFactory,
+    factory: ViewBinderFactory,
     contentView: View
 ): ViewModelLifecycleController {
-    val androidView = factory.getAndroidView(viewModel) as AndroidView<T>
+    val androidView = factory.getBinder(viewModel) as ViewBinder<T>
     return lifecycleController(viewModel, androidView, contentView)
 }

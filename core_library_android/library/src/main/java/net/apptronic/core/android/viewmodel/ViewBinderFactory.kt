@@ -5,35 +5,35 @@ import net.apptronic.core.mvvm.viewmodel.ViewModel
 import kotlin.reflect.KClass
 import kotlin.reflect.full.superclasses
 
-fun androidViewFactory(initializer: AndroidViewFactory.() -> Unit): AndroidViewFactory {
-    return AndroidViewFactory().apply(initializer)
+fun viewBinderFactory(initializer: ViewBinderFactory.() -> Unit): ViewBinderFactory {
+    return ViewBinderFactory().apply(initializer)
 }
 
-inline fun <reified ViewModelType : ViewModel> androidView(
-    noinline builder: () -> AndroidView<ViewModelType>
-): AndroidViewFactory {
-    return androidViewFactory {
+inline fun <reified ViewModelType : ViewModel> viewBinder(
+    noinline builder: () -> ViewBinder<ViewModelType>
+): ViewBinderFactory {
+    return viewBinderFactory {
         addBinding(builder)
     }
 }
 
 /**
- * This class is [AndroidView] registry, which allows to build [AndroidView] to corresponding
+ * This class is [ViewBinder] registry, which allows to build [ViewBinder] to corresponding
  * [ViewModel] when needed by adapters.
  */
-class AndroidViewFactory {
+class ViewBinderFactory {
 
-    private var parent: AndroidViewFactory? = null
+    private var parent: ViewBinderFactory? = null
     private var indexGenerator = 1
     private val views = mutableMapOf<KClass<*>, ViewSpec>()
 
     private data class ViewSpec(
-        val builder: () -> AndroidView<*>,
+        val builder: () -> ViewBinder<*>,
         val typeId: Int,
         val layoutResId: Int?
     ) {
 
-        fun build(): AndroidView<*> {
+        fun build(): ViewBinder<*> {
             return builder.invoke().also {
                 if (layoutResId != null) {
                     it.layoutResId = layoutResId
@@ -46,11 +46,11 @@ class AndroidViewFactory {
     /**
      * Add binding
      * @param [ViewModelType] type of [ViewModel] for bind
-     * @param [builder] builder function of constructor reference for [AndroidView]
-     * @param [layoutResId] optional value for layout to be overridden instead of set in [AndroidView]
+     * @param [builder] builder function of constructor reference for [ViewBinder]
+     * @param [layoutResId] optional value for layout to be overridden instead of set in [ViewBinder]
      */
     inline fun <reified ViewModelType : ViewModel> addBinding(
-        noinline builder: () -> AndroidView<ViewModelType>,
+        noinline builder: () -> ViewBinder<ViewModelType>,
         @LayoutRes layoutResId: Int? = null
     ) {
         addBinding(
@@ -63,12 +63,12 @@ class AndroidViewFactory {
     /**
      * Add binding
      * @param [clazz] type of [ViewModel] for bind
-     * @param [builder] builder function of constructor reference for [AndroidView]
-     * @param [layoutResId] optional value for layout to be overridden instead of set in [AndroidView]
+     * @param [builder] builder function of constructor reference for [ViewBinder]
+     * @param [layoutResId] optional value for layout to be overridden instead of set in [ViewBinder]
      */
     fun <ViewModelType : ViewModel> addBinding(
         clazz: KClass<ViewModelType>,
-        builder: () -> AndroidView<ViewModelType>,
+        builder: () -> ViewBinder<ViewModelType>,
         @LayoutRes layoutResId: Int? = null
     ) {
         views[clazz] = ViewSpec(
@@ -78,12 +78,12 @@ class AndroidViewFactory {
         )
     }
 
-    fun getAndroidView(typeId: Int): AndroidView<*> {
+    fun getBinder(typeId: Int): ViewBinder<*> {
         return views.values.firstOrNull { it.typeId == typeId }?.builder?.invoke()
             ?: throw IllegalArgumentException("AndroidView is not registered for typeId=$typeId")
     }
 
-    fun getAndroidView(viewModel: ViewModel): AndroidView<*> {
+    fun getBinder(viewModel: ViewModel): ViewBinder<*> {
         return searchRecursive(viewModel::class)?.build()
             ?: throw IllegalArgumentException("AndroidView is not registered for $viewModel")
     }
@@ -110,11 +110,11 @@ class AndroidViewFactory {
     }
 
     /**
-     * Create new [AndroidViewFactory] which inherits all bindings from current but with possibility
-     * to add new bindings which have no affecting for initial [AndroidViewFactory]
+     * Create new [ViewBinderFactory] which inherits all bindings from current but with possibility
+     * to add new bindings which have no affecting for initial [ViewBinderFactory]
      */
-    fun override(initializer: AndroidViewFactory.() -> Unit): AndroidViewFactory {
-        return androidViewFactory(initializer).also {
+    fun override(initializer: ViewBinderFactory.() -> Unit): ViewBinderFactory {
+        return viewBinderFactory(initializer).also {
             it.parent = this
         }
     }

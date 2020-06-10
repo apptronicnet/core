@@ -1,21 +1,26 @@
 package net.apptronic.core.android.viewmodel.bindings.navigation
 
 import android.view.ViewGroup
-import net.apptronic.core.android.plugins.getAndroidViewFactoryFromExtension
-import net.apptronic.core.android.viewmodel.*
+import net.apptronic.core.android.plugins.getViewBinderFactoryFromExtension
+import net.apptronic.core.android.viewmodel.Binding
+import net.apptronic.core.android.viewmodel.BindingContainer
+import net.apptronic.core.android.viewmodel.ViewBinder
+import net.apptronic.core.android.viewmodel.ViewBinderFactory
+import net.apptronic.core.android.viewmodel.navigation.StackAnimator
+import net.apptronic.core.android.viewmodel.navigation.ViewBinderStackAdapter
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.navigation.StackNavigator
 
 fun BindingContainer.bindStackNavigator(
     viewGroup: ViewGroup,
     navigator: StackNavigator,
-    factory: AndroidViewFactory? = null,
+    factory: ViewBinderFactory? = null,
     stackAnimator: StackAnimator = StackAnimator(),
     defaultAnimationTime: Long = viewGroup.resources.getInteger(android.R.integer.config_mediumAnimTime)
         .toLong()
 ) {
     val resultFactory = factory
-        ?: navigator.parent.getAndroidViewFactoryFromExtension()
+        ?: navigator.parent.getViewBinderFactoryFromExtension()
         ?: throw IllegalArgumentException("AndroidViewFactory should be provided by parameters or Context.installViewFactoryPlugin()")
     add(
         StackNavigatorBinding(
@@ -31,14 +36,14 @@ fun BindingContainer.bindStackNavigator(
 private class StackNavigatorBinding(
     private val viewGroup: ViewGroup,
     private val navigator: StackNavigator,
-    private val factory: AndroidViewFactory,
+    private val factory: ViewBinderFactory,
     private val stackAnimator: StackAnimator,
     private val defaultAnimationTime: Long
 ) : Binding() {
 
-    override fun onBind(viewModel: ViewModel, androidView: AndroidView<*>) {
+    override fun onBind(viewModel: ViewModel, viewBinder: ViewBinder<*>) {
         navigator.setAdapter(
-            AndroidViewModelStackAdapter(
+            ViewBinderStackAdapter(
                 viewGroup,
                 factory,
                 stackAnimator,

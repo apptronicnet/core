@@ -15,12 +15,12 @@ import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelLifecycle
 
 private val SavedInstanceStateExtensionDescriptor = extensionDescriptor<SparseArray<Parcelable>>()
-private val BoundViewExtensionsDescriptor = extensionDescriptor<AndroidView<*>>()
+private val ViewBinderExtensionsDescriptor = extensionDescriptor<ViewBinder<*>>()
 
 fun ViewModel.requireBoundView() {
     doOnVisible {
-        if (extensions[BoundViewExtensionsDescriptor] == null) {
-            debugError(Error("$this have no bound view"))
+        if (extensions[ViewBinderExtensionsDescriptor] == null) {
+            debugError(Error("$this have no ViewBinder"))
         }
     }
 }
@@ -31,7 +31,7 @@ fun ViewModel.requireBoundView() {
  * There are several methods for usage with [Activity], [Dialog] or generic usage as [View] under
  * some [ViewGroup] container.
  */
-abstract class AndroidView<T : ViewModel> : BindingContainer {
+abstract class ViewBinder<T : ViewModel> : BindingContainer {
 
     /**
      * Specify layout resource to be used for creation or [View] using default implementation.
@@ -123,7 +123,7 @@ abstract class AndroidView<T : ViewModel> : BindingContainer {
      * Bind [view] to [viewModel]
      */
     fun bindView(view: View, viewModel: ViewModel) {
-        if (viewModel.extensions[BoundViewExtensionsDescriptor] != null) {
+        if (viewModel.extensions[ViewBinderExtensionsDescriptor] != null) {
             debugError(Error("$viewModel already have bound view!!!"))
         }
         if (!viewModel.isStateBound()) {
@@ -142,14 +142,14 @@ abstract class AndroidView<T : ViewModel> : BindingContainer {
         viewModel.extensions[SavedInstanceStateExtensionDescriptor]?.let {
             view.restoreHierarchyState(it)
         }
-        viewModel.extensions[BoundViewExtensionsDescriptor] = this
+        viewModel.extensions[ViewBinderExtensionsDescriptor] = this
         viewModel.doOnUnbind {
             val hierarchyState = SparseArray<Parcelable>()
             view.saveHierarchyState(hierarchyState)
             viewModel.extensions[SavedInstanceStateExtensionDescriptor] = hierarchyState
             getBindings().unbind()
             bindings = null
-            viewModel.extensions.remove(BoundViewExtensionsDescriptor)
+            viewModel.extensions.remove(ViewBinderExtensionsDescriptor)
         }
     }
 

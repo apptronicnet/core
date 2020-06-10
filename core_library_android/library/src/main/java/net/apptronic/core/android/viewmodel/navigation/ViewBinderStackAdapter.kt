@@ -1,7 +1,9 @@
-package net.apptronic.core.android.viewmodel
+package net.apptronic.core.android.viewmodel.navigation
 
 import android.view.View
 import android.view.ViewGroup
+import net.apptronic.core.android.viewmodel.ViewBinder
+import net.apptronic.core.android.viewmodel.ViewBinderFactory
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelStackAdapter
 import net.apptronic.core.mvvm.viewmodel.navigation.StackNavigator
@@ -10,26 +12,26 @@ import net.apptronic.core.mvvm.viewmodel.navigation.StackNavigator
  * Adapter for [StackNavigator]
  *
  * @param container in which [View] should be added
- * @param androidViewFactory to create [AndroidView] for [ViewModel]
+ * @param viewBinderFactory to create [ViewBinder] for [ViewModel]
  * @param stackAnimator for creating animations
  */
-open class AndroidViewModelStackAdapter(
+open class ViewBinderStackAdapter(
     private val container: ViewGroup,
-    private val androidViewFactory: AndroidViewFactory = AndroidViewFactory(),
+    private val viewBinderFactory: ViewBinderFactory = ViewBinderFactory(),
     private val stackAnimator: StackAnimator = StackAnimator(),
     private val defaultAnimationTime: Long =
         container.resources.getInteger(android.R.integer.config_mediumAnimTime).toLong()
 ) : ViewModelStackAdapter() {
 
-    fun bindings(setup: AndroidViewFactory.() -> Unit) {
-        setup.invoke(androidViewFactory)
+    fun bindings(setup: ViewBinderFactory.() -> Unit) {
+        setup.invoke(viewBinderFactory)
     }
 
-    private var currentView: AndroidView<*>? = null
+    private var currentBinder: ViewBinder<*>? = null
 
     override fun onInvalidate(oldModel: ViewModel?, newModel: ViewModel?, transitionInfo: Any?) {
         val newAndroidView =
-            if (newModel != null) androidViewFactory.getAndroidView(newModel) else null
+            if (newModel != null) viewBinderFactory.getBinder(newModel) else null
         if (newAndroidView != null && newModel != null) {
             val view = newAndroidView.onCreateView(container)
             newAndroidView.bindView(view, newModel)
@@ -37,13 +39,13 @@ open class AndroidViewModelStackAdapter(
         setView(newAndroidView, transitionInfo)
     }
 
-    private fun setView(newAndroidView: AndroidView<*>?, transitionInfo: Any?) {
-        val oldAndroidView = currentView
-        currentView = newAndroidView
-        if (oldAndroidView != null && newAndroidView != null) {
-            onReplace(container, oldAndroidView.getView(), newAndroidView.getView(), transitionInfo)
-        } else if (newAndroidView != null) {
-            onAdd(container, newAndroidView.getView(), transitionInfo)
+    private fun setView(newBinder: ViewBinder<*>?, transitionInfo: Any?) {
+        val oldAndroidView = currentBinder
+        currentBinder = newBinder
+        if (oldAndroidView != null && newBinder != null) {
+            onReplace(container, oldAndroidView.getView(), newBinder.getView(), transitionInfo)
+        } else if (newBinder != null) {
+            onAdd(container, newBinder.getView(), transitionInfo)
         } else if (oldAndroidView != null) {
             onRemove(container, oldAndroidView.getView(), transitionInfo)
         }

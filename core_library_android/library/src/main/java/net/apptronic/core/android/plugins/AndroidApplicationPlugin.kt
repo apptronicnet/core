@@ -2,7 +2,7 @@ package net.apptronic.core.android.plugins
 
 import android.app.Activity
 import android.app.Application
-import net.apptronic.core.android.viewmodel.AndroidViewFactory
+import net.apptronic.core.android.viewmodel.ViewBinderFactory
 import net.apptronic.core.android.viewmodel.requireBoundView
 import net.apptronic.core.component.Component
 import net.apptronic.core.component.context.Context
@@ -25,19 +25,19 @@ class AndroidApplicationPlugin internal constructor(
         private val androidApplication: Application
 ) : Plugin() {
 
-    private var viewFactory: AndroidViewFactory? = null
+    private var viewBinderFactory: ViewBinderFactory? = null
     private val activityBindingPlugin = ActivityBindingPlugin(androidApplication)
 
     class Builder internal constructor(androidApplication: Application) {
 
         internal val target = AndroidApplicationPlugin(androidApplication)
 
-        fun viewFactory(viewFactory: AndroidViewFactory) {
-            target.viewFactory = viewFactory
+        fun viewFactory(viewBinderFactory: ViewBinderFactory) {
+            target.viewBinderFactory = viewBinderFactory
         }
 
         fun <A : Activity, VM : ViewModel> bindActivity(
-                activity: KClass<A>, viewModel: KClass<VM>, onBackPressed: ((VM) -> Boolean)? = null
+            activity: KClass<A>, viewModel: KClass<VM>, onBackPressed: ((VM) -> Boolean)? = null
         ) {
             target.activityBindingPlugin.bindActivity(activity, viewModel, onBackPressed)
         }
@@ -45,7 +45,7 @@ class AndroidApplicationPlugin internal constructor(
 
     override fun onInstall(context: Context) {
         super.onInstall(context)
-        viewFactory?.let {
+        viewBinderFactory?.let {
             context.installViewFactoryPlugin(it)
         }
         context.installPlugin(ActivityBindingPluginDescriptor, activityBindingPlugin)

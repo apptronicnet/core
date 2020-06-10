@@ -4,19 +4,19 @@ import android.view.View
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 
 /**
- * Binding is part of [AndroidView] some pair of [View] part
+ * Binding is part of [ViewBinder] some pair of [View] part
  * and [ViewModel] property or properties.
  */
 abstract class Binding : BindingContainer {
 
     private var bindings: Bindings? = null
 
-    internal fun bind(viewModel: ViewModel, androidView: AndroidView<*>) {
-        bindings = Bindings(viewModel, androidView)
-        onBind(viewModel, androidView)
+    internal fun bind(viewModel: ViewModel, viewBinder: ViewBinder<*>) {
+        bindings = Bindings(viewModel, viewBinder)
+        onBind(viewModel, viewBinder)
     }
 
-    protected abstract fun onBind(viewModel: ViewModel, androidView: AndroidView<*>)
+    protected abstract fun onBind(viewModel: ViewModel, viewBinder: ViewBinder<*>)
 
     internal fun unbind() {
         bindings!!.unbind()

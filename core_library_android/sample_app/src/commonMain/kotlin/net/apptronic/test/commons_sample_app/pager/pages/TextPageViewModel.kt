@@ -7,7 +7,6 @@ import net.apptronic.core.component.value
 import net.apptronic.core.mvvm.viewmodel.EmptyViewModelContext
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.test.commons_sample_app.pager.NextPageNumberDescriptor
-import kotlin.random.Random
 
 private val STRINGS = listOf(
     "Hello world!",
@@ -25,12 +24,10 @@ class TextPageViewModel(parent: Context) : ViewModel(parent, EmptyViewModelConte
 
     val number = value("Text $pageNumber")
 
-    val text = value(STRINGS[Random.nextInt(STRINGS.size)])
-
-    private val toggle = toggle(text, *STRINGS.toTypedArray())
+    val text = toggle(STRINGS, STRINGS.random())
 
     fun onTextClick() {
-        toggle.toggle()
+        text.toggle()
     }
 
 }

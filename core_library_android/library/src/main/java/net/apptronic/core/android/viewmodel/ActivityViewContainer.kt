@@ -1,7 +1,7 @@
 package net.apptronic.core.android.viewmodel
 
 import android.app.Activity
-import net.apptronic.core.android.plugins.getAndroidViewFactoryFromExtension
+import net.apptronic.core.android.plugins.getViewBinderFactoryFromExtension
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.dispatcher.ViewContainer
 import net.apptronic.core.mvvm.viewmodel.dispatcher.ViewModelDispatcher
@@ -9,28 +9,28 @@ import net.apptronic.core.mvvm.viewmodel.navigation.ViewModelLifecycleController
 
 fun <T : ViewModel> Activity.activityContainer(
     dispatcher: ViewModelDispatcher<T>,
-    activityView: AndroidView<T>
+    activityBinder: ViewBinder<T>
 ): ActivityViewContainer<T> {
     return ActivityViewContainerImpl<T>(
         this, dispatcher
     ) {
-        val view = activityView.onCreateActivityView(this)
+        val view = activityBinder.onCreateActivityView(this)
         setContentView(view)
-        activityView.bindView(view, it)
+        activityBinder.bindView(view, it)
     }
 }
 
 fun <T : ViewModel> Activity.activityContainer(
     dispatcher: ViewModelDispatcher<T>,
-    factory: AndroidViewFactory? = null
+    factory: ViewBinderFactory? = null
 ): ActivityViewContainer<T> {
     return ActivityViewContainerImpl<T>(
         this, dispatcher
     ) {
         val useFactory = factory
-            ?: it.getAndroidViewFactoryFromExtension()
+            ?: it.getViewBinderFactoryFromExtension()
             ?: throw IllegalArgumentException("AndroidViewFactory should be provided by parameters or Context.installViewFactoryPlugin()")
-        val activityView = useFactory.getAndroidView(it) as AndroidView<T>
+        val activityView = useFactory.getBinder(it) as ViewBinder<T>
         val view = activityView.onCreateActivityView(this)
         setContentView(view)
         activityView.bindView(view, it)

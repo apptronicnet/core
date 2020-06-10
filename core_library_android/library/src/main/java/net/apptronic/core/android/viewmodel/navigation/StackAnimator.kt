@@ -1,4 +1,4 @@
-package net.apptronic.core.android.viewmodel
+package net.apptronic.core.android.viewmodel.navigation
 
 import android.view.View
 import android.view.ViewGroup
@@ -15,12 +15,12 @@ import net.apptronic.core.mvvm.viewmodel.navigation.StackNavigator
 open class StackAnimator {
 
     /**
-     * Called when [AndroidViewModelStackAdapter] adds [view] to [container]
+     * Called when [ViewBinderStackAdapter] adds [view] to [container]
      *
      * @param container in which [view] added
      * @param view to be added and animated
      * @param transition specification of animation
-     * @param time default time, set for animations in [AndroidViewModelStackAdapter]
+     * @param time default time, set for animations in [ViewBinderStackAdapter]
      */
     open fun applyEnterTransition(container: ViewGroup, view: View, transition: Any, time: Long) {
         val animation = createEnterAnimation(container, view, transition, time)
@@ -72,12 +72,12 @@ open class StackAnimator {
     }
 
     /**
-     * Called when [AndroidViewModelStackAdapter] removes [view] from [container]
+     * Called when [ViewBinderStackAdapter] removes [view] from [container]
      *
      * @param container in which [view] added
      * @param view to be animated and removed
      * @param transition specification of animation
-     * @param time default time, set for animations in [AndroidViewModelStackAdapter]
+     * @param time default time, set for animations in [ViewBinderStackAdapter]
      */
     open fun applyExitTransition(container: ViewGroup, view: View, transition: Any, time: Long) {
         val animation = createExitTransition(container, view, transition, time)

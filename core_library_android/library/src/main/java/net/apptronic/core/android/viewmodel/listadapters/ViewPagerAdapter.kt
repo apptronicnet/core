@@ -3,11 +3,11 @@ package net.apptronic.core.android.viewmodel.listadapters
 import android.view.View
 import android.view.ViewGroup
 import androidx.viewpager.widget.PagerAdapter
-import net.apptronic.core.android.viewmodel.AndroidView
-import net.apptronic.core.android.viewmodel.AndroidViewModelListAdapter
+import net.apptronic.core.android.viewmodel.ViewBinder
+import net.apptronic.core.android.viewmodel.navigation.ViewBinderListAdapter
 
 class ViewPagerAdapter(
-    private val viewModelAdapter: AndroidViewModelListAdapter
+    private val viewModelAdapter: ViewBinderListAdapter
 ) : PagerAdapter() {
 
     var titleProvider: TitleProvider? = null
@@ -18,7 +18,7 @@ class ViewPagerAdapter(
         }
     }
 
-    private val androidViews = mutableMapOf<Long, AndroidView<*>>()
+    private val androidViews = mutableMapOf<Long, ViewBinder<*>>()
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val viewModel = viewModelAdapter.getItemAt(position)
@@ -30,7 +30,7 @@ class ViewPagerAdapter(
     }
 
     override fun destroyItem(collection: ViewGroup, position: Int, obj: Any) {
-        val androidView = obj as AndroidView<*>
+        val androidView = obj as ViewBinder<*>
         viewModelAdapter.unbindView(androidView)
         collection.removeView(androidView.getView())
         androidViews.remove(androidView.getViewModel().id)
@@ -41,7 +41,7 @@ class ViewPagerAdapter(
     }
 
     override fun isViewFromObject(view: View, obj: Any): Boolean {
-        val androidView = obj as AndroidView<*>
+        val androidView = obj as ViewBinder<*>
         return view === androidView.getView()
     }
 
@@ -51,7 +51,7 @@ class ViewPagerAdapter(
     }
 
     override fun getItemPosition(obj: Any): Int {
-        val androidView = obj as AndroidView<*>
+        val androidView = obj as ViewBinder<*>
         val index = viewModelAdapter.indexOf(androidView.getViewModel())
         return if (index >= 0) index else POSITION_NONE
     }

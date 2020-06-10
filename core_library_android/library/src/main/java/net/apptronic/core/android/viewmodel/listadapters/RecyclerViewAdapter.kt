@@ -3,13 +3,12 @@ package net.apptronic.core.android.viewmodel.listadapters
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import net.apptronic.core.android.viewmodel.AndroidView
-import net.apptronic.core.android.viewmodel.AndroidViewModelListAdapter
-import net.apptronic.core.component.entity.functions.concat
+import net.apptronic.core.android.viewmodel.ViewBinder
+import net.apptronic.core.android.viewmodel.navigation.ViewBinderListAdapter
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 
 class RecyclerViewAdapter(
-    private val viewModelAdapter: AndroidViewModelListAdapter,
+    private val viewModelAdapter: ViewBinderListAdapter,
     private val bindingStrategy: BindingStrategy
 ) : RecyclerView.Adapter<RecyclerViewAdapter.ViewModelHolder>() {
 
@@ -63,7 +62,7 @@ class RecyclerViewAdapter(
                     unbindViewHolder(holder)
                 }
                 holder.viewModel = viewModel
-                holder.androidView = viewModelAdapter.bindView(viewModel, position, holder.itemView)
+                holder.viewBinder = viewModelAdapter.bindView(viewModel, position, holder.itemView)
             }
         }
     }
@@ -76,17 +75,17 @@ class RecyclerViewAdapter(
     }
 
     private fun unbindViewHolder(holder: ViewModelHolder) {
-        val androidView = holder.androidView
+        val androidView = holder.viewBinder
         if (androidView != null) {
             viewModelAdapter.unbindView(androidView)
             holder.viewModel = null
-            holder.androidView = null
+            holder.viewBinder = null
         }
     }
 
     inner class ViewModelHolder(view: View) : RecyclerView.ViewHolder(view) {
         var viewModel: ViewModel? = null
-        var androidView: AndroidView<*>? = null
+        var viewBinder: ViewBinder<*>? = null
     }
 
 }

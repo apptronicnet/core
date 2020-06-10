@@ -20,17 +20,14 @@ class ImagePageViewModel(parent: Context) : ViewModel(parent, EmptyViewModelCont
 
     val number = value("Image $pageNumber")
 
-    val imageRes = value(IMAGE_VARIANTS[Random.nextInt(IMAGE_VARIANTS.size)])
-    val colorRes = value(COLOR_VARIANTS[Random.nextInt(COLOR_VARIANTS.size)])
-
-    private val imageResToggle = toggle(imageRes, *IMAGE_VARIANTS.toTypedArray())
-    private val colorResToggle = toggle(colorRes, *COLOR_VARIANTS.toTypedArray())
+    val imageRes = toggle(IMAGE_VARIANTS, IMAGE_VARIANTS.random())
+    val colorRes = toggle(COLOR_VARIANTS, COLOR_VARIANTS.random())
 
     fun onImageClick() {
         if (Random.nextBoolean()) {
-            imageResToggle.toggle()
+            imageRes.toggle()
         } else {
-            colorResToggle.toggle()
+            colorRes.toggle()
         }
     }
 

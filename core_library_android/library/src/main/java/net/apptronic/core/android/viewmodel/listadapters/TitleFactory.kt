@@ -12,7 +12,6 @@ class TitleProvider(
         return titleFactory.getItemTitle(context, viewModel, position) ?: ""
     }
 
-
 }
 
 interface TitleFactory {

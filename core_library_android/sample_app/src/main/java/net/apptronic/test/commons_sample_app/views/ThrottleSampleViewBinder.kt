@@ -2,13 +2,13 @@ package net.apptronic.test.commons_sample_app.views
 
 import android.view.View
 import kotlinx.android.synthetic.main.throttle_test.view.*
-import net.apptronic.core.android.viewmodel.AndroidView
+import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.bindings.bindClickListener
 import net.apptronic.core.android.viewmodel.bindings.bindText
 import net.apptronic.test.commons_sample_app.R
 import net.apptronic.test.commons_sample_app.throttle.ThrottleSampleViewModel
 
-class ThrottleSampleView : AndroidView<ThrottleSampleViewModel>() {
+class ThrottleSampleViewBinder : ViewBinder<ThrottleSampleViewModel>() {
 
     override var layoutResId: Int? = R.layout.throttle_test
 

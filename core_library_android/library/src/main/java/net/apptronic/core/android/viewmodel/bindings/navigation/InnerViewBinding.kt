@@ -2,11 +2,11 @@ package net.apptronic.core.android.viewmodel.bindings.navigation
 
 import android.view.View
 import android.view.ViewGroup
-import net.apptronic.core.android.plugins.getAndroidViewFactoryFromExtension
-import net.apptronic.core.android.viewmodel.AndroidView
-import net.apptronic.core.android.viewmodel.AndroidViewFactory
+import net.apptronic.core.android.plugins.getViewBinderFactoryFromExtension
 import net.apptronic.core.android.viewmodel.Binding
 import net.apptronic.core.android.viewmodel.BindingContainer
+import net.apptronic.core.android.viewmodel.ViewBinder
+import net.apptronic.core.android.viewmodel.ViewBinderFactory
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 
 enum class BindingType(
@@ -15,7 +15,7 @@ enum class BindingType(
     Boolean, internal val clearLayout: Boolean
 ) {
     /**
-     * [AndroidView] will create content view if target view is [ViewGroup] and have no children
+     * [ViewBinder] will create content view if target view is [ViewGroup] and have no children
      */
     AUTO(true, false, false),
 
@@ -25,12 +25,12 @@ enum class BindingType(
     BIND_ONLY(false, false, false),
 
     /**
-     * [AndroidView] will create content view before bind
+     * [ViewBinder] will create content view before bind
      */
     CREATE_CONTENT(false, true, false),
 
     /**
-     * [AndroidView] will create content view before bind and destroy it on unbind
+     * [ViewBinder] will create content view before bind and destroy it on unbind
      */
     CREATE_CONTENT_AND_CLEAR(false, true, true)
 }
@@ -38,32 +38,32 @@ enum class BindingType(
 fun BindingContainer.bindInnerViewModel(
     view: View,
     viewModel: ViewModel,
-    androidView: AndroidView<*>,
+    viewBinder: ViewBinder<*>,
     bindingType: BindingType = BindingType.AUTO
 ) {
-    add(AndroidViewBinding(view, viewModel, { androidView }, bindingType))
+    add(InnerViewBinding(view, viewModel, { viewBinder }, bindingType))
 }
 
 fun BindingContainer.bindInnerViewModel(
     view: View,
     viewModel: ViewModel,
-    factory: AndroidViewFactory? = null,
+    factory: ViewBinderFactory? = null,
     bindingType: BindingType = BindingType.AUTO
 ) {
     val resultFactory = factory
-        ?: viewModel.getAndroidViewFactoryFromExtension()
+        ?: viewModel.getViewBinderFactoryFromExtension()
         ?: throw IllegalArgumentException("AndroidViewFactory should be provided by parameters or Context.installViewFactoryPlugin()")
-    add(AndroidViewBinding(view, viewModel, resultFactory::getAndroidView, bindingType))
+    add(InnerViewBinding(view, viewModel, resultFactory::getBinder, bindingType))
 }
 
-private class AndroidViewBinding(
+private class InnerViewBinding(
     private val targetView: View,
     private val targetViewModel: ViewModel,
-    private val factory: (ViewModel) -> AndroidView<*>,
+    private val factory: (ViewModel) -> ViewBinder<*>,
     private val bindingType: BindingType
 ) : Binding() {
 
-    override fun onBind(viewModel: ViewModel, androidView: AndroidView<*>) {
+    override fun onBind(viewModel: ViewModel, viewBinder: ViewBinder<*>) {
         val targetAndroidView = factory.invoke(targetViewModel)
         val contentView: View = if (bindingType.detectAndCreate) {
             val container = targetView as? ViewGroup

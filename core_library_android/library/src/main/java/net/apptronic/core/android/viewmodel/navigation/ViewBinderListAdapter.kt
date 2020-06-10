@@ -1,52 +1,54 @@
-package net.apptronic.core.android.viewmodel
+package net.apptronic.core.android.viewmodel.navigation
 
 import android.view.View
 import android.view.ViewGroup
+import net.apptronic.core.android.viewmodel.ViewBinder
+import net.apptronic.core.android.viewmodel.ViewBinderFactory
 import net.apptronic.core.android.viewmodel.style.list.ListItemStyleAdapter
 import net.apptronic.core.android.viewmodel.style.list.emptyStyleAdapter
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelListAdapter
 
-class AndroidViewModelListAdapter(
-    private val androidViewFactory: AndroidViewFactory = AndroidViewFactory(),
+class ViewBinderListAdapter(
+    private val viewBinderFactory: ViewBinderFactory = ViewBinderFactory(),
     private val styleAdapter: ListItemStyleAdapter = emptyStyleAdapter()
 ) : ViewModelListAdapter() {
 
-    private val boundViews = mutableMapOf<Long, AndroidView<*>>()
+    private val boundViews = mutableMapOf<Long, ViewBinder<*>>()
 
-    fun bindings(setup: AndroidViewFactory.() -> Unit) {
-        setup.invoke(androidViewFactory)
+    fun bindings(setup: ViewBinderFactory.() -> Unit) {
+        setup.invoke(viewBinderFactory)
     }
 
     fun createView(typeId: Int, container: ViewGroup): View {
-        return androidViewFactory.getAndroidView(typeId).onCreateView(container)
+        return viewBinderFactory.getBinder(typeId).onCreateView(container)
     }
 
     fun createView(viewModel: ViewModel, container: ViewGroup): View {
-        return androidViewFactory.getAndroidView(viewModel).onCreateView(container)
+        return viewBinderFactory.getBinder(viewModel).onCreateView(container)
     }
 
     fun getViewType(position: Int): Int {
-        return androidViewFactory.getType(getItemAt(position))
+        return viewBinderFactory.getType(getItemAt(position))
     }
 
     fun getViewType(viewModel: ViewModel): Int {
-        return androidViewFactory.getType(viewModel)
+        return viewBinderFactory.getType(viewModel)
     }
 
     fun bindView(
         viewModel: ViewModel,
         position: Int,
         view: View
-    ): AndroidView<*> {
-        val oldBoundView: AndroidView<*>? = boundViews[viewModel.id]
+    ): ViewBinder<*> {
+        val oldBinder: ViewBinder<*>? = boundViews[viewModel.id]
         styleAdapter.applyViewStyle(view, position, getItems())
-        return if (oldBoundView != null) {
-            if (oldBoundView.getViewModel() != viewModel) {
-                unbindView(oldBoundView)
+        return if (oldBinder != null) {
+            if (oldBinder.getViewModel() != viewModel) {
+                unbindView(oldBinder)
                 performNewBinding(viewModel, view)
             } else {
-                oldBoundView
+                oldBinder
             }
         } else {
             performNewBinding(viewModel, view)
@@ -55,8 +57,8 @@ class AndroidViewModelListAdapter(
         }
     }
 
-    private fun performNewBinding(viewModel: ViewModel, view: View): AndroidView<*> {
-        val androidView = androidViewFactory.getAndroidView(viewModel)
+    private fun performNewBinding(viewModel: ViewModel, view: View): ViewBinder<*> {
+        val androidView = viewBinderFactory.getBinder(viewModel)
         setBound(viewModel, true)
         androidView.bindView(view, viewModel)
         setVisible(viewModel, true)
@@ -64,8 +66,8 @@ class AndroidViewModelListAdapter(
         return androidView
     }
 
-    fun unbindView(androidView: AndroidView<*>) {
-        val viewModel = androidView.getViewModel()
+    fun unbindView(viewBinder: ViewBinder<*>) {
+        val viewModel = viewBinder.getViewModel()
         if (boundViews.containsKey(viewModel.id)) {
             setFocused(viewModel, false)
             setVisible(viewModel, false)

@@ -3,8 +3,8 @@ package net.apptronic.test.commons_sample_app.views
 import android.view.View
 import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.screen_convert.view.*
-import net.apptronic.core.android.viewmodel.AndroidView
 import net.apptronic.core.android.viewmodel.Binding
+import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.bindings.bindText
 import net.apptronic.core.android.viewmodel.bindings.bindTextInput
 import net.apptronic.core.base.observable.subscribe
@@ -17,7 +17,7 @@ import net.apptronic.test.commons_sample_app.convert.ConvertScreenViewModel
 import net.apptronic.test.commons_sample_app.convert.Currency
 import net.apptronic.test.commons_sample_app.convert.MeasurementUnit
 
-class ConvertScreenView : AndroidView<ConvertScreenViewModel>() {
+class ConvertScreenViewBinder : ViewBinder<ConvertScreenViewModel>() {
 
     override var layoutResId: Int? = R.layout.screen_convert
 
@@ -44,7 +44,7 @@ class ConvertScreenView : AndroidView<ConvertScreenViewModel>() {
         private val target: Value<T>
     ) : Binding() {
 
-        override fun onBind(viewModel: ViewModel, androidView: AndroidView<*>) {
+        override fun onBind(viewModel: ViewModel, viewBinder: ViewBinder<*>) {
             target.map { it == value }.subscribe {
                 if (it) {
                     view.setBackgroundColor(ContextCompat.getColor(view.context, R.color.selection))

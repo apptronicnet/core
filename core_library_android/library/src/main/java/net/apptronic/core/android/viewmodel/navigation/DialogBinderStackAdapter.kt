@@ -1,41 +1,44 @@
-package net.apptronic.core.android.viewmodel
+package net.apptronic.core.android.viewmodel.navigation
 
 import android.app.Dialog
 import android.content.Context
-import android.view.View
-import android.view.ViewGroup
+import net.apptronic.core.android.viewmodel.ViewBinder
+import net.apptronic.core.android.viewmodel.ViewBinderFactory
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelStackAdapter
 
-open class DialogViewModelStackAdapter(
+open class DialogBinderStackAdapter(
     private val context: Context,
-    private val androidViewFactory: AndroidViewFactory = AndroidViewFactory()
+    private val viewBinderFactory: ViewBinderFactory = ViewBinderFactory()
 ) : ViewModelStackAdapter() {
 
-    fun bindings(setup: AndroidViewFactory.() -> Unit) {
-        setup.invoke(androidViewFactory)
+    fun bindings(setup: ViewBinderFactory.() -> Unit) {
+        setup.invoke(viewBinderFactory)
     }
 
     private class DialogAndView(
-        val view: AndroidView<*>,
+        val viewBinder: ViewBinder<*>,
         val dialog: Dialog
     )
 
     private var current: DialogAndView? = null
 
     override fun onInvalidate(oldModel: ViewModel?, newModel: ViewModel?, transitionInfo: Any?) {
-        val newAndroidView =
-            if (newModel != null) androidViewFactory.getAndroidView(newModel) else null
-        val next = if (newAndroidView != null && newModel != null) {
-            val dialog = newAndroidView.onCreateDialog(context)
-            val view = newAndroidView.onCreateDialogView(dialog)
-            newAndroidView.onAttachDialogView(dialog, view)
-            newAndroidView.bindView(view, newModel)
-            DialogAndView(newAndroidView, dialog)
+        val newBinder =
+            if (newModel != null) viewBinderFactory.getBinder(newModel) else null
+        val next = if (newBinder != null && newModel != null) {
+            val dialog = newBinder.onCreateDialog(context)
+            val view = newBinder.onCreateDialogView(dialog)
+            newBinder.onAttachDialogView(dialog, view)
+            newBinder.bindView(view, newModel)
+            DialogAndView(
+                newBinder,
+                dialog
+            )
         } else null
         setDialog(next, transitionInfo)
         next?.let {
-            it.view.onDialogShown(it.dialog, it.view.getViewModel())
+            it.viewBinder.onDialogShown(it.dialog, it.viewBinder.getViewModel())
         }
     }
 

@@ -2,12 +2,12 @@ package net.apptronic.test.commons_sample_app.views
 
 import android.view.View
 import kotlinx.android.synthetic.main.load_filter_item.view.*
-import net.apptronic.core.android.viewmodel.AndroidView
+import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.bindings.bindText
 import net.apptronic.test.commons_sample_app.R
 import net.apptronic.test.commons_sample_app.loadfilterlist.LoadItemViewModel
 
-class LoadFilterListItemView : AndroidView<LoadItemViewModel>() {
+class LoadFilterListItemViewBinder : ViewBinder<LoadItemViewModel>() {
 
     override var layoutResId: Int? = R.layout.load_filter_item
 
