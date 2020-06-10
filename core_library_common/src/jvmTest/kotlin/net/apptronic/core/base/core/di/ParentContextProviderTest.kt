@@ -6,7 +6,7 @@ import net.apptronic.core.component.di.InjectionFailedException
 import net.apptronic.core.component.di.createDescriptor
 import net.apptronic.core.component.di.declareModule
 import net.apptronic.core.component.lifecycle.BASE_LIFECYCLE
-import net.apptronic.core.testutils.TestContext
+import net.apptronic.core.testutils.testContext
 import org.junit.Test
 
 class ParentContextProviderTest {
@@ -48,13 +48,6 @@ class ParentContextProviderTest {
 
     }
 
-
-    private class ThisTestContext : TestContext() {
-        init {
-            dependencyDispatcher.addModule(parentModule)
-        }
-    }
-
     private class ChildContext(parent: Context) :
             SubContext(parent, BASE_LIFECYCLE) {
         init {
@@ -62,7 +55,9 @@ class ParentContextProviderTest {
         }
     }
 
-    private val parent = ThisTestContext()
+    private val parent = testContext {
+        dependencyDispatcher.addModule(parentModule)
+    }
     private val child = ChildContext(parent)
 
     @Test

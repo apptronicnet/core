@@ -3,12 +3,12 @@ package net.apptronic.core.component.coroutines
 import kotlinx.coroutines.CompletableDeferred
 import net.apptronic.core.assertEquals
 import net.apptronic.core.component.extensions.BaseComponent
-import net.apptronic.core.testutils.TestContext
+import net.apptronic.core.testutils.testContext
 import org.junit.Test
 
 class SerialCoroutineLauncherTest {
 
-    val component = BaseComponent(TestContext())
+    val component = BaseComponent(testContext())
 
     @Test
     fun shouldExecuteSerially() {

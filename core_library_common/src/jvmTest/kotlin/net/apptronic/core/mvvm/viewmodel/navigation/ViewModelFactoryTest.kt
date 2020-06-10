@@ -2,10 +2,12 @@ package net.apptronic.core.mvvm.viewmodel.navigation
 
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.mvvm.TestViewModel
-import net.apptronic.core.testutils.TestContext
+import net.apptronic.core.testutils.testContext
 import org.junit.Test
 
-class ViewModelFactoryTest : TestContext() {
+class ViewModelFactoryTest {
+
+    private val context = testContext()
 
     open class BaseType
     open class BaseId
@@ -69,8 +71,8 @@ class ViewModelFactoryTest : TestContext() {
         val item2 = TypeInt(2, "Some one 2")
         assert(factory.getId(item1) == IntId(1))
         assert(factory.getId(item2) == IntId(2))
-        val vm1 = factory.onCreateViewModel(this, item1) as IntViewModel
-        val vm2 = factory.onCreateViewModel(this, item2) as IntViewModel
+        val vm1 = factory.onCreateViewModel(context, item1) as IntViewModel
+        val vm2 = factory.onCreateViewModel(context, item2) as IntViewModel
         assert(vm1.someValue == "Some one 1")
         assert(vm2.someValue == "Some one 2")
         factory.onUpdateViewModel(vm1, TypeInt(1, "Some one 3"))
@@ -89,8 +91,8 @@ class ViewModelFactoryTest : TestContext() {
         val item2 = TypeString("b", "Some one 2")
         assert(factory.getId(item1) == StringId("a"))
         assert(factory.getId(item2) == StringId("b"))
-        val vm1 = factory.onCreateViewModel(this, item1) as StringViewModel
-        val vm2 = factory.onCreateViewModel(this, item2) as StringViewModel
+        val vm1 = factory.onCreateViewModel(context, item1) as StringViewModel
+        val vm2 = factory.onCreateViewModel(context, item2) as StringViewModel
         assert(vm1.someValue == "Some one 1")
         assert(vm2.someValue == "Some one 2")
         factory.onUpdateViewModel(vm1, TypeString("a", "Some one 3"))
@@ -112,7 +114,7 @@ class ViewModelFactoryTest : TestContext() {
     fun shouldFailOnStringType() {
         factory.addBuilder(IntBuilder())
         val item1 = TypeString("a", "Some one 1")
-        factory.onCreateViewModel(this, item1)
+        factory.onCreateViewModel(context, item1)
     }
 
 }

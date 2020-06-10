@@ -4,13 +4,13 @@ import net.apptronic.core.component.context.close
 import net.apptronic.core.component.extensions.BaseComponent
 import net.apptronic.core.component.lifecycle.enterStage
 import net.apptronic.core.component.lifecycle.exitStage
-import net.apptronic.core.testutils.TestContext
 import net.apptronic.core.testutils.TestLifecycle
+import net.apptronic.core.testutils.testContext
 import org.junit.Test
 
 class CoroutineLauncherTest {
 
-    val component = BaseComponent(TestContext())
+    val component = BaseComponent(testContext())
 
     @Test
     fun shouldExecuteOnLocal() {

@@ -1,21 +1,17 @@
 package net.apptronic.core.mvvm
 
-import kotlinx.coroutines.Dispatchers
-import net.apptronic.core.component.context.coreContext
 import net.apptronic.core.mvvm.viewmodel.EmptyViewModelContext
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
+import net.apptronic.core.testutils.testContext
 import org.junit.Test
 
 class ViewModelLifecycleTest {
 
-    private val baseContext = coreContext(
-            coroutineDispatcher = Dispatchers.Unconfined
-    )
+    private val baseContext = testContext()
 
     private class SampleViewModel(viewModelContext: ViewModelContext) :
             ViewModel(viewModelContext) {
-
     }
 
     private val viewModelContext = EmptyViewModelContext.createContext(baseContext)

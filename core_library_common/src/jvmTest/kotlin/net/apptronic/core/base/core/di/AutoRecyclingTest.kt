@@ -7,7 +7,7 @@ import net.apptronic.core.component.di.AutoRecycling
 import net.apptronic.core.component.di.createDescriptor
 import net.apptronic.core.component.di.declareModule
 import net.apptronic.core.component.extensions.BaseComponent
-import net.apptronic.core.testutils.TestContext
+import net.apptronic.core.testutils.testContext
 import org.junit.Test
 
 class AutoRecyclingTest {
@@ -48,10 +48,10 @@ class AutoRecyclingTest {
 
     @Test
     fun shouldAutoRecycle() {
-        val context = TestContext()
-        context.dependencyDispatcher.addModule(module)
-
-        context.dependencyDispatcher.traceDependencyTree().print()
+        val context = testContext {
+            dependencyDispatcher.addModule(module)
+            dependencyDispatcher.traceDependencyTree().print()
+        }
 
         val component = TestComponent(context)
         assert(component.instance is Implementation)

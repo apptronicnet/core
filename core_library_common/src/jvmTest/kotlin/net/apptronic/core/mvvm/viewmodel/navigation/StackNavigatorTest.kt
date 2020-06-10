@@ -3,10 +3,12 @@ package net.apptronic.core.mvvm.viewmodel.navigation
 import net.apptronic.core.component.terminate
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
-import net.apptronic.core.testutils.TestContext
+import net.apptronic.core.testutils.testContext
 import kotlin.test.Test
 
-class StackNavigatorTest : TestContext() {
+class StackNavigatorTest {
+
+    private val context = testContext()
 
     private class RootViewModel(context: ViewModelContext) : ViewModel(context) {
 
@@ -18,7 +20,7 @@ class StackNavigatorTest : TestContext() {
         return ViewModel(ViewModelContext(root.context, "base"))
     }
 
-    private val root = RootViewModel(ViewModelContext(this, "root"))
+    private val root = RootViewModel(ViewModelContext(context, "root"))
     private val lifecycleController = ViewModelLifecycleController(root)
     private val adapter = TestStackAdapter()
 

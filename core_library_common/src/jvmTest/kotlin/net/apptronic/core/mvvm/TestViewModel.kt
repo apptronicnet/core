@@ -5,13 +5,10 @@ import net.apptronic.core.component.lifecycle.exitStage
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 import net.apptronic.core.mvvm.viewmodel.ViewModelLifecycle
-import net.apptronic.core.mvvm.viewmodel.defineViewModelContext
-import net.apptronic.core.testutils.TestContext
-
-val TEST_VIEW_MODEL_CONTEXT = defineViewModelContext()
+import net.apptronic.core.testutils.testContext
 
 open class TestViewModel : ViewModel(
-        ViewModelContext(TestContext(), "test")
+        ViewModelContext(testContext(), "test")
 ) {
 
     fun create() {

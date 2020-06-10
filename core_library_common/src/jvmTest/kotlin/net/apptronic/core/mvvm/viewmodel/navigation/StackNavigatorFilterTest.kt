@@ -4,10 +4,12 @@ import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.value
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
-import net.apptronic.core.testutils.TestContext
+import net.apptronic.core.testutils.testContext
 import org.junit.Test
 
-class StackNavigatorFilterTest : TestContext() {
+class StackNavigatorFilterTest {
+
+    private val context = testContext()
 
     private class RootViewModel(context: ViewModelContext) : ViewModel(context) {
 
@@ -36,7 +38,7 @@ class StackNavigatorFilterTest : TestContext() {
         return FilterableViewModel(ViewModelContext(root.context, "filterable"), name)
     }
 
-    private val root = RootViewModel(ViewModelContext(this, "root"))
+    private val root = RootViewModel(ViewModelContext(context, "root"))
     private val lifecycleController = ViewModelLifecycleController(root)
     private val adapter = TestStackAdapter()
 

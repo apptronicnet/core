@@ -7,8 +7,8 @@ import net.apptronic.core.component.extensions.BaseComponent
 import net.apptronic.core.component.lifecycle.enterStage
 import net.apptronic.core.component.lifecycle.exitStage
 import net.apptronic.core.testutils.BaseTestComponent
-import net.apptronic.core.testutils.TestContext
 import net.apptronic.core.testutils.TestLifecycle
+import net.apptronic.core.testutils.testContext
 import org.junit.Test
 
 class ContextInterpopTest {
@@ -33,8 +33,8 @@ class ContextInterpopTest {
     }
 
     private val parent = Parent()
-    private val child = Child(TestContext(parent.context))
-    private val another = Another(TestContext())
+    private val child = Child(testContext(parent = parent.context))
+    private val another = Another(testContext())
 
     @Test
     fun shouldUpdateFromParent() {

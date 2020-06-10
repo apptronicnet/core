@@ -1,7 +1,7 @@
 package net.apptronic.core.component.context
 
-import kotlinx.coroutines.CoroutineDispatcher
 import net.apptronic.core.base.concurrent.requireNeverFrozen
+import net.apptronic.core.component.coroutines.CoroutineDispatchers
 import net.apptronic.core.component.di.DependencyDispatcher
 import net.apptronic.core.component.lifecycle.Lifecycle
 import net.apptronic.core.component.lifecycle.LifecycleDefinition
@@ -10,13 +10,13 @@ open class SubContext : BaseContext {
 
     final override val parent: Context
     final override val lifecycle: Lifecycle
-    final override val defaultDispatcher: CoroutineDispatcher
     final override val dependencyDispatcher: DependencyDispatcher
+    final override val coroutineDispatchers: CoroutineDispatchers
 
     constructor(parent: Context, lifecycleDefinition: LifecycleDefinition) : super() {
         this.parent = parent
         this.lifecycle = lifecycleDefinition.createLifecycle()
-        this.defaultDispatcher = parent.defaultDispatcher
+        this.coroutineDispatchers = parent.coroutineDispatchers
         this.dependencyDispatcher = DependencyDispatcher(this, parent.dependencyDispatcher)
         init()
     }
@@ -24,7 +24,7 @@ open class SubContext : BaseContext {
     constructor(parent: Context, lifecycle: Lifecycle) : super() {
         this.parent = parent
         this.lifecycle = lifecycle
-        this.defaultDispatcher = parent.defaultDispatcher
+        this.coroutineDispatchers = parent.coroutineDispatchers
         this.dependencyDispatcher = DependencyDispatcher(this, parent.dependencyDispatcher)
         init()
     }

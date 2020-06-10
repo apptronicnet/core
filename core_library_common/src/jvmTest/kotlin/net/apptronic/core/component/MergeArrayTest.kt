@@ -3,12 +3,12 @@ package net.apptronic.core.component
 import net.apptronic.core.component.entity.behavior.mergeArray
 import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.component.extensions.BaseComponent
-import net.apptronic.core.testutils.TestContext
+import net.apptronic.core.testutils.testContext
 import org.junit.Test
 
 class MergeArrayTest {
 
-    class TestComponent : BaseComponent(TestContext()) {
+    class TestComponent : BaseComponent(testContext()) {
 
         val val1 = value(1)
         val val2 = value(2)

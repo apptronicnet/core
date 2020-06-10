@@ -1,7 +1,7 @@
 package net.apptronic.core.base.core.di
 
 import net.apptronic.core.component.di.createNullableDescriptor
-import net.apptronic.core.testutils.TestContext
+import net.apptronic.core.testutils.testContext
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertNull
@@ -13,7 +13,7 @@ class NullableProviderTest {
         val NullableIntDescriptor = createNullableDescriptor<Int>()
     }
 
-    val context = TestContext()
+    val context = testContext()
 
     @Before
     fun before() {

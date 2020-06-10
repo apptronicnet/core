@@ -3,7 +3,7 @@ package net.apptronic.core.base.core.di
 import net.apptronic.core.component.di.alsoAs
 import net.apptronic.core.component.di.createDescriptor
 import net.apptronic.core.component.di.declareModule
-import net.apptronic.core.testutils.TestContext
+import net.apptronic.core.testutils.testContext
 import org.junit.Test
 
 class BindProviderTest {
@@ -30,12 +30,6 @@ class BindProviderTest {
     }
 
 
-    private class Context : TestContext() {
-        init {
-            dependencyDispatcher.addModule(module)
-        }
-    }
-
     @Test
     fun shouldDoBind() {
 //        val context = Context()
@@ -47,7 +41,9 @@ class BindProviderTest {
 
     @Test
     fun traceTest() {
-        val context = Context()
+        val context = testContext {
+            dependencyDispatcher.addModule(module)
+        }
         context.dependencyDispatcher.traceDependencyTree().print()
     }
 

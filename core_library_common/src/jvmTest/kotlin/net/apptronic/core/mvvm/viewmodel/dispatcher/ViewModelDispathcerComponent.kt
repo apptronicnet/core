@@ -6,7 +6,7 @@ import net.apptronic.core.component.genericEvent
 import net.apptronic.core.component.typedEvent
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.navigation.ViewModelLifecycleController
-import net.apptronic.core.testutils.TestContext
+import net.apptronic.core.testutils.testContext
 import kotlin.reflect.KClass
 
 inline fun <reified T : ViewModel> viewModelDispathcerComponent(noinline builder: (Context) -> T): ViewModelDispathcerComponent<T> {
@@ -16,7 +16,7 @@ inline fun <reified T : ViewModel> viewModelDispathcerComponent(noinline builder
 class ViewModelDispathcerComponent<T : ViewModel>(
         private val viewModelClass: KClass<T>,
         private val builder: (Context) -> T
-) : BaseComponent(TestContext()) {
+) : BaseComponent(testContext()) {
 
     val dispatcher = BuilderViewModelDispatcher(context, viewModelClass, builder)
 

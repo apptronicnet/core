@@ -1,19 +1,21 @@
 package net.apptronic.core.component.entity.entities
 
 import net.apptronic.core.base.observable.Observable
+import net.apptronic.core.base.observable.distinctUntilChanged
 import net.apptronic.core.base.observable.subject.BehaviorSubject
 import net.apptronic.core.base.observable.subject.ValueHolder
 import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.entity.*
+import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.base.EntityValue
 import net.apptronic.core.component.entity.base.ObservableEntity
 import net.apptronic.core.component.entity.base.UpdateEntity
+import net.apptronic.core.component.entity.subscribe
 
 abstract class Property<T>(override val context: Context) : ObservableEntity<T>(), EntityValue<T> {
 
     protected val subject = BehaviorSubject<T>()
 
-    override val observable: Observable<T> = subject
+    override val observable: Observable<T> = subject.distinctUntilChanged()
 
     override fun getValueHolder(): ValueHolder<T>? {
         return subject.getValue()

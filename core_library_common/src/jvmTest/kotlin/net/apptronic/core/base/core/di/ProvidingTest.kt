@@ -6,7 +6,7 @@ import net.apptronic.core.component.di.InjectionFailedException
 import net.apptronic.core.component.di.createDescriptor
 import net.apptronic.core.component.di.declareModule
 import net.apptronic.core.component.extensions.BaseComponent
-import net.apptronic.core.testutils.TestContext
+import net.apptronic.core.testutils.testContext
 import org.junit.Before
 import org.junit.Test
 
@@ -33,19 +33,15 @@ class ProvidingTest {
 
     }
 
-    class CoreContext : TestContext() {
-        init {
-            dependencyDispatcher.addModule(CoreModule)
-        }
-    }
-
     class SomeThing(val text: String)
 
     lateinit var component: Component
 
     @Before
     fun before() {
-        val coreContext = CoreContext()
+        val coreContext = testContext {
+            dependencyDispatcher.addModule(CoreModule)
+        }
         component = BaseComponent(coreContext, EmptyContext)
         component.context.dependencyDispatcher.addInstance(SomeThingTextDescriptor, EXPECTED_TEXT)
     }
