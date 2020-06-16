@@ -3,7 +3,7 @@ package net.apptronic.core.mvvm.viewmodel.navigation
 import net.apptronic.core.base.observable.subject.BehaviorSubject
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.base.UpdateEntity
-import net.apptronic.core.component.entity.subscriptions.ContextSubjectWrapper
+import net.apptronic.core.component.entity.entities.Value
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.adapter.ItemStateNavigator
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelListAdapter
@@ -16,11 +16,24 @@ class ListNavigator(
     private val visibilityFilters: VisibilityFilters<ViewModel> = VisibilityFilters<ViewModel>()
     private var listFilter: ListNavigatorFilter = simpleFilter()
 
+    private val itemStateNavigator = ItemStateNavigatorImpl()
+
+    private var items: List<ViewModel> = emptyList()
+    private var visibleItems: List<ViewModel> = emptyList()
+
     override val subject = BehaviorSubject<List<ViewModel>>().apply {
         update(emptyList())
     }
 
-    private val viewModelListEntity = ContextSubjectWrapper(context, BehaviorSubject<ListNavigatorStatus>())
+    private val viewModelListEntity = Value<ListNavigatorStatus>(context)
+
+    private fun sendStatusUpdate() {
+        viewModelListEntity.set(ListNavigatorStatus(items, visibleItems))
+    }
+
+    init {
+        sendStatusUpdate()
+    }
 
     private fun updateSubject() {
         subject.update(items)
@@ -47,17 +60,12 @@ class ListNavigator(
         return ListNavigatorStatus(items, visibleItems)
     }
 
-    private val itemStateNavigator = ItemStateNavigatorImpl()
-
-    private var items: List<ViewModel> = emptyList()
-    private var visibleItems: List<ViewModel> = emptyList()
-
     override fun refreshVisibility() {
         val source = items.map {
             ItemVisibilityRequest(it, it.getContainer()?.shouldShow() ?: true)
         }
         visibleItems = listFilter.filterList(source)
-        viewModelListEntity.update(ListNavigatorStatus(items, visibleItems))
+        sendStatusUpdate()
         notifyAdapter()
     }
 

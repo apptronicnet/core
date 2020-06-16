@@ -1,19 +1,19 @@
-package net.apptronic.core.component.entity.subscriptions
+package net.apptronic.core.component.entity.entities
 
-import net.apptronic.core.base.concurrent.Volatile
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.EntitySubscription
+import net.apptronic.core.component.entity.subscriptions.EntitySubscriptionListener
 
-public class ContextEntitySubscription<T>(
+internal class ContextEntitySubscription<T>(
         val observer: Observer<T>
 ) : EntitySubscription {
 
-    private val isUnsubscribed = Volatile(false)
+    private var isUnsubscribed = false
     private val listeners = mutableListOf<EntitySubscriptionListener>()
 
     override fun unsubscribe() {
-        isUnsubscribed.set(true)
+        isUnsubscribed = true
         listeners.toTypedArray().forEach {
             it.onUnsubscribed(this)
         }
@@ -21,7 +21,7 @@ public class ContextEntitySubscription<T>(
     }
 
     override fun registerListener(listener: EntitySubscriptionListener) {
-        if (isUnsubscribed.get()) {
+        if (isUnsubscribed) {
             listener.onUnsubscribed(this)
         } else {
             listeners.add(listener)
@@ -37,7 +37,7 @@ public class ContextEntitySubscription<T>(
     }
 
     override fun isUnsubscribed(): Boolean {
-        return isUnsubscribed.get()
+        return isUnsubscribed
     }
 
     fun notify(value: T) {

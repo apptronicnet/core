@@ -49,7 +49,7 @@ internal class LifecycleStageImpl(val parent: LifecycleStageParent,
         }
     }
 
-    fun isEntered(): Boolean {
+    override fun isEntered(): Boolean {
         return isEntered
     }
 

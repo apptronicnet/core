@@ -7,7 +7,7 @@ import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.BaseEntity
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.EntitySubscription
-import net.apptronic.core.component.entity.subscriptions.subscriptionBuilder
+import net.apptronic.core.component.entity.entities.performEntitySubscription
 
 /**
  * [Entity] which based on using [Observable] as source for subscriptions
@@ -17,7 +17,7 @@ abstract class SubjectEntity<T> : BaseEntity<T>() {
     protected abstract val subject: Subject<T>
 
     final override fun onSubscribeObserver(targetContext: Context, targetObserver: Observer<T>): EntitySubscription {
-        return subscriptionBuilder(targetContext).subscribe(targetObserver, subject)
+        return performEntitySubscription(targetContext, subject, targetObserver)
     }
 
 }

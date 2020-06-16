@@ -6,6 +6,8 @@ interface LifecycleStage {
 
     fun doOnce(action: () -> Unit)
 
+    fun isEntered(): Boolean
+
     /**
      * This function is used to perform single-shot action when lifecycle stage will be entered.
      * It is lifecycle-independent and will not be cancelled also if current stage will exit. If

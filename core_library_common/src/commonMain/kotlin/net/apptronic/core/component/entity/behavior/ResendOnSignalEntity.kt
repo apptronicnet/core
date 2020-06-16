@@ -1,14 +1,12 @@
 package net.apptronic.core.component.entity.behavior
 
-import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.base.observable.subject.BehaviorSubject
 import net.apptronic.core.base.observable.subject.ValueHolder
 import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.entity.*
+import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.base.EntityValue
 import net.apptronic.core.component.entity.base.SubjectEntity
-import net.apptronic.core.component.entity.base.UpdateEntity
-import net.apptronic.core.component.entity.subscriptions.ContextSubjectWrapper
+import net.apptronic.core.component.entity.subscribe
 
 fun <T> Entity<T>.asResendable(): ResendEntity<T> {
     return ResendOnSignalEntity(this)

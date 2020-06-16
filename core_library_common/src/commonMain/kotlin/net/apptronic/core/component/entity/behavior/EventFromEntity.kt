@@ -1,15 +1,11 @@
 package net.apptronic.core.component.entity.behavior
 
-import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.base.observable.subject.PublishSubject
 import net.apptronic.core.base.observable.subject.ValueHolder
-import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.Entity
-import net.apptronic.core.component.entity.EntitySubscription
 import net.apptronic.core.component.entity.base.SubjectEntity
 import net.apptronic.core.component.entity.collectContext
 import net.apptronic.core.component.entity.subscribe
-import net.apptronic.core.component.entity.subscriptions.ContextSubjectWrapper
 
 /**
  * Use current entity as signal source and when it emits any value - send last value from [source]
