@@ -18,8 +18,8 @@ abstract class ObservableEntity<T> : BaseEntity<T>() {
 
     protected abstract val observable: Observable<T>
 
-    final override fun subscribe(targetContext: Context, observer: Observer<T>): EntitySubscription {
-        return subscriptionBuilder(targetContext).subscribe(observer, observable)
+    final override fun onSubscribeObserver(targetContext: Context, targetObserver: Observer<T>): EntitySubscription {
+        return subscriptionBuilder(targetContext).subscribe(targetObserver, observable)
     }
 
 }

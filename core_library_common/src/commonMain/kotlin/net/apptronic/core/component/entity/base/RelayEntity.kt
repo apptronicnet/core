@@ -14,8 +14,7 @@ abstract class RelayEntity<T>(val source: Entity<T>) : BaseEntity<T>() {
 
     final override val context: Context = source.context
 
-    final override fun subscribe(targetContext: Context, observer: Observer<T>): EntitySubscription {
-        val targetObserver = proceedObserver(targetContext, observer)
+    final override fun onSubscribeObserver(targetContext: Context, targetObserver: Observer<T>): EntitySubscription {
         return source.subscribe(targetContext) { value ->
             onNext(value, targetObserver)
         }
@@ -24,7 +23,7 @@ abstract class RelayEntity<T>(val source: Entity<T>) : BaseEntity<T>() {
     /**
      * Provide real observer for [target]
      */
-    open fun proceedObserver(targetContext: Context, target: Observer<T>) : Observer<T> {
+    open fun onSubscribe(targetContext: Context, target: Observer<T>): Observer<T> {
         return target
     }
 

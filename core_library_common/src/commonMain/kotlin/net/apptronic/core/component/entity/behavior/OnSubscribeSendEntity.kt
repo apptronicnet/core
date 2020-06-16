@@ -4,7 +4,6 @@ import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.component.asEvent
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.Entity
-import net.apptronic.core.component.entity.EntitySubscription
 import net.apptronic.core.component.entity.base.RelayEntity
 
 fun <T> Entity<T>.onSubscribe(onSubscribeValueProvider: () -> T): Entity<T> {
@@ -20,9 +19,9 @@ private class OnSubscribeSendEntity<T>(
         private val onSubscribeValueProvider: () -> T
 ) : RelayEntity<T>(source.asEvent()) {
 
-    override fun proceedObserver(targetContext: Context, target: Observer<T>): Observer<T> {
-        target.notify(onSubscribeValueProvider.invoke())
-        return super.proceedObserver(targetContext, target)
+    override fun onNewObserver(targetContext: Context, observer: Observer<T>): Observer<T> {
+        observer.notify(onSubscribeValueProvider.invoke())
+        return super.onNewObserver(targetContext, observer)
     }
 
 }

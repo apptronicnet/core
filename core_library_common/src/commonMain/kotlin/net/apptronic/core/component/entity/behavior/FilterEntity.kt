@@ -52,7 +52,7 @@ private class FilterEntitySuspend<T>(
         private val filterFunction: suspend CoroutineScope.(T) -> Boolean
 ) : RelayEntity<T>(source) {
 
-    override fun proceedObserver(targetContext: Context, target: Observer<T>): Observer<T> {
+    override fun onSubscribe(targetContext: Context, target: Observer<T>): Observer<T> {
         val coroutineLauncher = targetContext.coroutineLauncherScoped().serial()
         return FilterSuspendObserver(target, coroutineLauncher, filterFunction)
     }

@@ -4,9 +4,7 @@ import net.apptronic.core.base.observable.subject.ValueHolder
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.coroutines.coroutineLauncherLocal
 import net.apptronic.core.component.entity.base.EntityValue
-import net.apptronic.core.component.entity.base.ObservableEntity
 import net.apptronic.core.component.entity.base.SubjectEntity
-import net.apptronic.core.component.entity.entities.ComponentEntity
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelParent
 

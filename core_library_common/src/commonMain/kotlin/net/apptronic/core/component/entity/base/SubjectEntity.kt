@@ -16,8 +16,8 @@ abstract class SubjectEntity<T> : BaseEntity<T>() {
 
     protected abstract val subject: Subject<T>
 
-    final override fun subscribe(targetContext: Context, observer: Observer<T>): EntitySubscription {
-        return subscriptionBuilder(targetContext).subscribe(observer, subject)
+    final override fun onSubscribeObserver(targetContext: Context, targetObserver: Observer<T>): EntitySubscription {
+        return subscriptionBuilder(targetContext).subscribe(targetObserver, subject)
     }
 
 }

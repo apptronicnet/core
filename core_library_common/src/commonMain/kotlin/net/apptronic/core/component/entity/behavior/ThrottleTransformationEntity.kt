@@ -44,8 +44,8 @@ private class ThrottleTransformationEntity<Source, Result>(
         }
     }
 
-    override fun subscribe(targetContext: Context, observer: Observer<Result>): EntitySubscription {
-        return resultObservable.subscribe(targetContext, observer)
+    override fun onSubscribeObserver(targetContext: Context, targetObserver: Observer<Result>): EntitySubscription {
+        return resultObservable.subscribe(targetContext, targetObserver)
     }
 
     override fun notify(value: Result) {

@@ -14,7 +14,7 @@ class DistinctUntilChangedEntity<T>(
         source: Entity<T>
 ) : RelayEntity<T>(source) {
 
-    override fun proceedObserver(targetContext: Context, target: Observer<T>): Observer<T> {
+    override fun onSubscribe(targetContext: Context, target: Observer<T>): Observer<T> {
         return DistinctUntilChangedObserver(target)
     }
 

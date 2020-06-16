@@ -20,7 +20,7 @@ private class DelayEntity<T>(
         private val timeInMillisProvider: (T) -> Long
 ) : RelayEntity<T>(source) {
 
-    override fun proceedObserver(targetContext: Context, target: Observer<T>): Observer<T> {
+    override fun onSubscribe(targetContext: Context, target: Observer<T>): Observer<T> {
         val coroutineLauncher = targetContext.coroutineLauncherScoped()
         return DelayObserver(target, coroutineLauncher, timeInMillisProvider)
     }

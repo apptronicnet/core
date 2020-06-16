@@ -1,10 +1,8 @@
 package net.apptronic.core.component.entity.entities
 
-import net.apptronic.core.base.observable.Observable
-import net.apptronic.core.base.observable.distinctUntilChanged
 import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.entity.base.UpdateEntity
 import net.apptronic.core.component.entity.ValueNotSetException
+import net.apptronic.core.component.entity.base.UpdateEntity
 
 abstract class AbstractValue<T>(context: Context) : Property<T>(context), UpdateEntity<T> {
 

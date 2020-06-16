@@ -6,7 +6,6 @@ import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.coroutines.CoroutineLauncher
 import net.apptronic.core.component.coroutines.coroutineLauncherScoped
 import net.apptronic.core.component.entity.Entity
-import net.apptronic.core.component.entity.EntitySubscription
 import net.apptronic.core.component.entity.base.RelayEntity
 
 // TODO missing documentation
@@ -30,7 +29,7 @@ private class DebounceEntity<T>(
         val delay: Long
 ) : RelayEntity<T>(source) {
 
-    override fun proceedObserver(targetContext: Context, target: Observer<T>): Observer<T> {
+    override fun onSubscribe(targetContext: Context, target: Observer<T>): Observer<T> {
         val coroutineLauncher = targetContext.coroutineLauncherScoped()
         return DebounceObserver(coroutineLauncher, target, interval, delay)
     }

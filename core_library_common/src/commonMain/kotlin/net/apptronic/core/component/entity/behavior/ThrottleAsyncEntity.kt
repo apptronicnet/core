@@ -20,7 +20,7 @@ private class ThrottleAsyncEntity<T>(
         source: Entity<T>
 ) : RelayEntity<T>(source) {
 
-    override fun proceedObserver(targetContext: Context, target: Observer<T>): Observer<T> {
+    override fun onSubscribe(targetContext: Context, target: Observer<T>): Observer<T> {
         return ThrottleAsyncObserver(targetContext.coroutineLauncherScoped(), target)
     }
 
