@@ -6,7 +6,7 @@ import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.EntitySubscription
 
 /**
- * Def
+ * Defines lifecycle.
  */
 class Lifecycle internal constructor() {
 

@@ -1,6 +1,5 @@
 package net.apptronic.core.mvvm.viewmodel.navigation
 
-import net.apptronic.core.base.observable.Observable
 import net.apptronic.core.base.observable.subject.BehaviorSubject
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelStackAdapter
@@ -9,7 +8,7 @@ class StackNavigator(
         parent: ViewModel
 ) : Navigator<StackNavigatorStatus>(
         parent
-), VisibilityFilterableNavigator {
+), StackNavigationModel, VisibilityFilterableNavigator {
 
     private data class State(
             val isInProgress: Boolean,
@@ -69,12 +68,12 @@ class StackNavigator(
         return visibilityFilters
     }
 
-    fun set(value: ViewModel?) {
-        clearAndSet(value)
-    }
-
     override fun get(): StackNavigatorStatus {
         return subject.getValue()!!.value
+    }
+
+    override fun getStack(): List<ViewModel> {
+        return stack.map { it.getViewModel() }
     }
 
     override fun getOrNull(): StackNavigatorStatus {
@@ -167,7 +166,7 @@ class StackNavigator(
     /**
      * Get size of stack
      */
-    fun getSize(): Int {
+    override fun getSize(): Int {
         return stack.size
     }
 
@@ -186,7 +185,7 @@ class StackNavigator(
         }
     }
 
-    fun getItemAt(index: Int): ViewModel {
+    override fun getItemAt(index: Int): ViewModel {
         return stack[index].getViewModel()
     }
 
@@ -199,14 +198,11 @@ class StackNavigator(
     /**
      * Clear all [ViewModel]s from stack
      */
-    fun clear(transitionInfo: Any? = null) {
+    override fun clear(transitionInfo: Any?) {
         clearAndSet(null, transitionInfo)
     }
 
-    /**
-     * Replace current [ViewModel] and all [ViewModel]s from stack by new [viewModel]
-     */
-    fun replaceAll(viewModel: ViewModel, transitionInfo: Any? = null) {
+    override fun replaceAll(viewModel: ViewModel, transitionInfo: Any?) {
         clearAndSet(viewModel, transitionInfo)
     }
 
@@ -233,18 +229,12 @@ class StackNavigator(
         }
     }
 
-    /**
-     * Add [ViewModel] to stack
-     */
-    fun add(viewModel: ViewModel, transitionInfo: Any? = null) {
+    override fun add(viewModel: ViewModel, transitionInfo: Any?) {
         addStackItem(viewModel)
         postRefreshState(transitionInfo)
     }
 
-    /**
-     * Replace last [ViewModel] in stack
-     */
-    fun replace(viewModel: ViewModel, transitionInfo: Any? = null) {
+    override fun replace(viewModel: ViewModel, transitionInfo: Any?) {
         val actualItem = currentState.actualItem
         if (actualItem != null) {
             removeFromStack(actualItem)
@@ -253,11 +243,7 @@ class StackNavigator(
         postRefreshState(transitionInfo)
     }
 
-    /**
-     * Remove specific [ViewModel] for stack
-     * @param transitionInfo will be used only if this [ViewModel] is now active
-     */
-    fun remove(viewModel: ViewModel, transitionInfo: Any? = null) {
+    override fun remove(viewModel: ViewModel, transitionInfo: Any?) {
         val currentItem = stack.lastOrNull {
             it.getViewModel() == viewModel
         }
@@ -271,59 +257,7 @@ class StackNavigator(
         }
     }
 
-    /**
-     * Remove last [ViewModel] from stack and return back to previous. Will do nothing if stack is
-     * empty
-     * @return true if last model removed from stack
-     */
-    fun removeLast(transitionInfo: Any? = null): Boolean {
-        val actualItem = currentState.actualItem
-        return if (actualItem != null) {
-            remove(actualItem.getViewModel(), transitionInfo)
-            true
-        } else {
-            false
-        }
-    }
-
-    /**
-     * Remove last [ViewModel] from stack and return back to previous. Will do nothing if stack is
-     * empty or if current [ViewModel] is single in stack
-     * @return true if last model removed from stack
-     */
-    fun popBackStack(transitionInfo: Any? = null): Boolean {
-        return if (getSize() > 1) {
-            removeLast(transitionInfo)
-            true
-        } else {
-            false
-        }
-    }
-
-    /**
-     * Remove last [ViewModel] from stack or execute action if current model is
-     * last or no model in stack
-     */
-    fun navigateBack(actionIfEmpty: () -> Unit) {
-        navigateBack(null, actionIfEmpty)
-    }
-
-    /**
-     * Remove last [ViewModel] from stack or execute action if current model is
-     * last or no model in stack
-     */
-    fun navigateBack(transitionInfo: Any?, actionIfEmpty: () -> Unit) {
-        if (!popBackStack(transitionInfo)) {
-            actionIfEmpty()
-        }
-    }
-
-    /**
-     * Remove all [ViewModel]s from stack which are placed after specified [viewModel].
-     * Will do nothing if stack is empty of [viewModel] is not present in stack
-     * @return true if anything is removed from stack
-     */
-    fun popBackStackTo(viewModel: ViewModel, transitionInfo: Any? = null): Boolean {
+    override fun popBackStackTo(viewModel: ViewModel, transitionInfo: Any?): Boolean {
         return if (stack.any { it.getViewModel() == viewModel } && stack.lastOrNull()?.getViewModel() != viewModel) {
             while (stack.isNotEmpty() && stack.lastOrNull()?.getViewModel() != viewModel) {
                 removeFromStack(stack.last())

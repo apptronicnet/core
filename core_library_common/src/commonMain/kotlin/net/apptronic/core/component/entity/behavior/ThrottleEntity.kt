@@ -8,22 +8,29 @@ import net.apptronic.core.component.coroutines.coroutineLauncherScoped
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.base.RelayEntity
 
-// TODO missing documentation
-fun <T> Entity<T>.debounce(
+/**
+ * Creates new [Entity] which re-emits items from source, but applying filtering to prevent emitting items
+ * too frequently.
+ *
+ * @param interval min interval for emitting items. If next item from source is emitted before [interval] ended
+ * it will be stored. When [interval] passed only last stored value will be emitted.
+ * @param delay adds min delay for emitting next item from source.
+ */
+fun <T> Entity<T>.throttle(
         interval: Long,
         delay: Long = 0
 ): Entity<T> {
-    return DebounceEntity(this, interval, delay)
+    return ThrottleEntity(this, interval, delay)
 }
 
-fun <T> Entity<T>.debounceAndStore(
+fun <T> Entity<T>.throttleAndStore(
         interval: Long,
         delay: Long = 0
 ): Entity<T> {
-    return debounce(interval, delay).storeLatest()
+    return throttle(interval, delay).storeLatest()
 }
 
-private class DebounceEntity<T>(
+private class ThrottleEntity<T>(
         source: Entity<T>,
         val interval: Long,
         val delay: Long
@@ -31,12 +38,12 @@ private class DebounceEntity<T>(
 
     override fun onSubscribe(targetContext: Context, target: Observer<T>): Observer<T> {
         val coroutineLauncher = targetContext.coroutineLauncherScoped()
-        return DebounceObserver(coroutineLauncher, target, interval, delay)
+        return ThrottleObserver(coroutineLauncher, target, interval, delay)
     }
 
 }
 
-private class DebounceObserver<T>(
+private class ThrottleObserver<T>(
         private val coroutineLauncher: CoroutineLauncher,
         val target: Observer<T>,
         val interval: Long,
@@ -62,7 +69,6 @@ private class DebounceObserver<T>(
                         kotlinx.coroutines.delay(delay)
                     }
                     sendNext()
-
                 }
             } else {
                 target.notify(value)

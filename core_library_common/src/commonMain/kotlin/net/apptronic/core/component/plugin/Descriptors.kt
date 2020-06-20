@@ -18,10 +18,16 @@ fun <T : Any> extensionDescriptor(clz: KClass<T>): ExtensionDescriptor<T> {
     return ExtensionDescriptor(clz)
 }
 
+/**
+ * Defines type of [Plugin].
+ */
 class PluginDescriptor<T : Plugin> internal constructor(
         private val clz: KClass<T>
 )
 
+/**
+ * Defines type of extension.
+ */
 class ExtensionDescriptor<T : Any> internal constructor(
         private val clz: KClass<T>
 )

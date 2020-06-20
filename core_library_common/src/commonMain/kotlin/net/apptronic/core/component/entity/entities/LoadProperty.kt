@@ -9,25 +9,26 @@ import net.apptronic.core.component.asProperty
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.coroutines.coroutineLauncherScoped
 import net.apptronic.core.component.entity.Entity
+import net.apptronic.core.component.entity.behavior.delay
 import net.apptronic.core.component.entity.functions.not
 import net.apptronic.core.component.entity.functions.or
 import net.apptronic.core.component.entity.subscribe
 
-fun <T> Component.genericLoadProperty(lazy: Boolean = false, loadFunction: suspend CoroutineScope.(Unit) -> T): LoadProperty<Unit, T> {
-    return LoadProperty<Unit, T>(context, loadFunction).also { property ->
+fun <T> Component.genericLoadProperty(lazy: Boolean = false, delay: Long = 0L, loadFunction: suspend CoroutineScope.(Unit) -> T): LoadProperty<Unit, T> {
+    return LoadProperty<Unit, T>(context, delay, loadFunction).also { property ->
         property.setLazy(lazy)
         property.reload(Unit)
     }
 }
 
-fun <R, T> Component.loadProperty(lazy: Boolean = false, loadFunction: suspend CoroutineScope.(R) -> T): LoadProperty<R, T> {
-    return LoadProperty<R, T>(context, loadFunction).also { property ->
+fun <R, T> Component.loadProperty(lazy: Boolean = false, delay: Long = 0L, loadFunction: suspend CoroutineScope.(R) -> T): LoadProperty<R, T> {
+    return LoadProperty<R, T>(context, delay, loadFunction).also { property ->
         property.setLazy(lazy)
     }
 }
 
-fun <R, T> Component.loadProperty(requestSource: Entity<R>, lazy: Boolean = false, loadFunction: suspend CoroutineScope.(R) -> T): LoadProperty<R, T> {
-    return LoadProperty<R, T>(context, loadFunction).also { property ->
+fun <R, T> Component.loadProperty(requestSource: Entity<R>, lazy: Boolean = false, delay: Long = 0L, loadFunction: suspend CoroutineScope.(R) -> T): LoadProperty<R, T> {
+    return LoadProperty<R, T>(context, delay, loadFunction).also { property ->
         property.setLazy(lazy)
         requestSource.subscribe {
             property.reload(it)
@@ -40,9 +41,13 @@ fun <R, T> Component.loadProperty(requestSource: Entity<R>, lazy: Boolean = fals
  *
  * This is useful when source for data is not another [Entity] but some external resource like database, file or remote
  * network API. In this case it is possible to trigger reloading of data when needed.
+ *
+ * @param delay added after each successful or failed loading before getting next request to prevent too frequent
+ * refreshing of data.
  */
 class LoadProperty<R, T>(
         context: Context,
+        private val delay: Long = 0L,
         private val loadFunction: suspend CoroutineScope.(R) -> T
 ) : Property<T>(context) {
 
@@ -130,6 +135,9 @@ class LoadProperty<R, T>(
                     throw e
                 } catch (e: Exception) {
                     onError(e)
+                }
+                if (delay > 0L) {
+                    delay(delay)
                 }
                 isReloading = false
                 if (scheduleReload) {

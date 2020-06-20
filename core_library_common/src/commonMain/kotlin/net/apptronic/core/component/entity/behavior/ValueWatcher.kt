@@ -3,13 +3,17 @@ package net.apptronic.core.component.entity.behavior
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.base.observable.subject.ValueHolder
 import net.apptronic.core.component.entity.Entity
+import net.apptronic.core.component.entity.EntitySubscription
+import net.apptronic.core.component.entity.base.RelayEntity
+import net.apptronic.core.component.entity.subscribe
+import net.apptronic.core.component.entity.subscriptions.EntitySubscriptionListener
 import net.apptronic.core.component.lifecycle.LifecycleStage
 
 fun <T> Entity<T>.watch(): ValueWatcher<T> {
     return ValueWatcherImpl(this)
 }
 
-interface ValueWatcher<T> {
+interface ValueWatcher<T> : Entity<T> {
 
     /**
      * Execute some [action] for each value in target [Entity], but ignoring case when new values is same as
@@ -33,11 +37,16 @@ interface ValueWatcher<T> {
      */
     fun forEachRecycledValue(action: (T) -> Unit): ValueWatcher<T>
 
+    /**
+     * Subscribe to target [Entity] and wait until it will unsubscribe automatically by lifecycle conditions.
+     */
+    fun whenAutoUnsubscribed(action: () -> Unit)
+
 }
 
 private class ValueWatcherImpl<T>(
-        private val source: Entity<T>
-) : ValueWatcher<T> {
+        source: Entity<T>
+) : RelayEntity<T>(source), ValueWatcher<T> {
 
     override fun forEachValue(action: (T) -> Unit): ValueWatcher<T> {
         source.subscribe(ValueActionHolder(action))
@@ -104,6 +113,17 @@ private class ValueWatcherImpl<T>(
             }
             valueHolder = null
         }
+    }
+
+    override fun whenAutoUnsubscribed(action: () -> Unit) {
+        val subscription = source.subscribe {
+            // ignore
+        }
+        subscription.registerListener(object : EntitySubscriptionListener {
+            override fun onUnsubscribed(subscription: EntitySubscription) {
+                action.invoke()
+            }
+        })
     }
 
 }
