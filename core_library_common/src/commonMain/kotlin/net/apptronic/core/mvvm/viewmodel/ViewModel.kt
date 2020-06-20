@@ -19,7 +19,7 @@ import net.apptronic.core.mvvm.viewmodel.navigation.*
 
 open class ViewModel : Component {
 
-    final override val context: Context
+    final override val context: ViewModelContext
 
     private val isCreated = BehaviorSubject<Boolean>()
     private val isBound = BehaviorSubject<Boolean>()
