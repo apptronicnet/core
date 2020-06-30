@@ -2,7 +2,7 @@ buildscript {
     ext.kotlin_version = "1.3.72"
     ext.coroutines_version = "1.3.5"
     ext.junit_version = "4.12"
-    ext.library_core_version = "0.3.0.1"
+    ext.library_core_version = "0.3.0.2"
     repositories {
         google()
         gradlePluginPortal()
@@ -36,14 +36,14 @@ group = "net.apptronic.core"
 version = ext.library_core_version
 
 kotlin {
-    iosX64("ios") {
-        binaries {
-            framework {
-//                freeCompilerArgs.add("-Xobjc-generics")
-                compilations.main {}
-            }
-        }
-    }
+//    iosX64("ios") {
+//        binaries {
+//            framework {
+////                freeCompilerArgs.add("-Xobjc-generics")
+//                compilations.main {}
+//            }
+//        }
+//    }
     jvm()
     sourceSets {
         commonMain {
@@ -70,11 +70,11 @@ kotlin {
                 implementation kotlin("test-junit")
             }
         }
-        iosMain {
-            dependencies {
-                implementation kotlin("stdlib-common")
-            }
-        }
+//        iosMain {
+//            dependencies {
+//                implementation kotlin("stdlib-common")
+//            }
+//        }
     }
     targets {
         configure([]) {
@@ -110,21 +110,21 @@ publishing {
     }
 }
 
-task copyFramework {
-    def buildType = project.findProperty('kotlin.build.type') ?: 'DEBUG'
-    def target = project.findProperty('kotlin.target') ?: 'ios'
-    dependsOn kotlin.targets."$target".binaries.getFramework(buildType).linkTask
-
-    doLast {
-        def srcFile = kotlin.targets."$target".binaries.getFramework(buildType).outputFile
-        def targetDir = rootProject.file("../lib_ios/framework")
-        delete fileTree(dir: targetDir)
-        targetDir.mkdirs()
-        copy {
-            from srcFile.parent
-            into targetDir
-            include 'core_library_common.framework/**'
-            include 'core_library_common.framework.dSYM'
-        }
-    }
-}
+//task copyFramework {
+//    def buildType = project.findProperty('kotlin.build.type') ?: 'DEBUG'
+//    def target = project.findProperty('kotlin.target') ?: 'ios'
+//    dependsOn kotlin.targets."$target".binaries.getFramework(buildType).linkTask
+//
+//    doLast {
+//        def srcFile = kotlin.targets."$target".binaries.getFramework(buildType).outputFile
+//        def targetDir = rootProject.file("../lib_ios/framework")
+//        delete fileTree(dir: targetDir)
+//        targetDir.mkdirs()
+//        copy {
+//            from srcFile.parent
+//            into targetDir
+//            include 'core_library_common.framework/**'
+//            include 'core_library_common.framework.dSYM'
+//        }
+//    }
+//}
