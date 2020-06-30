@@ -1,10 +1,12 @@
 package net.apptronic.core.component.coroutines
 
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import net.apptronic.core.component.Component
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.lifecycle.Lifecycle
 import net.apptronic.core.component.lifecycle.LifecycleStage
+import kotlin.coroutines.CoroutineContext
 
 interface CoroutineLaunchers {
 
@@ -35,6 +37,14 @@ fun Context.coroutineLaunchers(): CoroutineLaunchers {
 
 fun Component.coroutineLaunchers(): CoroutineLaunchers {
     return CoroutineLaunchersImpl(context)
+}
+
+fun Component.coroutineDispatcher(descriptor: CoroutineDispatcherDescriptor): CoroutineDispatcher {
+    return context.coroutineDispatchers[descriptor]
+}
+
+fun Component.backgroundDispatcher(priority: Int = PRIORITY_MEDIUM): CoroutineContext {
+    return context.coroutineDispatchers[BackgroundPriorityDispatcherDescriptor].backgroundPriority(priority)
 }
 
 private class CoroutineLaunchersImpl(private val context: Context) : CoroutineLaunchers {

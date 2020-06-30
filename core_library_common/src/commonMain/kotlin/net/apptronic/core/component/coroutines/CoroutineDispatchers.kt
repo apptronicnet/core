@@ -12,6 +12,7 @@ fun standardCoroutineDispatchers(): CoroutineDispatchers {
         it[MainDispatcherDescriptor] = Dispatchers.Main
         it[BackgroundDispatcherDescriptor] = Dispatchers.Default
         it[UnconfinedDispatcherDescriptor] = Dispatchers.Unconfined
+        it[BackgroundPriorityDispatcherDescriptor] = BackgroundPriorityDispatcher(Dispatchers.Main, Dispatchers.Default)
     }
 }
 

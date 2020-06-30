@@ -10,8 +10,8 @@ const val PRIORITY_HIGH = 100
 const val PRIORITY_HIGHEST = 10
 const val PRIORITY_URGENT = 1
 
-fun backgroundPriority(priority: Int): CoroutineContext {
-    return BackgroundDispatcher + CoroutineContextPriority(priority)
+fun CoroutineDispatcher.backgroundPriority(priority: Int): CoroutineContext {
+    return this + CoroutineContextPriority(priority)
 }
 
 private object CoroutinePriorityKey : CoroutineContext.Key<CoroutineContextPriority>
@@ -25,16 +25,17 @@ private class CoroutineContextPriority(
 
 }
 
-private val BackgroundDispatcher: CoroutineDispatcher = BackgroundDispatcherImpl()
+internal val BackgroundPriorityDispatcherDescriptor = coroutineDispatcherDescriptor("BackgroundPriorityDispatcher")
 
-private class BackgroundDispatcherImpl : CoroutineDispatcher() {
+class BackgroundPriorityDispatcher(
+        private val schedulerDispatcher: CoroutineDispatcher,
+        private val targetDispatcher: CoroutineDispatcher
+) : CoroutineDispatcher() {
 
-    private val internalScope = CoroutineScope(CoroutineName("BackgroundDispatcher"))
+    private val internalScope = CoroutineScope(CoroutineName("BackgroundDispatcher") + schedulerDispatcher + Job())
 
     private val maxThreads = 2
     private var running = 0
-
-    private val targetDispatcher = Dispatchers.Default
 
     inner class CoroutineBlock(
             private val context: CoroutineContext,
@@ -50,7 +51,7 @@ private class BackgroundDispatcherImpl : CoroutineDispatcher() {
             try {
                 block.run()
             } finally {
-                internalScope.launch(Dispatchers.Main) {
+                internalScope.launch {
                     running--
                     dispatchNext()
                 }
@@ -67,11 +68,12 @@ private class BackgroundDispatcherImpl : CoroutineDispatcher() {
     private val coroutineQueue = mutableListOf<CoroutineBlock>()
 
     override fun dispatch(context: CoroutineContext, block: Runnable) {
-        internalScope.launch(Dispatchers.Main) {
+        internalScope.launch(schedulerDispatcher) {
             val priorityContext = context[CoroutinePriorityKey]
             val priority = priorityContext?.priority ?: PRIORITY_MEDIUM
             coroutineQueue.add(CoroutineBlock(context, priority, block))
             coroutineQueue.sort()
+            dispatchNext()
         }
     }
 
