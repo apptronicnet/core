@@ -22,7 +22,7 @@ Base architecture brick is **Context**
  - <ins>Dependency Dispatcher</ins> is responsible for managing DI modules, instances and scopes.
  - <ins>Lifecycle</ins> is stack-based manager for <ins>Lifecycle Stages</ins>
  - <ins>Lifecycle Stage</ins> is "level" of current state of **Context**. Each <ins>Lifecycle</ins> creates with default Root Stage, and additional stages can be added while defining **Context**
- - <ins>Plugins</ins> can be used to add additional functionality to Framework without modifying its code. They used to add concrete platform integration and can add common features to the whole app for specific app project.
+ - <ins>Plugins</ins> can be used to add additional functionality to Framework without modifying its code. They used to add specific platform integration and can add common features to the whole app for specific app project.
  
  **Context** itself does not contain any logic. To implement some logic it needed to create **Component** in concrete **Context**:
 
