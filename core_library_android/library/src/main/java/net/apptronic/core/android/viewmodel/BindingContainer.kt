@@ -8,6 +8,10 @@ interface BindingContainer {
 
     fun add(binding: Binding)
 
+    operator fun Binding.unaryPlus() {
+        add(this)
+    }
+
 }
 
 internal class Bindings(
