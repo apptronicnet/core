@@ -2,6 +2,7 @@ package net.apptronic.core.component.coroutines
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import net.apptronic.core.component.Component
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.lifecycle.Lifecycle
@@ -43,8 +44,36 @@ fun Component.coroutineDispatcher(descriptor: CoroutineDispatcherDescriptor): Co
     return context.coroutineDispatchers[descriptor]
 }
 
-fun Component.backgroundDispatcher(priority: Int = PRIORITY_MEDIUM): CoroutineContext {
-    return context.coroutineDispatchers[BackgroundPriorityDispatcherDescriptor].backgroundPriority(priority)
+/**
+ * [CoroutineDispatcher] which matches to [Dispatchers.Main] (if not overridden by [Context])
+ */
+val Component.mainDispatcher: CoroutineContext
+    get() {
+        return coroutineDispatcher(MainDispatcherDescriptor)
+    }
+
+/**
+ * [CoroutineDispatcher] which matches to [Dispatchers.Default] (if not overridden by [Context])
+ */
+val Component.defaultDispatcher: CoroutineContext
+    get() {
+        return coroutineDispatcher(BackgroundDispatcherDescriptor)
+    }
+
+/**
+ * [CoroutineDispatcher] which matches to [Dispatchers.Unconfined] (if not overridden by [Context])
+ */
+val Component.unconfinedDispatcher: CoroutineContext
+    get() {
+        return coroutineDispatcher(UnconfinedDispatcherDescriptor)
+    }
+
+/**
+ * Get [CoroutineContext] which uses to [Dispatchers.Default] and executes all coroutines with specified
+ * [priority] (if not overridden by [Context])
+ */
+fun Component.priorityDispatcher(priority: Int = PRIORITY_MEDIUM): CoroutineContext {
+    return context.coroutineDispatchers[BackgroundPriorityDispatcherDescriptor].withPriority(priority)
 }
 
 private class CoroutineLaunchersImpl(private val context: Context) : CoroutineLaunchers {

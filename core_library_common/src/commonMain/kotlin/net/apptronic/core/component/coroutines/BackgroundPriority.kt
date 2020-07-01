@@ -10,7 +10,7 @@ const val PRIORITY_HIGH = 100
 const val PRIORITY_HIGHEST = 10
 const val PRIORITY_URGENT = 1
 
-fun CoroutineDispatcher.backgroundPriority(priority: Int): CoroutineContext {
+fun CoroutineDispatcher.withPriority(priority: Int): CoroutineContext {
     return this + CoroutineContextPriority(priority)
 }
 
@@ -25,16 +25,14 @@ private class CoroutineContextPriority(
 
 }
 
-internal val BackgroundPriorityDispatcherDescriptor = coroutineDispatcherDescriptor("BackgroundPriorityDispatcher")
-
 class BackgroundPriorityDispatcher(
         private val schedulerDispatcher: CoroutineDispatcher,
-        private val targetDispatcher: CoroutineDispatcher
+        private val targetDispatcher: CoroutineDispatcher,
+        private val maxThreads: Int = 2
 ) : CoroutineDispatcher() {
 
     private val internalScope = CoroutineScope(CoroutineName("BackgroundDispatcher") + schedulerDispatcher + Job())
 
-    private val maxThreads = 2
     private var running = 0
 
     inner class CoroutineBlock(

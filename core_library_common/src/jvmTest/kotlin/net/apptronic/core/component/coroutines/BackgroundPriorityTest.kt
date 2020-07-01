@@ -24,9 +24,9 @@ class BackgroundPriorityTest {
     @Test
     fun shouldRunWithPriority() {
         val dispatcher = BackgroundPriorityDispatcher(single, Dispatchers.Default)
-        val high = dispatcher.backgroundPriority(PRIORITY_HIGH)
-        val medium = dispatcher.backgroundPriority(PRIORITY_MEDIUM)
-        val low = dispatcher.backgroundPriority(PRIORITY_LOW)
+        val high = dispatcher.withPriority(PRIORITY_HIGH)
+        val medium = dispatcher.withPriority(PRIORITY_MEDIUM)
+        val low = dispatcher.withPriority(PRIORITY_LOW)
 
         dispatch(low, "Low-1")
         dispatch(low, "Low-2")

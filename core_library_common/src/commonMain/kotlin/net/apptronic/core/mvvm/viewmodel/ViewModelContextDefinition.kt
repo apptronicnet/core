@@ -12,7 +12,7 @@ fun defineViewModelContext(
     return ViewModelContextDefinition(name, contextBuilder)
 }
 
-class ViewModelContextDefinition(
+private class ViewModelContextDefinition(
         private val name: String,
         private val contextBuilder: ViewModelContext.() -> Unit
 ) : ContextDefinition<ViewModelContext> {

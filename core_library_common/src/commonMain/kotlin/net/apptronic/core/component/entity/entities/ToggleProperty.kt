@@ -19,4 +19,14 @@ class ToggleProperty<T>(
         subject.update(values[index])
     }
 
+    fun toggleTo(value: T): Boolean {
+        index = values.indexOf(value)
+        return if (index >= 0) {
+            subject.update(values[index])
+            true
+        } else {
+            false
+        }
+    }
+
 }

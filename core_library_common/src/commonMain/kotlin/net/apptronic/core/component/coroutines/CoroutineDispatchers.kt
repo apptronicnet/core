@@ -6,6 +6,7 @@ import kotlinx.coroutines.Dispatchers
 val MainDispatcherDescriptor = coroutineDispatcherDescriptor("Main")
 val BackgroundDispatcherDescriptor = coroutineDispatcherDescriptor("Background")
 val UnconfinedDispatcherDescriptor = coroutineDispatcherDescriptor("Unconfined")
+val BackgroundPriorityDispatcherDescriptor = coroutineDispatcherDescriptor("BackgroundPriorityDispatcher")
 
 fun standardCoroutineDispatchers(): CoroutineDispatchers {
     return CoroutineDispatchers(Dispatchers.Main).also {
