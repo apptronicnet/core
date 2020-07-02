@@ -3,10 +3,9 @@ package net.apptronic.core.android.viewmodel.navigation
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
-import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.DecelerateInterpolator
-import android.view.animation.TranslateAnimation
-import net.apptronic.core.android.utils.onAnimationEnd
+import android.view.animation.Interpolator
+import net.apptronic.core.android.utils.TransitionAnimation
 import net.apptronic.core.base.android.R
 import kotlin.math.max
 import kotlin.math.min
@@ -56,8 +55,12 @@ class BackStackNavigationFrameGestureAdapter : StackNavigationFrameGestureAdapte
         ): Boolean {
             val flingDistance = e2.x - e1.x
             if (flingDistance > detectionThreshold()) {
-                exitVelocity = velocityX
-                animateExit()
+                if (velocityX > 0f) {
+                    exitVelocity = velocityX
+                    animateExit()
+                } else {
+                    onCancel()
+                }
             }
             return true
         }
@@ -72,7 +75,7 @@ class BackStackNavigationFrameGestureAdapter : StackNavigationFrameGestureAdapte
                 setPosition(position)
                 return true
             }
-            if (event.action == MotionEvent.ACTION_UP) {
+            if (!isCancelled && event.action == MotionEvent.ACTION_UP) {
                 val moveDistance = event.x - startX
                 if (moveDistance > detectionThreshold()) {
                     animateExit()
@@ -94,65 +97,22 @@ class BackStackNavigationFrameGestureAdapter : StackNavigationFrameGestureAdapte
                 )
             } else ANIMATION_TIME
 
-            val backViewStartX = backView.translationX
-            backView.translationX = 0f
-            backView.clearAnimation()
-            backView.startAnimation(
-                TranslateAnimation(backViewStartX, 0f, 0f, 0f).apply {
-                    interpolator = DecelerateInterpolator()
-                    duration = exitDuration
-                    onAnimationEnd(backView) {
-                        backView.visibility = View.VISIBLE
-                        backView.translationX = 0f
-                    }
-                }
+            TargetTransitionX(0f, DecelerateInterpolator(), View.VISIBLE).start(
+                backView,
+                exitDuration
             )
-
-            val frontViewStartX = frontView.translationX
-            frontView.translationX = 0f
-            frontView.clearAnimation()
-            frontView.startAnimation(
-                TranslateAnimation(frontViewStartX, touchableView.width.toFloat(), 0f, 0f).apply {
-                    interpolator = DecelerateInterpolator()
-                    duration = exitDuration
-                    onAnimationEnd(frontView) {
-                        frontView.translationX = 0f
-                        backView.visibility = View.GONE
-                        target.onGestureConfirmedPopBackStack()
-                    }
-                }
-            )
+            TargetTransitionX(1f, DecelerateInterpolator(), View.GONE).doOnComplete {
+                target.onGestureConfirmedPopBackStack()
+            }.start(frontView, exitDuration)
         }
 
         override fun onCancel() {
             isCancelled = true
-            val backViewStartX = backView.translationX
-            backView.translationX = 0f
-            backView.clearAnimation()
-            backView.startAnimation(
-                TranslateAnimation(backViewStartX, backViewAnchorPoint(), 0f, 0f).apply {
-                    interpolator = AccelerateDecelerateInterpolator()
-                    duration = ANIMATION_TIME
-                    onAnimationEnd(backView) {
-                        backView.visibility = View.GONE
-                        backView.translationX = 0f
-                    }
-                }
-            )
-
-            val frontViewStartX = frontView.translationX
-            frontView.translationX = 0f
-            frontView.clearAnimation()
-            frontView.startAnimation(
-                TranslateAnimation(frontViewStartX, 0f, 0f, 0f).apply {
-                    interpolator = AccelerateDecelerateInterpolator()
-                    duration = ANIMATION_TIME
-                    onAnimationEnd(frontView) {
-                        frontView.translationX = 0f
-                        target.onGestureCancelled()
-                    }
-                }
-            )
+            TargetTransitionX(-backViewTranslation, DecelerateInterpolator(), View.GONE)
+                .start(backView, ANIMATION_TIME)
+            TargetTransitionX(0f, DecelerateInterpolator(), View.VISIBLE).doOnComplete {
+                target.onGestureCancelled()
+            }.start(frontView, ANIMATION_TIME)
         }
 
     }
@@ -182,6 +142,33 @@ class BackStackNavigationFrameGestureAdapter : StackNavigationFrameGestureAdapte
             }
         }
         return null
+    }
+
+}
+
+private class TargetTransitionX(
+    val targetTransitionsXRelative: Float,
+    override val interpolator: Interpolator,
+    val endVisibility: Int
+) : TransitionAnimation() {
+
+    var startTranslationX: Float = 0f
+
+    override fun onTransitionStarted(target: View) {
+        super.onTransitionStarted(target)
+        startTranslationX = target.translationX
+    }
+
+    override fun applyTransition(target: View, progress: Float) {
+        super.applyTransition(target, progress)
+        val targetTransitionX = target.width * targetTransitionsXRelative
+        val distance = targetTransitionX - startTranslationX
+        target.translationX = startTranslationX + (distance * progress)
+    }
+
+    override fun onTransitionCompleted(target: View) {
+        super.onTransitionCompleted(target)
+        target.visibility = endVisibility
     }
 
 }
