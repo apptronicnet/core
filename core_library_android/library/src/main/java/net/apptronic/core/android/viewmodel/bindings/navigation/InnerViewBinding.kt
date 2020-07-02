@@ -41,7 +41,7 @@ fun BindingContainer.bindInnerViewModel(
     viewBinder: ViewBinder<*>,
     bindingType: BindingType = BindingType.AUTO
 ) {
-    add(InnerViewBinding(view, viewModel, { viewBinder }, bindingType))
+    +InnerViewBinding(view, viewModel, { viewBinder }, bindingType)
 }
 
 fun BindingContainer.bindInnerViewModel(
@@ -53,7 +53,7 @@ fun BindingContainer.bindInnerViewModel(
     val resultFactory = factory
         ?: viewModel.getViewBinderFactoryFromExtension()
         ?: throw IllegalArgumentException("AndroidViewFactory should be provided by parameters or Context.installViewFactoryPlugin()")
-    add(InnerViewBinding(view, viewModel, resultFactory::getBinder, bindingType))
+    +InnerViewBinding(view, viewModel, resultFactory::getBinder, bindingType)
 }
 
 private class InnerViewBinding(

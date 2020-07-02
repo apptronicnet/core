@@ -20,63 +20,70 @@
         <Button
             android:id="@+id/loginScreenDemo"
             android:layout_marginStart="24dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="12dp"
             android:layout_marginEnd="24dp"
             android:text="Login demo" />
 
         <Button
             android:id="@+id/converterScreenDemo"
             android:layout_marginStart="24dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="12dp"
             android:layout_marginEnd="24dp"
             android:text="Converter demo" />
 
         <Button
             android:id="@+id/listScreenDemo"
             android:layout_marginStart="24dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="12dp"
             android:layout_marginEnd="24dp"
             android:text="List demo" />
 
         <Button
             android:id="@+id/pagesScreenDemo"
             android:layout_marginStart="24dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="12dp"
             android:layout_marginEnd="24dp"
             android:text="Pages demo" />
 
         <Button
             android:id="@+id/throttleScreenDemo"
             android:layout_marginStart="24dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="12dp"
             android:layout_marginEnd="24dp"
             android:text="Throttle demo" />
 
         <Button
             android:id="@+id/lazyListDemo"
             android:layout_marginStart="24dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="12dp"
             android:layout_marginEnd="24dp"
             android:text="Lazy list demo" />
 
         <Button
             android:id="@+id/filterListDemo"
             android:layout_marginStart="24dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="12dp"
             android:layout_marginEnd="24dp"
             android:text="Filter list demo" />
 
         <Button
             android:id="@+id/stackLoadingDemo"
             android:layout_marginStart="24dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="12dp"
             android:layout_marginEnd="24dp"
             android:text="Stack loading demo" />
 
         <Button
+            android:id="@+id/stackNavigationDemo"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="24dp"
+            android:text="Stack navigation demo" />
+
+        <Button
             android:id="@+id/lazyFilterListDemo"
             android:layout_marginStart="24dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="12dp"
             android:layout_marginEnd="24dp"
             android:text="Lazy filter demo" />
 

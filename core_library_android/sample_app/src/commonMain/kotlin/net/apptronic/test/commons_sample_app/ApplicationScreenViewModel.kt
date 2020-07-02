@@ -18,6 +18,7 @@ import net.apptronic.test.commons_sample_app.pager.PagerViewModel
 import net.apptronic.test.commons_sample_app.registration.RegistrationRouter
 import net.apptronic.test.commons_sample_app.registration.RegistrationViewModel
 import net.apptronic.test.commons_sample_app.stackloading.StackLoadingViewModel
+import net.apptronic.test.commons_sample_app.staknavigation.StackNavigationDemoViewModel
 import net.apptronic.test.commons_sample_app.throttle.ThrottleSampleViewModel
 
 class ApplicationScreenViewModel(parent: Context) : ViewModel(parent, EmptyViewModelContext) {
@@ -89,6 +90,13 @@ class ApplicationScreenNavigationRouterImpl(
     override fun openStackLoadingDemo() {
         parent.rootPage.add(
             StackLoadingViewModel(parent.context),
+            BasicTransition.Forward
+        )
+    }
+
+    override fun openStackNavigationModelDemo() {
+        parent.rootPage.add(
+            StackNavigationDemoViewModel(parent.context),
             BasicTransition.Forward
         )
     }

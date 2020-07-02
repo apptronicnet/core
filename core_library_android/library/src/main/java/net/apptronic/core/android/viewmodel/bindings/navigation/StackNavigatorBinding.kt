@@ -22,14 +22,12 @@ fun BindingContainer.bindStackNavigator(
     val resultFactory = factory
         ?: navigator.parent.getViewBinderFactoryFromExtension()
         ?: throw IllegalArgumentException("AndroidViewFactory should be provided by parameters or Context.installViewFactoryPlugin()")
-    add(
-        StackNavigatorBinding(
-            viewGroup,
-            navigator,
-            resultFactory,
-            stackAnimator,
-            defaultAnimationTime
-        )
+    +StackNavigatorBinding(
+        viewGroup,
+        navigator,
+        resultFactory,
+        stackAnimator,
+        defaultAnimationTime
     )
 }
 

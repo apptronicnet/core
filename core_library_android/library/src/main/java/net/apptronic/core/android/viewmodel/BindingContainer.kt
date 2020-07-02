@@ -9,7 +9,7 @@ interface BindingContainer {
     fun add(binding: Binding)
 
     operator fun Binding.unaryPlus() {
-        add(this)
+        this@BindingContainer.add(this)
     }
 
 }

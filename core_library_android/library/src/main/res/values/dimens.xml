@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="StackNavigationGesture_EdgeThreshold">16dp</dimen>
+    <dimen name="StackNavigationGesture_MaxDetectionThreshold">64dp</dimen>
+
+</resources>

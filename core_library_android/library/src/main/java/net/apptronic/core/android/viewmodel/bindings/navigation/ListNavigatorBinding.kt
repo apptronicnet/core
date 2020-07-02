@@ -24,7 +24,7 @@ fun BindingContainer.bindListNavigator(
     val resultFactory = factory
         ?: navigator.parent.getViewBinderFactoryFromExtension()
         ?: throw IllegalArgumentException("AndroidViewFactory should be provided by parameters or Context.installViewFactoryPlugin()")
-    add(ListNavigatorBinding(recyclerView, navigator, resultFactory, styleAdapter, bindingStrategy))
+    +ListNavigatorBinding(recyclerView, navigator, resultFactory, styleAdapter, bindingStrategy)
 }
 
 class ListNavigatorBinding(

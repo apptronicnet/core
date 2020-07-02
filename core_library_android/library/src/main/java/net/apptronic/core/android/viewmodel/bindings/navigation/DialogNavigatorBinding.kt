@@ -25,7 +25,7 @@ fun BindingContainer.bindDialogNavigator(
     val resultFactory = factory
         ?: navigator.parent.getViewBinderFactoryFromExtension()
         ?: throw IllegalArgumentException("AndroidViewFactory should be provided by parameters or Context.installViewFactoryPlugin()")
-    add(DialogNavigatorBinding(context, navigator, resultFactory))
+    +DialogNavigatorBinding(context, navigator, resultFactory)
 }
 
 class DialogNavigatorBinding(

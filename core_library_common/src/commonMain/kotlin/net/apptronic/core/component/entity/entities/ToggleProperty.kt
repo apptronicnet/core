@@ -14,8 +14,8 @@ class ToggleProperty<T>(
         subject.update(initValue)
     }
 
-    fun toggle() {
-        index = (index + 1) % values.size
+    fun toggle(count: Int = 1) {
+        index = (index + count) % values.size
         subject.update(values[index])
     }
 

@@ -21,6 +21,7 @@ class NavigationScreenViewBinder : ViewBinder<NavigationScreenViewModel>() {
             bindClickListener(lazyListDemo, viewModel::onClickLazyListDemo)
             bindClickListener(filterListDemo, viewModel::onClickListFilterDemo)
             bindClickListener(stackLoadingDemo, viewModel::onClickStackLoadingDemo)
+            bindClickListener(stackNavigationDemo, viewModel::onClickStackNavigationModel)
             bindClickListener(lazyFilterListDemo, viewModel::onDynamicFilterListDemo)
         }
     }

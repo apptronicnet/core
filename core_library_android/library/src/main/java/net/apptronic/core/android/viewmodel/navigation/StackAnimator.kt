@@ -22,9 +22,11 @@ open class StackAnimator {
      * @param transition specification of animation
      * @param time default time, set for animations in [ViewBinderStackAdapter]
      */
-    open fun applyEnterTransition(container: ViewGroup, view: View, transition: Any, time: Long) {
+    open fun applyEnterTransition(container: ViewGroup, view: View, transition: Any, time: Long, addView: Boolean = true) {
         val animation = createEnterAnimation(container, view, transition, time)
-        container.addView(view)
+        if (addView) {
+            container.addView(view)
+        }
         if (animation != null) {
             view.startAnimation(animation)
         }
@@ -79,13 +81,16 @@ open class StackAnimator {
      * @param transition specification of animation
      * @param time default time, set for animations in [ViewBinderStackAdapter]
      */
-    open fun applyExitTransition(container: ViewGroup, view: View, transition: Any, time: Long) {
+    open fun applyExitTransition(
+        container: ViewGroup, view: View, transition: Any, time: Long,
+        onExit: () -> Unit = { container.removeView(view) }
+    ) {
         val animation = createExitTransition(container, view, transition, time)
         if (animation != null) {
             animation.setAnimationListener(object : Animation.AnimationListener {
                 override fun onAnimationEnd(animation: Animation?) {
                     container.post {
-                        container.removeView(view)
+                        onExit.invoke()
                     }
                 }
 

@@ -1,6 +1,5 @@
 package net.apptronic.core.mvvm.viewmodel.navigation
 
-import net.apptronic.core.component.property
 import net.apptronic.core.component.value
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
@@ -19,6 +18,12 @@ fun ViewModel.stackNavigationModel(): StackNavigationViewModel {
  */
 class StackNavigationViewModel internal constructor(context: ViewModelContext) : ViewModel(context), StackNavigationModel {
 
+    init {
+        doOnUnbind {
+            clearUnusedTransitions()
+        }
+    }
+
     private val viewModels = value<List<ViewModel>>(emptyList())
 
     private class Transition(
@@ -30,11 +35,13 @@ class StackNavigationViewModel internal constructor(context: ViewModelContext) :
     private val transitions = mutableListOf<Transition>()
 
     private fun addTransition(from: ViewModel?, to: ViewModel?, transitionInfo: Any?) {
-        transitions.removeAll {
-            it.from == from && it.to == to
-        }
-        if (transitionInfo != null) {
-            transitions.add(Transition(from, to, transitionInfo))
+        if (isBound() && from != to) {
+            transitions.removeAll {
+                it.from == from && it.to == to
+            }
+            if (transitionInfo != null) {
+                transitions.add(Transition(from, to, transitionInfo))
+            }
         }
     }
 
@@ -52,13 +59,7 @@ class StackNavigationViewModel internal constructor(context: ViewModelContext) :
         val current = viewModels.get()
         val next = action(current)
         viewModels.set(next)
-        clearUnusedTransitions()
-        if (currentItemValue.get() >= getSize()) {
-            currentItemValue.set(getSize() - 1)
-        }
     }
-
-    private val currentItemValue = value(-1)
 
     /**
      * Notify adapter that user is navigated to specific [index] of stack.
@@ -66,26 +67,28 @@ class StackNavigationViewModel internal constructor(context: ViewModelContext) :
      * This will clear stack after [index].
      */
     fun onNavigated(index: Int) {
-        currentItemValue.set(index)
         update {
             it.take(index + 1)
         }
     }
 
     val listNavigator: BaseListNavigator<*> = listNavigator(viewModels)
-    val currentItem = property(currentItemValue)
 
     private fun currentViewModel(): ViewModel? {
-        return viewModels.get().getOrNull(currentItem.get())
+        return viewModels.get().getOrNull(getSize() - 1)
     }
 
     /**
      * Retrieve transitionInfo object for switching between [from] and [to] [ViewModel]s
      */
     fun getTransitionInfo(from: ViewModel?, to: ViewModel?): Any? {
-        return transitions.firstOrNull {
+        val transition = transitions.firstOrNull {
             it.from == from && it.to == to
-        }?.transitionInfo
+        }
+        if (transition != null) {
+            transitions.remove(transition)
+        }
+        return transition?.transitionInfo
     }
 
     override fun add(viewModel: ViewModel, transitionInfo: Any?) {
@@ -99,11 +102,12 @@ class StackNavigationViewModel internal constructor(context: ViewModelContext) :
     }
 
     override fun remove(viewModel: ViewModel, transitionInfo: Any?) {
-        addTransition(currentViewModel(), viewModel, transitionInfo)
-        update { previous ->
-            previous.filter {
-                it != viewModel
-            }
+        val next = viewModels.get().filter {
+            it != viewModel
+        }
+        addTransition(currentViewModel(), next.lastOrNull(), transitionInfo)
+        update {
+            next
         }
     }
 
