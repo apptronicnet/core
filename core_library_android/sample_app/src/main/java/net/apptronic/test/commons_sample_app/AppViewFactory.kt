@@ -26,6 +26,7 @@ val AppBinderFactory = viewBinderFactory {
     add(::DynamicItemViewBinder)
     add(::LazyListFilterViewBinder)
     add(::StaticFilteredItemViewBinder)
-    add(::StackNavigationViewBinder)
+    add(::GestureNavigationViewBinder)
     add(::StackNavigationItemViewBinder)
+    add(::PrevNextNavigationViewBinder)
 }

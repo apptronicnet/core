@@ -9,7 +9,6 @@ import net.apptronic.core.base.observable.subscribe
 import net.apptronic.test.commons_sample_app.R
 import net.apptronic.test.commons_sample_app.staknavigation.StackItemColor
 import net.apptronic.test.commons_sample_app.staknavigation.StackItemViewModel
-import net.apptronic.test.commons_sample_app.staknavigation.StackNavigationDemoViewModel
 
 class StackNavigationItemViewBinder : ViewBinder<StackItemViewModel>() {
 

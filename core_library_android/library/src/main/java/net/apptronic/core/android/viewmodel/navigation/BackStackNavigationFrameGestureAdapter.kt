@@ -1,16 +1,21 @@
 package net.apptronic.core.android.viewmodel.navigation
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
 import android.view.animation.DecelerateInterpolator
-import android.view.animation.Interpolator
-import net.apptronic.core.android.utils.TransitionAnimation
+import net.apptronic.core.android.viewmodel.transitions.*
 import net.apptronic.core.base.android.R
 import kotlin.math.max
 import kotlin.math.min
 
 private const val ANIMATION_TIME = 300L
+const val OVERLAP = FORWARD_BACKWARD_OVERLAP
+const val OVERLAY_ALPHA = MAX_OVERLAY_ALPHA
+const val MAX_FLING_DETECTION_THRESHOLD = 0.25f
 
 class BackStackNavigationFrameGestureAdapter : StackNavigationFrameGestureAdapter() {
 
@@ -24,13 +29,11 @@ class BackStackNavigationFrameGestureAdapter : StackNavigationFrameGestureAdapte
             touchableView.resources.getDimensionPixelSize(
                 R.dimen.StackNavigationGesture_MaxDetectionThreshold
             ).toFloat(),
-            touchableView.width.toFloat() * 0.25f
+            touchableView.width.toFloat() * MAX_FLING_DETECTION_THRESHOLD
         )
 
-        private val backViewTranslation = 0.5f
-
         private fun backViewAnchorPoint(): Float {
-            return -(touchableView.width * backViewTranslation)
+            return -(touchableView.width * OVERLAP)
         }
 
         private val startX: Float = startEvent.x
@@ -41,12 +44,19 @@ class BackStackNavigationFrameGestureAdapter : StackNavigationFrameGestureAdapte
         private val gestureDetector = GestureDetector(touchableView.context, this)
 
         init {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                backView.foreground = ColorDrawable(Color.BLACK)
+                backView.foreground.setFloatAlpha(OVERLAY_ALPHA)
+            }
             gestureDetector.onTouchEvent(startEvent)
         }
 
         private fun setPosition(position: Float) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                backView.foreground?.setFloatAlpha((1 - (position / touchableView.width)) * OVERLAY_ALPHA)
+            }
             frontView.translationX = position
-            backView.translationX = backViewAnchorPoint() + (position * backViewTranslation)
+            backView.translationX = backViewAnchorPoint() + (position * OVERLAP)
         }
 
         override fun onFling(
@@ -97,22 +107,48 @@ class BackStackNavigationFrameGestureAdapter : StackNavigationFrameGestureAdapte
                 )
             } else ANIMATION_TIME
 
-            TargetTransitionX(0f, DecelerateInterpolator(), View.VISIBLE).start(
-                backView,
-                exitDuration
-            )
-            TargetTransitionX(1f, DecelerateInterpolator(), View.GONE).doOnComplete {
-                target.onGestureConfirmedPopBackStack()
-            }.start(frontView, exitDuration)
+            TargetTransitionX(0f, touchableView, 0f)
+                .withInterpolator(DecelerateInterpolator())
+                .doOnComplete {
+                    backView.visibility = View.VISIBLE
+                }.start(backView, exitDuration)
+            TargetTransitionX(1f, touchableView)
+                .withInterpolator(DecelerateInterpolator())
+                .doOnComplete {
+                    finishComplete()
+                }.start(frontView, exitDuration)
+        }
+
+        private fun finishComplete() {
+            frontView.visibility = View.GONE
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                backView.foreground = null
+            }
+            target.onGestureConfirmedPopBackStack()
         }
 
         override fun onCancel() {
+            if (isCancelled) {
+                return
+            }
             isCancelled = true
-            TargetTransitionX(-backViewTranslation, DecelerateInterpolator(), View.GONE)
+            TargetTransitionX(-OVERLAP, touchableView, OVERLAY_ALPHA)
+                .withInterpolator(DecelerateInterpolator())
+                .doOnComplete { backView.visibility = View.GONE }
                 .start(backView, ANIMATION_TIME)
-            TargetTransitionX(0f, DecelerateInterpolator(), View.VISIBLE).doOnComplete {
-                target.onGestureCancelled()
-            }.start(frontView, ANIMATION_TIME)
+            TargetTransitionX(0f, touchableView)
+                .doOnComplete {
+                    finishCancel()
+                }.doOnCancel {
+                    finishCancel()
+                }.start(frontView, ANIMATION_TIME)
+        }
+
+        private fun finishCancel() {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                backView.foreground = null
+            }
+            target.onGestureCancelled()
         }
 
     }
@@ -148,27 +184,29 @@ class BackStackNavigationFrameGestureAdapter : StackNavigationFrameGestureAdapte
 
 private class TargetTransitionX(
     val targetTransitionsXRelative: Float,
-    override val interpolator: Interpolator,
-    val endVisibility: Int
-) : TransitionAnimation() {
+    val container: View,
+    val targetAlpha: Float? = null
+) : Transition() {
 
     var startTranslationX: Float = 0f
+    var startAlpha: Float = 0f
 
     override fun onTransitionStarted(target: View) {
         super.onTransitionStarted(target)
         startTranslationX = target.translationX
+        if (targetAlpha != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            startAlpha = (target.foreground?.alpha ?: 0).toFloat() / 255f
+        }
     }
 
-    override fun applyTransition(target: View, progress: Float) {
+    override fun applyTransition(target: View, progress: Progress) {
         super.applyTransition(target, progress)
-        val targetTransitionX = target.width * targetTransitionsXRelative
-        val distance = targetTransitionX - startTranslationX
-        target.translationX = startTranslationX + (distance * progress)
-    }
-
-    override fun onTransitionCompleted(target: View) {
-        super.onTransitionCompleted(target)
-        target.visibility = endVisibility
+        val targetTransitionX = container.width * targetTransitionsXRelative
+        val translationX = progress.interpolate(startTranslationX, targetTransitionX)
+        target.translationX = translationX
+        if (targetAlpha != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            target.foreground?.setFloatAlpha(progress.interpolate(startAlpha, targetAlpha))
+        }
     }
 
 }

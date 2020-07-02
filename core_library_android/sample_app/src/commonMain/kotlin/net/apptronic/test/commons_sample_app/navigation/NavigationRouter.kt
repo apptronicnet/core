@@ -18,7 +18,9 @@ interface NavigationRouter {
 
     fun openStackLoadingDemo()
 
-    fun openStackNavigationModelDemo()
+    fun openPrevNextNavigationDemo()
+
+    fun openGestureNavigationDemo()
 
     fun openDynamicFilterListDemo()
 

@@ -4,6 +4,7 @@ import android.view.View
 import android.view.ViewGroup
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.ViewBinderFactory
+import net.apptronic.core.android.viewmodel.transitions.TransitionBuilder
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelListAdapter
 import net.apptronic.core.mvvm.viewmodel.navigation.StackNavigationViewModel
@@ -11,7 +12,7 @@ import net.apptronic.core.mvvm.viewmodel.navigation.StackNavigationViewModel
 class StackNavigationFrameAdapter(
     private val viewBinderFactory: ViewBinderFactory = ViewBinderFactory(),
     private val container: ViewGroup,
-    private val stackAnimator: StackAnimator = StackAnimator(),
+    private val transitionBuilder: TransitionBuilder = TransitionBuilder(),
     private val defaultAnimationTime: Long =
         container.resources.getInteger(android.R.integer.config_mediumAnimTime).toLong(),
     private val maxSavedViews: Int = 5,
@@ -84,31 +85,25 @@ class StackNavigationFrameAdapter(
                 setFocused(previousBinder.getViewModel(), false)
                 setVisible(previousBinder.getViewModel(), false)
             }
+
             val transition = navigatorAccess.getTransition(
                 previousBinder?.getViewModel(),
                 currentBinder?.getViewModel()
             )
-            if (transition != null) {
-                if (currentBinder != null) {
-                    stackAnimator.applyEnterTransition(
-                        container,
-                        currentBinder.getView(),
-                        transition,
-                        defaultAnimationTime,
-                        addView = false
-                    )
-                }
-                if (previousBinder != null) {
-                    stackAnimator.applyExitTransition(
-                        container, previousBinder.getView(), transition, defaultAnimationTime
-                    ) {
-                        binderHidden(previousBinder)
-                    }
-                }
-            } else {
-                if (previousBinder != null) {
+
+            if (currentBinder != null) {
+                transitionBuilder.getEnterTransition(
+                    container, currentBinder.getView(), transition, defaultAnimationTime
+                ).start(currentBinder.getView())
+            }
+            if (previousBinder != null) {
+                transitionBuilder.getExitTransition(
+                    container, previousBinder.getView(), transition, defaultAnimationTime
+                ).doOnComplete {
                     binderHidden(previousBinder)
-                }
+                }.doOnCancel {
+                    binderHidden(previousBinder)
+                }.start(previousBinder.getView())
             }
         }
     }

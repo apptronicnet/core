@@ -2,6 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#fff"
     android:fillViewport="true"
     android:gravity="center">
 
@@ -74,11 +75,18 @@
             android:text="Stack loading demo" />
 
         <Button
-            android:id="@+id/stackNavigationDemo"
+            android:id="@+id/prevNextNavigationDemo"
             android:layout_marginStart="24dp"
             android:layout_marginTop="12dp"
             android:layout_marginEnd="24dp"
-            android:text="Stack navigation demo" />
+            android:text="Previous/next navigation" />
+
+        <Button
+            android:id="@+id/gestureNavigationDemo"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="24dp"
+            android:text="Gesture navigation demo" />
 
         <Button
             android:id="@+id/lazyFilterListDemo"

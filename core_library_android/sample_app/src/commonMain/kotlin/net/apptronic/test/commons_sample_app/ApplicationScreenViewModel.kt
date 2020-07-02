@@ -18,7 +18,8 @@ import net.apptronic.test.commons_sample_app.pager.PagerViewModel
 import net.apptronic.test.commons_sample_app.registration.RegistrationRouter
 import net.apptronic.test.commons_sample_app.registration.RegistrationViewModel
 import net.apptronic.test.commons_sample_app.stackloading.StackLoadingViewModel
-import net.apptronic.test.commons_sample_app.staknavigation.StackNavigationDemoViewModel
+import net.apptronic.test.commons_sample_app.staknavigation.GestureNavigationViewModel
+import net.apptronic.test.commons_sample_app.staknavigation.PrevNextNavigationViewModel
 import net.apptronic.test.commons_sample_app.throttle.ThrottleSampleViewModel
 
 class ApplicationScreenViewModel(parent: Context) : ViewModel(parent, EmptyViewModelContext) {
@@ -31,7 +32,7 @@ class ApplicationScreenViewModel(parent: Context) : ViewModel(parent, EmptyViewM
     }
 
     fun onBackPressed(): Boolean {
-        return rootPage.popBackStack(BasicTransition.Back)
+        return rootPage.popBackStack(BasicTransition.Backward)
     }
 
 }
@@ -94,9 +95,16 @@ class ApplicationScreenNavigationRouterImpl(
         )
     }
 
-    override fun openStackNavigationModelDemo() {
+    override fun openPrevNextNavigationDemo() {
         parent.rootPage.add(
-            StackNavigationDemoViewModel(parent.context),
+            PrevNextNavigationViewModel(parent.context),
+            BasicTransition.Forward
+        )
+    }
+
+    override fun openGestureNavigationDemo() {
+        parent.rootPage.add(
+            GestureNavigationViewModel(parent.context),
             BasicTransition.Forward
         )
     }
@@ -131,7 +139,7 @@ class ApplicationScreenRegistrationRouterImpl(
 
     override fun backToLogin(preFilledLogin: String) {
         listener.onRegistrationDone(preFilledLogin)
-        parent.rootPage.popBackStack(BasicTransition.Back)
+        parent.rootPage.popBackStack(BasicTransition.Backward)
     }
 
 }

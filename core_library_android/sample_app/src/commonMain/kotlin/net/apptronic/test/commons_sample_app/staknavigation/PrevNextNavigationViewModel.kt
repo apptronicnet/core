@@ -9,16 +9,15 @@ import net.apptronic.core.mvvm.viewmodel.EmptyViewModelContext
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 import net.apptronic.core.mvvm.viewmodel.adapter.BasicTransition
-import net.apptronic.core.mvvm.viewmodel.navigation.stackNavigationModel
 
-class StackNavigationDemoViewModel(
+class PrevNextNavigationViewModel(
     parent: Context, contextDefinition: ContextDefinition<ViewModelContext> = EmptyViewModelContext
 ) : ViewModel(parent, contextDefinition) {
 
     private val index = value<Int>(1)
     private val nextColor = toggle(*StackItemColor.values())
 
-    val navigator = stackNavigationModel()
+    val navigator = stackNavigator()
 
     init {
         nextColor.toggleTo(StackItemColor.values()[0])
@@ -34,11 +33,11 @@ class StackNavigationDemoViewModel(
     }
 
     fun onClickAdd() {
-        navigator.add(nextViewModel(), BasicTransition.Forward)
+        navigator.add(nextViewModel(), BasicTransition.Next)
     }
 
     fun onClickBack() {
-        navigator.popBackStack(BasicTransition.Back)
+        navigator.popBackStack(BasicTransition.Previous)
     }
 
     fun onClickReplace() {

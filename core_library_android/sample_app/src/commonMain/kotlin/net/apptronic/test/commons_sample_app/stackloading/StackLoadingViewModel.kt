@@ -30,7 +30,7 @@ class StackLoadingViewModel(parent: Context) : ViewModel(parent, EmptyViewModelC
         navigator.visibleModel().map { "Visible: " + (it as? StackItemViewModel)?.name }
 
     val onClickBack = genericEvent {
-        navigator.popBackStack(BasicTransition.Back)
+        navigator.popBackStack(BasicTransition.Backward)
     }
     val isBackButtonEnabled = navigator.size().map { it > 1 }
 

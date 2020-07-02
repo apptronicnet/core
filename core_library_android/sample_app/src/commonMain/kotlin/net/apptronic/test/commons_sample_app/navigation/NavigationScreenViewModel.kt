@@ -40,8 +40,12 @@ class NavigationScreenViewModel(parent: Context, router: NavigationRouter) :
         router.openStackLoadingDemo()
     }
 
-    fun onClickStackNavigationModel() {
-        router.openStackNavigationModelDemo()
+    fun onClickPrevNextNavigationDemo() {
+        router.openPrevNextNavigationDemo()
+    }
+
+    fun onClickGestureNavigationDemo() {
+        router.openGestureNavigationDemo()
     }
 
     fun onDynamicFilterListDemo() {

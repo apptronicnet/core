@@ -44,14 +44,14 @@ abstract class StackNavigationFrameGestureAdapter {
         touchableView.setOnTouchListener(touchListener)
     }
 
-    fun cancel() {
+    fun reset() {
         gesture?.onCancel()
         gesture = null
     }
 
     @SuppressLint("ClickableViewAccessibility")
     fun detach() {
-        cancel()
+        reset()
         touchableView?.setOnTouchListener(null)
         touchableView = null
         target = null
