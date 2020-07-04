@@ -1,9 +1,11 @@
 package net.apptronic.core.component
 
+import kotlinx.coroutines.CoroutineScope
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.behavior.setup
 import net.apptronic.core.component.entity.entities.*
+import net.apptronic.core.component.entity.functions.onNextSuspend
 import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.component.timer.Timer
 import net.apptronic.core.component.timer.TimerTick
@@ -86,6 +88,14 @@ fun Component.genericEvent(callback: () -> Unit): GenericEvent {
     }
 }
 
+fun Component.genericEventSuspend(callback: suspend CoroutineScope.() -> Unit): GenericEvent {
+    return GenericEvent(context).apply {
+        onNextSuspend {
+            callback()
+        }
+    }
+}
+
 fun <T> Entity<T>.asProperty(): Property<T> {
     return SourceProperty(context, this)
 }
@@ -112,6 +122,14 @@ fun <T> Component.typedEvent(observer: Observer<T>): Event<T> {
 fun <T> Component.typedEvent(callback: (T) -> Unit): Event<T> {
     return TypedEvent<T>(context).apply {
         subscribe(callback)
+    }
+}
+
+fun <T> Component.typedEventSuspend(callback: suspend CoroutineScope.(T) -> Unit): Event<T> {
+    return TypedEvent<T>(context).apply {
+        onNextSuspend {
+            callback(it)
+        }
     }
 }
 
