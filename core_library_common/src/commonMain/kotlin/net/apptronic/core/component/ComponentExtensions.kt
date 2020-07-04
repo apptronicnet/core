@@ -26,6 +26,12 @@ fun <T> Component.value(defaultValue: T): Value<T> {
     }
 }
 
+fun <T> Component.valueAs(source: Entity<T>): Value<T> {
+    return value<T>().apply {
+        setAs(source)
+    }
+}
+
 fun <T> Component.mutableValue(): MutableValue<T> {
     return MutableValue(context)
 }
