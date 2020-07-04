@@ -58,7 +58,7 @@ open class ViewBinderStackAdapter(
         )
         transition.doOnStart {
             container.addView(newView, transition.isFrontTransition)
-        }.start(newView)
+        }.launch(newView)
     }
 
     open fun onReplace(container: ViewGroup, oldView: View, newView: View, transitionInfo: Any?) {
@@ -70,9 +70,9 @@ open class ViewBinderStackAdapter(
         val transition = transitionBuilder.getExitTransition(
             container, oldView, transitionInfo, defaultAnimationTime
         )
-        transition.doOnComplete {
+        transition.doOnCompleteOrCancel {
             container.removeView(oldView)
-        }.start(oldView)
+        }.launch(oldView)
     }
 
     private fun ViewGroup.addView(child: View, toFront: Boolean) {

@@ -10,12 +10,16 @@ import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 
 class StackItemViewModel(
     parent: Context, contextDefinition: ContextDefinition<ViewModelContext> = EmptyViewModelContext,
-    index: Int, backgroundColor: StackItemColor
+    private val index: Int, backgroundColor: StackItemColor
 ) : ViewModel(parent, contextDefinition) {
 
-    private val index = property(index)
+    private val indexProperty = property(index)
 
-    val text = property(this.index.map { "Page #$it" })
+    val text = property(indexProperty.map { "Page #$it" })
     val backgroundColor = property(backgroundColor)
+
+    override fun toString(): String {
+        return "StackItemViewModel#${index}"
+    }
 
 }

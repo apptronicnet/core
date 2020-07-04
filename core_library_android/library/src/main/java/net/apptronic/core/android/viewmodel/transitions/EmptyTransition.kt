@@ -16,4 +16,8 @@ class EmptyTransition : Transition() {
         onTransitionIntercepted(target)
     }
 
+    override fun applyTransition(target: View, progress: Progress) {
+        // do nothing
+    }
+
 }

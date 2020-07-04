@@ -111,12 +111,12 @@ class BackStackNavigationFrameGestureAdapter : StackNavigationFrameGestureAdapte
                 .withInterpolator(DecelerateInterpolator())
                 .doOnComplete {
                     backView.visibility = View.VISIBLE
-                }.start(backView, exitDuration)
+                }.launch(backView, exitDuration)
             TargetTransitionX(1f, touchableView)
                 .withInterpolator(DecelerateInterpolator())
                 .doOnComplete {
                     finishComplete()
-                }.start(frontView, exitDuration)
+                }.launch(frontView, exitDuration)
         }
 
         private fun finishComplete() {
@@ -135,13 +135,13 @@ class BackStackNavigationFrameGestureAdapter : StackNavigationFrameGestureAdapte
             TargetTransitionX(-OVERLAP, touchableView, OVERLAY_ALPHA)
                 .withInterpolator(DecelerateInterpolator())
                 .doOnComplete { backView.visibility = View.GONE }
-                .start(backView, ANIMATION_TIME)
+                .launch(backView, ANIMATION_TIME)
             TargetTransitionX(0f, touchableView)
                 .doOnComplete {
                     finishCancel()
                 }.doOnCancel {
                     finishCancel()
-                }.start(frontView, ANIMATION_TIME)
+                }.launch(frontView, ANIMATION_TIME)
         }
 
         private fun finishCancel() {
@@ -200,7 +200,6 @@ private class TargetTransitionX(
     }
 
     override fun applyTransition(target: View, progress: Progress) {
-        super.applyTransition(target, progress)
         val targetTransitionX = container.width * targetTransitionsXRelative
         val translationX = progress.interpolate(startTranslationX, targetTransitionX)
         target.translationX = translationX

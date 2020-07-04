@@ -38,7 +38,6 @@ class NextEnterTransition(val container: View) : BasePrevNextTransition() {
     }
 
     override fun applyTransition(target: View, progress: Progress) {
-        super.applyTransition(target, progress)
         target.translationX = progress.interpolate(startTranslationX, 0f)
     }
 
@@ -55,7 +54,6 @@ class NextExitTransition(val container: View) : BasePrevNextTransition() {
     }
 
     override fun applyTransition(target: View, progress: Progress) {
-        super.applyTransition(target, progress)
         target.translationX = progress.interpolate(startTranslationX, -container.width.toFloat())
     }
 
@@ -69,7 +67,6 @@ class PreviousEnterTransition(val container: View) : BasePrevNextTransition() {
     }
 
     override fun applyTransition(target: View, progress: Progress) {
-        super.applyTransition(target, progress)
         target.translationX = progress.interpolate(startTranslationX, 0f)
     }
 
@@ -84,7 +81,6 @@ class PreviousExitTransition(val container: View) : BasePrevNextTransition() {
     }
 
     override fun applyTransition(target: View, progress: Progress) {
-        super.applyTransition(target, progress)
         target.translationX = progress.interpolate(startTranslationX, container.width.toFloat())
     }
 

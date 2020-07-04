@@ -25,7 +25,7 @@ class StackNavigationFrameAdapter(
 
     }
 
-    private val viewBinders = mutableListOf<ViewBinder<*>>()
+    private val viewBinders = mutableListOf<AttachedBinder>()
 
     init {
         container.removeAllViews()
@@ -38,7 +38,7 @@ class StackNavigationFrameAdapter(
         model.listNavigator.setAdapter(this)
     }
 
-    private var currentBinder: ViewBinder<*>? = null
+    private var currentBinder: AttachedBinder? = null
 
     private fun clearViews() {
         val views = (0 until container.childCount).map {
@@ -46,7 +46,7 @@ class StackNavigationFrameAdapter(
         }
         views.forEach { view ->
             if (viewBinders.any {
-                    it.getView() == view
+                    it.view == view
                 }.not()) {
                 container.removeView(view)
             }
@@ -69,7 +69,7 @@ class StackNavigationFrameAdapter(
         }
         val currentBinder = this.currentBinder
         viewBinders.toTypedArray().forEach {
-            val actual = getItems().contains(it.getViewModel())
+            val actual = getItems().contains(it.viewModel)
             if (!actual) {
                 detachBinder(it, it != previousBinder)
             }
@@ -77,42 +77,41 @@ class StackNavigationFrameAdapter(
         removeSavedBindersIfNeeded()
         if (currentBinder != previousBinder) {
             if (currentBinder != null) {
-                currentBinder.getView().visibility = View.VISIBLE
-                setVisible(currentBinder.getViewModel(), true)
-                setFocused(currentBinder.getViewModel(), true)
+                setVisible(currentBinder.viewModel, true)
+                setFocused(currentBinder.viewModel, true)
             }
             if (previousBinder != null) {
-                setFocused(previousBinder.getViewModel(), false)
-                setVisible(previousBinder.getViewModel(), false)
+                setFocused(previousBinder.viewModel, false)
+                setVisible(previousBinder.viewModel, false)
             }
 
             val transition = navigatorAccess.getTransition(
-                previousBinder?.getViewModel(),
-                currentBinder?.getViewModel()
+                previousBinder?.viewModel,
+                currentBinder?.viewModel
             )
 
             if (currentBinder != null) {
                 transitionBuilder.getEnterTransition(
-                    container, currentBinder.getView(), transition, defaultAnimationTime
-                ).start(currentBinder.getView())
+                    container, currentBinder.view, transition, defaultAnimationTime
+                ).doOnStart {
+                    currentBinder.view.visibility = View.VISIBLE
+                }.launch(currentBinder.view)
             }
             if (previousBinder != null) {
                 transitionBuilder.getExitTransition(
-                    container, previousBinder.getView(), transition, defaultAnimationTime
-                ).doOnComplete {
+                    container, previousBinder.view, transition, defaultAnimationTime
+                ).doOnCompleteOrCancel {
                     binderHidden(previousBinder)
-                }.doOnCancel {
-                    binderHidden(previousBinder)
-                }.start(previousBinder.getView())
+                }.launch(previousBinder.view)
             }
         }
     }
 
-    private fun binderHidden(viewBinder: ViewBinder<*>) {
-        if (viewBinders.contains(viewBinder)) {
-            viewBinder.getView().visibility = View.GONE
+    private fun binderHidden(binder: AttachedBinder) {
+        if (viewBinders.contains(binder)) {
+            binder.view.visibility = View.GONE
         } else {
-            container.removeView(viewBinder.getView())
+            container.removeView(binder.view)
         }
     }
 
@@ -134,7 +133,7 @@ class StackNavigationFrameAdapter(
     }
 
     fun getViewAt(position: Int): View {
-        return getOrCreateBinder(getItemAt(position)).getView()
+        return getOrCreateBinder(getItemAt(position)).view
     }
 
     fun unbind() {
@@ -143,42 +142,60 @@ class StackNavigationFrameAdapter(
         }
     }
 
-    private fun getOrCreateBinder(viewModel: ViewModel): ViewBinder<*> {
+    private fun getOrCreateBinder(viewModel: ViewModel): AttachedBinder {
         return viewBinders.firstOrNull {
-            it.getViewModel() == viewModel
+            it.viewModel == viewModel
         } ?: attachBinder(viewModel)
     }
 
-    private fun attachBinder(viewModel: ViewModel): ViewBinder<*> {
+    private fun attachBinder(viewModel: ViewModel): AttachedBinder {
         val viewBinder = viewBinderFactory.getBinder(viewModel)
         setBound(viewModel, true)
         val view = viewBinder.onCreateView(container)
-        view.visibility = View.VISIBLE
+        view.visibility = View.GONE
         viewBinder.bindView(view, viewModel)
-        viewBinders.add(viewBinder)
+        val attachedBinder = AttachedBinder(viewBinder)
+        viewBinders.add(attachedBinder)
         sortBinders()
-        addViewForBinder(viewBinder)
-        return viewBinder
+        return attachedBinder
+    }
+
+    private inner class AttachedBinder(
+        val binder: ViewBinder<*>
+    ) : Comparable<AttachedBinder> {
+        var position = 0
+        val view = binder.getView()
+        val viewModel = binder.getViewModel()
+        fun refreshPosition(items: List<ViewModel>) {
+            val index = items.indexOf(viewModel)
+            if (index >= 0) {
+                position = index
+            }
+        }
+
+        override fun compareTo(other: AttachedBinder): Int {
+            return position.compareTo(other.position)
+        }
     }
 
     private fun sortBinders() {
-        viewBinders.sortBy {
-            getItems().indexOf(it.getViewModel())
+        val items = getItems()
+        viewBinders.forEach {
+            it.refreshPosition(items)
+            container.removeAllViews()
+        }
+        viewBinders.sort()
+        viewBinders.forEach {
+            container.addView(it.view)
         }
     }
 
-    private fun addViewForBinder(viewBinder: ViewBinder<*>) {
-        val view = viewBinder.getView()
-        val index = viewBinders.indexOf(viewBinder)
-        container.addView(view, index)
-    }
-
-    private fun detachBinder(viewBinder: ViewBinder<*>, removeView: Boolean) {
+    private fun detachBinder(binder: AttachedBinder, removeView: Boolean) {
         if (removeView) {
-            container.removeView(viewBinder.getView())
+            container.removeView(binder.view)
         }
-        setBound(viewBinder.getViewModel(), false)
-        viewBinders.remove(viewBinder)
+        setBound(binder.viewModel, false)
+        viewBinders.remove(binder)
     }
 
 }

@@ -17,7 +17,6 @@ class FadeInTransition : Transition() {
     }
 
     override fun applyTransition(target: View, progress: Progress) {
-        super.applyTransition(target, progress)
         target.alpha = progress.interpolate(startAlpha, 1f)
     }
 
@@ -48,7 +47,6 @@ class FadeOutTransition : Transition() {
     }
 
     override fun applyTransition(target: View, progress: Progress) {
-        super.applyTransition(target, progress)
         target.alpha = progress.interpolate(startAlpha, 0f)
     }
 

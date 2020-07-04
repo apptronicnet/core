@@ -26,10 +26,11 @@ dependencies {
     compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     compileOnly "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
     compileOnly "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:$coroutines_version"
+    compileOnly "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
 
     compileOnly "net.apptronic.core:core-commons:${rootProject.ext.library_core_version}"
 
-    compileOnly "androidx.core:core:1.2.0"
+    compileOnly "androidx.core:core:1.3.0"
     compileOnly "androidx.appcompat:appcompat:1.1.0"
     compileOnly "com.google.android.material:material:1.1.0"
     compileOnly 'androidx.recyclerview:recyclerview:1.1.0'
