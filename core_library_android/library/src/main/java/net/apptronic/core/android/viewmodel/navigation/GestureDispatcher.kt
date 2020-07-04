@@ -4,13 +4,17 @@ import android.annotation.SuppressLint
 import android.view.MotionEvent
 import android.view.View
 
-abstract class StackNavigationFrameGestureAdapter {
+internal class GestureDispatcher(
+    private val gestureDetector: NavigationGestureDetector
+) {
 
-    interface Target {
+    interface GestureTarget {
 
         fun getFrontView(): View?
 
         fun getBackView(): View?
+
+        fun onGestureStarted()
 
         fun onGestureConfirmedPopBackStack()
 
@@ -18,17 +22,9 @@ abstract class StackNavigationFrameGestureAdapter {
 
     }
 
-    interface Gesture {
-
-        fun onMotionEvent(event: MotionEvent): Boolean
-
-        fun onCancel()
-
-    }
-
     private var touchableView: View? = null
-    private var target: Target? = null
-    private var gesture: Gesture? = null
+    private var gestureTarget: GestureTarget? = null
+    private var gestureHandler: GestureHandler? = null
 
     private val touchListener = object : View.OnTouchListener {
 
@@ -38,15 +34,15 @@ abstract class StackNavigationFrameGestureAdapter {
         }
     }
 
-    fun attach(touchableView: View, target: Target) {
+    fun attach(touchableView: View, gestureTarget: GestureTarget) {
         this.touchableView = touchableView
-        this.target = target
+        this.gestureTarget = gestureTarget
         touchableView.setOnTouchListener(touchListener)
     }
 
     fun reset() {
-        gesture?.onCancel()
-        gesture = null
+        gestureHandler?.onCancel()
+        gestureHandler = null
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -54,21 +50,21 @@ abstract class StackNavigationFrameGestureAdapter {
         reset()
         touchableView?.setOnTouchListener(null)
         touchableView = null
-        target = null
+        gestureTarget = null
     }
 
-    private inner class TargetWrapper(
-        private val target: Target
-    ) : Target by target {
+    private inner class GestureTargetWrapper(
+        private val gestureTarget: GestureTarget
+    ) : GestureTarget by gestureTarget {
 
         override fun onGestureConfirmedPopBackStack() {
-            this@StackNavigationFrameGestureAdapter.gesture = null
-            target.onGestureConfirmedPopBackStack()
+            this@GestureDispatcher.gestureHandler = null
+            gestureTarget.onGestureConfirmedPopBackStack()
         }
 
         override fun onGestureCancelled() {
-            this@StackNavigationFrameGestureAdapter.gesture = null
-            target.onGestureCancelled()
+            this@GestureDispatcher.gestureHandler = null
+            gestureTarget.onGestureCancelled()
         }
 
     }
@@ -76,12 +72,22 @@ abstract class StackNavigationFrameGestureAdapter {
     @SuppressLint("ClickableViewAccessibility")
     private fun onTouchEventDetected(v: View, event: MotionEvent): Boolean {
         val touchableView = this.touchableView
-        val target = this.target
+        val target = this.gestureTarget
         if (touchableView != null && target != null) {
-            val gesture = this.gesture
+            val gesture = this.gestureHandler
             if (gesture == null) {
-                this.gesture = onStartGesture(touchableView, event, TargetWrapper(target))
-                return this.gesture != null
+                val transitionGesture =
+                    gestureDetector.onStartGesture(
+                        event, touchableView, target.getFrontView(), target.getBackView()
+                    )
+                if (transitionGesture != null) {
+                    target.onGestureStarted()
+                    transitionGesture.onStartEvent(event)
+                    gestureHandler = GestureHandler(
+                        touchableView, transitionGesture, GestureTargetWrapper(target)
+                    )
+                }
+                return this.gestureHandler != null
             } else {
                 val handled = gesture.onMotionEvent(event)
                 if (!handled) {
@@ -92,7 +98,5 @@ abstract class StackNavigationFrameGestureAdapter {
         }
         return false
     }
-
-    abstract fun onStartGesture(containerView: View, event: MotionEvent, target: Target): Gesture?
 
 }

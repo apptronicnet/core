@@ -7,9 +7,10 @@ import net.apptronic.core.android.viewmodel.Binding
 import net.apptronic.core.android.viewmodel.BindingContainer
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.ViewBinderFactory
-import net.apptronic.core.android.viewmodel.navigation.BackStackNavigationFrameGestureAdapter
+import net.apptronic.core.android.viewmodel.navigation.GestureDispatcher
+import net.apptronic.core.android.viewmodel.navigation.NavigationGestureDetector
 import net.apptronic.core.android.viewmodel.navigation.StackNavigationFrameAdapter
-import net.apptronic.core.android.viewmodel.navigation.StackNavigationFrameGestureAdapter
+import net.apptronic.core.android.viewmodel.transitions.BackwardTransitionGestureDetector
 import net.apptronic.core.android.viewmodel.transitions.TransitionBuilder
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.navigation.StackNavigationViewModel
@@ -21,7 +22,7 @@ fun BindingContainer.bindStackNavigator(
     transitionBuilder: TransitionBuilder = TransitionBuilder(),
     defaultAnimationTime: Long = viewGroup.resources.getInteger(android.R.integer.config_mediumAnimTime)
         .toLong(),
-    gestureAdapter: StackNavigationFrameGestureAdapter? = BackStackNavigationFrameGestureAdapter()
+    gestureDetector: NavigationGestureDetector? = BackwardTransitionGestureDetector()
 ) {
     val resultFactory = factory
         ?: navigationModel.getViewBinderFactoryFromExtension()
@@ -32,7 +33,7 @@ fun BindingContainer.bindStackNavigator(
         resultFactory,
         transitionBuilder,
         defaultAnimationTime,
-        gestureAdapter
+        gestureDetector
     )
 }
 
@@ -42,7 +43,7 @@ private class StackNavigationModelBinding(
     private val factory: ViewBinderFactory,
     private val transitionBuilder: TransitionBuilder,
     private val defaultAnimationTime: Long,
-    private val gestureAdapter: StackNavigationFrameGestureAdapter?
+    private val gestureDetector: NavigationGestureDetector?
 ) : Binding(), StackNavigationFrameAdapter.NavigatorAccess {
 
     override fun getTransition(from: ViewModel?, to: ViewModel?): Any? {
@@ -54,20 +55,27 @@ private class StackNavigationModelBinding(
             factory, viewGroup, transitionBuilder, defaultAnimationTime, navigatorAccess = this
         )
         adapter.bind(navigationModel)
-        gestureAdapter?.attach(viewGroup, Target(navigationModel, adapter))
-        adapter.addListener {
-            gestureAdapter?.reset()
-        }
-        onUnbind {
-            adapter.unbind()
-            gestureAdapter?.detach()
+        if (gestureDetector != null) {
+            val gestureDispatcher = GestureDispatcher(gestureDetector)
+            gestureDispatcher.attach(viewGroup, GestureTarget(navigationModel, adapter))
+            adapter.addListener {
+                gestureDispatcher.reset()
+            }
+            onUnbind {
+                adapter.unbind()
+                gestureDispatcher.detach()
+            }
         }
     }
 
-    private class Target(
+    private class GestureTarget(
         private val navigationModel: StackNavigationViewModel,
         private val adapter: StackNavigationFrameAdapter
-    ) : StackNavigationFrameGestureAdapter.Target {
+    ) : GestureDispatcher.GestureTarget {
+
+        override fun onGestureStarted() {
+            getBackView()?.visibility = View.VISIBLE
+        }
 
         override fun getBackView(): View? {
             val previousItem = navigationModel.getSize() - 2
@@ -84,10 +92,12 @@ private class StackNavigationModelBinding(
         }
 
         override fun onGestureConfirmedPopBackStack() {
+            getFrontView()?.visibility = View.GONE
             navigationModel.popBackStack()
         }
 
         override fun onGestureCancelled() {
+            getBackView()?.visibility = View.GONE
             // ignored
         }
 

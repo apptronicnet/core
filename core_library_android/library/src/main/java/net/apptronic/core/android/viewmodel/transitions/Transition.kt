@@ -99,7 +99,7 @@ abstract class Transition<Target> : FrameScheduler.FrameListener {
         return this
     }
 
-    fun launch(target: Target) {
+    fun launch(target: Target): Transition<Target> {
         cancel()
         this.target = target
         progressInterpolator = interpolator
@@ -119,6 +119,7 @@ abstract class Transition<Target> : FrameScheduler.FrameListener {
             isStarting = true
             FrameScheduler.addListener(this)
         }
+        return this
     }
 
     abstract fun getRunningTransition(target: Target): Transition<Target>?
@@ -129,9 +130,9 @@ abstract class Transition<Target> : FrameScheduler.FrameListener {
 
     abstract fun isAllowsTransition(target: Target): Boolean
 
-    fun launch(view: Target, duration: Long) {
+    fun launch(view: Target, duration: Long): Transition<Target> {
         this.duration = duration
-        launch(view)
+        return launch(view)
     }
 
     private fun doStartInternal(target: Target, startTime: Long) {
