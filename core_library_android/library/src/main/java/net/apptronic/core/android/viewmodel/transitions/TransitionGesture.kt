@@ -1,9 +1,7 @@
-package net.apptronic.core.android.viewmodel.navigation
+package net.apptronic.core.android.viewmodel.transitions
 
 import android.view.MotionEvent
 import android.view.View
-import net.apptronic.core.android.viewmodel.transitions.Progress
-import net.apptronic.core.android.viewmodel.transitions.Transition
 
 abstract class TransitionGesture {
 

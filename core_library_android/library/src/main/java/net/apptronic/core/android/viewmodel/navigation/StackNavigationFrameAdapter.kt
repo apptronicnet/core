@@ -7,6 +7,8 @@ import net.apptronic.core.android.viewmodel.ViewBinderFactory
 import net.apptronic.core.android.viewmodel.transitions.TransitionBuilder
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelListAdapter
+import net.apptronic.core.mvvm.viewmodel.navigation.BackNavigationStatus
+import net.apptronic.core.mvvm.viewmodel.navigation.HasBackNavigation
 import net.apptronic.core.mvvm.viewmodel.navigation.StackNavigationViewModel
 
 class StackNavigationFrameAdapter(
@@ -18,6 +20,8 @@ class StackNavigationFrameAdapter(
     private val maxSavedViews: Int = 5,
     private val navigatorAccess: NavigatorAccess
 ) : ViewModelListAdapter() {
+
+    private var isInTransition = false
 
     interface NavigatorAccess {
 
@@ -100,7 +104,10 @@ class StackNavigationFrameAdapter(
             if (previousBinder != null) {
                 transitionBuilder.getExitTransition(
                     container, previousBinder.view, transition, defaultAnimationTime
-                ).doOnCompleteOrCancel {
+                ).doOnStart {
+                    isInTransition = true
+                }.doOnCompleteOrCancel {
+                    isInTransition = false
                     binderHidden(previousBinder)
                 }.launch(previousBinder.view)
             }
@@ -196,6 +203,24 @@ class StackNavigationFrameAdapter(
         }
         setBound(binder.viewModel, false)
         viewBinders.remove(binder)
+    }
+
+    fun onConfirmBackNavigationFromGesture() {
+        val hasBackNavigation = currentBinder?.viewModel as? HasBackNavigation
+        hasBackNavigation?.onBackNavigationConfirmedEvent()
+    }
+
+    fun onRestrictedBackNavigationFromGesture() {
+        val hasBackNavigation = currentBinder?.viewModel as? HasBackNavigation
+        hasBackNavigation?.onBackNavigationRestrictedEvent()
+    }
+
+    fun getBackNavigationStatus(): BackNavigationStatus {
+        if (isInTransition) {
+            return BackNavigationStatus.Disabled
+        }
+        val hasBackNavigation = currentBinder?.viewModel as? HasBackNavigation
+        return hasBackNavigation?.getBackNavigationStatus() ?: BackNavigationStatus.Disabled
     }
 
 }

@@ -1,11 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/text"
+    android:id="@+id/stackPage"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
-    android:textColor="#fff"
-    android:textSize="32sp"
-    tools:background="#888"
-    tools:text="Page #1" />
+    android:padding="32dp"
+    tools:background="#888">
+
+    <TextView
+        android:id="@+id/text"
+        android:gravity="center"
+        android:textColor="#fff"
+        android:textSize="32sp"
+        tools:text="Page #1" />
+
+    <CheckBox
+        android:id="@+id/allowBackNavigation"
+        android:layout_marginTop="16dp"
+        android:text="Allow back navigation"
+        android:textColor="#fff" />
+
+</TableLayout>

@@ -7,12 +7,10 @@ import net.apptronic.core.android.viewmodel.Binding
 import net.apptronic.core.android.viewmodel.BindingContainer
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.ViewBinderFactory
-import net.apptronic.core.android.viewmodel.navigation.GestureDispatcher
-import net.apptronic.core.android.viewmodel.navigation.NavigationGestureDetector
 import net.apptronic.core.android.viewmodel.navigation.StackNavigationFrameAdapter
-import net.apptronic.core.android.viewmodel.transitions.BackwardTransitionGestureDetector
-import net.apptronic.core.android.viewmodel.transitions.TransitionBuilder
+import net.apptronic.core.android.viewmodel.transitions.*
 import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.mvvm.viewmodel.navigation.BackNavigationStatus
 import net.apptronic.core.mvvm.viewmodel.navigation.StackNavigationViewModel
 
 fun BindingContainer.bindStackNavigator(
@@ -56,8 +54,11 @@ private class StackNavigationModelBinding(
         )
         adapter.bind(navigationModel)
         if (gestureDetector != null) {
-            val gestureDispatcher = GestureDispatcher(gestureDetector)
-            gestureDispatcher.attach(viewGroup, GestureTarget(navigationModel, adapter))
+            val gestureDispatcher =
+                GestureDispatcher(
+                    gestureDetector
+                )
+            gestureDispatcher.attach(viewGroup, GestureTargetImpl(navigationModel, adapter))
             adapter.addListener {
                 gestureDispatcher.reset()
             }
@@ -68,10 +69,17 @@ private class StackNavigationModelBinding(
         }
     }
 
-    private class GestureTarget(
+    private class GestureTargetImpl(
         private val navigationModel: StackNavigationViewModel,
         private val adapter: StackNavigationFrameAdapter
-    ) : GestureDispatcher.GestureTarget {
+    ) : GestureTarget {
+
+        override fun getBackNavigationStatus(): BackNavigationStatus {
+            if (adapter.getSize() <= 1) {
+                return BackNavigationStatus.Restricted
+            }
+            return adapter.getBackNavigationStatus()
+        }
 
         override fun onGestureStarted() {
             getBackView()?.visibility = View.VISIBLE
@@ -93,12 +101,15 @@ private class StackNavigationModelBinding(
 
         override fun onGestureConfirmedPopBackStack() {
             getFrontView()?.visibility = View.GONE
+            adapter.onConfirmBackNavigationFromGesture()
             navigationModel.popBackStack()
         }
 
-        override fun onGestureCancelled() {
+        override fun onGestureCancelled(becauseOfRestricted: Boolean) {
             getBackView()?.visibility = View.GONE
-            // ignored
+            if (becauseOfRestricted) {
+                adapter.onRestrictedBackNavigationFromGesture()
+            }
         }
 
     }

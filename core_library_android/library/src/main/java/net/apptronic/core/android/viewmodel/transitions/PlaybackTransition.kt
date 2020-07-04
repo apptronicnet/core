@@ -10,6 +10,7 @@ class TransitionPlayer<Target>(
     fun seekTo(progress: Progress) {
         if (!isStarted) {
             transition.onTransitionStarted(target)
+            isStarted = true
         }
         transition.applyTransition(target, progress)
     }
@@ -24,6 +25,13 @@ class TransitionPlayer<Target>(
             .withDuration(duration)
             .apply(builder)
             .launch(transition)
+    }
+
+    fun start() {
+        if (!isStarted) {
+            transition.onTransitionStarted(target)
+            isStarted = true
+        }
     }
 
     fun complete() {

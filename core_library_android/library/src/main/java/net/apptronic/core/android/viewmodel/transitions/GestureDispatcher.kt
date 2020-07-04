@@ -1,30 +1,17 @@
-package net.apptronic.core.android.viewmodel.navigation
+package net.apptronic.core.android.viewmodel.transitions
 
 import android.annotation.SuppressLint
 import android.view.MotionEvent
 import android.view.View
+import net.apptronic.core.mvvm.viewmodel.navigation.BackNavigationStatus
 
 internal class GestureDispatcher(
     private val gestureDetector: NavigationGestureDetector
 ) {
 
-    interface GestureTarget {
-
-        fun getFrontView(): View?
-
-        fun getBackView(): View?
-
-        fun onGestureStarted()
-
-        fun onGestureConfirmedPopBackStack()
-
-        fun onGestureCancelled()
-
-    }
-
     private var touchableView: View? = null
     private var gestureTarget: GestureTarget? = null
-    private var gestureHandler: GestureHandler? = null
+    private var activeGesture: GestureHandler? = null
 
     private val touchListener = object : View.OnTouchListener {
 
@@ -41,8 +28,8 @@ internal class GestureDispatcher(
     }
 
     fun reset() {
-        gestureHandler?.onCancel()
-        gestureHandler = null
+        activeGesture?.onCancel()
+        activeGesture = null
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -58,13 +45,13 @@ internal class GestureDispatcher(
     ) : GestureTarget by gestureTarget {
 
         override fun onGestureConfirmedPopBackStack() {
-            this@GestureDispatcher.gestureHandler = null
+            this@GestureDispatcher.activeGesture = null
             gestureTarget.onGestureConfirmedPopBackStack()
         }
 
-        override fun onGestureCancelled() {
-            this@GestureDispatcher.gestureHandler = null
-            gestureTarget.onGestureCancelled()
+        override fun onGestureCancelled(becauseOfRestricted: Boolean) {
+            this@GestureDispatcher.activeGesture = null
+            gestureTarget.onGestureCancelled(becauseOfRestricted)
         }
 
     }
@@ -74,24 +61,38 @@ internal class GestureDispatcher(
         val touchableView = this.touchableView
         val target = this.gestureTarget
         if (touchableView != null && target != null) {
-            val gesture = this.gestureHandler
-            if (gesture == null) {
+            if (target.getBackNavigationStatus() == BackNavigationStatus.Disabled) {
+                activeGesture?.onCancel()
+                return false
+            }
+            val activeGesture = this.activeGesture
+            if (activeGesture == null) {
+                val frontView = target.getFrontView()
+                val backView = target.getBackView()
+                if (frontView == null || backView == null) {
+                    return false
+                }
                 val transitionGesture =
                     gestureDetector.onStartGesture(
-                        event, touchableView, target.getFrontView(), target.getBackView()
+                        event, touchableView, frontView, backView
                     )
                 if (transitionGesture != null) {
                     target.onGestureStarted()
                     transitionGesture.onStartEvent(event)
-                    gestureHandler = GestureHandler(
-                        touchableView, transitionGesture, GestureTargetWrapper(target)
-                    )
+                    this.activeGesture =
+                        GestureHandler(
+                            touchableView,
+                            frontView,
+                            backView,
+                            transitionGesture,
+                            GestureTargetWrapper(target)
+                        )
                 }
-                return this.gestureHandler != null
+                return this.activeGesture != null
             } else {
-                val handled = gesture.onMotionEvent(event)
+                val handled = activeGesture.onMotionEvent(event)
                 if (!handled) {
-                    gesture.onCancel()
+                    activeGesture.onCancel()
                 }
                 return handled
             }

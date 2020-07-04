@@ -2,10 +2,13 @@ package net.apptronic.test.commons_sample_app.views
 
 import android.graphics.Color
 import android.view.View
+import android.widget.Toast
 import kotlinx.android.synthetic.main.navigation_item.view.*
 import net.apptronic.core.android.viewmodel.ViewBinder
+import net.apptronic.core.android.viewmodel.bindings.bindCheckBox
 import net.apptronic.core.android.viewmodel.bindings.bindText
 import net.apptronic.core.base.observable.subscribe
+import net.apptronic.core.component.entity.entities.subscribe
 import net.apptronic.test.commons_sample_app.R
 import net.apptronic.test.commons_sample_app.staknavigation.StackItemColor
 import net.apptronic.test.commons_sample_app.staknavigation.StackItemViewModel
@@ -24,7 +27,14 @@ class StackNavigationItemViewBinder : ViewBinder<StackItemViewModel>() {
                     StackItemColor.Green -> Color.GREEN
                     StackItemColor.Blue -> Color.BLUE
                 }
-                view.setBackgroundColor(color)
+                stackPage.setBackgroundColor(color)
+            }
+            bindCheckBox(allowBackNavigation, viewModel.isBackNavigationAllowed)
+            viewModel.onGoBack.subscribe {
+                Toast.makeText(context, "Gesture back", Toast.LENGTH_SHORT).show()
+            }
+            viewModel.onCantGoBack.subscribe {
+                Toast.makeText(context, "No-no-no!", Toast.LENGTH_SHORT).show()
             }
         }
     }

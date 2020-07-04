@@ -4,8 +4,6 @@ import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
 import android.view.animation.LinearInterpolator
-import net.apptronic.core.android.viewmodel.navigation.NavigationGestureDetector
-import net.apptronic.core.android.viewmodel.navigation.TransitionGesture
 import net.apptronic.core.base.android.R
 import kotlin.math.max
 import kotlin.math.min
@@ -94,14 +92,12 @@ class BackwardTransitionGesture(
 
 }
 
-class BackwardTransitionGestureDetector : NavigationGestureDetector {
+class BackwardTransitionGestureDetector :
+    NavigationGestureDetector {
 
     override fun onStartGesture(
-        event: MotionEvent, containerView: View, frontView: View?, backView: View?
+        event: MotionEvent, containerView: View, frontView: View, backView: View
     ): TransitionGesture? {
-        if (frontView == null || backView == null) {
-            return null
-        }
         if (event.action == MotionEvent.ACTION_DOWN) {
             val threshold =
                 containerView.resources.getDimensionPixelSize(R.dimen.StackNavigationGesture_EdgeThreshold)
