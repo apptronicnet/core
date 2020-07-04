@@ -93,6 +93,6 @@ abstract class StackNavigationFrameGestureAdapter {
         return false
     }
 
-    abstract fun onStartGesture(touchableView: View, event: MotionEvent, target: Target): Gesture?
+    abstract fun onStartGesture(containerView: View, event: MotionEvent, target: Target): Gesture?
 
 }

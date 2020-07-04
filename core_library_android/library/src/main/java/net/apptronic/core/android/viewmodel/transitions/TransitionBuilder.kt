@@ -12,18 +12,18 @@ open class TransitionBuilder {
 
     fun getEnterTransition(
         container: ViewGroup, view: View, transition: Any?, duration: Long
-    ): Transition {
+    ): Transition<View> {
         return transition?.let {
             enterTransition(container, view, it, duration)
-        } ?: EmptyTransition()
+        } ?: EmptyViewTransition()
     }
 
     fun getExitTransition(
         container: ViewGroup, view: View, transition: Any?, duration: Long
-    ): Transition {
+    ): Transition<View> {
         return transition?.let {
             exitTransition(container, view, it, duration)
-        } ?: EmptyTransition()
+        } ?: EmptyViewTransition()
     }
 
     /**
@@ -36,7 +36,7 @@ open class TransitionBuilder {
      */
     open fun enterTransition(
         container: ViewGroup, view: View, transition: Any, duration: Long
-    ): Transition? {
+    ): Transition<View>? {
         return when (transition) {
             BasicTransition.Fade -> FadeInTransition()
             BasicTransition.Forward -> ForwardEnterTransition(container)
@@ -57,7 +57,7 @@ open class TransitionBuilder {
      */
     open fun exitTransition(
         container: ViewGroup, view: View, transition: Any, duration: Long
-    ): Transition? {
+    ): Transition<View>? {
         return when (transition) {
             BasicTransition.Fade -> FadeOutTransition()
             BasicTransition.Forward -> ForwardExitTransition(container)

@@ -3,7 +3,7 @@ package net.apptronic.core.android.viewmodel.transitions
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 
-abstract class BasePrevNextTransition : Transition() {
+abstract class BasePrevNextTransition : ViewTransition() {
 
     init {
         interpolator = AccelerateDecelerateInterpolator()

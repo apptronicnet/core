@@ -1,13 +1,11 @@
 package net.apptronic.core.android.viewmodel.transitions
 
 import android.os.SystemClock
-import android.view.View
 import android.view.animation.Interpolator
 import android.view.animation.LinearInterpolator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import net.apptronic.core.base.android.R
 
 private object FrameScheduler {
 
@@ -53,7 +51,7 @@ private object FrameScheduler {
 
 typealias Progress = Float
 
-abstract class Transition : FrameScheduler.FrameListener {
+abstract class Transition<Target> : FrameScheduler.FrameListener {
 
     var interpolator: Interpolator = LinearInterpolator()
     var duration: Long = 0
@@ -63,72 +61,80 @@ abstract class Transition : FrameScheduler.FrameListener {
     private var isStarting = false
     private var isIntercepting = false
     private var progressInterpolator: Interpolator = interpolator
-    private var target: View? = null
+    private var target: Target? = null
     private var start: Long = 0
     private var end: Long = 0
     private var doOnStartActions = mutableListOf<() -> Unit>()
     private var doOnCompleteActions = mutableListOf<() -> Unit>()
     private var doOnCancelActions = mutableListOf<() -> Unit>()
 
-    fun withInterpolator(interpolator: Interpolator): Transition {
+    fun withInterpolator(interpolator: Interpolator): Transition<Target> {
         this.interpolator = interpolator
         return this
     }
 
-    fun withDuration(duration: Long): Transition {
+    fun withDuration(duration: Long): Transition<Target> {
         this.duration = duration
         return this
     }
 
-    fun doOnStart(action: () -> Unit): Transition {
+    fun doOnStart(action: () -> Unit): Transition<Target> {
         doOnStartActions.add(action)
         return this
     }
 
-    fun doOnComplete(action: () -> Unit): Transition {
+    fun doOnComplete(action: () -> Unit): Transition<Target> {
         doOnCompleteActions.add(action)
         return this
     }
 
-    fun doOnCancel(action: () -> Unit): Transition {
+    fun doOnCancel(action: () -> Unit): Transition<Target> {
         doOnCancelActions.add(action)
         return this
     }
 
-    fun doOnCompleteOrCancel(action: () -> Unit): Transition {
+    fun doOnCompleteOrCancel(action: () -> Unit): Transition<Target> {
         doOnCompleteActions.add(action)
         doOnCancelActions.add(action)
         return this
     }
 
-    fun launch(view: View) {
+    fun launch(target: Target) {
         cancel()
-        target = view
+        this.target = target
         progressInterpolator = interpolator
-        val runningTransition = (view.getTag(R.id.TransitionAnimation) as? Transition)
-        view.setTag(R.id.TransitionAnimation, this)
+        val runningTransition = getRunningTransition(target)
+        setRunningTransition(target)
         if (runningTransition != null) {
             isIntercepting = true
-            onTransitionIntercepted(view)
+            onTransitionIntercepted(target)
             runningTransition.cancel()
         } else {
             isIntercepting = false
         }
         if (duration <= 0) {
-            doStartInternal(view, SystemClock.elapsedRealtime())
-            completeTransition(view)
+            doStartInternal(target, SystemClock.elapsedRealtime())
+            completeTransition(target)
         } else {
             isStarting = true
             FrameScheduler.addListener(this)
         }
     }
 
-    fun launch(view: View, duration: Long) {
+    abstract fun getRunningTransition(target: Target): Transition<Target>?
+
+    abstract fun setRunningTransition(target: Target)
+
+    abstract fun clearRunningTransition(target: Target)
+
+    abstract fun isAllowsTransition(target: Target): Boolean
+
+    fun launch(view: Target, duration: Long) {
         this.duration = duration
         launch(view)
     }
 
-    private fun doStartInternal(target: View, startTime: Long) {
+    private fun doStartInternal(target: Target, startTime: Long) {
         start = startTime
         end = start + duration
         if (!isIntercepting) {
@@ -144,16 +150,16 @@ abstract class Transition : FrameScheduler.FrameListener {
         if (target != null) {
             onTransitionCancelled(target)
             doOnCancelActions.forEach { it.invoke() }
-            target.setTag(R.id.TransitionAnimation, null)
+            clearRunningTransition(target)
             this.target = null
         }
     }
 
-    private fun completeTransition(target: View) {
+    private fun completeTransition(target: Target) {
         applyTransition(target, 1f)
         onTransitionCompleted(target)
         doOnCompleteActions.forEach { it.invoke() }
-        target.setTag(R.id.TransitionAnimation, null)
+        clearRunningTransition(target)
     }
 
     override fun onNextFrame(timestamp: Long): Boolean {
@@ -163,7 +169,7 @@ abstract class Transition : FrameScheduler.FrameListener {
             isStarting = false
             onTransitionStarted(target)
         }
-        if (target.handler == null) {
+        if (!isAllowsTransition(target)) {
             onTransitionCancelled(target)
             return false
         }
@@ -178,7 +184,7 @@ abstract class Transition : FrameScheduler.FrameListener {
         return false
     }
 
-    private fun applyFrame(target: View, progress: Float) {
+    private fun applyFrame(target: Target, progress: Float) {
         val interpolated = progressInterpolator.getInterpolation(progress)
         applyTransition(target, interpolated)
     }
@@ -187,21 +193,21 @@ abstract class Transition : FrameScheduler.FrameListener {
      * Called when on transition start another transition is running on this view
      * By default recalls [onTransitionStarted]
      */
-    open fun onTransitionIntercepted(target: View) {
+    open fun onTransitionIntercepted(target: Target) {
         onTransitionStarted(target)
     }
 
-    open fun onTransitionStarted(target: View) {
+    open fun onTransitionStarted(target: Target) {
         // implement by subclasses if needed
     }
 
-    abstract fun applyTransition(target: View, progress: Progress)
+    abstract fun applyTransition(target: Target, progress: Progress)
 
-    open fun onTransitionCompleted(target: View) {
+    open fun onTransitionCompleted(target: Target) {
         // implement by subclasses if needed
     }
 
-    open fun onTransitionCancelled(target: View) {
+    open fun onTransitionCancelled(target: Target) {
         // implement by subclasses if needed
     }
 

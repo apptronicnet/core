@@ -1,62 +1,57 @@
 package net.apptronic.core.android.viewmodel.navigation
 
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
-import android.os.Build
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
 import android.view.animation.DecelerateInterpolator
-import net.apptronic.core.android.viewmodel.transitions.*
+import android.view.animation.LinearInterpolator
+import net.apptronic.core.android.viewmodel.transitions.BackwardEnterTransition
+import net.apptronic.core.android.viewmodel.transitions.BackwardExitTransition
+import net.apptronic.core.android.viewmodel.transitions.PlaybackTransition
 import net.apptronic.core.base.android.R
 import kotlin.math.max
 import kotlin.math.min
 
 private const val ANIMATION_TIME = 300L
-const val OVERLAP = FORWARD_BACKWARD_OVERLAP
-const val OVERLAY_ALPHA = MAX_OVERLAY_ALPHA
 const val MAX_FLING_DETECTION_THRESHOLD = 0.25f
 
 class BackStackNavigationFrameGestureAdapter : StackNavigationFrameGestureAdapter() {
 
     private class BackGesture(
-        val touchableView: View, val target: Target,
+        val containerView: View, val target: Target,
         val frontView: View, val backView: View,
         startEvent: MotionEvent
     ) : GestureDetector.SimpleOnGestureListener(), Gesture {
 
+        private val enterTransition =
+            BackwardEnterTransition(containerView).withInterpolator(LinearInterpolator())
+        private val exitTransition =
+            BackwardExitTransition(containerView).withInterpolator(LinearInterpolator())
+
         fun detectionThreshold(): Float = min(
-            touchableView.resources.getDimensionPixelSize(
+            containerView.resources.getDimensionPixelSize(
                 R.dimen.StackNavigationGesture_MaxDetectionThreshold
             ).toFloat(),
-            touchableView.width.toFloat() * MAX_FLING_DETECTION_THRESHOLD
+            containerView.width.toFloat() * MAX_FLING_DETECTION_THRESHOLD
         )
-
-        private fun backViewAnchorPoint(): Float {
-            return -(touchableView.width * OVERLAP)
-        }
 
         private val startX: Float = startEvent.x
         private var isCancelled = false
         private var animateExit = false
         private var exitVelocity = 0f
+        private var progress: Float = 0f
 
-        private val gestureDetector = GestureDetector(touchableView.context, this)
+        private val gestureDetector = GestureDetector(containerView.context, this)
 
         init {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                backView.foreground = ColorDrawable(Color.BLACK)
-                backView.foreground.setFloatAlpha(OVERLAY_ALPHA)
-            }
+            enterTransition.onTransitionStarted(backView)
+            exitTransition.onTransitionStarted(frontView)
             gestureDetector.onTouchEvent(startEvent)
         }
 
-        private fun setPosition(position: Float) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                backView.foreground?.setFloatAlpha((1 - (position / touchableView.width)) * OVERLAY_ALPHA)
-            }
-            frontView.translationX = position
-            backView.translationX = backViewAnchorPoint() + (position * OVERLAP)
+        private fun applyProgress() {
+            enterTransition.applyTransition(backView, progress)
+            exitTransition.applyTransition(frontView, progress)
         }
 
         override fun onFling(
@@ -81,8 +76,8 @@ class BackStackNavigationFrameGestureAdapter : StackNavigationFrameGestureAdapte
             }
             gestureDetector.onTouchEvent(event)
             if (event.actionMasked == MotionEvent.ACTION_MOVE) {
-                val position = max(event.x - startX, 0f)
-                setPosition(position)
+                progress = max(event.x - startX, 0f) / containerView.width
+                applyProgress()
                 return true
             }
             if (!isCancelled && event.action == MotionEvent.ACTION_UP) {
@@ -96,35 +91,29 @@ class BackStackNavigationFrameGestureAdapter : StackNavigationFrameGestureAdapte
         }
 
         private fun animateExit() {
-            if (animateExit) {
-                return
-            }
-            animateExit = true
-            val distanceToGo = touchableView.width - frontView.translationX
+            val distanceToGo = containerView.width - frontView.translationX
             val exitDuration = if (exitVelocity > 0) {
                 min(
                     ANIMATION_TIME, (distanceToGo / exitVelocity * 1000f).toLong()
                 )
             } else ANIMATION_TIME
-
-            TargetTransitionX(0f, touchableView, 0f)
-                .withInterpolator(DecelerateInterpolator())
-                .doOnComplete {
-                    backView.visibility = View.VISIBLE
-                }.launch(backView, exitDuration)
-            TargetTransitionX(1f, touchableView)
-                .withInterpolator(DecelerateInterpolator())
-                .doOnComplete {
-                    finishComplete()
-                }.launch(frontView, exitDuration)
+            animateExit(exitDuration)
         }
 
-        private fun finishComplete() {
-            frontView.visibility = View.GONE
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                backView.foreground = null
+        private fun animateExit(exitDuration: Long) {
+            if (animateExit) {
+                return
             }
-            target.onGestureConfirmedPopBackStack()
+            animateExit = true
+
+            PlaybackTransition(backView, progress, 1f)
+                .withInterpolator(DecelerateInterpolator())
+                .launch(enterTransition, exitDuration)
+            PlaybackTransition(frontView, progress, 1f)
+                .withInterpolator(DecelerateInterpolator())
+                .doOnCompleteOrCancel {
+                    target.onGestureConfirmedPopBackStack()
+                }.launch(exitTransition, exitDuration)
         }
 
         override fun onCancel() {
@@ -132,31 +121,20 @@ class BackStackNavigationFrameGestureAdapter : StackNavigationFrameGestureAdapte
                 return
             }
             isCancelled = true
-            TargetTransitionX(-OVERLAP, touchableView, OVERLAY_ALPHA)
+            PlaybackTransition(backView, progress, 0f)
                 .withInterpolator(DecelerateInterpolator())
-                .doOnComplete { backView.visibility = View.GONE }
-                .launch(backView, ANIMATION_TIME)
-            TargetTransitionX(0f, touchableView)
-                .doOnComplete {
-                    finishCancel()
-                }.doOnCancel {
-                    finishCancel()
-                }.launch(frontView, ANIMATION_TIME)
-        }
-
-        private fun finishCancel() {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                backView.foreground = null
-            }
-            target.onGestureCancelled()
+                .launch(enterTransition, ANIMATION_TIME)
+            PlaybackTransition(frontView, progress, 0f)
+                .withInterpolator(DecelerateInterpolator())
+                .doOnCompleteOrCancel {
+                    target.onGestureCancelled()
+                }.launch(exitTransition, ANIMATION_TIME)
         }
 
     }
 
     override fun onStartGesture(
-        touchableView: View,
-        event: MotionEvent,
-        target: Target
+        containerView: View, event: MotionEvent, target: Target
     ): Gesture? {
         val frontView = target.getFrontView()
         val backView = target.getBackView()
@@ -165,11 +143,11 @@ class BackStackNavigationFrameGestureAdapter : StackNavigationFrameGestureAdapte
         }
         if (event.action == MotionEvent.ACTION_DOWN) {
             val threshold =
-                touchableView.resources.getDimensionPixelSize(R.dimen.StackNavigationGesture_EdgeThreshold)
+                containerView.resources.getDimensionPixelSize(R.dimen.StackNavigationGesture_EdgeThreshold)
             if (event.x < threshold) {
                 backView.visibility = View.VISIBLE
                 return BackGesture(
-                    touchableView,
+                    containerView,
                     target,
                     frontView,
                     backView,
@@ -178,34 +156,6 @@ class BackStackNavigationFrameGestureAdapter : StackNavigationFrameGestureAdapte
             }
         }
         return null
-    }
-
-}
-
-private class TargetTransitionX(
-    val targetTransitionsXRelative: Float,
-    val container: View,
-    val targetAlpha: Float? = null
-) : Transition() {
-
-    var startTranslationX: Float = 0f
-    var startAlpha: Float = 0f
-
-    override fun onTransitionStarted(target: View) {
-        super.onTransitionStarted(target)
-        startTranslationX = target.translationX
-        if (targetAlpha != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            startAlpha = (target.foreground?.alpha ?: 0).toFloat() / 255f
-        }
-    }
-
-    override fun applyTransition(target: View, progress: Progress) {
-        val targetTransitionX = container.width * targetTransitionsXRelative
-        val translationX = progress.interpolate(startTranslationX, targetTransitionX)
-        target.translationX = translationX
-        if (targetAlpha != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            target.foreground?.setFloatAlpha(progress.interpolate(startAlpha, targetAlpha))
-        }
     }
 
 }

@@ -18,7 +18,7 @@ fun Drawable.getFloatAlpha(): Float {
     return alpha.toFloat() / 255f
 }
 
-abstract class BaseForwardBackwardTranslation : Transition() {
+abstract class BaseForwardBackwardTranslation : ViewTransition() {
 
     init {
         interpolator = AccelerateDecelerateInterpolator()

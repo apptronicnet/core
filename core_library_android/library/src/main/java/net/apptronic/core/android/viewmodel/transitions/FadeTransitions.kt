@@ -2,7 +2,7 @@ package net.apptronic.core.android.viewmodel.transitions
 
 import android.view.View
 
-class FadeInTransition : Transition() {
+class FadeInTransition : ViewTransition() {
 
     private var startAlpha: Float = 0f
 
@@ -32,7 +32,7 @@ class FadeInTransition : Transition() {
 
 }
 
-class FadeOutTransition : Transition() {
+class FadeOutTransition : ViewTransition() {
 
     private var startAlpha: Float = 0f
 

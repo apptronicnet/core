@@ -2,7 +2,7 @@ package net.apptronic.core.android.viewmodel.transitions
 
 import android.view.View
 
-class EmptyTransition : Transition() {
+class EmptyViewTransition : ViewTransition() {
 
     override fun onTransitionCompleted(target: View) {
         super.onTransitionCompleted(target)
