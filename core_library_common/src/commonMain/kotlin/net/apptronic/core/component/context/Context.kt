@@ -14,7 +14,10 @@ import net.apptronic.core.component.plugin.PluginDescriptor
  * All application using framework should be built as tree of [Context] instances. Each context
  * contains [Lifecycle], specifies own [Scheduler] and provides [DependencyDispatcher]
  */
-interface Context : Extendable {
+interface Context : Extendable, Contextual {
+
+    override val context: Context
+        get() = this
 
     val coroutineDispatchers: CoroutineDispatchers
 

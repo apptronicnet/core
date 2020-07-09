@@ -1,6 +1,7 @@
 package net.apptronic.core.component
 
 import net.apptronic.core.component.context.Context
+import net.apptronic.core.component.context.Contextual
 import net.apptronic.core.component.di.DependencyProvider
 import net.apptronic.core.component.lifecycle.Lifecycle
 import net.apptronic.core.component.lifecycle.LifecycleStage
@@ -14,11 +15,11 @@ fun Component.applyPlugins() {
     }
 }
 
-abstract class Component : Extendable {
+abstract class Component : Extendable, Contextual {
 
     override val extensions: Extensions = Extensions()
 
-    abstract val context: Context
+    abstract override val context: Context
 
     fun provider(): DependencyProvider = context.dependencyDispatcher
 
