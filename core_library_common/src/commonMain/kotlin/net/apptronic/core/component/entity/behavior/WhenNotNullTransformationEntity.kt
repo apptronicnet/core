@@ -26,10 +26,10 @@ private class WhenNotNullTransformationEntity<Source, Result>(
     init {
         val nonNullSource = subjectEntity(context, sourceSubject)
         val nonNullResult = transformation.invoke(nonNullSource)
-        nonNullResult.subscribe {
+        nonNullResult.subscribe(context) {
             subject.update(it)
         }
-        source.subscribe {
+        source.subscribe(context) {
             if (it != null) {
                 sourceSubject.update(it)
             } else {

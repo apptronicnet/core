@@ -65,7 +65,7 @@ open class ViewModel : Component {
 
     fun stackNavigator(source: Entity<ViewModel>): StackNavigator {
         return StackNavigator(this).setup {
-            source.subscribe {
+            source.subscribe(context) {
                 set(it)
             }
         }
@@ -99,7 +99,7 @@ open class ViewModel : Component {
             builder: ViewModelBuilder<T, Id, VM>
     ): DynamicListNavigator<T, Id, VM> {
         val navigator = listDynamicNavigator(builder)
-        source.subscribe {
+        source.subscribe(context) {
             navigator.set(it)
         }
         return navigator
@@ -107,7 +107,7 @@ open class ViewModel : Component {
 
     fun listNavigator(source: Entity<List<ViewModel>>): ListNavigator {
         return ListNavigator(this).setup {
-            source.subscribe {
+            source.subscribe(context) {
                 set(it)
             }
         }

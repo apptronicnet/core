@@ -20,7 +20,7 @@ private class StoreEntity<T>(
     override val subject = BehaviorSubject<T>()
 
     init {
-        target.subscribe(subject)
+        target.subscribe(context, subject)
     }
 
     override fun getValueHolder(): ValueHolder<T>? {

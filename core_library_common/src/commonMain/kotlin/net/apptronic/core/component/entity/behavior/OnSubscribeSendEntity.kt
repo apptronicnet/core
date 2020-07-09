@@ -1,10 +1,10 @@
 package net.apptronic.core.component.entity.behavior
 
 import net.apptronic.core.base.observable.Observer
-import net.apptronic.core.component.asEvent
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.base.RelayEntity
+import net.apptronic.core.component.entity.entities.asEvent
 
 fun <T> Entity<T>.onSubscribe(onSubscribeValueProvider: () -> T): Entity<T> {
     return OnSubscribeSendEntity(this, onSubscribeValueProvider)

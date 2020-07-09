@@ -16,7 +16,7 @@ fun <T> Entity<*>.onNextSend(source: Entity<T>): Entity<T> {
 
 fun <T> Entity<*>.onNextSend(source: Entity<T>, action: (T) -> Unit): Entity<T> {
     return onNextSend(source).also {
-        it.subscribe(action)
+        it.subscribe(context, action)
     }
 }
 
@@ -29,7 +29,7 @@ fun <T> Entity<T>.sendWhen(signal: Entity<*>): Entity<T> {
 
 fun <T> Entity<T>.sendWhen(signal: Entity<*>, action: (T) -> Unit): Entity<T> {
     return sendWhen(signal).also {
-        it.subscribe(action)
+        it.subscribe(context, action)
     }
 }
 
@@ -43,10 +43,10 @@ private class EventFromEntity<T>(
     override val subject = PublishSubject<T>()
 
     init {
-        source.subscribe {
+        source.subscribe(context) {
             value = ValueHolder(it)
         }
-        signal.subscribe {
+        signal.subscribe(context) {
             value?.let {
                 subject.update(it.value)
             }

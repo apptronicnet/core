@@ -122,7 +122,7 @@ abstract class ViewBinder<T : ViewModel> : BindingContainer {
     /**
      * Bind [view] to [viewModel]
      */
-    fun bindView(view: View, viewModel: ViewModel) {
+    fun performViewBinding(view: View, viewModel: ViewModel) {
         if (viewModel.extensions[ViewBinderExtensionsDescriptor] != null) {
             debugError(Error("$viewModel already have bound view!!!"))
         }

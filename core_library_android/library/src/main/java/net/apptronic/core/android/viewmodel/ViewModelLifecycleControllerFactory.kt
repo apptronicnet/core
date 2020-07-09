@@ -13,7 +13,7 @@ fun <T : ViewModel> lifecycleController(
     viewModel.doOnBind {
         val view = activityBinder.onCreateActivityView(activity)
         activity.setContentView(view)
-        activityBinder.bindView(view, viewModel)
+        activityBinder.performViewBinding(view, viewModel)
     }
     return ViewModelLifecycleController(viewModel)
 }
@@ -33,7 +33,7 @@ fun <T : ViewModel> lifecycleController(
     contentViewProvider: () -> View
 ): ViewModelLifecycleController {
     viewModel.doOnBind {
-        viewBinder.bindView(contentViewProvider.invoke(), viewModel)
+        viewBinder.performViewBinding(contentViewProvider.invoke(), viewModel)
     }
     return ViewModelLifecycleController(viewModel)
 }
@@ -54,7 +54,7 @@ fun <T : ViewModel> lifecycleController(
     contentView: View
 ): ViewModelLifecycleController {
     viewModel.doOnBind {
-        viewBinder.bindView(contentView, viewModel)
+        viewBinder.performViewBinding(contentView, viewModel)
     }
     return ViewModelLifecycleController(viewModel)
 }

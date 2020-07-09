@@ -5,7 +5,6 @@ import kotlinx.coroutines.CoroutineScope
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.base.observable.subject.ValueHolder
 import net.apptronic.core.component.Component
-import net.apptronic.core.component.asProperty
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.coroutines.coroutineLauncherScoped
 import net.apptronic.core.component.entity.Entity
@@ -99,7 +98,7 @@ class LoadProperty<R, T>(
 
     init {
         // trigger reload when in lazy mode and new observers appeared
-        haveObservers.subscribe {
+        haveObservers.subscribe(context) {
             if (it && isLazy.get()) {
                 reload()
             }

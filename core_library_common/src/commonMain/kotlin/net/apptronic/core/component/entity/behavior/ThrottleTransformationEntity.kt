@@ -75,7 +75,7 @@ private class ThrottledTransformation<Source, Result>(
     }
 
     init {
-        throttledTransformation(sourceEntity).subscribe { nextResult ->
+        throttledTransformation(sourceEntity).subscribe(context) { nextResult ->
             resultObservable.update(nextResult)
             isProcessing = false
             takeNext()

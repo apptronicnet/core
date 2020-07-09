@@ -3,6 +3,7 @@ package net.apptronic.core.component.entity.behavior
 import kotlinx.coroutines.CoroutineScope
 import net.apptronic.core.base.observable.subscribe
 import net.apptronic.core.component.entity.Entity
+import net.apptronic.core.component.entity.entities.Property
 import net.apptronic.core.component.entity.entities.Value
 import net.apptronic.core.component.entity.entities.setAs
 import net.apptronic.core.component.entity.functions.anyValue
@@ -74,7 +75,7 @@ fun <E> Entity<Boolean>.selectIf(ifTrue: E, ifFalse: Entity<E>): Entity<E> {
  * Emits new [Entity] which emit false until no value set is source [Entity]
  * and emits true when source [Entity] emitted any value.
  */
-fun <T> Entity<T>.whenAnyValue(): Entity<Boolean> {
+fun <T> Entity<T>.whenAnyValue(): Property<Boolean> {
     return Value<Boolean>(context).also {
         it.set(false)
         it.setAs(anyValue())
@@ -86,14 +87,14 @@ fun <T> Entity<T>.whenAnyValue(): Entity<Boolean> {
  * Emits new [Entity] which emit false until no value set is source [Entity]
  * and emits true when [filterFunction] returned true for [Entity] value.
  */
-fun <T> Entity<T>.whenAny(filterFunction: (T) -> Boolean): Entity<Boolean> {
+fun <T> Entity<T>.whenAny(filterFunction: (T) -> Boolean): Property<Boolean> {
     return Value<Boolean>(context).also {
         it.set(false)
         it.setAs(filter(filterFunction).anyValue())
     }
 }
 
-fun <T> Entity<T>.whenAnySuspend(filterFunction: suspend CoroutineScope.(T) -> Boolean): Entity<Boolean> {
+fun <T> Entity<T>.whenAnySuspend(filterFunction: suspend CoroutineScope.(T) -> Boolean): Property<Boolean> {
     return Value<Boolean>(context).also {
         it.set(false)
         it.setAs(filterSuspend(filterFunction).anyValue())

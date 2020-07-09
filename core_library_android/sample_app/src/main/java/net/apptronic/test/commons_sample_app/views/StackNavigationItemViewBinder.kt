@@ -5,7 +5,7 @@ import android.view.View
 import android.widget.Toast
 import kotlinx.android.synthetic.main.navigation_item.view.*
 import net.apptronic.core.android.viewmodel.ViewBinder
-import net.apptronic.core.android.viewmodel.bindings.bindCheckBox
+import net.apptronic.core.android.viewmodel.bindings.bindSwitch
 import net.apptronic.core.android.viewmodel.bindings.bindText
 import net.apptronic.core.base.observable.subscribe
 import net.apptronic.core.component.entity.entities.subscribe
@@ -29,7 +29,7 @@ class StackNavigationItemViewBinder : ViewBinder<StackItemViewModel>() {
                 }
                 stackPage.setBackgroundColor(color)
             }
-            bindCheckBox(allowBackNavigation, viewModel.isBackNavigationAllowed)
+            bindSwitch(allowBackNavigation, viewModel.isBackNavigationAllowed)
             viewModel.onGoBack.subscribe {
                 Toast.makeText(context, "Gesture back", Toast.LENGTH_SHORT).show()
             }

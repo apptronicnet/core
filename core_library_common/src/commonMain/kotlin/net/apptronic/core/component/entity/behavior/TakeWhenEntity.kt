@@ -1,9 +1,7 @@
 package net.apptronic.core.component.entity.behavior
 
 import net.apptronic.core.base.observable.Observer
-import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.Entity
-import net.apptronic.core.component.entity.EntitySubscription
 import net.apptronic.core.component.entity.base.RelayEntity
 import net.apptronic.core.component.entity.subscribe
 
@@ -20,7 +18,7 @@ private class TakeWhenEntity<T>(
     private var isShouldTake = whileNotSet
 
     init {
-        chooser.subscribe {
+        chooser.subscribe(context) {
             isShouldTake = it
         }
     }

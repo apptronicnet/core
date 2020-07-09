@@ -79,7 +79,7 @@ private class InnerViewBinding(
             targetAndroidView.onAttachView(contentView, container)
             contentView
         } else targetView
-        targetAndroidView.bindView(contentView, targetViewModel)
+        targetAndroidView.performViewBinding(contentView, targetViewModel)
     }
 
     override fun onUnbind(action: () -> Unit) {

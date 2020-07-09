@@ -60,7 +60,7 @@ class ViewBinderListAdapter(
     private fun performNewBinding(viewModel: ViewModel, view: View): ViewBinder<*> {
         val androidView = viewBinderFactory.getBinder(viewModel)
         setBound(viewModel, true)
-        androidView.bindView(view, viewModel)
+        androidView.performViewBinding(view, viewModel)
         setVisible(viewModel, true)
         setFocused(viewModel, true)
         return androidView

@@ -160,7 +160,7 @@ class StackNavigationFrameAdapter(
         setBound(viewModel, true)
         val view = viewBinder.onCreateView(container)
         view.visibility = View.GONE
-        viewBinder.bindView(view, viewModel)
+        viewBinder.performViewBinding(view, viewModel)
         val attachedBinder = AttachedBinder(viewBinder)
         viewBinders.add(attachedBinder)
         sortBinders()

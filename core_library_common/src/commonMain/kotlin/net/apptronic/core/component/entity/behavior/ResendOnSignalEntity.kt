@@ -28,7 +28,7 @@ private class ResendOnSignalEntity<T>(wrappedEntity: Entity<T>) : SubjectEntity<
     override val subject = BehaviorSubject<T>()
 
     init {
-        wrappedEntity.subscribe(subject)
+        wrappedEntity.subscribe(context, subject)
     }
 
     override fun getValueHolder(): ValueHolder<T>? {
@@ -45,7 +45,7 @@ private class ResendOnSignalEntity<T>(wrappedEntity: Entity<T>) : SubjectEntity<
 
 fun <E : ResendEntity<T>, T> E.signalWhen(vararg entities: Entity<*>): E {
     entities.forEach {
-        it.subscribe {
+        it.subscribe(context) {
             resendSignal()
         }
     }

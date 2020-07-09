@@ -49,7 +49,7 @@ private class ValueWatcherImpl<T>(
 ) : RelayEntity<T>(source), ValueWatcher<T> {
 
     override fun forEachValue(action: (T) -> Unit): ValueWatcher<T> {
-        source.subscribe(ValueActionHolder(action))
+        source.subscribe(context, ValueActionHolder(action))
         return this
     }
 
@@ -66,7 +66,7 @@ private class ValueWatcherImpl<T>(
     }
 
     override fun forEachNewValue(action: (T) -> Unit): ValueWatcher<T> {
-        source.subscribe(NewValueActionHolder(action))
+        source.subscribe(context, NewValueActionHolder(action))
         return this
     }
 
@@ -83,13 +83,13 @@ private class ValueWatcherImpl<T>(
 
     override fun forEachReplacedValue(action: (T) -> Unit): ValueWatcher<T> {
         val holder = OldValueActionHolder(action)
-        source.subscribe(holder)
+        source.subscribe(context, holder)
         return this
     }
 
     override fun forEachRecycledValue(action: (T) -> Unit): ValueWatcher<T> {
         val holder = OldValueActionHolder(action)
-        source.subscribe(holder)
+        source.subscribe(context, holder)
         source.context.lifecycle.onExitFromActiveStage {
             holder.doForLast()
         }
@@ -116,7 +116,7 @@ private class ValueWatcherImpl<T>(
     }
 
     override fun whenAutoUnsubscribed(action: () -> Unit) {
-        val subscription = source.subscribe {
+        val subscription = source.subscribe(context) {
             // ignore
         }
         subscription.registerListener(object : EntitySubscriptionListener {

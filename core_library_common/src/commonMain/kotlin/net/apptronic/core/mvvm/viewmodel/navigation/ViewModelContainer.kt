@@ -96,7 +96,7 @@ internal class ViewModelContainer(
         bindStage(viewModel, ViewModelLifecycle.STAGE_BOUND, isBound)
         bindStage(viewModel, ViewModelLifecycle.STAGE_VISIBLE, isVisible)
         bindStage(viewModel, ViewModelLifecycle.STAGE_FOCUSED, isFocused)
-        shouldShow.subscribe {
+        shouldShow.subscribe(viewModel.context) {
             if (shouldShowValue != it) {
                 shouldShowValue = it
                 visibilityChangeCallback.invoke()

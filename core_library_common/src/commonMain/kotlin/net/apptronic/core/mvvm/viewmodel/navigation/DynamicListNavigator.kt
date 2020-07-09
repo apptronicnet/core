@@ -2,7 +2,6 @@ package net.apptronic.core.mvvm.viewmodel.navigation
 
 import net.apptronic.core.base.collections.lazyListOf
 import net.apptronic.core.base.collections.simpleLazyListOf
-import net.apptronic.core.base.observable.Observable
 import net.apptronic.core.base.observable.subject.BehaviorSubject
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.base.UpdateEntity
@@ -144,7 +143,7 @@ class DynamicListNavigator<T : Any, Id : Any, VM : ViewModel>(
     }
 
     fun setStaticItems(source: Entity<List<out T>>) {
-        source.subscribe {
+        source.subscribe(context) {
             setStaticItems(it)
         }
     }

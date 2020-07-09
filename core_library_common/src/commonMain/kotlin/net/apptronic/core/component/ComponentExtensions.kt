@@ -67,7 +67,7 @@ fun <T> Component.valueList() = mutableValue<MutableList<T>>(mutableListOf<T>())
 
 fun <T> Component.event(source: Entity<T>): Event<T> {
     return typedEvent<T>().also { event ->
-        source.subscribe {
+        source.subscribe(context) {
             event.sendEvent(it)
         }
     }
@@ -100,16 +100,6 @@ fun Component.genericEventSuspend(callback: suspend CoroutineScope.() -> Unit): 
             callback()
         }
     }
-}
-
-fun <T> Entity<T>.asProperty(): Property<T> {
-    return SourceProperty(context, this)
-}
-
-fun <T> Entity<T>.asEvent(): Event<T> {
-    val event = TypedEvent<T>(context)
-    this.subscribe(event)
-    return event
 }
 
 /**

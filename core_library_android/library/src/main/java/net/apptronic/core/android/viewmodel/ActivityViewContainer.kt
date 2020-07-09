@@ -16,7 +16,7 @@ fun <T : ViewModel> Activity.activityContainer(
     ) {
         val view = activityBinder.onCreateActivityView(this)
         setContentView(view)
-        activityBinder.bindView(view, it)
+        activityBinder.performViewBinding(view, it)
     }
 }
 
@@ -33,7 +33,7 @@ fun <T : ViewModel> Activity.activityContainer(
         val activityView = useFactory.getBinder(it) as ViewBinder<T>
         val view = activityView.onCreateActivityView(this)
         setContentView(view)
-        activityView.bindView(view, it)
+        activityView.performViewBinding(view, it)
     }
 }
 

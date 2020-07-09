@@ -1,8 +1,8 @@
 package net.apptronic.core.mvvm.common
 
-import net.apptronic.core.component.asEvent
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.behavior.onSubscribe
+import net.apptronic.core.component.entity.entities.asEvent
 import net.apptronic.core.component.mutableValue
 import net.apptronic.core.component.typedEvent
 import net.apptronic.core.component.value

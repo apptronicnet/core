@@ -30,7 +30,7 @@ open class DialogBinderStackAdapter(
             val dialog = newBinder.onCreateDialog(context)
             val view = newBinder.onCreateDialogView(dialog)
             newBinder.onAttachDialogView(dialog, view)
-            newBinder.bindView(view, newModel)
+            newBinder.performViewBinding(view, newModel)
             DialogAndView(
                 newBinder,
                 dialog

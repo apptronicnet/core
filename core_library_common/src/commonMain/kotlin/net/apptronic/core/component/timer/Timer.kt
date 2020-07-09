@@ -6,7 +6,6 @@ import net.apptronic.core.base.elapsedRealtimeMillis
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.component.Component
 import net.apptronic.core.component.coroutines.CoroutineLauncher
-import net.apptronic.core.component.coroutines.coroutineLauncherScoped
 import net.apptronic.core.component.coroutines.coroutineLaunchers
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.subscribe
@@ -41,7 +40,7 @@ class Timer(
     }
 
     init {
-        isRunning.subscribe {
+        isRunning.subscribe(context) {
             if (it) {
                 val coroutineLauncher = coroutineLauncher()
                 activeLauncher = coroutineLauncher
