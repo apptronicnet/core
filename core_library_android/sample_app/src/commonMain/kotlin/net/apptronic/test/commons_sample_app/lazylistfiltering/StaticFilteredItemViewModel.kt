@@ -26,7 +26,7 @@ class StaticFilteredItemViewModel(
 
     init {
         newChain().delay(loadingDelay).subscribe {
-            text.set("$id loaded in $loadingDelay ms")
+            text.set("$componentId loaded in $loadingDelay ms")
             isLoaded.set(true)
         }
     }

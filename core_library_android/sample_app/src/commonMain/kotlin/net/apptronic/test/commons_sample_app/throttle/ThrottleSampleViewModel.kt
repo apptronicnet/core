@@ -3,12 +3,10 @@ package net.apptronic.test.commons_sample_app.throttle
 import kotlinx.coroutines.delay
 import net.apptronic.core.base.concurrent.AtomicEntity
 import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.entity.behavior.throttle
+import net.apptronic.core.component.entity.behavior.throttleMap
 import net.apptronic.core.component.entity.entities.setTo
 import net.apptronic.core.component.entity.functions.map
 import net.apptronic.core.component.entity.functions.mapOr
-import net.apptronic.core.component.entity.functions.mapSuspend
-import net.apptronic.core.component.entity.functions.onNext
 import net.apptronic.core.component.genericEvent
 import net.apptronic.core.component.value
 import net.apptronic.core.mvvm.viewmodel.EmptyViewModelContext
@@ -39,20 +37,17 @@ class ThrottleSampleViewModel(parent: Context) : ViewModel(parent, EmptyViewMode
     val resultItem = resultItemIndex.map { it.toString() }
 
     init {
-        currentItemIndex.throttle { source ->
-            source.onNext { processingItemIndex.set(Processing(it.index)) }
-                .mapSuspend {
-                    var remaining = 10
-                    while (remaining > 0) {
-                        processingTimer.set(remaining)
-                        delay(300)
-                        remaining--
-                    }
-                    processingTimer.set(null)
-                    Result(it.index)
-                }.onNext {
-                    processingItemIndex.set(null)
-                }
+        currentItemIndex.throttleMap {
+            processingItemIndex.set(Processing(it.index))
+            var remaining = 10
+            while (remaining > 0) {
+                processingTimer.set(remaining)
+                delay(300)
+                remaining--
+            }
+            processingTimer.set(null)
+            processingItemIndex.set(null)
+            Result(it.index)
         }.setTo(resultItemIndex)
     }
 

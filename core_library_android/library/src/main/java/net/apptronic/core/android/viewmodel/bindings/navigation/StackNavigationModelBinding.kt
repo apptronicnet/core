@@ -24,7 +24,7 @@ fun BindingContainer.bindStackNavigator(
 ) {
     val resultFactory = factory
         ?: navigationModel.getViewBinderFactoryFromExtension()
-        ?: throw IllegalArgumentException("AndroidViewFactory should be provided by parameters or Context.installViewFactoryPlugin()")
+        ?: throw IllegalArgumentException("ViewBinderFactory should be provided by parameters or Context.installViewFactoryPlugin()")
     +StackNavigationModelBinding(
         viewGroup,
         navigationModel,

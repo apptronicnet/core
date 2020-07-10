@@ -1,15 +1,15 @@
 package net.apptronic.test.commons_sample_app.list
 
 import net.apptronic.core.base.concurrent.AtomicEntity
-import net.apptronic.core.component.di.createDescriptor
 import net.apptronic.core.component.di.declareModule
+import net.apptronic.core.component.di.dependencyDescriptor
 import net.apptronic.core.mvvm.viewmodel.defineViewModelContext
 
-val ListControllerDescriptor = createDescriptor<ListController>()
-val ListItemSerialGeneratorDescriptor = createDescriptor<AtomicEntity<Int>>()
-val GenerateNextListItemIndexDescriptor = createDescriptor<Int>()
-val ListItemTextViewModelDescriptor = createDescriptor<ListItemTextViewModel>()
-val ListItemImageViewModelDescriptor = createDescriptor<ListItemImageViewModel>()
+val ListControllerDescriptor = dependencyDescriptor<ListController>()
+val ListItemSerialGeneratorDescriptor = dependencyDescriptor<AtomicEntity<Int>>()
+val GenerateNextListItemIndexDescriptor = dependencyDescriptor<Int>()
+val ListItemTextViewModelDescriptor = dependencyDescriptor<ListItemTextViewModel>()
+val ListItemImageViewModelDescriptor = dependencyDescriptor<ListItemImageViewModel>()
 
 val listContext = defineViewModelContext {
     dependencyDispatcher.addModule(listModule)

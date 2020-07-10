@@ -29,7 +29,7 @@ fun <T : ViewModel> Activity.activityContainer(
     ) {
         val useFactory = factory
             ?: it.getViewBinderFactoryFromExtension()
-            ?: throw IllegalArgumentException("AndroidViewFactory should be provided by parameters or Context.installViewFactoryPlugin()")
+            ?: throw IllegalArgumentException("ViewBinderFactory should be provided by parameters or Context.installViewFactoryPlugin()")
         val activityView = useFactory.getBinder(it) as ViewBinder<T>
         val view = activityView.onCreateActivityView(this)
         setContentView(view)

@@ -1,16 +1,16 @@
 package net.apptronic.test.commons_sample_app.pager
 
 import net.apptronic.core.base.concurrent.AtomicEntity
-import net.apptronic.core.component.di.createDescriptor
 import net.apptronic.core.component.di.declareModule
+import net.apptronic.core.component.di.dependencyDescriptor
 import net.apptronic.core.mvvm.viewmodel.defineViewModelContext
 
 val PagerContext = defineViewModelContext("PagerContext") {
     dependencyDispatcher.addModule(PagerModule)
 }
 
-private val NumberGeneratorDescriptor = createDescriptor<AtomicEntity<Int>>()
-val NextPageNumberDescriptor = createDescriptor<Int>()
+private val NumberGeneratorDescriptor = dependencyDescriptor<AtomicEntity<Int>>()
+val NextPageNumberDescriptor = dependencyDescriptor<Int>()
 
 private val PagerModule = declareModule {
 

@@ -21,7 +21,7 @@ fun BindingContainer.bindPagerNavigator(
 ) {
     val resultFactory = factory
         ?: navigator.parent.getViewBinderFactoryFromExtension()
-        ?: throw IllegalArgumentException("AndroidViewFactory should be provided by parameters or Context.installViewFactoryPlugin()")
+        ?: throw IllegalArgumentException("ViewBinderFactory should be provided by parameters or Context.installViewFactoryPlugin()")
     +PagerNavigatorBinding(viewPager, navigator, resultFactory, titleFactory)
 }
 

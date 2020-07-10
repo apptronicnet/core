@@ -2,13 +2,12 @@ package net.apptronic.test.commons_sample_app.app
 
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.context.coreContext
-import net.apptronic.core.component.di.createDescriptor
 import net.apptronic.core.component.di.declareModule
-import net.apptronic.core.plugins.installViewModelLogPlugin
+import net.apptronic.core.component.di.dependencyDescriptor
 
-val HttpClientFactoryDescriptor = createDescriptor<HttpClientFactory>()
-val HttpClientDescriptor = createDescriptor<HttpClient>()
-val PlatformDescriptor = createDescriptor<PlatformDefinition>()
+val HttpClientFactoryDescriptor = dependencyDescriptor<HttpClientFactory>()
+val HttpClientDescriptor = dependencyDescriptor<HttpClient>()
+val PlatformDescriptor = dependencyDescriptor<PlatformDefinition>()
 
 fun applicationContext(
     httpClientFactory: HttpClientFactory,

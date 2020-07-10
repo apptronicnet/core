@@ -52,7 +52,7 @@ fun BindingContainer.bindInnerViewModel(
 ) {
     val resultFactory = factory
         ?: viewModel.getViewBinderFactoryFromExtension()
-        ?: throw IllegalArgumentException("AndroidViewFactory should be provided by parameters or Context.installViewFactoryPlugin()")
+        ?: throw IllegalArgumentException("BinderFactory should be provided by parameters or Context.installViewFactoryPlugin()")
     +InnerViewBinding(view, viewModel, resultFactory::getBinder, bindingType)
 }
 
@@ -64,22 +64,22 @@ private class InnerViewBinding(
 ) : Binding() {
 
     override fun onBind(viewModel: ViewModel, viewBinder: ViewBinder<*>) {
-        val targetAndroidView = factory.invoke(targetViewModel)
+        val targetBinder = factory.invoke(targetViewModel)
         val contentView: View = if (bindingType.detectAndCreate) {
             val container = targetView as? ViewGroup
             if (container != null && container.childCount == 0) {
-                val contentView = targetAndroidView.onCreateView(container)
-                targetAndroidView.onAttachView(contentView, container)
+                val contentView = targetBinder.onCreateView(container)
+                targetBinder.onAttachView(contentView, container)
                 contentView
             } else targetView
         } else if (bindingType.createLayout) {
             val container = targetView as ViewGroup
             container.removeAllViews()
-            val contentView = targetAndroidView.onCreateView(container)
-            targetAndroidView.onAttachView(contentView, container)
+            val contentView = targetBinder.onCreateView(container)
+            targetBinder.onAttachView(contentView, container)
             contentView
         } else targetView
-        targetAndroidView.performViewBinding(contentView, targetViewModel)
+        targetBinder.performViewBinding(contentView, targetViewModel)
     }
 
     override fun onUnbind(action: () -> Unit) {

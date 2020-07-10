@@ -23,8 +23,8 @@ fun <T : ViewModel> lifecycleController(
     factory: ViewBinderFactory,
     activity: Activity
 ): ViewModelLifecycleController {
-    val androidView = factory.getBinder(viewModel) as ViewBinder<T>
-    return lifecycleController(viewModel, androidView, activity)
+    val binder = factory.getBinder(viewModel) as ViewBinder<T>
+    return lifecycleController(viewModel, binder, activity)
 }
 
 fun <T : ViewModel> lifecycleController(
@@ -43,8 +43,8 @@ fun <T : ViewModel> lifecycleController(
     factory: ViewBinderFactory,
     contentViewProvider: () -> View
 ): ViewModelLifecycleController {
-    val androidView = factory.getBinder(viewModel) as ViewBinder<T>
-    return lifecycleController(viewModel, androidView, contentViewProvider)
+    val binder = factory.getBinder(viewModel) as ViewBinder<T>
+    return lifecycleController(viewModel, binder, contentViewProvider)
 }
 
 
@@ -64,6 +64,6 @@ fun <T : ViewModel> lifecycleController(
     factory: ViewBinderFactory,
     contentView: View
 ): ViewModelLifecycleController {
-    val androidView = factory.getBinder(viewModel) as ViewBinder<T>
-    return lifecycleController(viewModel, androidView, contentView)
+    val binder = factory.getBinder(viewModel) as ViewBinder<T>
+    return lifecycleController(viewModel, binder, contentView)
 }

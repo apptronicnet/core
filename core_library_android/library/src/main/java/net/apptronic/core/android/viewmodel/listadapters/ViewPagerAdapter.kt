@@ -18,22 +18,22 @@ class ViewPagerAdapter(
         }
     }
 
-    private val androidViews = mutableMapOf<Long, ViewBinder<*>>()
+    private val viewBinders = mutableMapOf<Long, ViewBinder<*>>()
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val viewModel = viewModelAdapter.getItemAt(position)
         val view = viewModelAdapter.createView(viewModel, container)
-        val androidView = viewModelAdapter.bindView(viewModel, position, view)
+        val binder = viewModelAdapter.bindView(viewModel, position, view)
         container.addView(view)
-        androidViews[viewModel.id] = androidView
-        return androidView
+        viewBinders[viewModel.componentId] = binder
+        return binder
     }
 
     override fun destroyItem(collection: ViewGroup, position: Int, obj: Any) {
-        val androidView = obj as ViewBinder<*>
-        viewModelAdapter.unbindView(androidView)
-        collection.removeView(androidView.getView())
-        androidViews.remove(androidView.getViewModel().id)
+        val binder = obj as ViewBinder<*>
+        viewModelAdapter.unbindView(binder)
+        collection.removeView(binder.getView())
+        viewBinders.remove(binder.getViewModel().componentId)
     }
 
     override fun getCount(): Int {
@@ -41,8 +41,8 @@ class ViewPagerAdapter(
     }
 
     override fun isViewFromObject(view: View, obj: Any): Boolean {
-        val androidView = obj as ViewBinder<*>
-        return view === androidView.getView()
+        val binder = obj as ViewBinder<*>
+        return view === binder.getView()
     }
 
     override fun getPageTitle(position: Int): CharSequence? {
@@ -51,8 +51,8 @@ class ViewPagerAdapter(
     }
 
     override fun getItemPosition(obj: Any): Int {
-        val androidView = obj as ViewBinder<*>
-        val index = viewModelAdapter.indexOf(androidView.getViewModel())
+        val binder = obj as ViewBinder<*>
+        val index = viewModelAdapter.indexOf(binder.getViewModel())
         return if (index >= 0) index else POSITION_NONE
     }
 

@@ -34,7 +34,7 @@ class RecyclerViewAdapter(
 
     override fun getItemId(position: Int): Long {
         return if (isBound) {
-            viewModelAdapter.getItemAt(position).id
+            viewModelAdapter.getItemAt(position).componentId
         } else NO_ID
     }
 
@@ -75,9 +75,9 @@ class RecyclerViewAdapter(
     }
 
     private fun unbindViewHolder(holder: ViewModelHolder) {
-        val androidView = holder.viewBinder
-        if (androidView != null) {
-            viewModelAdapter.unbindView(androidView)
+        val binder = holder.viewBinder
+        if (binder != null) {
+            viewModelAdapter.unbindView(binder)
             holder.viewModel = null
             holder.viewBinder = null
         }

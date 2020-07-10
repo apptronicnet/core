@@ -41,7 +41,7 @@ class ViewBinderListAdapter(
         position: Int,
         view: View
     ): ViewBinder<*> {
-        val oldBinder: ViewBinder<*>? = boundViews[viewModel.id]
+        val oldBinder: ViewBinder<*>? = boundViews[viewModel.componentId]
         styleAdapter.applyViewStyle(view, position, getItems())
         return if (oldBinder != null) {
             if (oldBinder.getViewModel() != viewModel) {
@@ -53,26 +53,26 @@ class ViewBinderListAdapter(
         } else {
             performNewBinding(viewModel, view)
         }.also {
-            boundViews[viewModel.id] = it
+            boundViews[viewModel.componentId] = it
         }
     }
 
     private fun performNewBinding(viewModel: ViewModel, view: View): ViewBinder<*> {
-        val androidView = viewBinderFactory.getBinder(viewModel)
+        val binder = viewBinderFactory.getBinder(viewModel)
         setBound(viewModel, true)
-        androidView.performViewBinding(view, viewModel)
+        binder.performViewBinding(view, viewModel)
         setVisible(viewModel, true)
         setFocused(viewModel, true)
-        return androidView
+        return binder
     }
 
     fun unbindView(viewBinder: ViewBinder<*>) {
         val viewModel = viewBinder.getViewModel()
-        if (boundViews.containsKey(viewModel.id)) {
+        if (boundViews.containsKey(viewModel.componentId)) {
             setFocused(viewModel, false)
             setVisible(viewModel, false)
             setBound(viewModel, false)
-            boundViews.remove(viewModel.id)
+            boundViews.remove(viewModel.componentId)
         }
     }
 

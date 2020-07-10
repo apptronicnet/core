@@ -31,13 +31,13 @@ open class ViewBinderStackAdapter(
     private var currentBinder: ViewBinder<*>? = null
 
     override fun onInvalidate(oldModel: ViewModel?, newModel: ViewModel?, transitionInfo: Any?) {
-        val newAndroidView =
+        val newBinder =
             if (newModel != null) viewBinderFactory.getBinder(newModel) else null
-        if (newAndroidView != null && newModel != null) {
-            val view = newAndroidView.onCreateView(container)
-            newAndroidView.performViewBinding(view, newModel)
+        if (newBinder != null && newModel != null) {
+            val view = newBinder.onCreateView(container)
+            newBinder.performViewBinding(view, newModel)
         }
-        setView(newAndroidView, transitionInfo)
+        setView(newBinder, transitionInfo)
     }
 
     private fun setView(newBinder: ViewBinder<*>?, transitionInfo: Any?) {
