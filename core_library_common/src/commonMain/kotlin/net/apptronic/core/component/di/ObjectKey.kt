@@ -7,7 +7,7 @@ import kotlin.reflect.KClass
  */
 data class ObjectKey internal constructor(
         val clazz: KClass<*>?,
-        val descriptor: Descriptor<*>?
+        val descriptor: DependencyDescriptor<*>?
 ) : Comparable<ObjectKey> {
 
     override fun toString(): String {
@@ -24,6 +24,6 @@ internal fun objectKey(clazz: KClass<*>): ObjectKey {
     return ObjectKey(clazz, null)
 }
 
-internal fun objectKey(descriptor: Descriptor<*>): ObjectKey {
+internal fun objectKey(descriptor: DependencyDescriptor<*>): ObjectKey {
     return ObjectKey(null, descriptor)
 }

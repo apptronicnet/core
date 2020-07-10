@@ -3,9 +3,10 @@ package net.apptronic.core.base.core.di
 import net.apptronic.core.component.Component
 import net.apptronic.core.component.context.EmptyContext
 import net.apptronic.core.component.di.InjectionFailedException
-import net.apptronic.core.component.di.createDescriptor
 import net.apptronic.core.component.di.declareModule
+import net.apptronic.core.component.di.dependencyDescriptor
 import net.apptronic.core.component.extensions.BaseComponent
+import net.apptronic.core.component.inject
 import net.apptronic.core.testutils.testContext
 import org.junit.Before
 import org.junit.Test
@@ -14,9 +15,9 @@ class ProvidingTest {
 
     private companion object {
         const val EXPECTED_TEXT = "Some text"
-        val SomeThingProvidedDescriptor = createDescriptor<SomeThing>()
-        val SomeThingDescriptor = createDescriptor<SomeThing>()
-        val SomeThingTextDescriptor = createDescriptor<String>()
+        val SomeThingProvidedDescriptor = dependencyDescriptor<SomeThing>()
+        val SomeThingDescriptor = dependencyDescriptor<SomeThing>()
+        val SomeThingTextDescriptor = dependencyDescriptor<String>()
         val CoreModule = declareModule {
 
             factory(SomeThingProvidedDescriptor) {
@@ -48,12 +49,12 @@ class ProvidingTest {
 
     @Test(expected = InjectionFailedException::class)
     fun shouldFailToFindText() {
-        component.provider().inject(SomeThingDescriptor)
+        component.inject(SomeThingDescriptor)
     }
 
     @Test
     fun shouldFindText() {
-        val result = component.provider().inject(SomeThingProvidedDescriptor)
+        val result = component.inject(SomeThingProvidedDescriptor)
         assert(result.text == EXPECTED_TEXT)
     }
 

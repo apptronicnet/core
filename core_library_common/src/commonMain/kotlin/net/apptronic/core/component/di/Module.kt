@@ -9,8 +9,8 @@ internal class ObjectDefinition<TypeDeclaration>(
 
     private var mappings = mutableListOf<ObjectKey>()
 
-    internal fun getProvider(): ObjectProvider<TypeDeclaration> {
-        return providerFactory.invoke().also {
+    internal fun getProvider(context: Context): ObjectProvider<TypeDeclaration> {
+        return providerFactory.invoke(context).also {
             it.addMapping(mappings)
         }
     }
@@ -36,7 +36,7 @@ class ProviderDefinition<TypeDeclaration> internal constructor(
     }
 
     fun <Mapping : Any> addMapping(
-            descriptor: Descriptor<Mapping>
+            descriptor: DependencyDescriptor<Mapping>
     ) {
         objectDefinition.addMappings(objectKey(descriptor))
     }
@@ -50,13 +50,13 @@ class BindDefinition<To : Any>(
 infix fun <To : Any> KClass<*>.alsoAs(to: KClass<To>) =
         BindDefinition<To>(objectKey(this), objectKey(to))
 
-infix fun <To : Any> Descriptor<*>.alsoAs(to: KClass<To>) =
+infix fun <To : Any> DependencyDescriptor<*>.alsoAs(to: KClass<To>) =
         BindDefinition<To>(objectKey(this), objectKey(to))
 
-infix fun <To : Any> KClass<*>.alsoAs(to: Descriptor<To>) =
+infix fun <To : Any> KClass<*>.alsoAs(to: DependencyDescriptor<To>) =
         BindDefinition<To>(objectKey(this), objectKey(to))
 
-infix fun <To : Any> Descriptor<*>.alsoAs(to: Descriptor<To>) =
+infix fun <To : Any> DependencyDescriptor<*>.alsoAs(to: DependencyDescriptor<To>) =
         BindDefinition<To>(objectKey(this), objectKey(to))
 
 class ModuleDefinition internal constructor(
@@ -65,9 +65,9 @@ class ModuleDefinition internal constructor(
 
     private val definitions = mutableListOf<ObjectDefinition<*>>()
 
-    internal fun buildInstance(): Module {
+    internal fun buildInstance(context: Context): Module {
         val providers: List<ObjectProvider<*>> = definitions.map {
-            it.getProvider()
+            it.getProvider(context)
         }
         return Module(name, providers)
     }
@@ -85,9 +85,11 @@ class ModuleDefinition internal constructor(
     }
 
     inline fun <reified TypeDeclaration : Any> shared(
+            fallbackCount: Int = 0,
+            fallbackLifetime: Long = 0L,
             noinline builder: SharedScope.() -> TypeDeclaration
     ): ProviderDefinition<TypeDeclaration> {
-        return shared(TypeDeclaration::class, builder)
+        return shared(TypeDeclaration::class, fallbackCount, fallbackLifetime, builder)
     }
 
     fun <TypeDeclaration : Any> factory(
@@ -103,7 +105,7 @@ class ModuleDefinition internal constructor(
     }
 
     fun <TypeDeclaration : Any> factory(
-            descriptor: Descriptor<TypeDeclaration>,
+            descriptor: DependencyDescriptor<TypeDeclaration>,
             builder: FactoryScope.() -> TypeDeclaration
     ): ProviderDefinition<TypeDeclaration> {
         return addDefinition {
@@ -113,22 +115,26 @@ class ModuleDefinition internal constructor(
 
     fun <TypeDeclaration : Any> shared(
             clazz: KClass<TypeDeclaration>,
+            fallbackCount: Int = 0,
+            fallbackLifetime: Long = 0L,
             builder: SharedScope.() -> TypeDeclaration
     ): ProviderDefinition<TypeDeclaration> {
         if (clazz::class == Context::class) {
             throw IllegalArgumentException("Cannot register [Context] provider. Please use Descriptors.")
         }
         return addDefinition {
-            sharedProvider(objectKey(clazz), BuilderMethod(builder))
+            sharedProvider(objectKey(clazz), BuilderMethod(builder), it, fallbackCount, fallbackLifetime)
         }
     }
 
     fun <TypeDeclaration : Any> shared(
-            descriptor: Descriptor<TypeDeclaration>,
+            descriptor: DependencyDescriptor<TypeDeclaration>,
+            fallbackCount: Int = 0,
+            fallbackLifetime: Long = 0L,
             builder: SharedScope.() -> TypeDeclaration
     ): ProviderDefinition<TypeDeclaration> {
         return addDefinition {
-            sharedProvider(objectKey(descriptor), BuilderMethod(builder))
+            sharedProvider(objectKey(descriptor), BuilderMethod(builder), it, fallbackCount, fallbackLifetime)
         }
     }
 
@@ -145,7 +151,7 @@ class ModuleDefinition internal constructor(
     }
 
     fun <TypeDeclaration : Any> single(
-            descriptor: Descriptor<TypeDeclaration>,
+            descriptor: DependencyDescriptor<TypeDeclaration>,
             builder: SingleScope.() -> TypeDeclaration
     ): ProviderDefinition<TypeDeclaration> {
         return addDefinition {
@@ -154,7 +160,7 @@ class ModuleDefinition internal constructor(
     }
 
     inline fun <reified To : Any> bind(
-            descriptor: Descriptor<*>
+            descriptor: DependencyDescriptor<*>
     ): ProviderDefinition<To> {
         val clazz = To::class
         return bind(descriptor alsoAs clazz)
@@ -176,7 +182,7 @@ class ModuleDefinition internal constructor(
     }
 
     private fun <TypeDeclaration> addDefinition(
-            providerFactory: () -> ObjectProvider<TypeDeclaration>
+            providerFactory: (Context) -> ObjectProvider<TypeDeclaration>
     ): ProviderDefinition<TypeDeclaration> {
         val definition = ObjectDefinition(ProviderFactoryMethod(providerFactory))
         definitions.add(definition)

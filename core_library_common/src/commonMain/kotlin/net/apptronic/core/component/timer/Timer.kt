@@ -4,7 +4,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import net.apptronic.core.base.elapsedRealtimeMillis
 import net.apptronic.core.base.observable.Observer
-import net.apptronic.core.component.Component
+import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.coroutines.CoroutineLauncher
 import net.apptronic.core.component.coroutines.coroutineLaunchers
 import net.apptronic.core.component.entity.Entity
@@ -13,7 +13,7 @@ import net.apptronic.core.component.typedEvent
 import net.apptronic.core.component.value
 
 class Timer(
-        private val component: Component,
+        private val context: Context,
         initialInterval: Long,
         initialLimit: Long = INFINITE,
         private val scopedToStage: Boolean = true
@@ -23,19 +23,18 @@ class Timer(
         val INFINITE = -1L
     }
 
-    private val context = component.context
-    private val isRunning = component.value(false)
-    private val limit = component.value(initialLimit)
-    private val interval = component.value(initialInterval)
+    private val isRunning = context.value(false)
+    private val limit = context.value(initialLimit)
+    private val interval = context.value(initialInterval)
 
-    private val timerEvent = component.typedEvent<TimerTick>()
+    private val timerEvent = context.typedEvent<TimerTick>()
     private var activeLauncher: CoroutineLauncher? = null
 
     private fun coroutineLauncher(): CoroutineLauncher {
         return if (scopedToStage) {
-            component.coroutineLaunchers().scoped
+            context.coroutineLaunchers().scoped
         } else {
-            component.coroutineLaunchers().local
+            context.coroutineLaunchers().local
         }
     }
 

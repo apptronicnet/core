@@ -54,7 +54,7 @@ class DependencyDispatcher(
      * @param name optional name for instance
      */
     fun <TypeDeclaration : Any> addInstance(
-            descriptor: Descriptor<TypeDeclaration>,
+            descriptor: DependencyDescriptor<TypeDeclaration>,
             instance: TypeDeclaration
     ) {
         if (instance is ModuleDefinition) {
@@ -71,7 +71,7 @@ class DependencyDispatcher(
      * @param name optional name for instance
      */
     fun <TypeDeclaration : Any> addNullableInstance(
-            descriptor: Descriptor<TypeDeclaration?>,
+            descriptor: DependencyDescriptor<TypeDeclaration?>,
             instance: TypeDeclaration?
     ) {
         val key = objectKey(descriptor)
@@ -79,7 +79,7 @@ class DependencyDispatcher(
     }
 
     fun addModule(moduleDefinition: ModuleDefinition) {
-        modules.add(moduleDefinition.buildInstance())
+        modules.add(moduleDefinition.buildInstance(context))
     }
 
     override fun <TypeDeclaration : Any> inject(
@@ -115,7 +115,7 @@ class DependencyDispatcher(
     }
 
     override fun <TypeDeclaration> inject(
-            descriptor: Descriptor<TypeDeclaration>,
+            descriptor: DependencyDescriptor<TypeDeclaration>,
             params: Parameters
     ): TypeDeclaration {
         val key = objectKey(descriptor)
@@ -123,7 +123,7 @@ class DependencyDispatcher(
     }
 
     override fun <TypeDeclaration> optional(
-            descriptor: Descriptor<TypeDeclaration>,
+            descriptor: DependencyDescriptor<TypeDeclaration>,
             params: Parameters
     ): TypeDeclaration? {
         val key = objectKey(descriptor)
@@ -131,7 +131,7 @@ class DependencyDispatcher(
     }
 
     override fun <TypeDeclaration> injectLazy(
-            descriptor: Descriptor<TypeDeclaration>,
+            descriptor: DependencyDescriptor<TypeDeclaration>,
             params: Parameters
     ): Lazy<TypeDeclaration> {
         val key = objectKey(descriptor)
@@ -139,7 +139,7 @@ class DependencyDispatcher(
     }
 
     override fun <TypeDeclaration> optionalLazy(
-            descriptor: Descriptor<TypeDeclaration>,
+            descriptor: DependencyDescriptor<TypeDeclaration>,
             params: Parameters
     ): Lazy<TypeDeclaration?> {
         val key = objectKey(descriptor)

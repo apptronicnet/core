@@ -1,5 +1,6 @@
 package net.apptronic.core.component.entity.behavior
 
+import kotlinx.coroutines.CoroutineScope
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.base.observable.subject.BehaviorSubject
 import net.apptronic.core.base.observable.subject.ValueHolder
@@ -8,6 +9,7 @@ import net.apptronic.core.component.entity.BaseEntity
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.EntitySubscription
 import net.apptronic.core.component.entity.entities.Value
+import net.apptronic.core.component.entity.functions.mapSuspend
 import net.apptronic.core.component.entity.functions.onNext
 import net.apptronic.core.component.entity.subscribe
 
@@ -15,21 +17,17 @@ import net.apptronic.core.component.entity.subscribe
  * Throttles source observable to prevent parallel processing many items at same time. Emits next item for processing
  * only when previous item was processed. Throws out from chain old items if new arrived before previous started
  * processing.
- * @param throttledTransformation method to operate throttled input, should returns result entity to be processed
- * after throttling of throttling chain will be broken and never emit next value.
+ * @param mapping mapping to be performed
  */
-fun <Source, Result> Entity<Source>.throttle(
-        throttledTransformation: (Entity<Source>) -> Entity<Result>
+fun <Source, Result> Entity<Source>.throttleMap(
+        mapping: suspend CoroutineScope.(Source) -> Result
 ): Entity<Result> {
-    return ThrottleTransformationEntity(
-            this,
-            throttledTransformation
-    )
+    return ThrottledMapEntity(this, mapping)
 }
 
-private class ThrottleTransformationEntity<Source, Result>(
+private class ThrottledMapEntity<Source, Result>(
         private val sourceEntity: Entity<Source>,
-        private val throttledTransformation: (Entity<Source>) -> Entity<Result>
+        private val mapping: suspend CoroutineScope.(Source) -> Result
 ) : BaseEntity<Result>(), Observer<Result> {
 
     override val context: Context = sourceEntity.context
@@ -37,8 +35,8 @@ private class ThrottleTransformationEntity<Source, Result>(
     private val resultObservable = Value<Result>(context)
 
     init {
-        val throttledTransformationResult = ThrottledTransformation(context, throttledTransformation)
-        throttledTransformationResult.observe(this@ThrottleTransformationEntity)
+        val throttledTransformationResult = ThrottledTransformation(context, mapping)
+        throttledTransformationResult.observe(this@ThrottledMapEntity)
         sourceEntity.onNext { nextValue ->
             throttledTransformationResult.onNext(nextValue)
         }
@@ -56,7 +54,7 @@ private class ThrottleTransformationEntity<Source, Result>(
 
 private class ThrottledTransformation<Source, Result>(
         context: Context,
-        throttledTransformation: (Entity<Source>) -> Entity<Result>
+        mapping: suspend CoroutineScope.(Source) -> Result
 ) {
 
     private val sourceEntity = Value<Source>(context)
@@ -75,7 +73,7 @@ private class ThrottledTransformation<Source, Result>(
     }
 
     init {
-        throttledTransformation(sourceEntity).subscribe(context) { nextResult ->
+        sourceEntity.mapSuspend(mapping).subscribe(context) { nextResult ->
             resultObservable.update(nextResult)
             isProcessing = false
             takeNext()

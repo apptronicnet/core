@@ -1,12 +1,12 @@
 package net.apptronic.core.base.core.di
 
-import net.apptronic.core.component.di.createDescriptor
 import net.apptronic.core.component.di.declareModule
-import net.apptronic.core.component.di.inject
+import net.apptronic.core.component.di.dependencyDescriptor
+import net.apptronic.core.component.inject
 import net.apptronic.core.testutils.BaseTestComponent
 import org.junit.Test
 
-class DescriptorProvidersTest {
+class DependencyDescriptorProvidersTest {
 
     interface MultiInterface
 
@@ -22,10 +22,10 @@ class DescriptorProvidersTest {
 
     private companion object {
 
-        val MultiOneDescriptor = createDescriptor<MultiInterface>()
-        val MultiTwoDescriptor = createDescriptor<MultiInterface>()
-        val SingleOneDescriptor = createDescriptor<SingleInterface>()
-        val SingleTwoDescriptor = createDescriptor<SingleInterface>()
+        val MultiOneDescriptor = dependencyDescriptor<MultiInterface>()
+        val MultiTwoDescriptor = dependencyDescriptor<MultiInterface>()
+        val SingleOneDescriptor = dependencyDescriptor<SingleInterface>()
+        val SingleTwoDescriptor = dependencyDescriptor<SingleInterface>()
 
         private val sampleModule = declareModule {
 
@@ -63,23 +63,23 @@ class DescriptorProvidersTest {
         }
     ) {
 
-        val multiBase_1 = provider().inject<MultiInterface>()
-        val multiBase_2 = provider().inject<MultiInterface>()
+        val multiBase_1 = inject<MultiInterface>()
+        val multiBase_2 = inject<MultiInterface>()
 
-        val multiOne_1 = provider().inject(MultiOneDescriptor)
-        val multiOne_2 = provider().inject(MultiOneDescriptor)
+        val multiOne_1 = inject(MultiOneDescriptor)
+        val multiOne_2 = inject(MultiOneDescriptor)
 
-        val multiTwo_1 = provider().inject(MultiTwoDescriptor)
-        val multiTwo_2 = provider().inject(MultiTwoDescriptor)
+        val multiTwo_1 = inject(MultiTwoDescriptor)
+        val multiTwo_2 = inject(MultiTwoDescriptor)
 
-        val singleBase_1 = provider().inject<SingleInterface>()
-        val singleBase_2 = provider().inject<SingleInterface>()
+        val singleBase_1 = inject<SingleInterface>()
+        val singleBase_2 = inject<SingleInterface>()
 
-        val singleOne_1 = provider().inject(SingleOneDescriptor)
-        val singleOne_2 = provider().inject(SingleOneDescriptor)
+        val singleOne_1 = inject(SingleOneDescriptor)
+        val singleOne_2 = inject(SingleOneDescriptor)
 
-        val singleTwo_1 = provider().inject(SingleTwoDescriptor)
-        val singleTwo_2 = provider().inject(SingleTwoDescriptor)
+        val singleTwo_1 = inject(SingleTwoDescriptor)
+        val singleTwo_2 = inject(SingleTwoDescriptor)
 
     }
 

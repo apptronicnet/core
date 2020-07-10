@@ -3,8 +3,8 @@ package net.apptronic.core.base.core.di
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.context.SubContext
 import net.apptronic.core.component.di.InjectionFailedException
-import net.apptronic.core.component.di.createDescriptor
 import net.apptronic.core.component.di.declareModule
+import net.apptronic.core.component.di.dependencyDescriptor
 import net.apptronic.core.component.lifecycle.BASE_LIFECYCLE
 import net.apptronic.core.testutils.testContext
 import org.junit.Test
@@ -18,9 +18,9 @@ class ParentContextProviderTest {
         class Three
         class OneChild : One()
 
-        val OneDescriptor = createDescriptor<One>()
-        val TwoDescriptor = createDescriptor<Two>()
-        val ThreeDescriptor = createDescriptor<Three>()
+        val OneDescriptor = dependencyDescriptor<One>()
+        val TwoDescriptor = dependencyDescriptor<Two>()
+        val ThreeDescriptor = dependencyDescriptor<Three>()
 
         val parentModule = declareModule {
 

@@ -1,5 +1,7 @@
 package net.apptronic.core.component.di
 
+import net.apptronic.core.component.context.Context
+
 /**
  * Method to create instance of Object in provider
  */
@@ -17,11 +19,11 @@ internal class BuilderMethod<TypeDeclaration, BuilderContext : ObjectBuilderScop
  * Method to create factory of object providers
  */
 internal class ProviderFactoryMethod<TypeDeclaration>(
-        private val providerFactory: () -> ObjectProvider<TypeDeclaration>
+        private val providerFactory: (Context) -> ObjectProvider<TypeDeclaration>
 ) {
 
-    fun invoke(): ObjectProvider<TypeDeclaration> {
-        return providerFactory.invoke()
+    fun invoke(context: Context): ObjectProvider<TypeDeclaration> {
+        return providerFactory.invoke(context)
     }
 
 }

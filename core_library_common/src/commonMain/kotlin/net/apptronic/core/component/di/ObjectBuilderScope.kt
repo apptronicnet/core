@@ -2,6 +2,7 @@ package net.apptronic.core.component.di
 
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.context.ContextDefinition
+import net.apptronic.core.component.context.Contextual
 import net.apptronic.core.component.context.close
 import kotlin.reflect.KClass
 
@@ -12,7 +13,7 @@ abstract class ObjectBuilderScope internal constructor(
         protected val definitionContext: Context,
         protected val dependencyDispatcher: DependencyDispatcher,
         protected val parameters: Parameters
-) {
+) : Contextual {
 
     private val recyclers = mutableListOf<RecyclerMethod<*>>()
 
@@ -49,13 +50,13 @@ abstract class ObjectBuilderScope internal constructor(
     }
 
     fun <ObjectType : Any> inject(
-            descriptor: Descriptor<ObjectType>
+            descriptor: DependencyDescriptor<ObjectType>
     ): ObjectType {
         return performInjection(objectKey(descriptor))
     }
 
     fun <ObjectType : Any> optional(
-            descriptor: Descriptor<ObjectType>
+            descriptor: DependencyDescriptor<ObjectType>
     ): ObjectType? {
         return optionalInjection(objectKey(descriptor))
     }
@@ -123,6 +124,8 @@ class SingleScope internal constructor(
         dependencyDispatcher: DependencyDispatcher
 ) : ObjectBuilderScope(definitionContext, dependencyDispatcher, emptyParameters()) {
 
+    override val context: Context = definitionContext
+
     override val defaultBuilderContext: Context = definitionContext
 
 }
@@ -156,7 +159,7 @@ abstract class ParametersScope(
      * Request injection from injection context. Allows to override descriptors in child context or parameters
      */
     fun <ObjectType : Any> provided(
-            descriptor: Descriptor<ObjectType>
+            descriptor: DependencyDescriptor<ObjectType>
     ): ObjectType {
         return performProvide(objectKey(descriptor))
     }
@@ -172,6 +175,8 @@ class FactoryScope internal constructor(
         dependencyDispatcher: DependencyDispatcher,
         parameters: Parameters
 ) : ParametersScope(definitionContext, dependencyDispatcher, parameters) {
+
+    override val context: Context = injectionContext
 
     private val injectionDispatcher = injectionContext.dependencyDispatcher
 
@@ -195,6 +200,8 @@ class SharedScope internal constructor(
         dependencyDispatcher: DependencyDispatcher,
         parameters: Parameters
 ) : ParametersScope(definitionContext, dependencyDispatcher, parameters) {
+
+    override val context: Context = definitionContext
 
     override fun <ObjectType> performProvide(objectKey: ObjectKey): ObjectType {
         return parameters.get(objectKey)

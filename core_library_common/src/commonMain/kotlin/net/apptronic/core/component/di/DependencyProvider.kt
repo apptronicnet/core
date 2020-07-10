@@ -49,22 +49,22 @@ interface DependencyProvider {
     ): Lazy<TypeDeclaration?>
 
     fun <TypeDeclaration> inject(
-            descriptor: Descriptor<TypeDeclaration>,
+            descriptor: DependencyDescriptor<TypeDeclaration>,
             params: Parameters = emptyParameters()
     ): TypeDeclaration
 
     fun <TypeDeclaration> optional(
-            descriptor: Descriptor<TypeDeclaration>,
+            descriptor: DependencyDescriptor<TypeDeclaration>,
             params: Parameters = emptyParameters()
     ): TypeDeclaration?
 
     fun <TypeDeclaration> injectLazy(
-            descriptor: Descriptor<TypeDeclaration>,
+            descriptor: DependencyDescriptor<TypeDeclaration>,
             params: Parameters = emptyParameters()
     ): Lazy<TypeDeclaration>
 
     fun <TypeDeclaration> optionalLazy(
-            descriptor: Descriptor<TypeDeclaration>,
+            descriptor: DependencyDescriptor<TypeDeclaration>,
             params: Parameters = emptyParameters()
     ): Lazy<TypeDeclaration?>
 

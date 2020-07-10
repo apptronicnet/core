@@ -1,8 +1,8 @@
 package net.apptronic.core.base.core.di
 
 import net.apptronic.core.component.di.alsoAs
-import net.apptronic.core.component.di.createDescriptor
 import net.apptronic.core.component.di.declareModule
+import net.apptronic.core.component.di.dependencyDescriptor
 import net.apptronic.core.testutils.testContext
 import org.junit.Test
 
@@ -15,8 +15,8 @@ class BindProviderTest {
 
         class Impl : One, Two
 
-        val OneDescriptor = createDescriptor<One>()
-        val TwoDescriptor = createDescriptor<Two>()
+        val OneDescriptor = dependencyDescriptor<One>()
+        val TwoDescriptor = dependencyDescriptor<Two>()
 
         val module = declareModule {
 

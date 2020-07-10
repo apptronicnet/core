@@ -14,7 +14,7 @@ class Parameters {
     }
 
     internal fun <ObjectType : Any> add(
-            descriptor: Descriptor<ObjectType>,
+            descriptor: DependencyDescriptor<ObjectType>,
             instance: ObjectType
     ) {
         instances[descriptor.toObjectKey()] = instance
@@ -73,7 +73,7 @@ class Builder internal constructor(private val params: Parameters) {
     }
 
     fun <ObjectType : Any> add(
-            descriptor: Descriptor<ObjectType>,
+            descriptor: DependencyDescriptor<ObjectType>,
             instance: ObjectType
     ) {
         params.add(descriptor, instance)

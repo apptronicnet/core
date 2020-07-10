@@ -1,7 +1,7 @@
 package net.apptronic.core.base.core.di
 
 import net.apptronic.core.component.di.declareModule
-import net.apptronic.core.component.di.inject
+import net.apptronic.core.component.inject
 import net.apptronic.core.testutils.BaseTestComponent
 import org.junit.Test
 
@@ -54,13 +54,13 @@ class BasicProvidersTest {
             }
     ) {
 
-        val manyInstances1: ManyInstances = provider().inject()
-        val manyInstances2: ManyInstances = provider().inject()
-        val manyInstances3: ManyInstances = provider().inject()
+        val manyInstances1: ManyInstances = inject()
+        val manyInstances2: ManyInstances = inject()
+        val manyInstances3: ManyInstances = inject()
 
-        val singleInstance1: SingleInstance = provider().inject()
-        val singleInstance2: SingleInstance = provider().inject()
-        val singleInstance3: SingleInstance = provider().inject()
+        val singleInstance1: SingleInstance = inject()
+        val singleInstance2: SingleInstance = inject()
+        val singleInstance3: SingleInstance = inject()
 
     }
 

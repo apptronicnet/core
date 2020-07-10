@@ -4,9 +4,10 @@ import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.context.EmptyContext
 import net.apptronic.core.component.context.close
 import net.apptronic.core.component.di.AutoRecycling
-import net.apptronic.core.component.di.createDescriptor
 import net.apptronic.core.component.di.declareModule
+import net.apptronic.core.component.di.dependencyDescriptor
 import net.apptronic.core.component.extensions.BaseComponent
+import net.apptronic.core.component.inject
 import net.apptronic.core.testutils.testContext
 import org.junit.Test
 
@@ -28,7 +29,7 @@ class AutoRecyclingTest {
 
     companion object {
 
-        val DeclarationDescriptor = createDescriptor<Declaration>()
+        val DeclarationDescriptor = dependencyDescriptor<Declaration>()
 
         val module = declareModule {
 
@@ -42,7 +43,7 @@ class AutoRecyclingTest {
 
     class TestComponent(context: Context) : BaseComponent(context, EmptyContext) {
 
-        val instance = provider().inject(DeclarationDescriptor)
+        val instance = inject(DeclarationDescriptor)
 
     }
 

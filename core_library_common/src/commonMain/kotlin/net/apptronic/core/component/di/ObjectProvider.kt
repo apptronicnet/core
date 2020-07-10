@@ -1,6 +1,9 @@
 package net.apptronic.core.component.di
 
+import kotlinx.coroutines.delay
+import net.apptronic.core.base.elapsedRealtimeMillis
 import net.apptronic.core.component.context.Context
+import net.apptronic.core.component.coroutines.coroutineLauncherLocal
 
 internal sealed class ObjectProvider<TypeDeclaration>(
         objectKey: ObjectKey
@@ -50,9 +53,12 @@ internal fun <TypeDeclaration : Any> singleProvider(
 
 internal fun <TypeDeclaration : Any> sharedProvider(
         objectKey: ObjectKey,
-        builder: BuilderMethod<TypeDeclaration, SharedScope>
+        builder: BuilderMethod<TypeDeclaration, SharedScope>,
+        context: Context,
+        fallbackCount: Int,
+        fallbackLifetime: Long
 ): ObjectProvider<TypeDeclaration> {
-    return SharedProvider(objectKey, builder)
+    return SharedProvider(objectKey, builder, context, fallbackCount, fallbackLifetime)
 }
 
 internal fun <TypeDeclaration : Any> factoryProvider(
@@ -122,13 +128,18 @@ private class FactoryProvider<TypeDeclaration : Any>(
 
 private class SharedProvider<TypeDeclaration : Any>(
         objectKey: ObjectKey,
-        builder: BuilderMethod<TypeDeclaration, SharedScope>
+        builder: BuilderMethod<TypeDeclaration, SharedScope>,
+        private val context: Context,
+        private val fallbackCount: Int,
+        private val fallbackLifetime: Long
 ) : ObjectBuilderProvider<TypeDeclaration, SharedScope>(objectKey, builder) {
 
     override val typeName: String = "shared"
 
-    private inner class SharedInstance(
-            val instance: TypeDeclaration,
+    private val coroutineLauncher = context.coroutineLauncherLocal()
+
+    private class SharedInstance<T>(
+            val instance: T,
             val scope: SharedScope
     ) {
         var shareCount: Int = 0
@@ -137,7 +148,14 @@ private class SharedProvider<TypeDeclaration : Any>(
         }
     }
 
-    private val shares = mutableMapOf<Parameters, SharedInstance>()
+    private class UnusedShare<T>(
+            val parameters: Parameters,
+            val share: SharedInstance<T>,
+            val unusedFrom: Long
+    )
+
+    private val shares = mutableMapOf<Parameters, SharedInstance<TypeDeclaration>>()
+    private val unused = mutableListOf<UnusedShare<TypeDeclaration>>()
 
     override fun provide(definitionContext: Context, dispatcher: DependencyDispatcher, searchSpec: SearchSpec): TypeDeclaration {
         val providedContext = searchSpec.context
@@ -155,10 +173,46 @@ private class SharedProvider<TypeDeclaration : Any>(
             share.shareCount--
             if (share.shareCount == 0) {
                 shares.remove(parameters)
-                share.recycle()
+                unused(parameters, share)
             }
         }
         return share.instance
+    }
+
+    private fun unused(parameters: Parameters, share: SharedInstance<TypeDeclaration>) {
+        if (fallbackCount <= 0 || fallbackLifetime <= 0) {
+            share.recycle()
+        } else {
+            unused.add(UnusedShare(parameters, share, elapsedRealtimeMillis()))
+            clearUnused()
+        }
+    }
+
+    fun clearUnused() {
+        val timestamp = elapsedRealtimeMillis()
+        unused.removeAll {
+            if (timestamp - it.unusedFrom > fallbackCount) {
+                it.share.recycle()
+                true
+            } else false
+        }
+        while (unused.isNotEmpty() && unused.size > fallbackCount) {
+            unused.removeAt(0).share.recycle()
+        }
+        scheduleAutoClearUnused()
+    }
+
+    private fun scheduleAutoClearUnused() {
+        if (unused.isNotEmpty()) {
+            val lifetimeInUnused = elapsedRealtimeMillis() - unused[0].unusedFrom
+            val delayTime = fallbackLifetime - lifetimeInUnused
+            coroutineLauncher.launch {
+                if (delayTime > 0) {
+                    delay(delayTime)
+                }
+                clearUnused()
+            }
+        }
     }
 
 }

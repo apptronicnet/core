@@ -96,7 +96,7 @@ class ListNavigator(
     }
 
     private fun ViewModel.getContainer(): ViewModelContainer? {
-        return containers[id]
+        return containers[componentId]
     }
 
     fun update(action: (MutableList<ViewModel>) -> Unit) {
@@ -123,7 +123,7 @@ class ListNavigator(
 
     private fun onAdded(viewModel: ViewModel) {
         val container = ViewModelContainer(viewModel, parent, visibilityFilters.isReadyToShow(viewModel))
-        containers[viewModel.id] = container
+        containers[viewModel.componentId] = container
         container.getViewModel().onAttachToParent(this)
         container.observeVisibilityChanged(::postRefreshVisibility)
         container.setCreated(true)
@@ -149,7 +149,7 @@ class ListNavigator(
         adapter.setNavigator(itemStateNavigator)
         parent.context.lifecycle.onExitFromActiveStage {
             items.forEach {
-                if (boundIds.contains(it.id)) {
+                if (boundIds.contains(it.componentId)) {
                     itemStateNavigator.setFocused(it, false)
                     itemStateNavigator.setVisible(it, false)
                     itemStateNavigator.setBound(it, false)
@@ -167,9 +167,9 @@ class ListNavigator(
         override fun setBound(viewModel: ViewModel, isBound: Boolean) {
             viewModel.getContainer()?.setBound(isBound)
             if (isBound) {
-                boundIds.add(viewModel.id)
+                boundIds.add(viewModel.componentId)
             } else {
-                boundIds.remove(viewModel.id)
+                boundIds.remove(viewModel.componentId)
             }
         }
 

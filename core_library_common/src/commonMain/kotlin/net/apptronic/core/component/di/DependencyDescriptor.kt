@@ -8,7 +8,7 @@ import kotlin.reflect.KClass
  * object across whole app code. Two descriptor objects are different keys and will be interpreted by
  * [DependencyDispatcher] as two different keys.
  */
-sealed class Descriptor<T>(
+sealed class DependencyDescriptor<T>(
         internal val whereCreated: String
 ) {
 
@@ -36,9 +36,9 @@ sealed class Descriptor<T>(
 }
 
 private class KotlinClassDescriptor<T : Any>(
-    private val clazz: KClass<T>,
-    whereCreated: String
-) : Descriptor<T>(whereCreated) {
+        private val clazz: KClass<T>,
+        whereCreated: String
+) : DependencyDescriptor<T>(whereCreated) {
 
     override fun toString(): String {
         return "Descriptor#$descriptorId/class:${clazz.qualifiedName}@$whereCreated"
@@ -47,9 +47,9 @@ private class KotlinClassDescriptor<T : Any>(
 }
 
 private class KotlinNullableClassDescriptor<T : Any>(
-    private val clazz: KClass<T>,
-    whereCreated: String
-) : Descriptor<T?>(whereCreated) {
+        private val clazz: KClass<T>,
+        whereCreated: String
+) : DependencyDescriptor<T?>(whereCreated) {
 
     override fun toString(): String {
         return "Descriptor#$descriptorId/class:${clazz.qualifiedName}@$whereCreated"
@@ -58,33 +58,33 @@ private class KotlinNullableClassDescriptor<T : Any>(
 }
 
 /**
- * Create [Descriptor] of type [T].
+ * Create [DependencyDescriptor] of type [T].
  */
-fun <T : Any> createDescriptor(clazz: KClass<T>, name: String = ""): Descriptor<T> {
+fun <T : Any> dependencyDescriptor(clazz: KClass<T>, name: String = ""): DependencyDescriptor<T> {
     return KotlinClassDescriptor(clazz, name)
 }
 
 
 /**
- * Create nullable [Descriptor] of type [T]. This means that provided/injected object may be null.
+ * Create nullable [DependencyDescriptor] of type [T]. This means that provided/injected object may be null.
  */
-fun <T : Any> createNullableDescriptor(
+fun <T : Any> dependencyDescriptorNullable(
         clazz: KClass<T>,
         name: String = ""
-): Descriptor<T?> {
+): DependencyDescriptor<T?> {
     return KotlinNullableClassDescriptor(clazz, name)
 }
 
 /**
- * Create [Descriptor] of type [T].
+ * Create [DependencyDescriptor] of type [T].
  */
-inline fun <reified T : Any> createDescriptor(name: String = ""): Descriptor<T> {
-    return createDescriptor(T::class, name)
+inline fun <reified T : Any> dependencyDescriptor(name: String = ""): DependencyDescriptor<T> {
+    return dependencyDescriptor(T::class, name)
 }
 
 /**
- * Create nullable [Descriptor] of type [T]. This means that provided/injected object may be null.
+ * Create nullable [DependencyDescriptor] of type [T]. This means that provided/injected object may be null.
  */
-inline fun <reified T : Any> createNullableDescriptor(name: String = ""): Descriptor<T?> {
-    return createNullableDescriptor(T::class, name)
+inline fun <reified T : Any> dependencyDescriptorNullable(name: String = ""): DependencyDescriptor<T?> {
+    return dependencyDescriptorNullable(T::class, name)
 }

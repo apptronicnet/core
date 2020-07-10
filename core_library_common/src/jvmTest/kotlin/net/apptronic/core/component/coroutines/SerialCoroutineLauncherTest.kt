@@ -1,7 +1,7 @@
 package net.apptronic.core.component.coroutines
 
 import kotlinx.coroutines.CompletableDeferred
-import net.apptronic.core.assertEquals
+import net.apptronic.core.assertListEquals
 import net.apptronic.core.component.extensions.BaseComponent
 import net.apptronic.core.testutils.testContext
 import org.junit.Test
@@ -32,13 +32,13 @@ class SerialCoroutineLauncherTest {
             await3.await()
             invocations.add("post3")
         }
-        assertEquals(invocations, listOf("pre1"))
+        assertListEquals(invocations, listOf("pre1"))
         await3.complete(Unit)
-        assertEquals(invocations, listOf("pre1"))
+        assertListEquals(invocations, listOf("pre1"))
         await2.complete(Unit)
-        assertEquals(invocations, listOf("pre1"))
+        assertListEquals(invocations, listOf("pre1"))
         await1.complete(Unit)
-        assertEquals(invocations, listOf("pre1", "post1", "pre2", "post2", "pre3", "post3"))
+        assertListEquals(invocations, listOf("pre1", "post1", "pre2", "post2", "pre3", "post3"))
     }
 
 }
