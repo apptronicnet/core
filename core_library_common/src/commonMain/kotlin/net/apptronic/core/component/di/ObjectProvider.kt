@@ -51,7 +51,7 @@ internal fun <TypeDeclaration : Any> singleProvider(
     return SingleProvider(objectKey, builder)
 }
 
-internal fun <TypeDeclaration : Any> sharedProvider(
+internal fun <TypeDeclaration : Any> sharedDataProvider(
         objectKey: ObjectKey,
         builder: BuilderMethod<TypeDeclaration, SharedScope>,
         context: Context,

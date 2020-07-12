@@ -9,7 +9,7 @@ import net.apptronic.core.component.lifecycle.BASE_LIFECYCLE
 import net.apptronic.core.testutils.testContext
 import org.junit.Test
 
-class ParentContextProviderTest {
+class ParentContextDataProviderTest {
 
     private companion object {
 

@@ -17,18 +17,18 @@ import net.apptronic.core.component.inject
 import net.apptronic.core.component.newChain
 import net.apptronic.core.component.terminate
 import net.apptronic.core.component.typedEvent
-import net.apptronic.core.features.provider.Provider
-import net.apptronic.core.features.provider.injectFromProvider
-import net.apptronic.core.features.provider.providerDependencyDescriptor
-import net.apptronic.core.features.provider.sharedProvider
+import net.apptronic.core.features.provider.DataProvider
+import net.apptronic.core.features.provider.dataProviderDescriptor
+import net.apptronic.core.features.provider.injectData
+import net.apptronic.core.features.provider.sharedDataProvider
 import net.apptronic.core.testutils.testContext
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 
-class ProviderTest {
+class DataProviderTest {
 
-    val StringProviderDescriptor = providerDependencyDescriptor<String>()
+    val StringProviderDescriptor = dataProviderDescriptor<String, Int>()
 
     private val providersById = mutableListOf<Int>()
 
@@ -52,7 +52,7 @@ class ProviderTest {
 
     }
 
-    private inner class StringValueProvider(context: Context, id: Int) : Provider<String>(context) {
+    private inner class StringValueDataProvider(context: Context, id: Int) : DataProvider<String>(context) {
 
         init {
             providersById.add(id)
@@ -77,8 +77,8 @@ class ProviderTest {
             single {
                 Repository(scopedContext(EmptyContext))
             }
-            sharedProvider<String, Int>(StringProviderDescriptor) {
-                StringValueProvider(
+            sharedDataProvider<String, Int>(StringProviderDescriptor) {
+                StringValueDataProvider(
                         scopedContext(EmptyContext), it
                 )
             }
@@ -87,7 +87,7 @@ class ProviderTest {
 
     private inner class UsesStringComponent(context: Context, val id: Int) : BaseComponent(context) {
 
-        val data = injectFromProvider(StringProviderDescriptor, id).asProperty()
+        val data = injectData(StringProviderDescriptor, id).asProperty()
 
     }
 

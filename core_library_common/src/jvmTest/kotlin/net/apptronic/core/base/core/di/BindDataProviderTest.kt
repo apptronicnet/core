@@ -6,7 +6,7 @@ import net.apptronic.core.component.di.dependencyDescriptor
 import net.apptronic.core.testutils.testContext
 import org.junit.Test
 
-class BindProviderTest {
+class BindDataProviderTest {
 
     private companion object {
 

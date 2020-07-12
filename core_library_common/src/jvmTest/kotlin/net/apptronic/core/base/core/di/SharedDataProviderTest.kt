@@ -12,7 +12,7 @@ import net.apptronic.core.testutils.TestLifecycle
 import net.apptronic.core.testutils.testContext
 import org.junit.Test
 
-class SharedProviderTest {
+class SharedDataProviderTest {
 
     private class Shared : AutoRecycling {
         var isRecycled = false

@@ -4,24 +4,20 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.runBlocking
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.context.dependencyModule
-import net.apptronic.core.component.inject
-import net.apptronic.core.features.service.Service
-import net.apptronic.core.features.service.ServiceDispatcher
-import net.apptronic.core.features.service.service
-import net.apptronic.core.features.service.serviceDependencyDescriptor
+import net.apptronic.core.features.service.*
 import net.apptronic.core.testutils.testContext
 import org.junit.Test
 import kotlin.test.assertEquals
 
 class ServiceTest {
 
-    private val StringService = serviceDependencyDescriptor<String>()
+    private val StringService = serviceDescriptor<String, Unit>()
 
     private val awaitSignals = mutableMapOf<String, CompletableDeferred<Unit>>()
     private val completeSignals = mutableMapOf<String, CompletableDeferred<Unit>>()
     private var instances = 0
 
-    inner class ServiceExample(context: Context) : Service<String>(context) {
+    inner class ServiceExample(context: Context) : Service<String, Unit>(context) {
         init {
             instances++
         }
@@ -40,15 +36,15 @@ class ServiceTest {
         }
     }
 
-    private fun ServiceDispatcher<String>.nextRequest(request: String) {
+    private fun ServiceDispatcher<String, Unit>.nextRequest(request: String) {
         awaitSignals[request] = CompletableDeferred()
         completeSignals[request] = CompletableDeferred()
-        sendRequest(request)
+        postRequest(request)
     }
 
     @Test
     fun verifyServiceFlow() {
-        val service = context.inject(StringService)
+        val service = context.injectService(StringService)
         service.nextRequest("First")
         awaitSignals["First"]!!.complete(Unit)
         runBlocking {

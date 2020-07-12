@@ -6,7 +6,7 @@ import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertNull
 
-class NullableProviderTest {
+class NullableDataProviderTest {
 
     companion object {
         val NullableStringDescriptor = dependencyDescriptorNullable<String>()

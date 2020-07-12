@@ -5,7 +5,7 @@ import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.behavior.switchContext
 import net.apptronic.core.component.extensions.BaseComponent
 
-abstract class Provider<T>(context: Context) : BaseComponent(context) {
+abstract class DataProvider<T>(context: Context) : BaseComponent(context) {
 
     protected abstract val entity: Entity<T>
 

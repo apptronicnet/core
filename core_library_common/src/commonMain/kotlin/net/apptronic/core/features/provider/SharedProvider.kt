@@ -5,36 +5,39 @@ import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.context.ContextDefinition
 import net.apptronic.core.component.context.Contextual
 import net.apptronic.core.component.context.EmptyContext
-import net.apptronic.core.component.di.*
+import net.apptronic.core.component.di.ModuleDefinition
+import net.apptronic.core.component.di.SharedScope
+import net.apptronic.core.component.di.parameters
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.inject
+import kotlin.reflect.KClass
 
-inline fun <reified T> providerDependencyDescriptor(): DependencyDescriptor<Provider<T>> {
-    return dependencyDescriptor<Provider<T>>()
+inline fun <reified T : Any, reified K : Any> Contextual.injectData(descriptor: DataProviderDescriptor<T, K>, key: K): Entity<T> {
+    return injectData(T::class, K::class, descriptor, key)
 }
 
-inline fun <reified T, reified K : Any> Contextual.injectFromProvider(descriptor: DependencyDescriptor<Provider<T>>, key: K): Entity<T> {
-    return inject(descriptor, parameters { add(key) }).provide(context)
+fun <T : Any, K : Any> Contextual.injectData(type: KClass<T>, keyType: KClass<K>, descriptor: DataProviderDescriptor<T, K>, key: K): Entity<T> {
+    return inject(descriptor.providerDescriptor, parameters { add(descriptor.keyDescriptor, key) }).provide(context)
 }
 
-inline fun <T, reified K : Any> ModuleDefinition.sharedProvider(
-        descriptor: DependencyDescriptor<Provider<T>>,
-        noinline builder: SharedScope.(K) -> Provider<T>
+inline fun <T : Any, reified K : Any> ModuleDefinition.sharedDataProvider(
+        descriptor: DataProviderDescriptor<T, K>,
+        noinline builder: SharedScope.(K) -> DataProvider<T>
 ) {
-    shared(descriptor) {
-        val key: K = inject(K::class)
+    shared(descriptor.providerDescriptor) {
+        val key: K = provided(descriptor.keyDescriptor)
         builder(key)
     }
 }
 
-inline fun <T, reified K : Any> ModuleDefinition.sharedProviderBuilder(
-        descriptor: DependencyDescriptor<Provider<T>>,
+inline fun <reified T : Any, reified K : Any> ModuleDefinition.sharedProviderBuilder(
+        descriptor: DataProviderDescriptor<T, K>,
         contextDefinition: ContextDefinition<Context> = EmptyContext,
         noinline builder: Component.(K) -> Entity<T>
 ) {
-    shared(descriptor) {
+    shared(descriptor.providerDescriptor) {
         val context = scopedContext(contextDefinition)
-        val key: K = inject(K::class)
-        SimpleProvider(context, key, builder)
+        val key: K = provided(descriptor.keyDescriptor)
+        SimpleDataProvider(context, key, builder)
     }
 }
