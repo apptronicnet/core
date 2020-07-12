@@ -2,8 +2,10 @@ package net.apptronic.core.component.di
 
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.context.ContextDefinition
-import net.apptronic.core.component.context.Contextual
+import net.apptronic.core.component.context.childContext
 import net.apptronic.core.component.context.close
+import net.apptronic.core.component.lifecycle.BASE_LIFECYCLE
+import net.apptronic.core.component.lifecycle.LifecycleDefinition
 import kotlin.reflect.KClass
 
 /**
@@ -13,7 +15,7 @@ abstract class Scope internal constructor(
         protected val definitionContext: Context,
         protected val dependencyDispatcher: DependencyDispatcher,
         protected val parameters: Parameters
-) : Contextual {
+) {
 
     private val recyclers = mutableListOf<RecyclerMethod<*>>()
 
@@ -89,8 +91,19 @@ abstract class Scope internal constructor(
      * this scope ends.
      */
     @Suppress("UNUSED_PARAMETER")
-    fun <T : Context> scopedContext(contextDefinition: ContextDefinition<T>, parent: Context = defaultBuilderContext): T {
-        val scopedContext = contextDefinition.createContext(definitionContext)
+    fun <T : Context> scopedContext(
+            contextDefinition: ContextDefinition<T>): T {
+        val scopedContext = defaultBuilderContext.childContext(contextDefinition)
+        contexts.add(scopedContext)
+        return scopedContext
+    }
+
+    @Suppress("UNUSED_PARAMETER")
+    fun scopedContext(
+            lifecycleDefinition: LifecycleDefinition = BASE_LIFECYCLE,
+            builder: Context.() -> Unit = {}
+    ): Context {
+        val scopedContext = defaultBuilderContext.childContext(lifecycleDefinition, builder)
         contexts.add(scopedContext)
         return scopedContext
     }
@@ -123,8 +136,6 @@ class SingleScope internal constructor(
         definitionContext: Context,
         dependencyDispatcher: DependencyDispatcher
 ) : Scope(definitionContext, dependencyDispatcher, emptyParameters()) {
-
-    override val context: Context = definitionContext
 
     override val defaultBuilderContext: Context = definitionContext
 
@@ -176,8 +187,6 @@ class FactoryScope internal constructor(
         parameters: Parameters
 ) : ParametersScope(definitionContext, dependencyDispatcher, parameters) {
 
-    override val context: Context = injectionContext
-
     private val injectionDispatcher = injectionContext.dependencyDispatcher
 
     /**
@@ -200,8 +209,6 @@ class SharedScope internal constructor(
         dependencyDispatcher: DependencyDispatcher,
         parameters: Parameters
 ) : ParametersScope(definitionContext, dependencyDispatcher, parameters) {
-
-    override val context: Context = definitionContext
 
     override fun <ObjectType> performProvide(objectKey: ObjectKey): ObjectType {
         return parameters.get(objectKey)

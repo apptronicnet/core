@@ -1,4 +1,4 @@
-package net.apptronic.core.features
+package net.apptronic.core.features.dataprovider
 
 import net.apptronic.core.assertListEquals
 import net.apptronic.core.component.context.Context
@@ -17,10 +17,6 @@ import net.apptronic.core.component.inject
 import net.apptronic.core.component.newChain
 import net.apptronic.core.component.terminate
 import net.apptronic.core.component.typedEvent
-import net.apptronic.core.features.provider.DataProvider
-import net.apptronic.core.features.provider.dataProviderDescriptor
-import net.apptronic.core.features.provider.injectData
-import net.apptronic.core.features.provider.sharedDataProvider
 import net.apptronic.core.testutils.testContext
 import org.junit.Test
 import kotlin.test.assertEquals

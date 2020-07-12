@@ -17,6 +17,7 @@ class SimpleCache<T, K>(
 
     override fun get(key: K): ValueHolder<T>? {
         return map[key]?.let {
+            it.lastUsed = elapsedRealtimeMillis()
             ValueHolder(it.value)
         } ?: targetCache?.get(key)
     }

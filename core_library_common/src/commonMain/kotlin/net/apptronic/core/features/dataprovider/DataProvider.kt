@@ -1,4 +1,4 @@
-package net.apptronic.core.features.provider
+package net.apptronic.core.features.dataprovider
 
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.Entity

@@ -1,4 +1,4 @@
-package net.apptronic.core.features.provider
+package net.apptronic.core.features.dataprovider
 
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job

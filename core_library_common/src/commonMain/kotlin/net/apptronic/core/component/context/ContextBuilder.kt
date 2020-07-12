@@ -20,7 +20,7 @@ fun Contextual.childContext(lifecycleDefinition: LifecycleDefinition = BASE_LIFE
     return subContext
 }
 
-fun <T : Context> Contextual.childContext(contextDefinition: ContextDefinition<T>): Context {
+fun <T : Context> Contextual.childContext(contextDefinition: ContextDefinition<T>): T {
     return contextDefinition.createContext(context)
 }
 

@@ -1,4 +1,4 @@
-package net.apptronic.core.features.provider
+package net.apptronic.core.features.dataprovider
 
 import net.apptronic.core.component.di.dependencyDescriptor
 import net.apptronic.core.features.cache.CacheComponent
