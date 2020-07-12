@@ -25,6 +25,18 @@ fun <Source, Result> Entity<Source>.throttleMap(
     return ThrottledMapEntity(this, mapping)
 }
 
+fun <Source, Result> Entity<Source?>.throttleMapOrNull(
+        mapping: suspend CoroutineScope.(Source) -> Result
+): Entity<Result?> {
+    return throttleMap {
+        if (it == null) {
+            null
+        } else {
+            mapping(it)
+        }
+    }
+}
+
 private class ThrottledMapEntity<Source, Result>(
         private val sourceEntity: Entity<Source>,
         private val mapping: suspend CoroutineScope.(Source) -> Result
