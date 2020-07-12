@@ -37,7 +37,7 @@ internal sealed class ObjectProvider<TypeDeclaration>(
 
 }
 
-internal abstract class ObjectBuilderProvider<TypeDeclaration : Any, BuilderScope : ObjectBuilderScope> internal constructor(
+internal abstract class ObjectBuilderProvider<TypeDeclaration : Any, BuilderScope : Scope> internal constructor(
         objectKey: ObjectKey,
         internal val builder: BuilderMethod<TypeDeclaration, BuilderScope>
 ) : ObjectProvider<TypeDeclaration>(objectKey) {

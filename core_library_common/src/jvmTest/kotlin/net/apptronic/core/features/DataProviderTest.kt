@@ -52,7 +52,7 @@ class DataProviderTest {
 
     }
 
-    private inner class StringValueDataProvider(context: Context, id: Int) : DataProvider<String>(context) {
+    private inner class StringValueDataProvider(context: Context, id: Int) : DataProvider<String, Int>(context, id) {
 
         init {
             providersById.add(id)

@@ -5,7 +5,7 @@ import net.apptronic.core.component.context.Context
 /**
  * Method to create instance of Object in provider
  */
-internal class BuilderMethod<TypeDeclaration, BuilderContext : ObjectBuilderScope>(
+internal class BuilderMethod<TypeDeclaration, BuilderContext : Scope>(
         private val builder: BuilderContext.() -> TypeDeclaration
 ) {
 

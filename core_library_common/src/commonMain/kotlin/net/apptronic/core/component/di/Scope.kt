@@ -9,7 +9,7 @@ import kotlin.reflect.KClass
 /**
  * Context of creating methods in module definition
  */
-abstract class ObjectBuilderScope internal constructor(
+abstract class Scope internal constructor(
         protected val definitionContext: Context,
         protected val dependencyDispatcher: DependencyDispatcher,
         protected val parameters: Parameters
@@ -122,7 +122,7 @@ abstract class ObjectBuilderScope internal constructor(
 class SingleScope internal constructor(
         definitionContext: Context,
         dependencyDispatcher: DependencyDispatcher
-) : ObjectBuilderScope(definitionContext, dependencyDispatcher, emptyParameters()) {
+) : Scope(definitionContext, dependencyDispatcher, emptyParameters()) {
 
     override val context: Context = definitionContext
 
@@ -134,7 +134,7 @@ abstract class ParametersScope(
         definitionContext: Context,
         dependencyDispatcher: DependencyDispatcher,
         parameters: Parameters
-) : ObjectBuilderScope(definitionContext, dependencyDispatcher, parameters) {
+) : Scope(definitionContext, dependencyDispatcher, parameters) {
 
     /**
      * Request injection from injection context. Allows to override instances in child context or parameters
