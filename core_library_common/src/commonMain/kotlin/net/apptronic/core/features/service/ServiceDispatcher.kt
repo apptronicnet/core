@@ -1,10 +1,8 @@
 package net.apptronic.core.features.service
 
-import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.context.ContextDefinition
 import net.apptronic.core.component.context.Contextual
-import net.apptronic.core.component.context.EmptyContext
 import net.apptronic.core.component.di.ModuleDefinition
+import net.apptronic.core.component.di.SharedScope
 import net.apptronic.core.component.inject
 
 interface ServiceDispatcher<T : Any, R : Any> {
@@ -23,10 +21,10 @@ interface ServiceDispatcher<T : Any, R : Any> {
 
 fun <T : Any, R : Any> ModuleDefinition.service(
         descriptor: ServiceDescriptor<T, R>,
-        serviceContextDefinition: ContextDefinition<Context> = EmptyContext,
-        builder: (Context) -> Service<T, R>) {
+        builder: SharedScope.() -> Service<T, R>) {
+    shared(descriptor.serviceInstanceDescriptor, builder = builder)
     single(descriptor.holderDescriptor) {
-        ServiceDispatcherImpl(definitionContext(), serviceContextDefinition, builder)
+        ServiceDispatcherImpl(scopedContext(ServiceDispatcherLifecycle), descriptor.serviceInstanceDescriptor)
     }
 }
 

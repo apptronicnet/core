@@ -7,7 +7,7 @@ abstract class Service<T : Any, R : Any>(context: Context) : BaseComponent(conte
 
     abstract suspend fun onNext(request: T): R
 
-    fun onError(request: T, e: Exception) {
+    open fun onError(request: T, e: Exception) {
         throw e
     }
 

@@ -1,10 +1,9 @@
-package net.apptronic.core.features
+package net.apptronic.core.features.service
 
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.runBlocking
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.context.dependencyModule
-import net.apptronic.core.features.service.*
 import net.apptronic.core.testutils.testContext
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -31,7 +30,7 @@ class ServiceTest {
     val context = testContext {
         dependencyModule {
             service(StringService) {
-                ServiceExample(it)
+                ServiceExample(scopedContext())
             }
         }
     }

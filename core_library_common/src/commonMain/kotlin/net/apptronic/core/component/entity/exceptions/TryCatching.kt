@@ -5,6 +5,8 @@ import kotlinx.coroutines.coroutineScope
 import net.apptronic.core.component.coroutines.coroutineLauncherScoped
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.base.UpdateEntity
+import net.apptronic.core.component.entity.functions.map
+import net.apptronic.core.component.entity.functions.mapSuspend
 
 fun <T> tryCatching(block: () -> T): TryCatchResult<T> {
     return try {
@@ -92,5 +94,23 @@ fun <T> Entity<TryCatchResult<T>>.onExceptionSuspend(block: suspend CoroutineSco
 fun <T> Entity<TryCatchResult<T>>.sendException(handler: UpdateEntity<Exception>): Entity<T> {
     return OnExceptionEntity(this) { exception ->
         handler.update(exception)
+    }
+}
+
+fun <T> Entity<TryCatchResult<T>>.mapException(mapper: (Exception) -> T): Entity<T> {
+    return map {
+        when (it) {
+            is TryCatchResult.Success -> it.result
+            is TryCatchResult.Failure -> mapper(it.exception)
+        }
+    }
+}
+
+fun <T> Entity<TryCatchResult<T>>.mapExceptionSuspend(mapper: suspend CoroutineScope.(Exception) -> T): Entity<T> {
+    return mapSuspend {
+        when (it) {
+            is TryCatchResult.Success -> it.result
+            is TryCatchResult.Failure -> mapper(it.exception)
+        }
     }
 }

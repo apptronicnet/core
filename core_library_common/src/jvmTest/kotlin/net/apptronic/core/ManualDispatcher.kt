@@ -7,10 +7,9 @@ import kotlin.coroutines.CoroutineContext
 class ManualDispatcher : CoroutineDispatcher() {
 
     fun runAwaiting() {
-        awaitingBlocks.forEach {
-            it.run()
+        while (awaitingBlocks.isNotEmpty()) {
+            awaitingBlocks.removeAt(0).run()
         }
-        awaitingBlocks.clear()
     }
 
     private val awaitingBlocks = mutableListOf<Runnable>()

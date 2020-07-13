@@ -3,6 +3,7 @@ package net.apptronic.core.component.lifecycle
 import net.apptronic.core.base.concurrent.Volatile
 import net.apptronic.core.base.concurrent.requireNeverFrozen
 import net.apptronic.core.component.context.Context
+import net.apptronic.core.component.context.Contextual
 import net.apptronic.core.component.entity.EntitySubscription
 
 /**
@@ -128,6 +129,14 @@ class Lifecycle internal constructor() {
         }
     }
 
+}
+
+fun Contextual.enterStage(definition: LifecycleStageDefinition) {
+    context.lifecycle.enterStage(definition)
+}
+
+fun Contextual.exitStage(definition: LifecycleStageDefinition) {
+    context.lifecycle.exitStage(definition)
 }
 
 fun enterStage(context: Context?, definition: LifecycleStageDefinition) {

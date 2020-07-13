@@ -12,5 +12,6 @@ fun <T : Any, R : Any> serviceDescriptor(requestType: KClass<T>, responseType: K
 }
 
 data class ServiceDescriptor<T : Any, R : Any> internal constructor(val requestType: KClass<T>, val responseType: KClass<R>) {
-    val holderDescriptor = dependencyDescriptor<ServiceDispatcher<T, R>>()
+    internal val holderDescriptor = dependencyDescriptor<ServiceDispatcher<T, R>>()
+    internal val serviceInstanceDescriptor = dependencyDescriptor<Service<T, R>>()
 }
