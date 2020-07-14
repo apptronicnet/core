@@ -34,34 +34,34 @@ Provides ability to cover anything by Unit, Integration and UI-Logic tests:
  - user interface defined as ViewModel tree with one root. Now it is possible to perform UI-Logic tests: simulate whole UI without it's rendering on mobile device for automated testing. For this tests backing model (database, cache, REST API) can be real or mocked.
  - no more needed to use real-device for testing: tests runs faster and can be set up on any CI as simple Gradle task
 
-#### Compatibility
+### Compatibility
 
 Fully compatible with Kotlin/Multiplatform to develop common code for Android and iOS.
  
 In the future it is possible to add support for Web and any other platforms, supported by Kotlin/Multiplatform itself.
 
-#### What is needed to do on platform side (Android, iOS)?
+### What is needed to do on platform side (Android, iOS)?
 
 1. UI layout and ViewModel bindings.
 2. Specific interfaces to work with system features like GPS, Permissions, Bluetooth, NFC, Fingerprint etc.
 
 In most cases it is no more than 10-15% of all code.
 
-#### Current status of project:
+### Current status of project:
 
  - ready for development multi-platform core for mobile apps
  - ready for use in Android projects
   
-#### iOS development
+### iOS development
 
 UI Binding library for iOS is under development
 
-#### How to start
+### How to start
 
 To start project using framework follow to [Getting started guide](doc/getting_started.md)
 
 Read [Manual](doc/manual.md) for complete guide to framework.
 
-##### Contact info
+#### Contact info
 
 For any questions you can contact via email: apptronic.net[at]gmail.com
