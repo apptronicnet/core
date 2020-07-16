@@ -1,5 +1,6 @@
 package net.apptronic.core.mvvm.viewmodel.navigation
 
+import net.apptronic.core.component.context.viewModelContext
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.value
 import net.apptronic.core.mvvm.viewmodel.ViewModel
@@ -35,10 +36,10 @@ class StackNavigatorFilterTest {
     }
 
     private fun createViewModel(name: String): FilterableViewModel {
-        return FilterableViewModel(ViewModelContext(root.context, "filterable"), name)
+        return FilterableViewModel(root.context.viewModelContext(), name)
     }
 
-    private val root = RootViewModel(ViewModelContext(context, "root"))
+    private val root = RootViewModel(context.viewModelContext())
     private val lifecycleController = ViewModelLifecycleController(root)
     private val adapter = TestStackAdapter()
 

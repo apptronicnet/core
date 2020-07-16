@@ -1,5 +1,6 @@
 package net.apptronic.core.mvvm.viewmodel.navigation
 
+import net.apptronic.core.component.context.viewModelContext
 import net.apptronic.core.component.terminate
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
@@ -17,10 +18,10 @@ class StackNavigatorTest {
     }
 
     private fun createViewModel(): ViewModel {
-        return ViewModel(ViewModelContext(root.context, "base"))
+        return ViewModel(root.viewModelContext())
     }
 
-    private val root = RootViewModel(ViewModelContext(context, "root"))
+    private val root = RootViewModel(context.viewModelContext())
     private val lifecycleController = ViewModelLifecycleController(root)
     private val adapter = TestStackAdapter()
 
@@ -158,36 +159,42 @@ class StackNavigatorTest {
         assert(page1.isStateFocused())
         assertNavigatorStackState(page1)
         assert(adapter.activeModel == page1)
+        assert(adapter.lastOnFront == true)
 
         val page2 = createViewModel()
         root.navigator.add(page2)
         assert(page2.isStateFocused())
         assertNavigatorStackState(page1, page2)
         assert(adapter.activeModel == page2)
+        assert(adapter.lastOnFront == true)
 
         val page3 = createViewModel()
         root.navigator.add(page3)
         assertNavigatorStackState(page1, page2, page3)
         assert(page3.isStateFocused())
         assert(adapter.activeModel == page3)
+        assert(adapter.lastOnFront == true)
 
         val page4 = createViewModel()
         root.navigator.add(page4)
         assertNavigatorStackState(page1, page2, page3, page4)
         assert(page4.isStateFocused())
         assert(adapter.activeModel == page4)
+        assert(adapter.lastOnFront == true)
 
         val page5 = createViewModel()
         root.navigator.add(page5)
         assertNavigatorStackState(page1, page2, page3, page4, page5)
         assert(page5.isStateFocused())
         assert(adapter.activeModel == page5)
+        assert(adapter.lastOnFront == true)
 
         val page6 = createViewModel()
         root.navigator.add(page6)
         assert(page6.isStateFocused())
         assertNavigatorStackState(page1, page2, page3, page4, page5, page6)
         assert(adapter.activeModel == page6)
+        assert(adapter.lastOnFront == true)
 
         root.navigator.remove(page2)
 
@@ -199,6 +206,7 @@ class StackNavigatorTest {
         assert(page6.isStateFocused())
         assertNavigatorStackState(page1, page3, page4, page5, page6)
         assert(adapter.activeModel == page6)
+        assert(adapter.lastOnFront == true)
 
         root.navigator.popBackStack()
         assert(page1.isStateCreated())
@@ -209,6 +217,7 @@ class StackNavigatorTest {
         assert(page6.isTerminated())
         assertNavigatorStackState(page1, page3, page4, page5)
         assert(adapter.activeModel == page5)
+        assert(adapter.lastOnFront == false)
 
         root.navigator.popBackStackTo(page3)
         assert(page1.isStateCreated())
@@ -219,9 +228,11 @@ class StackNavigatorTest {
         assert(page6.isTerminated())
         assertNavigatorStackState(page1, page3)
         assert(adapter.activeModel == page3)
+        assert(adapter.lastOnFront == false)
 
         val page7 = createViewModel()
         root.navigator.replaceAll(page7)
+        assert(adapter.lastOnFront == true)
 
         assert(page1.isTerminated())
         assert(page2.isTerminated())

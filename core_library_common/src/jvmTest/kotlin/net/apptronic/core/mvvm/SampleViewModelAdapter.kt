@@ -7,7 +7,7 @@ class SampleViewModelAdapter : ViewModelStackAdapter() {
 
     var actualModel: ViewModel? = null
 
-    override fun onInvalidate(oldModel: ViewModel?, newModel: ViewModel?, transitionInfo: Any?) {
+    override fun onInvalidate(newModel: ViewModel?, isNewOnFront: Boolean, transitionInfo: Any?) {
         actualModel = newModel
     }
 

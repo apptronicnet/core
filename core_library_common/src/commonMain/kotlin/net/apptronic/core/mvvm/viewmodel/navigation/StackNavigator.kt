@@ -140,10 +140,15 @@ class StackNavigator(
         }
     }
 
+    private var currentItemIndex: Int = -1
+
     private fun invalidateAdapter(
             newItem: ViewModelContainer?,
             transitionInfo: Any?
     ) {
+        val newItemIndex = newItem?.let { stack.indexOf(it) } ?: -1
+        val isNewOnFront = newItemIndex >= currentItemIndex
+        currentItemIndex = newItemIndex
         currentAdapter?.apply {
             val oldItem = activeItem
             if (oldItem != null) {
@@ -151,8 +156,8 @@ class StackNavigator(
             }
             newItem?.setBound(true)
             adapter.onInvalidate(
-                    oldItem?.getViewModel(),
                     newItem?.getViewModel(),
+                    isNewOnFront,
                     transitionInfo
             )
             if (newItem != null) {
@@ -203,6 +208,8 @@ class StackNavigator(
     }
 
     override fun replaceAll(viewModel: ViewModel, transitionInfo: Any?) {
+        // to make transition for new item as for front
+        currentItemIndex = -1
         clearAndSet(viewModel, transitionInfo)
     }
 
