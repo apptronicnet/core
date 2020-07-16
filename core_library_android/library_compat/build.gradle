@@ -23,6 +23,8 @@ android {
 }
 
 dependencies {
+    implementation project(path: ':library')
+
     compileOnly "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     compileOnly "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
     compileOnly "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:$coroutines_version"
@@ -34,6 +36,7 @@ dependencies {
     compileOnly "androidx.appcompat:appcompat:1.1.0"
     compileOnly "com.google.android.material:material:1.1.0"
     compileOnly 'androidx.recyclerview:recyclerview:1.1.0'
+    compileOnly 'androidx.lifecycle:lifecycle-extensions:2.2.0'
 }
 
 task sourceJar(type: Jar) {
@@ -54,7 +57,7 @@ publishing {
             artifact(sourceJar)
             artifact("build/outputs/aar/library-debug.aar")
             groupId = "net.apptronic.core"
-            artifactId = "core-android"
+            artifactId = "core-android-compat"
             version = rootProject.ext.library_android_version
         }
     }

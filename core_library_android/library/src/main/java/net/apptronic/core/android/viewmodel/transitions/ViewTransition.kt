@@ -1,7 +1,7 @@
 package net.apptronic.core.android.viewmodel.transitions
 
 import android.view.View
-import net.apptronic.core.base.android.R
+import net.apptronic.core.android.R
 
 abstract class ViewTransition : Transition<View>() {
 

@@ -48,6 +48,15 @@ abstract class ViewBinder<T : ViewModel> : BindingContainer {
     /**
      * Create [View] for adding to [container]
      */
+    open fun onCreateView(context: Context): View {
+        val layoutResId = this.layoutResId
+            ?: throw IllegalStateException("[layoutResId] is not specified for $this")
+        return LayoutInflater.from(context).inflate(layoutResId, null, false)
+    }
+
+    /**
+     * Create [View] for adding to [container]
+     */
     open fun onCreateView(container: ViewGroup): View {
         val layoutResId = this.layoutResId
             ?: throw IllegalStateException("[layoutResId] is not specified for $this")

@@ -4,7 +4,7 @@ import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
 import android.view.animation.LinearInterpolator
-import net.apptronic.core.base.android.R
+import net.apptronic.core.android.R
 import kotlin.math.max
 import kotlin.math.min
 

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView android:text="First name:" />
+
+    <TextView
+        android:id="@+id/txtFirstName"
+        android:textColor="#000"
+        android:textSize="20sp" />
+
+    <TextView
+        android:layout_marginTop="16dp"
+        android:text="Last name:" />
+
+    <TextView
+        android:id="@+id/txtLastName"
+        android:textColor="#000"
+        android:textSize="20sp" />
+
+    <TextView
+        android:layout_marginTop="16dp"
+        android:text="Country:" />
+
+    <TextView
+        android:id="@+id/txtCountry"
+        android:textColor="#000"
+        android:textSize="20sp" />
+
+    <TextView
+        android:layout_marginTop="16dp"
+        android:text="City" />
+
+    <TextView
+        android:id="@+id/txtCity"
+        android:textColor="#000"
+        android:textSize="20sp" />
+
+</TableLayout>

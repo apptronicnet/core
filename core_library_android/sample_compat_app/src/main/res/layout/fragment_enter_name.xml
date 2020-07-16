@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="First name:" />
+
+    <EditText
+        android:id="@+id/edtFirstName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textCapWords"
+        android:singleLine="true" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Last name:" />
+
+    <EditText
+        android:id="@+id/edtLastName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textCapWords"
+        android:singleLine="true" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <Button
+        android:id="@+id/btnContinue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Continue" />
+
+</LinearLayout>
