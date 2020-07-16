@@ -8,6 +8,20 @@ First open Intellij Idea / Android Studio and start Kotlin Multiplatform project
 
 ##### Setup build.gradle
 
+Add maven repository:
+
+```groovy
+allprojects {
+    repositories {
+        maven {
+            url "https://maven.apptronic.net"
+        }
+    }
+}
+```
+
+And library dependencies:
+
 ```groovy
 kotlin {
     android("android")
