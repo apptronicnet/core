@@ -107,7 +107,7 @@ abstract class Transition<Target> : FrameScheduler.FrameListener {
         setRunningTransition(target)
         if (runningTransition != null) {
             isIntercepting = true
-            onTransitionIntercepted(target)
+            onStartTransition(target, runningTransition)
             runningTransition.cancel()
         } else {
             isIntercepting = false
@@ -139,7 +139,7 @@ abstract class Transition<Target> : FrameScheduler.FrameListener {
         start = startTime
         end = start + duration
         if (!isIntercepting) {
-            onTransitionStarted(target)
+            onStartTransition(target, null)
         }
         isIntercepting = false
         doOnStartActions.forEach { it.invoke() }
@@ -149,7 +149,7 @@ abstract class Transition<Target> : FrameScheduler.FrameListener {
         isStarting = false
         val target = this.target
         if (target != null) {
-            onTransitionCancelled(target)
+            onCompleteTransition(target, false)
             doOnCancelActions.forEach { it.invoke() }
             clearRunningTransition(target)
             this.target = null
@@ -158,7 +158,7 @@ abstract class Transition<Target> : FrameScheduler.FrameListener {
 
     private fun completeTransition(target: Target) {
         applyTransition(target, 1f)
-        onTransitionCompleted(target)
+        onCompleteTransition(target, true)
         doOnCompleteActions.forEach { it.invoke() }
         clearRunningTransition(target)
     }
@@ -168,10 +168,10 @@ abstract class Transition<Target> : FrameScheduler.FrameListener {
         if (isStarting) {
             doStartInternal(target, timestamp)
             isStarting = false
-            onTransitionStarted(target)
+            onStartTransition(target, null)
         }
         if (!isAllowsTransition(target)) {
-            onTransitionCancelled(target)
+            onCompleteTransition(target, false)
             return false
         }
         if (timestamp <= end) {
@@ -191,25 +191,17 @@ abstract class Transition<Target> : FrameScheduler.FrameListener {
     }
 
     /**
-     * Called when on transition start another transition is running on this view
-     * By default recalls [onTransitionStarted]
+     * Called before first frame of transition os drawn to get needed values for transition.
+     * @param interceptedTransition in case if this transition is intercepting another transition
      */
-    open fun onTransitionIntercepted(target: Target) {
-        onTransitionStarted(target)
-    }
-
-    open fun onTransitionStarted(target: Target) {
-        // implement by subclasses if needed
-    }
+    abstract fun onStartTransition(target: Target, interceptedTransition: Transition<Target>?)
 
     abstract fun applyTransition(target: Target, progress: Progress)
 
-    open fun onTransitionCompleted(target: Target) {
-        // implement by subclasses if needed
-    }
-
-    open fun onTransitionCancelled(target: Target) {
-        // implement by subclasses if needed
-    }
+    /**
+     * Called when transition will no more do any work.
+     * @param isCompleted true when transition completed full progress, false in case it it cancelled manually or by intercepting
+     */
+    abstract fun onCompleteTransition(target: Target, isCompleted: Boolean)
 
 }

@@ -2,6 +2,7 @@ package net.apptronic.core.android.viewmodel.bindings.navigation
 
 import android.view.View
 import android.view.ViewGroup
+import net.apptronic.core.android.plugins.getTransitionBuilderFromExtension
 import net.apptronic.core.android.plugins.getViewBinderFactoryFromExtension
 import net.apptronic.core.android.viewmodel.Binding
 import net.apptronic.core.android.viewmodel.BindingContainer
@@ -17,7 +18,7 @@ fun BindingContainer.bindStackNavigator(
     viewGroup: ViewGroup,
     navigationModel: StackNavigationViewModel,
     factory: ViewBinderFactory? = null,
-    transitionBuilder: TransitionBuilder = TransitionBuilder(),
+    transitionBuilder: TransitionBuilder? = null,
     defaultAnimationTime: Long = viewGroup.resources.getInteger(android.R.integer.config_mediumAnimTime)
         .toLong(),
     gestureDetector: NavigationGestureDetector? = BackwardTransitionGestureDetector()
@@ -25,11 +26,14 @@ fun BindingContainer.bindStackNavigator(
     val resultFactory = factory
         ?: navigationModel.getViewBinderFactoryFromExtension()
         ?: throw IllegalArgumentException("ViewBinderFactory should be provided by parameters or Context.installViewFactoryPlugin()")
+    val resultTransitionBuilder = transitionBuilder
+        ?: navigationModel.getTransitionBuilderFromExtension()
+        ?: TransitionBuilder()
     +StackNavigationModelBinding(
         viewGroup,
         navigationModel,
         resultFactory,
-        transitionBuilder,
+        resultTransitionBuilder,
         defaultAnimationTime,
         gestureDetector
     )

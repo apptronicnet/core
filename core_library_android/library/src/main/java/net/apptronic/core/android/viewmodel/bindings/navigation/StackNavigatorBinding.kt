@@ -1,6 +1,7 @@
 package net.apptronic.core.android.viewmodel.bindings.navigation
 
 import android.view.ViewGroup
+import net.apptronic.core.android.plugins.getTransitionBuilderFromExtension
 import net.apptronic.core.android.plugins.getViewBinderFactoryFromExtension
 import net.apptronic.core.android.viewmodel.Binding
 import net.apptronic.core.android.viewmodel.BindingContainer
@@ -15,18 +16,21 @@ fun BindingContainer.bindStackNavigator(
     viewGroup: ViewGroup,
     navigator: StackNavigator,
     factory: ViewBinderFactory? = null,
-    transitionBuilder: TransitionBuilder = TransitionBuilder(),
+    transitionBuilder: TransitionBuilder? = null,
     defaultAnimationTime: Long = viewGroup.resources.getInteger(android.R.integer.config_mediumAnimTime)
         .toLong()
 ) {
     val resultFactory = factory
         ?: navigator.parent.getViewBinderFactoryFromExtension()
         ?: throw IllegalArgumentException("ViewBinderFactory should be provided by parameters or Context.installViewFactoryPlugin()")
+    val resultTransitionBuilder = transitionBuilder
+        ?: navigator.parent.getTransitionBuilderFromExtension()
+        ?: TransitionBuilder()
     +StackNavigatorBinding(
         viewGroup,
         navigator,
         resultFactory,
-        transitionBuilder,
+        resultTransitionBuilder,
         defaultAnimationTime
     )
 }

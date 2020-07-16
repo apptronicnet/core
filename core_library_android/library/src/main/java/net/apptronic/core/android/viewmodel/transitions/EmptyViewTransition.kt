@@ -4,20 +4,18 @@ import android.view.View
 
 class EmptyViewTransition : ViewTransition() {
 
-    override fun onTransitionCompleted(target: View) {
-        super.onTransitionCompleted(target)
-        target.translationX = 0f
-        target.translationY = 0f
-        target.alpha = 1f
-    }
-
-    override fun onTransitionCancelled(target: View) {
-        super.onTransitionCancelled(target)
-        onTransitionIntercepted(target)
+    override fun onStartTransition(target: View, interceptedTransition: Transition<View>?) {
+        // do nothing
     }
 
     override fun applyTransition(target: View, progress: Progress) {
         // do nothing
+    }
+
+    override fun onCompleteTransition(target: View, isCompleted: Boolean) {
+        target.translationX = 0f
+        target.translationY = 0f
+        target.alpha = 1f
     }
 
 }

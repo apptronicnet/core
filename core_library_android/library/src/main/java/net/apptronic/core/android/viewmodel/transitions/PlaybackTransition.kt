@@ -9,7 +9,7 @@ class TransitionPlayer<Target>(
 
     fun seekTo(progress: Progress) {
         if (!isStarted) {
-            transition.onTransitionStarted(target)
+            transition.onStartTransition(target, null)
             isStarted = true
         }
         transition.applyTransition(target, progress)
@@ -29,17 +29,17 @@ class TransitionPlayer<Target>(
 
     fun start() {
         if (!isStarted) {
-            transition.onTransitionStarted(target)
+            transition.onStartTransition(target, null)
             isStarted = true
         }
     }
 
     fun complete() {
-        transition.onTransitionCompleted(target)
+        transition.onCompleteTransition(target, true)
     }
 
     fun cancel() {
-        transition.onTransitionCancelled(target)
+        transition.onCompleteTransition(target, false)
     }
 
 }
@@ -75,15 +75,11 @@ private class PlaybackTransition<Target>(
         return target.setRunningTransition(targetOfTarget)
     }
 
-    override fun onTransitionStarted(target: Transition<Target>) {
+    override fun onStartTransition(
+        target: Transition<Target>, interceptedTransition: Transition<Transition<Target>>?
+    ) {
         if (recallStart) {
-            target.onTransitionStarted(targetOfTarget)
-        }
-    }
-
-    override fun onTransitionIntercepted(target: Transition<Target>) {
-        if (recallStart) {
-            target.onTransitionIntercepted(targetOfTarget)
+            target.onStartTransition(targetOfTarget, null)
         }
     }
 
@@ -92,15 +88,9 @@ private class PlaybackTransition<Target>(
         target.applyTransition(targetOfTarget, targetProgress)
     }
 
-    override fun onTransitionCompleted(target: Transition<Target>) {
+    override fun onCompleteTransition(target: Transition<Target>, isCompleted: Boolean) {
         if (recallComplete) {
-            target.onTransitionCompleted(targetOfTarget)
-        }
-    }
-
-    override fun onTransitionCancelled(target: Transition<Target>) {
-        if (recallComplete) {
-            target.onTransitionCancelled(targetOfTarget)
+            target.onCompleteTransition(targetOfTarget, isCompleted)
         }
     }
 
