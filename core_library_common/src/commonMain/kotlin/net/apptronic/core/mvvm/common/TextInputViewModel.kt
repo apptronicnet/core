@@ -1,7 +1,9 @@
 package net.apptronic.core.mvvm.common
 
 import net.apptronic.core.component.entity.Entity
+import net.apptronic.core.component.entity.base.UpdateEntity
 import net.apptronic.core.component.entity.behavior.onSubscribe
+import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.component.typedEvent
 import net.apptronic.core.component.value
 import net.apptronic.core.mvvm.viewmodel.ViewModel
@@ -22,19 +24,30 @@ private fun IntRange.normalize(text: String): IntRange {
     )
 }
 
+fun TextInputViewModel.withOnUpdate(target: UpdateEntity<String>): TextInputViewModel {
+    observeTextUpdates().subscribe(target)
+    return this
+}
+
+fun TextInputViewModel.withOnUpdate(callback: (String) -> Unit): TextInputViewModel {
+    observeTextUpdates(callback)
+    return this
+}
+
 fun ViewModel.textInput(defaultValue: String = ""): TextInputViewModel {
     return TextInputViewModel(this).apply {
         setText(defaultValue)
     }
 }
 
-open class TextInputViewModel : ViewModel {
+class TextInputViewModel : ViewModel {
 
     constructor(context: ViewModelContext) : super(context)
 
     constructor(parent: ViewModel) : super(parent)
 
     internal val text = value<String>("")
+    internal val textUpdates = typedEvent<String>()
     internal val selection = value<IntRange>(0..0)
     internal val inputUpdateRequest = typedEvent<InputUpdateRequest>()
 
@@ -53,6 +66,13 @@ open class TextInputViewModel : ViewModel {
         inputUpdateRequest.sendEvent(InputUpdateRequest(text, realSelection))
     }
 
+    fun updateText(text: String) {
+        if (this.text.get() != text) {
+            this.text.set(text)
+            textUpdates.sendEvent(text)
+        }
+    }
+
     fun text(): Entity<String> {
         return text
     }
@@ -65,8 +85,16 @@ open class TextInputViewModel : ViewModel {
         return TextInputBindingModel(this)
     }
 
-    fun getText() : String {
+    fun getText(): String {
         return text.getOr("")
+    }
+
+    fun observeTextUpdates(): Entity<String> {
+        return textUpdates
+    }
+
+    fun observeTextUpdates(callback: (String) -> Unit) {
+        textUpdates.subscribe(callback)
     }
 
 }
@@ -82,15 +110,15 @@ class TextInputBindingModel internal constructor(
 
     fun observeUpdates(): Entity<InputUpdateRequest> {
         return target.inputUpdateRequest.onSubscribe<InputUpdateRequest> {
-                InputUpdateRequest(
-                        text = target.text.getOr(""),
-                        selection = target.selection.getOr(0..0)
-                )
+            InputUpdateRequest(
+                    text = target.text.getOr(""),
+                    selection = target.selection.getOr(0..0)
+            )
         }
     }
 
     fun onTextChanged(text: String) {
-        target.text.set(text)
+        target.updateText(text)
     }
 
     fun onSelectionChanged(selection: IntRange) {
