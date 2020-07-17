@@ -64,6 +64,9 @@ interface StackNavigationModel {
      * Remove [ViewModel] at specific [index] of stack
      */
     fun removeAt(index: Int, transitionInfo: Any? = null) {
+        if (index < 0 || index >= getSize()) {
+            return
+        }
         remove(getItemAt(index), transitionInfo)
     }
 
@@ -73,7 +76,12 @@ interface StackNavigationModel {
      * @return true if last model removed from stack
      */
     fun removeLast(transitionInfo: Any? = null): Boolean {
-        return popBackStack(transitionInfo)
+        return if (getSize() > 0) {
+            remove(getItemAt(getSize() - 1), transitionInfo)
+            true
+        } else {
+            false
+        }
     }
 
     /**
@@ -94,17 +102,17 @@ interface StackNavigationModel {
      * Remove last [ViewModel] from stack or execute action if current model is
      * last or no model in stack
      */
-    fun navigateBack(actionIfEmpty: () -> Unit) {
-        navigateBack(null, actionIfEmpty)
+    fun navigateBack(actionOnNonNavigate: () -> Unit = {}) {
+        navigateBack(null, actionOnNonNavigate)
     }
 
     /**
      * Remove last [ViewModel] from stack or execute action if current model is
      * last or no model in stack
      */
-    fun navigateBack(transitionInfo: Any?, actionIfEmpty: () -> Unit) {
+    fun navigateBack(transitionInfo: Any?, actionOnNonNavigate: () -> Unit = {}) {
         if (!popBackStack(transitionInfo)) {
-            actionIfEmpty()
+            actionOnNonNavigate()
         }
     }
 
@@ -114,5 +122,17 @@ interface StackNavigationModel {
      * @return true if anything is removed from stack
      */
     fun popBackStackTo(viewModel: ViewModel, transitionInfo: Any? = null): Boolean
+
+    /**
+     * Remove all [ViewModel]s from stack which are placed after specified index.
+     * Will do nothing if stack is empty of index is out of stack
+     * @return true if anything is removed from stack
+     */
+    fun popBackStackTo(index: Int, transitionInfo: Any? = null): Boolean {
+        if (index < 0 || index >= getSize()) {
+            return false
+        }
+        return popBackStackTo(getItemAt(index), transitionInfo)
+    }
 
 }

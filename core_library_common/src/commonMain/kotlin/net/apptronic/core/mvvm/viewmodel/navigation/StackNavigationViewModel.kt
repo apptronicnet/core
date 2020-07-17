@@ -3,7 +3,6 @@ package net.apptronic.core.mvvm.viewmodel.navigation
 import net.apptronic.core.component.value
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
-import kotlin.math.max
 
 fun ViewModel.stackNavigationModel(): StackNavigationViewModel {
     return StackNavigationViewModel(context)
@@ -134,7 +133,10 @@ class StackNavigationViewModel internal constructor(context: ViewModelContext) :
         addTransition(currentViewModel(), viewModel, transitionInfo)
         val previous = getStack().toTypedArray().toMutableList()
         val index = previous.indexOf(viewModel)
-        val next = previous.subList(0, max(0, index))
+        if (index < 0) {
+            return false
+        }
+        val next = previous.subList(0, index + 1)
         update {
             next
         }
