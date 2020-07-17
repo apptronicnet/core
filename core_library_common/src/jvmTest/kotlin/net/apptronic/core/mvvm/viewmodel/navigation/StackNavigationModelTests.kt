@@ -1,6 +1,7 @@
 package net.apptronic.core.mvvm.viewmodel.navigation
 
 import net.apptronic.core.component.context.viewModelContext
+import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.testutils.testContext
 import org.junit.Test
@@ -17,7 +18,7 @@ abstract class StackNavigationModelTests {
 
     fun childViewModel(): ViewModel = ViewModel(coreViewModel.viewModelContext())
 
-    fun assertStack(vararg viewModels: ViewModel) {
+    open fun assertStack(vararg viewModels: ViewModel) {
         val stack = stackNavigationModel.getStack()
         assertEquals(viewModels.size, stack.size)
         stack.forEachIndexed { index, item ->
@@ -382,12 +383,43 @@ abstract class StackNavigationModelTests {
 
 class StackNavigatorVerificationTest : StackNavigationModelTests() {
 
-    override val stackNavigationModel = coreViewModel.stackNavigator()
+    lateinit var status: StackNavigatorStatus
+
+    override val stackNavigationModel = coreViewModel.stackNavigator().apply {
+        subscribe {
+            status = it
+        }
+    }
+
+    override fun assertStack(vararg viewModels: ViewModel) {
+        super.assertStack(*viewModels)
+        assert(status.size == viewModels.size)
+        status.stack.forEachIndexed { index, item ->
+            assert(item === viewModels[index])
+            assert(stackNavigationModel.getItemAt(index) === viewModels[index])
+        }
+    }
 
 }
 
 class StackNavigationModelVerificationTest : StackNavigationModelTests() {
 
-    override val stackNavigationModel = coreViewModel.stackNavigationModel()
+    lateinit var status: List<ViewModel>
+
+    override val stackNavigationModel = coreViewModel.stackNavigationModel().apply {
+        this.listNavigator.subscribe {
+            status = it
+        }
+    }
+
+
+    override fun assertStack(vararg viewModels: ViewModel) {
+        super.assertStack(*viewModels)
+        assert(status.size == viewModels.size)
+        status.forEachIndexed { index, item ->
+            assert(item === viewModels[index])
+            assert(stackNavigationModel.getItemAt(index) === viewModels[index])
+        }
+    }
 
 }

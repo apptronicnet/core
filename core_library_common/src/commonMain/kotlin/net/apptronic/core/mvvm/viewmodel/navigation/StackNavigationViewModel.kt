@@ -71,7 +71,7 @@ class StackNavigationViewModel internal constructor(context: ViewModelContext) :
         }
     }
 
-    val listNavigator: BaseListNavigator<*> = listNavigator(viewModels)
+    val listNavigator: BaseListNavigator<ViewModel> = listNavigator(viewModels)
 
     private fun currentViewModel(): ViewModel? {
         return viewModels.get().getOrNull(getSize() - 1)
