@@ -67,8 +67,10 @@ open class ViewBinderStackAdapter(
         val transition = transitionBuilder.getEnterTransition(
             container, newView, transitionInfo, defaultAnimationTime
         )
+        container.addView(newView, isNewOnFront)
+        newView.visibility = View.INVISIBLE
         transition.doOnStart {
-            container.addView(newView, isNewOnFront)
+            newView.visibility = View.VISIBLE
         }.launch(newView)
     }
 
