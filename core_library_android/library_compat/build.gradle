@@ -55,7 +55,7 @@ publishing {
     publications {
         bar(MavenPublication) {
             artifact(sourceJar)
-            artifact("build/outputs/aar/library-debug.aar")
+            artifact("build/outputs/aar/library_compat-debug.aar")
             groupId = "net.apptronic.core"
             artifactId = "core-android-compat"
             version = rootProject.ext.library_android_version

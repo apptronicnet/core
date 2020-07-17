@@ -30,40 +30,57 @@ open class ViewBinderStackAdapter(
 
     private var currentBinder: ViewBinder<*>? = null
 
-    override fun onInvalidate(oldModel: ViewModel?, newModel: ViewModel?, transitionInfo: Any?) {
+    override fun onInvalidate(newModel: ViewModel?, isNewOnFront: Boolean, transitionInfo: Any?) {
         val newBinder =
             if (newModel != null) viewBinderFactory.getBinder(newModel) else null
         if (newBinder != null && newModel != null) {
             val view = newBinder.onCreateView(container)
             newBinder.performViewBinding(view, newModel)
         }
-        setView(newBinder, transitionInfo)
+        setView(newBinder, isNewOnFront, transitionInfo)
     }
 
-    private fun setView(newBinder: ViewBinder<*>?, transitionInfo: Any?) {
+    private fun setView(newBinder: ViewBinder<*>?, isNewOnFront: Boolean, transitionInfo: Any?) {
         val oldAndroidView = currentBinder
         currentBinder = newBinder
         if (oldAndroidView != null && newBinder != null) {
-            onReplace(container, oldAndroidView.getView(), newBinder.getView(), transitionInfo)
+            onReplace(
+                container,
+                oldAndroidView.getView(),
+                newBinder.getView(),
+                isNewOnFront,
+                transitionInfo
+            )
         } else if (newBinder != null) {
-            onAdd(container, newBinder.getView(), transitionInfo)
+            onAdd(container, newBinder.getView(), isNewOnFront, transitionInfo)
         } else if (oldAndroidView != null) {
             onRemove(container, oldAndroidView.getView(), transitionInfo)
         }
     }
 
-    open fun onAdd(container: ViewGroup, newView: View, transitionInfo: Any?) {
+    open fun onAdd(
+        container: ViewGroup,
+        newView: View,
+        isNewOnFront: Boolean,
+        transitionInfo: Any?
+    ) {
         val transition = transitionBuilder.getEnterTransition(
             container, newView, transitionInfo, defaultAnimationTime
         )
         transition.doOnStart {
-            container.addView(newView, transition.isFrontTransition)
+            container.addView(newView, isNewOnFront)
         }.launch(newView)
     }
 
-    open fun onReplace(container: ViewGroup, oldView: View, newView: View, transitionInfo: Any?) {
+    open fun onReplace(
+        container: ViewGroup,
+        oldView: View,
+        newView: View,
+        isNewOnFront: Boolean,
+        transitionInfo: Any?
+    ) {
         onRemove(container, oldView, transitionInfo)
-        onAdd(container, newView, transitionInfo)
+        onAdd(container, newView, isNewOnFront, transitionInfo)
     }
 
     open fun onRemove(container: ViewGroup, oldView: View, transitionInfo: Any?) {

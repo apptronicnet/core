@@ -23,7 +23,7 @@ open class DialogBinderStackAdapter(
 
     private var current: DialogAndView? = null
 
-    override fun onInvalidate(oldModel: ViewModel?, newModel: ViewModel?, transitionInfo: Any?) {
+    override fun onInvalidate(newModel: ViewModel?, isNewOnFront: Boolean, transitionInfo: Any?) {
         val newBinder =
             if (newModel != null) viewBinderFactory.getBinder(newModel) else null
         val next = if (newBinder != null && newModel != null) {
