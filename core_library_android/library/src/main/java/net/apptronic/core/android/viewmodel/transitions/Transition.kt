@@ -154,8 +154,8 @@ abstract class Transition<Target> : FrameScheduler.FrameListener {
         isStarting = false
         val target = this.target
         if (target != null) {
-            onCompleteTransition(target, false)
             doOnCancelActions.forEach { it.invoke() }
+            onCompleteTransition(target, false)
             clearRunningTransition(target)
             this.target = null
         }
@@ -163,8 +163,8 @@ abstract class Transition<Target> : FrameScheduler.FrameListener {
 
     private fun completeTransition(target: Target) {
         onApplyTransition(target, 1f)
-        onCompleteTransition(target, true)
         doOnCompleteActions.forEach { it.invoke() }
+        onCompleteTransition(target, true)
         clearRunningTransition(target)
     }
 
