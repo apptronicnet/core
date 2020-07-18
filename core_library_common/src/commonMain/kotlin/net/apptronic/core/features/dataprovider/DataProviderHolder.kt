@@ -5,7 +5,7 @@ import kotlinx.coroutines.Job
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.Entity
-import net.apptronic.core.component.entity.behavior.switchContext
+import net.apptronic.core.component.entity.switchContext
 import net.apptronic.core.component.extensions.BaseComponent
 import net.apptronic.core.component.value
 import net.apptronic.core.features.cache.CacheComponent

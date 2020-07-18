@@ -220,4 +220,8 @@ internal class LifecycleStageImpl(val parent: LifecycleStageParent,
         return this.definition.name
     }
 
+    override fun getStageDefinition(): LifecycleStageDefinition {
+        return this.definition
+    }
+
 }

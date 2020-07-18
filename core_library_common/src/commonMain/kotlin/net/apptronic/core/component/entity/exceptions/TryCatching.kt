@@ -35,6 +35,16 @@ fun <T> TryCatchResult<T>.catchException(block: (Exception) -> Unit): TryCatchRe
     return this
 }
 
+suspend fun <T> TryCatchResult<T>.catchExceptionSuspend(block: suspend CoroutineScope.(Exception) -> Unit): TryCatchResult<T> {
+    val thisValue = this
+    coroutineScope {
+        if (thisValue is TryCatchResult.Failure) {
+            block(thisValue.exception)
+        }
+    }
+    return this
+}
+
 fun <T> TryCatchResult<T>.onErrorReturn(fallbackValue: T): T {
     return when (this) {
         is TryCatchResult.Success -> result
@@ -49,10 +59,20 @@ fun <T> TryCatchResult<T>.onErrorReturnNull(): T? {
     }
 }
 
-fun <T> TryCatchResult<T>.onErrorReturn(fallbackValueProvider: () -> T): T {
+fun <T> TryCatchResult<T>.onErrorProvide(fallbackValueProvider: () -> T): T {
     return when (this) {
         is TryCatchResult.Success -> result
         is TryCatchResult.Failure -> fallbackValueProvider()
+    }
+}
+
+suspend fun <T> TryCatchResult<T>.onErrorProvideSuspend(fallbackValueProvider: suspend CoroutineScope.() -> T): T {
+    val thisValue = this
+    return coroutineScope {
+        when (thisValue) {
+            is TryCatchResult.Success -> thisValue.result
+            is TryCatchResult.Failure -> fallbackValueProvider() as T
+        }
     }
 }
 

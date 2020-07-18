@@ -9,9 +9,9 @@ import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.behavior.filter
 import net.apptronic.core.component.entity.behavior.filterNotNull
 import net.apptronic.core.component.entity.behavior.resendWhen
-import net.apptronic.core.component.entity.behavior.switchContext
 import net.apptronic.core.component.entity.entities.asProperty
 import net.apptronic.core.component.entity.functions.map
+import net.apptronic.core.component.entity.switchContext
 import net.apptronic.core.component.extensions.BaseComponent
 import net.apptronic.core.component.inject
 import net.apptronic.core.component.newChain
