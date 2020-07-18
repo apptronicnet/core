@@ -53,12 +53,4 @@ class NavigationScreenViewModel(parent: Context, router: NavigationRouter) :
         router.openDynamicFilterListDemo()
     }
 
-    init {
-        doOnVisible {
-            doOnCreate {
-
-            }
-        }
-    }
-
 }

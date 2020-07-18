@@ -29,7 +29,7 @@ abstract class CoreCompatFragment<T : ViewModel> : Fragment(), ICoreCompatFragme
 
     override fun onCreate(savedInstanceState: Bundle?) {
         lifecycleController = ViewModelLifecycleController(viewModel)
-        lifecycleController.setCreated(true)
+        lifecycleController.setAttached(true)
         super.onCreate(savedInstanceState)
     }
 
@@ -65,7 +65,7 @@ abstract class CoreCompatFragment<T : ViewModel> : Fragment(), ICoreCompatFragme
 
     override fun onDestroy() {
         super.onDestroy()
-        lifecycleController.setCreated(false)
+        lifecycleController.setAttached(false)
     }
 
 }

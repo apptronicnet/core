@@ -82,7 +82,7 @@ private class ActivityViewContainerImpl<T : ViewModel>(
 
     override fun onActivityCreate() {
         dispatcher.registerContainer(this)
-        lifecycleController.setCreated(true)
+        lifecycleController.setAttached(true)
         lifecycleController.setBound(true)
     }
 

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Application
 import net.apptronic.core.android.viewmodel.ViewBinderFactory
 import net.apptronic.core.android.viewmodel.requireBoundView
+import net.apptronic.core.android.viewmodel.transitions.TransitionBuilder
 import net.apptronic.core.component.Component
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.plugin.Plugin
@@ -14,18 +15,19 @@ import kotlin.reflect.KClass
 val AndroidApplicationPluginDescriptor = pluginDescriptor<AndroidApplicationPlugin>()
 
 fun Context.installAndroidApplicationPlugin(
-        androidApplication: Application,
-        builder: AndroidApplicationPlugin.Builder.() -> Unit
+    androidApplication: Application,
+    builder: AndroidApplicationPlugin.Builder.() -> Unit
 ) {
     val plugin = AndroidApplicationPlugin.Builder(androidApplication).apply(builder).target
     installPlugin(AndroidApplicationPluginDescriptor, plugin)
 }
 
 class AndroidApplicationPlugin internal constructor(
-        private val androidApplication: Application
+    private val androidApplication: Application
 ) : Plugin() {
 
     private var viewBinderFactory: ViewBinderFactory? = null
+    private var transitionBuilder: TransitionBuilder? = null
     private val activityBindingPlugin = ActivityBindingPlugin(androidApplication)
 
     class Builder internal constructor(androidApplication: Application) {
@@ -34,6 +36,10 @@ class AndroidApplicationPlugin internal constructor(
 
         fun binderFactory(viewBinderFactory: ViewBinderFactory) {
             target.viewBinderFactory = viewBinderFactory
+        }
+
+        fun transitionBuilder(transitionBuilder: TransitionBuilder) {
+            target.transitionBuilder = transitionBuilder
         }
 
         fun <A : Activity, VM : ViewModel> bindActivity(
@@ -47,6 +53,9 @@ class AndroidApplicationPlugin internal constructor(
         super.onInstall(context)
         viewBinderFactory?.let {
             context.installBinderFactoryPlugin(it)
+        }
+        transitionBuilder?.let {
+            context.installTransitionBuilderPlugin(it)
         }
         context.installPlugin(ActivityBindingPluginDescriptor, activityBindingPlugin)
     }

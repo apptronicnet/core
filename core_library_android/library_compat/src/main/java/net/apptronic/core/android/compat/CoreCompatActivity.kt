@@ -29,7 +29,7 @@ abstract class CoreCompatActivity<T : ViewModel> : AppCompatActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         lifecycleController = ViewModelLifecycleController(viewModel)
-        lifecycleController.setCreated(true)
+        lifecycleController.setAttached(true)
         onViewModelCreated(savedInstanceState)
         super.onCreate(savedInstanceState)
         lifecycleController.setBound(true)
@@ -76,7 +76,7 @@ abstract class CoreCompatActivity<T : ViewModel> : AppCompatActivity(),
         super.onDestroy()
         lifecycleController.setBound(false)
         onViewModelUnbound()
-        lifecycleController.setCreated(false)
+        lifecycleController.setAttached(false)
         onViewModeDestroyed()
     }
 
