@@ -25,7 +25,7 @@ class ViewModelDispathcerComponent<T : ViewModel>(
     fun attachUi() {
         container = TestViewContainer()
         dispatcher.registerContainer(container!!)
-        setCreated(true)
+        setAttached(true)
     }
 
     fun detachUi() {
@@ -53,8 +53,8 @@ class ViewModelDispathcerComponent<T : ViewModel>(
 
     private var lifecycleController: ViewModelLifecycleController? = null
 
-    fun setCreated(isCreated: Boolean) {
-        lifecycleController!!.setBound(isCreated)
+    fun setAttached(isAttached: Boolean) {
+        lifecycleController!!.setAttached(isAttached)
     }
 
     fun setBound(isBound: Boolean) {

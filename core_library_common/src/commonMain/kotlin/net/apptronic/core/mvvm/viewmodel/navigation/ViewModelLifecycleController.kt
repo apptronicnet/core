@@ -18,8 +18,8 @@ class ViewModelLifecycleController(
         }
     }
 
-    fun setCreated(value: Boolean) {
-        setStage(value, ViewModelLifecycle.STAGE_CREATED)
+    fun setAttached(value: Boolean) {
+        setStage(value, ViewModelLifecycle.STAGE_ATTACHED)
     }
 
     fun setBound(value: Boolean) {

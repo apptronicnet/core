@@ -4,7 +4,7 @@ import net.apptronic.core.component.lifecycle.defineLifecycle
 import net.apptronic.core.component.lifecycle.lifecycleStage
 
 val VIEW_MODEL_LIFECYCLE = defineLifecycle {
-    addStage(ViewModelLifecycle.STAGE_CREATED)
+    addStage(ViewModelLifecycle.STAGE_ATTACHED)
     addStage(ViewModelLifecycle.STAGE_BOUND)
     addStage(ViewModelLifecycle.STAGE_VISIBLE)
     addStage(ViewModelLifecycle.STAGE_FOCUSED)
@@ -13,9 +13,9 @@ val VIEW_MODEL_LIFECYCLE = defineLifecycle {
 object ViewModelLifecycle {
 
     /**
-     * Lifecycle stage definition: [ViewModel] is created and working
+     * Lifecycle stage definition: [ViewModel] is attached to [ViewModelParent]
      */
-    val STAGE_CREATED = lifecycleStage("created")
+    val STAGE_ATTACHED = lifecycleStage("attached")
 
     /**
      * Lifecycle stage definition: [ViewModel] is bound to view

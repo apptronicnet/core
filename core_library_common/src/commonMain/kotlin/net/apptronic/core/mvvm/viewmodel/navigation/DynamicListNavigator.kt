@@ -204,7 +204,7 @@ class DynamicListNavigator<T : Any, Id : Any, VM : ViewModel>(
                 postRefreshVisibility()
             }
         }
-        container.setCreated(true)
+        container.setAttached(true)
         updateStatusSubject()
         return container
     }

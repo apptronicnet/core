@@ -24,18 +24,18 @@ internal class ViewModelContainer(
 
     private val subscriptionHolders = SubscriptionHolders()
 
-    private val createdLocal = viewModel.value(false)
+    private val attachedLocal = viewModel.value(false)
     private val boundLocal = viewModel.value(false)
     private val visibleLocal = viewModel.value(false)
     private val focusedLocal = viewModel.value(false)
 
-    private val createdParent = from(parent.observeCreated())
+    private val attachedParent = from(parent.observeAttached())
     private val boundParent = from(parent.observeBound())
     private val visibleParent = from(parent.observeVisible())
     private val focusedParent = from(parent.observeFocused())
 
-    private val isCreated = (createdLocal and createdParent).distinctUntilChanged()
-    private val isBound = (isCreated and boundLocal and boundParent).distinctUntilChanged()
+    private val isAttached = (attachedLocal and attachedParent).distinctUntilChanged()
+    private val isBound = (isAttached and boundLocal and boundParent).distinctUntilChanged()
     private val isVisible = (isBound and visibleLocal and visibleParent).distinctUntilChanged()
     private val isFocused = (isVisible and focusedLocal and focusedParent).distinctUntilChanged()
     private var shouldShowValue = true
@@ -48,16 +48,16 @@ internal class ViewModelContainer(
         return property
     }
 
-    fun setCreated(value: Boolean) {
-        if (value == createdLocal.get()) {
-            debugError(Error("$viewModel is already created=$value"))
+    fun setAttached(value: Boolean) {
+        if (value == attachedLocal.get()) {
+            debugError(Error("$viewModel is already attached=$value"))
         }
-        createdLocal.set(value)
+        attachedLocal.set(value)
     }
 
     fun setBound(value: Boolean) {
-        if (createdLocal.get().not()) {
-            debugError(Error("$viewModel is not created"))
+        if (attachedLocal.get().not()) {
+            debugError(Error("$viewModel is not attached"))
         }
         if (value == boundLocal.get()) {
             debugError(Error("$viewModel is already bound=$value"))
@@ -66,7 +66,7 @@ internal class ViewModelContainer(
     }
 
     fun setVisible(value: Boolean) {
-        if (createdLocal.get().not()) {
+        if (attachedLocal.get().not()) {
             debugError(Error("$viewModel is not bound"))
         }
         if (value == visibleLocal.get()) {
@@ -76,7 +76,7 @@ internal class ViewModelContainer(
     }
 
     fun setFocused(value: Boolean) {
-        if (createdLocal.get().not()) {
+        if (attachedLocal.get().not()) {
             debugError(Error("$viewModel is not visible"))
         }
         if (value == focusedLocal.get()) {
@@ -92,7 +92,7 @@ internal class ViewModelContainer(
     }
 
     init {
-        bindStage(viewModel, ViewModelLifecycle.STAGE_CREATED, isCreated)
+        bindStage(viewModel, ViewModelLifecycle.STAGE_ATTACHED, isAttached)
         bindStage(viewModel, ViewModelLifecycle.STAGE_BOUND, isBound)
         bindStage(viewModel, ViewModelLifecycle.STAGE_VISIBLE, isVisible)
         bindStage(viewModel, ViewModelLifecycle.STAGE_FOCUSED, isFocused)

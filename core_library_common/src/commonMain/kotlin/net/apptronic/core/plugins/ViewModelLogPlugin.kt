@@ -30,7 +30,7 @@ private class ViewModelLogPlugin internal constructor(
             component.doOnTerminate {
                 logMessage("ViewModelLifecycle: ${component} terminated")
             }
-            stateOfStage(component, ViewModelLifecycle.STAGE_CREATED)
+            stateOfStage(component, ViewModelLifecycle.STAGE_ATTACHED)
             stateOfStage(component, ViewModelLifecycle.STAGE_BOUND)
             stateOfStage(component, ViewModelLifecycle.STAGE_VISIBLE)
             stateOfStage(component, ViewModelLifecycle.STAGE_FOCUSED)

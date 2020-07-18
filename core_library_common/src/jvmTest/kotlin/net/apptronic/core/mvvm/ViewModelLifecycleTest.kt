@@ -38,18 +38,18 @@ class ViewModelLifecycleTest {
     @Test
     fun shouldExecuteCreated() {
         val counter = Counter()
-        viewModel.doOnCreate {
+        viewModel.doOnAttach {
             counter.onEnter++
             onExit {
                 counter.onExitInside++
             }
         }
-        viewModel.doOnDestroy {
+        viewModel.doOnDetach {
             counter.onExitOutside++
         }
-        viewModelContext.setCreated(true)
+        viewModelContext.setAttached(true)
         counter.assertEntered()
-        viewModelContext.setCreated(false)
+        viewModelContext.setAttached(false)
         counter.assertExited()
     }
 

@@ -1,6 +1,7 @@
 package net.apptronic.core.mvvm.viewmodel.navigation
 
 import net.apptronic.core.component.context.Context
+import net.apptronic.core.component.context.viewModelContext
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.component.value
@@ -14,7 +15,7 @@ class DynamicListNavigatorTest : TestViewModel() {
     val lifecycleController = ViewModelLifecycleController(this)
 
     private fun enterAllStages() {
-        lifecycleController.setCreated(true)
+        lifecycleController.setAttached(true)
         lifecycleController.setBound(true)
         navigator.setAdapter(adapter)
         lifecycleController.setVisible(true)
@@ -82,7 +83,7 @@ class DynamicListNavigatorTest : TestViewModel() {
         }
 
         override fun onCreateViewModel(parent: Context, item: Item.Static): StaticItemViewModel {
-            val context = ViewModelContext(parent, "item")
+            val context = parent.viewModelContext()
             return StaticItemViewModel(context, item)
         }
 
@@ -95,7 +96,7 @@ class DynamicListNavigatorTest : TestViewModel() {
         }
 
         override fun onCreateViewModel(parent: Context, item: Item.Dynamic): DynamicItemViewModel {
-            val context = ViewModelContext(parent, "item")
+            val context = parent.viewModelContext()
             return DynamicItemViewModel(context, item)
         }
 
@@ -165,11 +166,11 @@ class DynamicListNavigatorTest : TestViewModel() {
         assertStatus(attachedViewModels = setOf(vm1, vm2, vm3))
 
         adapter.setFullBound(vm1, false)
-        assert(vm1.isStateCreated()) // retained 1 value
+        assert(vm1.isStateAttached()) // retained 1 value
         assertStatus(attachedViewModels = setOf(vm1, vm2, vm3))
 
         adapter.setFullBound(vm2, false)
-        assert(vm2.isStateCreated()) // retained 1 value
+        assert(vm2.isStateAttached()) // retained 1 value
         assert(vm1.isTerminated()) // but destroyed old value
         assertStatus(attachedViewModels = setOf(vm2, vm3))
 
@@ -177,7 +178,7 @@ class DynamicListNavigatorTest : TestViewModel() {
         val vm2old = adapter.getItemAt(2) as DynamicItemViewModel
         assert(vm1new != vm1)
         assert(vm2old == vm2)
-        assert(vm2old.isStateCreated())
+        assert(vm2old.isStateAttached())
         assertStatus(attachedViewModels = setOf(vm1new, vm2, vm3))
 
         sources.set(
@@ -219,7 +220,7 @@ class DynamicListNavigatorTest : TestViewModel() {
         adapter.setFullBound(vmOne, true)
         assert(vmOne.isStateFocused())
         adapter.setFullBound(vmOne, false)
-        assert(vmOne.isStateCreated())
+        assert(vmOne.isStateAttached())
         assertStatus(attachedViewModels = setOf(vm1new, vm2, vm3, vm4, vm5, vm6, vmOne, "two"))
 
         val vmTwo = adapter.getItemAt(1) as StaticItemViewModel
@@ -236,9 +237,9 @@ class DynamicListNavigatorTest : TestViewModel() {
         assert(vm2.isTerminated())
         assert(vm4.isTerminated())
         assert(vm5.isTerminated())
-        assert(vm6.isStateCreated())  // retained 1 value
-        assert(vmOne.isStateCreated())  // retained as static item
-        assert(vmTwo.isStateCreated())  // retained as static item
+        assert(vm6.isStateAttached())  // retained 1 value
+        assert(vmOne.isStateAttached())  // retained as static item
+        assert(vmTwo.isStateAttached())  // retained as static item
         assertStatus(attachedViewModels = setOf(vm1new, vm3, vm6, vmOne, vmTwo))
 
         val vm4new = adapter.getItemAt(6) as DynamicItemViewModel
@@ -281,11 +282,11 @@ class DynamicListNavigatorTest : TestViewModel() {
         adapter.setFullBound(vm5new, false)
         adapter.setFullBound(vm6, false)
 
-        assert(vmOne.isStateCreated())
+        assert(vmOne.isStateAttached())
         assert(vmTwo.isTerminated())
         assert(vm4new.isTerminated())
         assert(vm5new.isTerminated())
-        assert(vm6.isStateCreated())
+        assert(vm6.isStateAttached())
         assertStatus(attachedViewModels = setOf(vm1new, vm3, vm6, vmOne, "three"))
     }
 

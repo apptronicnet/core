@@ -1,9 +1,9 @@
 package net.apptronic.core.mvvm
 
+import net.apptronic.core.component.context.viewModelContext
 import net.apptronic.core.component.terminate
 import net.apptronic.core.mvvm.viewmodel.EmptyViewModelContext
 import net.apptronic.core.mvvm.viewmodel.ViewModel
-import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 import net.apptronic.core.mvvm.viewmodel.navigation.ViewModelLifecycleController
 import net.apptronic.core.testutils.testContext
 import org.junit.Test
@@ -28,8 +28,7 @@ class SubModelLifecycleTest {
 
     }
 
-    private class ChildModel(root: ViewModel) :
-            LifecycleTestViewModel(ViewModelContext(root.context, " child")) {
+    private class ChildModel(root: ViewModel) : LifecycleTestViewModel(root.viewModelContext()) {
 
         val children = stackNavigator()
 
@@ -52,8 +51,8 @@ class SubModelLifecycleTest {
     @Test
     fun shouldRunLifecycle() {
 
-        controller.setCreated(true)
-        assert(root.isCreated())
+        controller.setAttached(true)
+        assert(root.isAttached())
 
         controller.setBound(true)
         assert(root.isBound())
@@ -64,8 +63,8 @@ class SubModelLifecycleTest {
         controller.setFocused(true)
         assert(root.isFocused())
 
-        controller.setCreated(false)
-        assert(root.isCreated().not())
+        controller.setAttached(false)
+        assert(root.isAttached().not())
 
         controller.setBound(false)
         assert(root.isBound().not())
@@ -82,10 +81,10 @@ class SubModelLifecycleTest {
         val child = ChildModel(root)
         root.children.add(child)
         assert(root.currentChild() === child)
-        assert(child.isCreated().not())
+        assert(child.isAttached().not())
 
-        controller.setCreated(true)
-        assert(child.isCreated())
+        controller.setAttached(true)
+        assert(child.isAttached())
 
         controller.setBound(true)
         assert(child.isBound())
@@ -96,8 +95,8 @@ class SubModelLifecycleTest {
         controller.setFocused(true)
         assert(child.isFocused())
 
-        controller.setCreated(false)
-        assert(child.isCreated().not())
+        controller.setAttached(false)
+        assert(child.isAttached().not())
 
         controller.setBound(false)
         assert(child.isBound().not())
@@ -115,58 +114,58 @@ class SubModelLifecycleTest {
         root.children.add(child1)
         assert(root.currentChild() == child1)
 
-        controller.setCreated(true)
-        assert(child1.isStateCreated())
+        controller.setAttached(true)
+        assert(child1.isStateAttached())
 
         val child2 = ChildModel(root)
         root.children.add(child2)
         assert(root.currentChild() == child2)
-        assert(child1.isStateCreated())
-        assert(child2.isStateCreated())
+        assert(child1.isStateAttached())
+        assert(child2.isStateAttached())
 
         controller.setBound(true)
-        assert(child1.isStateCreated())
+        assert(child1.isStateAttached())
         assert(child2.isStateBound())
 
         val child3 = ChildModel(root)
         root.children.add(child3)
         assert(root.currentChild() == child3)
-        assert(child1.isStateCreated())
-        assert(child2.isStateCreated())
+        assert(child1.isStateAttached())
+        assert(child2.isStateAttached())
         assert(child3.isStateBound())
 
         controller.setVisible(true)
         controller.setFocused(true)
 
-        assert(child1.isStateCreated())
-        assert(child2.isStateCreated())
+        assert(child1.isStateAttached())
+        assert(child2.isStateAttached())
         assert(child3.isStateFocused())
 
         val child4 = ChildModel(root)
         root.children.add(child4)
         assert(root.currentChild() == child4)
 
-        assert(child1.isStateCreated())
-        assert(child2.isStateCreated())
-        assert(child3.isStateCreated())
+        assert(child1.isStateAttached())
+        assert(child2.isStateAttached())
+        assert(child3.isStateAttached())
         assert(child4.isStateFocused())
 
         root.children.popBackStack()
         assert(root.currentChild() == child3)
-        assert(child1.isStateCreated())
-        assert(child2.isStateCreated())
+        assert(child1.isStateAttached())
+        assert(child2.isStateAttached())
         assert(child3.isStateFocused())
         assert(child4.isTerminated())
 
         root.children.popBackStack()
         assert(root.currentChild() == child2)
-        assert(child1.isStateCreated())
+        assert(child1.isStateAttached())
         assert(child2.isStateFocused())
         assert(child3.isTerminated())
         assert(child4.isTerminated())
 
         controller.setFocused(false)
-        assert(child1.isStateCreated())
+        assert(child1.isStateAttached())
         assert(child2.isStateVisible())
         assert(child3.isTerminated())
         assert(child4.isTerminated())
@@ -174,7 +173,7 @@ class SubModelLifecycleTest {
         val child5 = ChildModel(root)
         root.children.replace(child5)
         assert(root.currentChild() == child5)
-        assert(child1.isStateCreated())
+        assert(child1.isStateAttached())
         assert(child2.isTerminated())
         assert(child3.isTerminated())
         assert(child4.isTerminated())
@@ -182,11 +181,11 @@ class SubModelLifecycleTest {
 
         controller.setVisible(false)
         controller.setBound(false)
-        assert(child1.isStateCreated())
+        assert(child1.isStateAttached())
         assert(child2.isTerminated())
         assert(child3.isTerminated())
         assert(child4.isTerminated())
-        assert(child5.isStateCreated())
+        assert(child5.isStateAttached())
 
         root.terminate()
         assert(child1.isTerminated())

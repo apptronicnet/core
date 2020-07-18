@@ -14,8 +14,8 @@ private fun ViewModelContext.setStage(stage: LifecycleStageDefinition, value: Bo
     }
 }
 
-fun ViewModelContext.setCreated(value: Boolean) {
-    setStage(ViewModelLifecycle.STAGE_CREATED, value)
+fun ViewModelContext.setAttached(value: Boolean) {
+    setStage(ViewModelLifecycle.STAGE_ATTACHED, value)
 }
 
 fun ViewModelContext.setBound(value: Boolean) {

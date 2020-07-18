@@ -36,9 +36,9 @@ private class ThrottleEntity<T>(
         val delay: Long
 ) : RelayEntity<T>(source) {
 
-    override fun onSubscribe(targetContext: Context, target: Observer<T>): Observer<T> {
+    override fun onNewObserver(targetContext: Context, observer: Observer<T>): Observer<T> {
         val coroutineLauncher = targetContext.coroutineLauncherScoped()
-        return ThrottleObserver(coroutineLauncher, target, interval, delay)
+        return ThrottleObserver(coroutineLauncher, observer, interval, delay)
     }
 
 }

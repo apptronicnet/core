@@ -285,7 +285,7 @@ class StackNavigator(
     private fun onAdded(item: ViewModelContainer) {
         item.getViewModel().onAttachToParent(this)
         item.observeVisibilityChanged(::postRefreshState)
-        item.setCreated(true)
+        item.setAttached(true)
     }
 
     private fun onRemoved(item: ViewModelContainer) {

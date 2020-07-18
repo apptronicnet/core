@@ -24,8 +24,8 @@ private class TakeCountEntity<T>(
         val count: Int
 ) : RelayEntity<T>(source) {
 
-    override fun onSubscribe(targetContext: Context, target: Observer<T>): Observer<T> {
-        return CountObserver(count, target)
+    override fun onNewObserver(targetContext: Context, observer: Observer<T>): Observer<T> {
+        return CountObserver(count, observer)
     }
 
     private class CountObserver<T>(

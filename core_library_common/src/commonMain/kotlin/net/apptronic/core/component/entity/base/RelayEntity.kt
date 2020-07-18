@@ -21,13 +21,6 @@ abstract class RelayEntity<T>(val source: Entity<T>) : BaseEntity<T>() {
     }
 
     /**
-     * Provide real observer for [target]
-     */
-    open fun onSubscribe(targetContext: Context, target: Observer<T>): Observer<T> {
-        return target
-    }
-
-    /**
      * Notify [observer] by [nextValue] if needed
      */
     open fun onNext(nextValue: T, observer: Observer<T>) {

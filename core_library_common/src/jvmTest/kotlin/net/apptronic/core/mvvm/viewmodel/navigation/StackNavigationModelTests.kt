@@ -3,6 +3,8 @@ package net.apptronic.core.mvvm.viewmodel.navigation
 import net.apptronic.core.component.context.viewModelContext
 import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelListAdapter
+import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelStackAdapter
 import net.apptronic.core.testutils.testContext
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -384,8 +386,15 @@ abstract class StackNavigationModelTests {
 class StackNavigatorVerificationTest : StackNavigationModelTests() {
 
     lateinit var status: StackNavigatorStatus
+    var actualModel: ViewModel? = null
+    val adapter = object : ViewModelStackAdapter() {
+        override fun onInvalidate(newModel: ViewModel?, isNewOnFront: Boolean, transitionInfo: Any?) {
+            actualModel = newModel
+        }
+    }
 
     override val stackNavigationModel = coreViewModel.stackNavigator().apply {
+        setAdapter(adapter)
         subscribe {
             status = it
         }
@@ -398,6 +407,7 @@ class StackNavigatorVerificationTest : StackNavigationModelTests() {
             assert(item === viewModels[index])
             assert(stackNavigationModel.getItemAt(index) === viewModels[index])
         }
+        assert(actualModel === viewModels.lastOrNull())
     }
 
 }
@@ -406,17 +416,25 @@ class StackNavigationModelVerificationTest : StackNavigationModelTests() {
 
     lateinit var status: List<ViewModel>
 
+    val adapter = ViewModelListAdapter()
+
     override val stackNavigationModel = coreViewModel.stackNavigationModel().apply {
+        listNavigator.setAdapter(adapter)
         this.listNavigator.subscribe {
             status = it
         }
     }
 
-
     override fun assertStack(vararg viewModels: ViewModel) {
         super.assertStack(*viewModels)
         assert(status.size == viewModels.size)
         status.forEachIndexed { index, item ->
+            assert(item === viewModels[index])
+            assert(stackNavigationModel.getItemAt(index) === viewModels[index])
+        }
+        val adapterItems = adapter.getItems()
+        assert(adapterItems.size == viewModels.size)
+        adapterItems.forEachIndexed { index, item ->
             assert(item === viewModels[index])
             assert(stackNavigationModel.getItemAt(index) === viewModels[index])
         }

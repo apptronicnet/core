@@ -3,7 +3,7 @@ package net.apptronic.core.mvvm.viewmodel.adapter
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 
 /**
- * View model adapter is a class which reflects creates view controller
+ * View model adapter is a class which creates view controller
  * for corresponding viewModel instance
  */
 abstract class ViewModelStackAdapter {

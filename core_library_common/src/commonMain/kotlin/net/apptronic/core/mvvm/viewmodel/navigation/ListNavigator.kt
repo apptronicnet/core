@@ -126,7 +126,7 @@ class ListNavigator(
         containers[viewModel.componentId] = container
         container.getViewModel().onAttachToParent(this)
         container.observeVisibilityChanged(::postRefreshVisibility)
-        container.setCreated(true)
+        container.setAttached(true)
     }
 
     private fun onRemoved(viewModel: ViewModel) {

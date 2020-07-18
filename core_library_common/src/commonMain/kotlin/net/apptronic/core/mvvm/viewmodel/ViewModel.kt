@@ -21,7 +21,7 @@ open class ViewModel : Component {
 
     final override val context: ViewModelContext
 
-    private val isCreated = BehaviorSubject<Boolean>()
+    private val isAttached = BehaviorSubject<Boolean>()
     private val isBound = BehaviorSubject<Boolean>()
     private val isVisible = BehaviorSubject<Boolean>()
     private val isFocused = BehaviorSubject<Boolean>()
@@ -42,7 +42,7 @@ open class ViewModel : Component {
     }
 
     private fun doInit() {
-        stateOfStage(isCreated, ViewModelLifecycle.STAGE_CREATED)
+        stateOfStage(isAttached, ViewModelLifecycle.STAGE_ATTACHED)
         stateOfStage(isBound, ViewModelLifecycle.STAGE_BOUND)
         stateOfStage(isVisible, ViewModelLifecycle.STAGE_VISIBLE)
         stateOfStage(isFocused, ViewModelLifecycle.STAGE_FOCUSED)
@@ -114,13 +114,13 @@ open class ViewModel : Component {
     }
 
     @Suppress("UNUSED_PARAMETER")
-    internal fun onAddedToContainer(parent: ViewModelParent) {
-        context.lifecycle.enterStage(ViewModelLifecycle.STAGE_CREATED)
+    internal fun onAttachedToContainer(parent: ViewModelParent) {
+        context.lifecycle.enterStage(ViewModelLifecycle.STAGE_ATTACHED)
     }
 
     @Suppress("UNUSED_PARAMETER")
-    internal fun onRemovedFromContainer(parent: ViewModelParent) {
-        context.lifecycle.exitStage(ViewModelLifecycle.STAGE_CREATED)
+    internal fun onDetachedFromContainer(parent: ViewModelParent) {
+        context.lifecycle.exitStage(ViewModelLifecycle.STAGE_ATTACHED)
     }
 
     private var parent: ViewModelParent? = null
@@ -133,9 +133,9 @@ open class ViewModel : Component {
         this.parent = null
     }
 
-    fun isCreated() = context.lifecycle.isStageEntered(ViewModelLifecycle.STAGE_CREATED)
+    fun isAttached() = context.lifecycle.isStageEntered(ViewModelLifecycle.STAGE_ATTACHED)
 
-    fun observeCreated(): Observable<Boolean> = isCreated
+    fun observeAttached(): Observable<Boolean> = isAttached
 
     fun isBound() = context.lifecycle.isStageEntered(ViewModelLifecycle.STAGE_BOUND)
 
@@ -158,10 +158,10 @@ open class ViewModel : Component {
     }
 
     /**
-     * Create [Entity] which emits item when [ViewModel] entering created stage
+     * Create [Entity] which emits item when [ViewModel] entering attached stage
      */
-    fun whenCreated(): Entity<Unit> {
-        return whenEntered(isCreated)
+    fun whenAttached(): Entity<Unit> {
+        return whenEntered(isAttached)
     }
 
     /**
@@ -186,10 +186,10 @@ open class ViewModel : Component {
     }
 
     /**
-     * Check is current state is exactly on state created
+     * Check is current state is exactly on state attached
      */
-    fun isStateCreated(): Boolean {
-        return isCreated() && !isBound()
+    fun isStateAttached(): Boolean {
+        return isAttached() && !isBound()
     }
 
     /**
@@ -234,28 +234,28 @@ open class ViewModel : Component {
     // ----- CREATED STAGE ACTIONS -----
 
     /**
-     * Subscribe to enter to [ViewModelLifecycle.STAGE_CREATED]. Called each time when [ViewModel]
+     * Subscribe to enter to [ViewModelLifecycle.STAGE_ATTACHED]. Called each time when [ViewModel]
      * enter specified stage until [ViewModel] exit from current stage (from which this method called)
      */
-    fun doOnCreate(callback: LifecycleStage.OnEnterHandler.() -> Unit) {
-        onEnterStage(ViewModelLifecycle.STAGE_CREATED, callback)
+    fun doOnAttach(callback: LifecycleStage.OnEnterHandler.() -> Unit) {
+        onEnterStage(ViewModelLifecycle.STAGE_ATTACHED, callback)
     }
 
     /**
-     * Subscribe to enter [ViewModelLifecycle.STAGE_CREATED]. Called one time.
+     * Subscribe to enter [ViewModelLifecycle.STAGE_ATTACHED]. Called one time.
      * @param key unique key for action. If action with same key already subscribed it will be
      * replaced by new action and previous registered action will not be called.
      */
-    fun onceCreated(key: String = "", action: () -> Unit) {
-        onceStage(ViewModelLifecycle.STAGE_CREATED, key, action)
+    fun onceAttached(key: String = "", action: () -> Unit) {
+        onceStage(ViewModelLifecycle.STAGE_ATTACHED, key, action)
     }
 
     /**
-     * Subscribe to exit from [ViewModelLifecycle.STAGE_CREATED]. Called each time when [ViewModel]
+     * Subscribe to exit from [ViewModelLifecycle.STAGE_ATTACHED]. Called each time when [ViewModel]
      * enter specified stage until [ViewModel] exit from current stage (from which this method called)
      */
-    fun doOnDestroy(callback: LifecycleStage.OnExitHandler.() -> Unit) {
-        onExitStage(ViewModelLifecycle.STAGE_CREATED, callback)
+    fun doOnDetach(callback: LifecycleStage.OnExitHandler.() -> Unit) {
+        onExitStage(ViewModelLifecycle.STAGE_ATTACHED, callback)
     }
 
     // ----- BOUND STAGE ACTIONS -----

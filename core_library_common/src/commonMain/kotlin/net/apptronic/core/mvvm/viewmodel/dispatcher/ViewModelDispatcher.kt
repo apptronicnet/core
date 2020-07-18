@@ -31,7 +31,7 @@ interface ViewModelDispatcher<T : ViewModel> {
 
     /**
      * Releases [ViewContainer], meaning there is no UI which can be bound to active [ViewModel]. This is not destroying
-     * [ViewModel]. To destroy [ViewModel] it needed to explicitly call [recycleViewModel]
+     * [ViewModel]. To terminate [ViewModel] it needed to explicitly call [recycleViewModel]
      */
     fun unregisterContainer(container: ViewContainer<T>)
 

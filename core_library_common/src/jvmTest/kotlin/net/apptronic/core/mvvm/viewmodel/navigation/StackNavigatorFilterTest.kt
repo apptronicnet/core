@@ -45,10 +45,10 @@ class StackNavigatorFilterTest {
 
     @Test
     fun shouldAddCorrectly() {
-        lifecycleController.setCreated(true)
+        lifecycleController.setAttached(true)
         val page1 = createViewModel("Page1")
         root.navigator.add(page1)
-        assert(page1.isStateCreated())
+        assert(page1.isStateAttached())
         assert(root.navigator.get().isInProgress)
         assert(root.navigator.get().actualModel == page1)
         assert(root.navigator.get().visibleModel == null)
@@ -69,13 +69,13 @@ class StackNavigatorFilterTest {
 
     @Test
     fun shouldPerformNavigationCorrectly() {
-        lifecycleController.setCreated(true)
+        lifecycleController.setAttached(true)
 
         // transition 1
 
         val page1 = createViewModel("Page1")
         root.navigator.add(page1)
-        assert(page1.isStateCreated())
+        assert(page1.isStateAttached())
         assertNavigatorStackState(page1)
 
         assert(root.navigator.get().isInProgress)
@@ -103,7 +103,7 @@ class StackNavigatorFilterTest {
         root.navigator.add(page2, "from_1to_2")
 
         assert(page1.isStateVisible())
-        assert(page2.isStateCreated())
+        assert(page2.isStateAttached())
         assertNavigatorStackState(page1, page2)
 
         assert(root.navigator.get().isInProgress)
@@ -114,7 +114,7 @@ class StackNavigatorFilterTest {
 
         page2.isReadyToShow.set(true)
 
-        assert(page1.isStateCreated())
+        assert(page1.isStateAttached())
         assert(page2.isStateVisible())
         assertNavigatorStackState(page1, page2)
 
@@ -129,9 +129,9 @@ class StackNavigatorFilterTest {
         val page3 = createViewModel("Page3")
         root.navigator.add(page3, "from_2to_3")
 
-        assert(page1.isStateCreated())
+        assert(page1.isStateAttached())
         assert(page2.isStateVisible())
-        assert(page3.isStateCreated())
+        assert(page3.isStateAttached())
         assertNavigatorStackState(page1, page2, page3)
 
         assert(root.navigator.get().isInProgress)
@@ -142,8 +142,8 @@ class StackNavigatorFilterTest {
 
         page3.isReadyToShow.set(true)
 
-        assert(page1.isStateCreated())
-        assert(page2.isStateCreated())
+        assert(page1.isStateAttached())
+        assert(page2.isStateAttached())
         assert(page3.isStateVisible())
         assertNavigatorStackState(page1, page2, page3)
 
@@ -158,10 +158,10 @@ class StackNavigatorFilterTest {
         val page4 = createViewModel("Page4")
         root.navigator.replace(page4, "from_3to_4")
 
-        assert(page1.isStateCreated())
-        assert(page2.isStateCreated())
+        assert(page1.isStateAttached())
+        assert(page2.isStateAttached())
         assert(page3.isStateVisible())
-        assert(page4.isStateCreated())
+        assert(page4.isStateAttached())
         assertNavigatorStackState(page1, page2, page4)
 
         assert(root.navigator.get().isInProgress)
@@ -172,8 +172,8 @@ class StackNavigatorFilterTest {
 
         page4.isReadyToShow.set(true)
 
-        assert(page1.isStateCreated())
-        assert(page2.isStateCreated())
+        assert(page1.isStateAttached())
+        assert(page2.isStateAttached())
         assert(page3.isTerminated())
         assert(page4.isStateVisible())
         assertNavigatorStackState(page1, page2, page4)
@@ -193,7 +193,7 @@ class StackNavigatorFilterTest {
         assert(page2.isTerminated())
         assert(page3.isTerminated())
         assert(page4.isStateVisible())
-        assert(page5.isStateCreated())
+        assert(page5.isStateAttached())
         assertNavigatorStackState(page5)
 
         assert(root.navigator.get().isInProgress)

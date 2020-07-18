@@ -34,10 +34,10 @@ class StackNavigatorTest {
 
     @Test
     fun shouldCreateOnAddAndTerminateOnRemove() {
-        lifecycleController.setCreated(true)
+        lifecycleController.setAttached(true)
         val page = createViewModel()
         root.navigator.add(page)
-        assert(page.isStateCreated())
+        assert(page.isStateAttached())
         assertNavigatorStackState(page)
 
         root.navigator.clear()
@@ -48,13 +48,13 @@ class StackNavigatorTest {
 
     @Test
     fun shouldSeekParentLifecycle() {
-        lifecycleController.setCreated(true)
+        lifecycleController.setAttached(true)
         val page = createViewModel()
         root.navigator.add(page)
         assertNavigatorStackState(page)
         root.navigator.setAdapter(adapter)
         assert(adapter.activeModel == page)
-        assert(page.isStateCreated())
+        assert(page.isStateAttached())
         lifecycleController.setBound(true)
         assert(page.isStateBound())
         lifecycleController.setVisible(true)
@@ -66,69 +66,69 @@ class StackNavigatorTest {
         lifecycleController.setVisible(false)
         assert(page.isStateBound())
         lifecycleController.setBound(false)
-        assert(page.isStateCreated())
-        lifecycleController.setCreated(false)
-        assert(page.isCreated().not() && page.isTerminated().not())
+        assert(page.isStateAttached())
+        lifecycleController.setAttached(false)
+        assert(page.isAttached().not() && page.isTerminated().not())
         root.terminate()
         assert(page.isTerminated())
     }
 
     @Test
     fun shouldSwitchStagesWithoutAdapter() {
-        lifecycleController.setCreated(true)
+        lifecycleController.setAttached(true)
         val page1 = createViewModel()
         root.navigator.add(page1)
-        assert(page1.isStateCreated())
+        assert(page1.isStateAttached())
         assertNavigatorStackState(page1)
 
         val page2 = createViewModel()
         root.navigator.add(page2)
-        assert(page2.isStateCreated())
+        assert(page2.isStateAttached())
         assertNavigatorStackState(page1, page2)
 
         val page3 = createViewModel()
         root.navigator.add(page3)
-        assert(page3.isStateCreated())
+        assert(page3.isStateAttached())
         assertNavigatorStackState(page1, page2, page3)
 
         val page4 = createViewModel()
         root.navigator.add(page4)
-        assert(page4.isStateCreated())
+        assert(page4.isStateAttached())
         assertNavigatorStackState(page1, page2, page3, page4)
 
         val page5 = createViewModel()
         root.navigator.add(page5)
-        assert(page5.isStateCreated())
+        assert(page5.isStateAttached())
         assertNavigatorStackState(page1, page2, page3, page4, page5)
 
         val page6 = createViewModel()
         root.navigator.add(page6)
-        assert(page6.isStateCreated())
+        assert(page6.isStateAttached())
         assertNavigatorStackState(page1, page2, page3, page4, page5, page6)
 
         root.navigator.remove(page2)
 
-        assert(page1.isStateCreated())
+        assert(page1.isStateAttached())
         assert(page2.isTerminated())
-        assert(page3.isStateCreated())
-        assert(page4.isStateCreated())
-        assert(page5.isStateCreated())
-        assert(page6.isStateCreated())
+        assert(page3.isStateAttached())
+        assert(page4.isStateAttached())
+        assert(page5.isStateAttached())
+        assert(page6.isStateAttached())
         assertNavigatorStackState(page1, page3, page4, page5, page6)
 
         root.navigator.popBackStack()
-        assert(page1.isStateCreated())
+        assert(page1.isStateAttached())
         assert(page2.isTerminated())
-        assert(page3.isStateCreated())
-        assert(page4.isStateCreated())
-        assert(page5.isStateCreated())
+        assert(page3.isStateAttached())
+        assert(page4.isStateAttached())
+        assert(page5.isStateAttached())
         assert(page6.isTerminated())
         assertNavigatorStackState(page1, page3, page4, page5)
 
         root.navigator.popBackStackTo(page3)
-        assert(page1.isStateCreated())
+        assert(page1.isStateAttached())
         assert(page2.isTerminated())
-        assert(page3.isStateCreated())
+        assert(page3.isStateAttached())
         assert(page4.isTerminated())
         assert(page5.isTerminated())
         assert(page6.isTerminated())
@@ -143,13 +143,13 @@ class StackNavigatorTest {
         assert(page4.isTerminated())
         assert(page5.isTerminated())
         assert(page6.isTerminated())
-        assert(page7.isStateCreated())
+        assert(page7.isStateAttached())
         assertNavigatorStackState(page7)
     }
 
     @Test
     fun shouldSwitchStagesWithAdapter() {
-        lifecycleController.setCreated(true)
+        lifecycleController.setAttached(true)
         lifecycleController.setBound(true)
         root.navigator.setAdapter(adapter)
         lifecycleController.setVisible(true)
@@ -198,21 +198,21 @@ class StackNavigatorTest {
 
         root.navigator.remove(page2)
 
-        assert(page1.isStateCreated())
+        assert(page1.isStateAttached())
         assert(page2.isTerminated())
-        assert(page3.isStateCreated())
-        assert(page4.isStateCreated())
-        assert(page5.isStateCreated())
+        assert(page3.isStateAttached())
+        assert(page4.isStateAttached())
+        assert(page5.isStateAttached())
         assert(page6.isStateFocused())
         assertNavigatorStackState(page1, page3, page4, page5, page6)
         assert(adapter.activeModel == page6)
         assert(adapter.lastOnFront == true)
 
         root.navigator.popBackStack()
-        assert(page1.isStateCreated())
+        assert(page1.isStateAttached())
         assert(page2.isTerminated())
-        assert(page3.isStateCreated())
-        assert(page4.isStateCreated())
+        assert(page3.isStateAttached())
+        assert(page4.isStateAttached())
         assert(page5.isStateFocused())
         assert(page6.isTerminated())
         assertNavigatorStackState(page1, page3, page4, page5)
@@ -220,7 +220,7 @@ class StackNavigatorTest {
         assert(adapter.lastOnFront == false)
 
         root.navigator.popBackStackTo(page3)
-        assert(page1.isStateCreated())
+        assert(page1.isStateAttached())
         assert(page2.isTerminated())
         assert(page3.isStateFocused())
         assert(page4.isTerminated())
