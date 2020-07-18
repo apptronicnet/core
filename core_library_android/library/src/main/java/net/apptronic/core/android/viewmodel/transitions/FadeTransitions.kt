@@ -6,7 +6,7 @@ class FadeInTransition : ViewTransition() {
 
     private var startAlpha: Float = 0f
 
-    override fun onStartTransition(target: View, interceptedTransition: Transition<View>?) {
+    override fun startTransition(target: View, interceptedTransition: Transition<View>?) {
         if (interceptedTransition == null) {
             startAlpha = 0f
         } else {
@@ -18,7 +18,7 @@ class FadeInTransition : ViewTransition() {
         target.alpha = progress.interpolate(startAlpha, 1f)
     }
 
-    override fun onCompleteTransition(target: View, isCompleted: Boolean) {
+    override fun completeTransition(target: View, isCompleted: Boolean) {
         target.alpha = 1f
     }
 
@@ -28,7 +28,7 @@ class FadeOutTransition : ViewTransition() {
 
     private var startAlpha: Float = 0f
 
-    override fun onStartTransition(target: View, interceptedTransition: Transition<View>?) {
+    override fun startTransition(target: View, interceptedTransition: Transition<View>?) {
         if (interceptedTransition == null) {
             startAlpha = 1f
         } else {
@@ -40,7 +40,7 @@ class FadeOutTransition : ViewTransition() {
         target.alpha = progress.interpolate(startAlpha, 0f)
     }
 
-    override fun onCompleteTransition(target: View, isCompleted: Boolean) {
+    override fun completeTransition(target: View, isCompleted: Boolean) {
         target.alpha = 1f
     }
 

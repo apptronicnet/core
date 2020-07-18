@@ -107,8 +107,7 @@ abstract class Transition<Target> : FrameScheduler.FrameListener {
         setRunningTransition(target)
         if (runningTransition != null) {
             isIntercepting = true
-            onStartTransition(target, runningTransition)
-            runningTransition.cancel()
+            doInterceptInternal(target, runningTransition)
         } else {
             isIntercepting = false
         }
@@ -135,14 +134,20 @@ abstract class Transition<Target> : FrameScheduler.FrameListener {
         return launch(view)
     }
 
+    private fun doInterceptInternal(target: Target, runningTransition: Transition<Target>) {
+        doOnStartActions.forEach { it.invoke() }
+        onStartTransition(target, runningTransition)
+        runningTransition.cancel()
+    }
+
     private fun doStartInternal(target: Target, startTime: Long) {
         start = startTime
         end = start + duration
         if (!isIntercepting) {
+            doOnStartActions.forEach { it.invoke() }
             onStartTransition(target, null)
         }
         isIntercepting = false
-        doOnStartActions.forEach { it.invoke() }
     }
 
     fun cancel() {
@@ -157,7 +162,7 @@ abstract class Transition<Target> : FrameScheduler.FrameListener {
     }
 
     private fun completeTransition(target: Target) {
-        applyTransition(target, 1f)
+        onApplyTransition(target, 1f)
         onCompleteTransition(target, true)
         doOnCompleteActions.forEach { it.invoke() }
         clearRunningTransition(target)
@@ -168,7 +173,6 @@ abstract class Transition<Target> : FrameScheduler.FrameListener {
         if (isStarting) {
             doStartInternal(target, timestamp)
             isStarting = false
-            onStartTransition(target, null)
         }
         if (!isAllowsTransition(target)) {
             onCompleteTransition(target, false)
@@ -187,7 +191,7 @@ abstract class Transition<Target> : FrameScheduler.FrameListener {
 
     private fun applyFrame(target: Target, progress: Float) {
         val interpolated = progressInterpolator.getInterpolation(progress)
-        applyTransition(target, interpolated)
+        onApplyTransition(target, interpolated)
     }
 
     /**
@@ -196,7 +200,7 @@ abstract class Transition<Target> : FrameScheduler.FrameListener {
      */
     abstract fun onStartTransition(target: Target, interceptedTransition: Transition<Target>?)
 
-    abstract fun applyTransition(target: Target, progress: Progress)
+    abstract fun onApplyTransition(target: Target, progress: Progress)
 
     /**
      * Called when transition will no more do any work.

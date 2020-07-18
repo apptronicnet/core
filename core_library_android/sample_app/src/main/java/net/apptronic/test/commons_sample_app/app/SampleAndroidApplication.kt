@@ -8,6 +8,7 @@ import net.apptronic.core.plugins.installViewModelLogPlugin
 import net.apptronic.test.commons_sample_app.AppBinderFactory
 import net.apptronic.test.commons_sample_app.ApplicationScreenViewModel
 import net.apptronic.test.commons_sample_app.MainActivity
+import net.apptronic.test.commons_sample_app.transitions.AppTransitionBuilder
 
 class SampleAndroidApplication : Application() {
 
@@ -16,23 +17,24 @@ class SampleAndroidApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         appComponent = ApplicationComponent(
-                applicationContext(
-                        object : HttpClientFactory {
-                            override fun createHttpClient(): HttpClient {
-                                return object : HttpClient {}
-                            }
-                        },
-                        PlatformDefinition.Android
-                ).apply {
-                    installViewModelLogPlugin {
-                        Log.i("ViewModelLog", it)
+            applicationContext(
+                object : HttpClientFactory {
+                    override fun createHttpClient(): HttpClient {
+                        return object : HttpClient {}
                     }
-                    installAndroidApplicationPlugin(this@SampleAndroidApplication) {
-                        binderFactory(AppBinderFactory)
-                        bindActivity(MainActivity::class, ApplicationScreenViewModel::class) {
-                            it.onBackPressed()
-                        }
+                },
+                PlatformDefinition.Android
+            ).apply {
+                installViewModelLogPlugin {
+                    Log.i("ViewModelLog", it)
+                }
+                installAndroidApplicationPlugin(this@SampleAndroidApplication) {
+                    binderFactory(AppBinderFactory)
+                    transitionBuilder(AppTransitionBuilder())
+                    bindActivity(MainActivity::class, ApplicationScreenViewModel::class) {
+                        it.onBackPressed()
                     }
+                }
             }
         )
     }

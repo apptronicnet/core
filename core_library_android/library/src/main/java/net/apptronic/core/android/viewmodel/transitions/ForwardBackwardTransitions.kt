@@ -46,7 +46,7 @@ abstract class BaseForwardBackwardTranslation : ViewTransition() {
         return 0f
     }
 
-    override fun onStartTransition(target: View, interceptedTransition: Transition<View>?) {
+    override fun startTransition(target: View, interceptedTransition: Transition<View>?) {
         if (interceptedTransition != null) {
             startTranslationX = target.translationX
         } else {
@@ -54,7 +54,7 @@ abstract class BaseForwardBackwardTranslation : ViewTransition() {
         }
     }
 
-    override fun onCompleteTransition(target: View, isCompleted: Boolean) {
+    override fun completeTransition(target: View, isCompleted: Boolean) {
         target.translationX = 0f
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             target.foreground = null
@@ -67,8 +67,8 @@ class ForwardEnterTransition(val container: View) : BaseForwardBackwardTranslati
 
     override val isFrontTransition: Boolean = true
 
-    override fun onStartTransition(target: View, interceptedTransition: Transition<View>?) {
-        super.onStartTransition(target, interceptedTransition)
+    override fun startTransition(target: View, interceptedTransition: Transition<View>?) {
+        super.startTransition(target, interceptedTransition)
         if (interceptedTransition == null) {
             startTranslationX = container.width.toFloat()
         } else {
@@ -85,8 +85,8 @@ class ForwardEnterTransition(val container: View) : BaseForwardBackwardTranslati
 
 class ForwardExitTransition(val container: View) : BaseForwardBackwardTranslation() {
 
-    override fun onStartTransition(target: View, interceptedTransition: Transition<View>?) {
-        super.onStartTransition(target, interceptedTransition)
+    override fun startTransition(target: View, interceptedTransition: Transition<View>?) {
+        super.startTransition(target, interceptedTransition)
         if (interceptedTransition == null) {
             startTranslationX = 0f
             startAlpha = 0f
@@ -110,8 +110,8 @@ class ForwardExitTransition(val container: View) : BaseForwardBackwardTranslatio
 
 class BackwardEnterTransition(val container: View) : BaseForwardBackwardTranslation() {
 
-    override fun onStartTransition(target: View, interceptedTransition: Transition<View>?) {
-        super.onStartTransition(target, interceptedTransition)
+    override fun startTransition(target: View, interceptedTransition: Transition<View>?) {
+        super.startTransition(target, interceptedTransition)
         if (interceptedTransition == null) {
             startTranslationX = -container.width.toFloat() * FORWARD_BACKWARD_OVERLAP
             startAlpha = MAX_OVERLAY_ALPHA
@@ -134,8 +134,8 @@ class BackwardExitTransition(val container: View) : BaseForwardBackwardTranslati
 
     override val isFrontTransition: Boolean = true
 
-    override fun onStartTransition(target: View, interceptedTransition: Transition<View>?) {
-        super.onStartTransition(target, interceptedTransition)
+    override fun startTransition(target: View, interceptedTransition: Transition<View>?) {
+        super.startTransition(target, interceptedTransition)
         if (interceptedTransition == null) {
             startTranslationX = 0f
         } else {

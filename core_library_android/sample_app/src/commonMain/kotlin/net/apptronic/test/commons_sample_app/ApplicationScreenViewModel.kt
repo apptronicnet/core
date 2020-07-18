@@ -4,6 +4,7 @@ import net.apptronic.core.component.context.Context
 import net.apptronic.core.mvvm.viewmodel.EmptyViewModelContext
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.adapter.BasicTransition
+import net.apptronic.test.commons_sample_app.bottomsheet.bottomSheetViewModel
 import net.apptronic.test.commons_sample_app.convert.ConvertScreenViewModel
 import net.apptronic.test.commons_sample_app.lazylist.LazyListViewModel
 import net.apptronic.test.commons_sample_app.lazylistfiltering.LazyListFilterViewModel
@@ -21,10 +22,17 @@ import net.apptronic.test.commons_sample_app.stackloading.StackLoadingViewModel
 import net.apptronic.test.commons_sample_app.staknavigation.GestureNavigationViewModel
 import net.apptronic.test.commons_sample_app.staknavigation.PrevNextNavigationViewModel
 import net.apptronic.test.commons_sample_app.throttle.ThrottleSampleViewModel
+import net.apptronic.test.commons_sample_app.transition.AppTransition
 
 class ApplicationScreenViewModel(parent: Context) : ViewModel(parent, EmptyViewModelContext) {
 
+    init {
+        context.dependencyDispatcher.addInstance<OverlayRouter>(OverlayRouterImpl(this))
+    }
+
     val rootPage = stackNavigator()
+
+    val overlayNavigator = stackNavigator()
 
     init {
         val router = ApplicationScreenNavigationRouterImpl(this)
@@ -32,6 +40,9 @@ class ApplicationScreenViewModel(parent: Context) : ViewModel(parent, EmptyViewM
     }
 
     fun onBackPressed(): Boolean {
+        if (overlayNavigator.removeLast(AppTransition.BottomSheet)) {
+            return true
+        }
         return rootPage.popBackStack(BasicTransition.Backward)
     }
 
@@ -140,6 +151,14 @@ class ApplicationScreenRegistrationRouterImpl(
     override fun backToLogin(preFilledLogin: String) {
         listener.onRegistrationDone(preFilledLogin)
         parent.rootPage.popBackStack(BasicTransition.Backward)
+    }
+
+}
+
+class OverlayRouterImpl(private val target: ApplicationScreenViewModel) : OverlayRouter {
+
+    override fun showBottomSheet() {
+        target.overlayNavigator.add(target.bottomSheetViewModel(), AppTransition.BottomSheet)
     }
 
 }

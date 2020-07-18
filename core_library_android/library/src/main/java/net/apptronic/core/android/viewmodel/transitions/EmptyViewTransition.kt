@@ -4,7 +4,7 @@ import android.view.View
 
 class EmptyViewTransition : ViewTransition() {
 
-    override fun onStartTransition(target: View, interceptedTransition: Transition<View>?) {
+    override fun startTransition(target: View, interceptedTransition: Transition<View>?) {
         // do nothing
     }
 
@@ -12,7 +12,7 @@ class EmptyViewTransition : ViewTransition() {
         // do nothing
     }
 
-    override fun onCompleteTransition(target: View, isCompleted: Boolean) {
+    override fun completeTransition(target: View, isCompleted: Boolean) {
         target.translationX = 0f
         target.translationY = 0f
         target.alpha = 1f

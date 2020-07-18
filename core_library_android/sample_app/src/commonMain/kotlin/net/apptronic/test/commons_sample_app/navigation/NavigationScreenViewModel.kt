@@ -3,11 +3,13 @@ package net.apptronic.test.commons_sample_app.navigation
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.inject
 import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.test.commons_sample_app.OverlayRouter
 
 class NavigationScreenViewModel(parent: Context, router: NavigationRouter) :
     ViewModel(parent, navigationContext(router)) {
 
     private val router = inject(NavigationRouterDescriptor)
+    private val overlayRouter = inject<OverlayRouter>()
 
     fun onClickLoginDemo() {
         router.openLoginDemo()
@@ -51,6 +53,10 @@ class NavigationScreenViewModel(parent: Context, router: NavigationRouter) :
 
     fun onDynamicFilterListDemo() {
         router.openDynamicFilterListDemo()
+    }
+
+    fun onShowBottomSheetDemo() {
+        overlayRouter.showBottomSheet()
     }
 
 }

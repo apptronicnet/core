@@ -12,7 +12,7 @@ class TransitionPlayer<Target>(
             transition.onStartTransition(target, null)
             isStarted = true
         }
-        transition.applyTransition(target, progress)
+        transition.onApplyTransition(target, progress)
     }
 
     fun play(
@@ -83,9 +83,9 @@ private class PlaybackTransition<Target>(
         }
     }
 
-    override fun applyTransition(target: Transition<Target>, progress: Progress) {
+    override fun onApplyTransition(target: Transition<Target>, progress: Progress) {
         val targetProgress = progress.interpolate(startProgress, endProgress)
-        target.applyTransition(targetOfTarget, targetProgress)
+        target.onApplyTransition(targetOfTarget, targetProgress)
     }
 
     override fun onCompleteTransition(target: Transition<Target>, isCompleted: Boolean) {

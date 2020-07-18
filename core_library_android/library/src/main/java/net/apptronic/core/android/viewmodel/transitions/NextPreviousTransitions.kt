@@ -11,7 +11,7 @@ abstract class BasePrevNextTransition : ViewTransition() {
 
     protected var startTranslationX: Float = 0f
 
-    override fun onStartTransition(target: View, interceptedTransition: Transition<View>?) {
+    override fun startTransition(target: View, interceptedTransition: Transition<View>?) {
         if (interceptedTransition == null) {
             target.translationX = 0f
         } else {
@@ -19,7 +19,7 @@ abstract class BasePrevNextTransition : ViewTransition() {
         }
     }
 
-    override fun onCompleteTransition(target: View, isCompleted: Boolean) {
+    override fun completeTransition(target: View, isCompleted: Boolean) {
         target.translationX = 0f
     }
 
@@ -29,8 +29,8 @@ class NextEnterTransition(val container: View) : BasePrevNextTransition() {
 
     override val isFrontTransition: Boolean = true
 
-    override fun onStartTransition(target: View, interceptedTransition: Transition<View>?) {
-        super.onStartTransition(target, interceptedTransition)
+    override fun startTransition(target: View, interceptedTransition: Transition<View>?) {
+        super.startTransition(target, interceptedTransition)
         if (interceptedTransition == null) {
             startTranslationX = container.width.toFloat()
         }
@@ -47,8 +47,8 @@ class NextExitTransition(val container: View) : BasePrevNextTransition() {
 
     override val isFrontTransition: Boolean = true
 
-    override fun onStartTransition(target: View, interceptedTransition: Transition<View>?) {
-        super.onStartTransition(target, interceptedTransition)
+    override fun startTransition(target: View, interceptedTransition: Transition<View>?) {
+        super.startTransition(target, interceptedTransition)
         if (interceptedTransition == null) {
             startTranslationX = 0f
         }
@@ -62,8 +62,8 @@ class NextExitTransition(val container: View) : BasePrevNextTransition() {
 
 class PreviousEnterTransition(val container: View) : BasePrevNextTransition() {
 
-    override fun onStartTransition(target: View, interceptedTransition: Transition<View>?) {
-        super.onStartTransition(target, interceptedTransition)
+    override fun startTransition(target: View, interceptedTransition: Transition<View>?) {
+        super.startTransition(target, interceptedTransition)
         if (interceptedTransition == null) {
             startTranslationX = -container.width.toFloat()
         }
@@ -78,8 +78,8 @@ class PreviousEnterTransition(val container: View) : BasePrevNextTransition() {
 
 class PreviousExitTransition(val container: View) : BasePrevNextTransition() {
 
-    override fun onStartTransition(target: View, interceptedTransition: Transition<View>?) {
-        super.onStartTransition(target, interceptedTransition)
+    override fun startTransition(target: View, interceptedTransition: Transition<View>?) {
+        super.startTransition(target, interceptedTransition)
         if (interceptedTransition == null) {
             startTranslationX = 0f
         }
