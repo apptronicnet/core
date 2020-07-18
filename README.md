@@ -9,7 +9,7 @@ Demo app which demonstrates basics of **apptronic.net/core**:<br/>[https://githu
 With this framework it possible to develop most code of application in Kotlin/Multiplatform:
 whole architecture, app model and UI model (using MVVM pattern).
 
-#### Why apptronic.net / core?
+## Why apptronic.net / core?
 
 This framework designed after many years in mobile application development industry to improve performance and quality of development process.
 
@@ -24,7 +24,7 @@ Framework have integrated out of the box modern and effective architecture appro
  - integrated powerful Dependency Injection framework with minimalistic API
  - integrated reactive programming framework for components with automated subscription management (forget about subscription leaks) and declarative programming
  - integration with Kotlin/Coroutines - forget about classic threading and all of it's issues
- - UI-Model control inversion: Model is the primary, UI serves. No more issues with UI state, now it just state-renderer.
+ - UI-Model control inversion: Model is the primary, UI serves. No more issues with UI state, now it's just state-renderer.
  - MVVM/Navigation framework based on Components (ViewModel is sub-class of Component with some additional specific features)
  - extendable by plugins and extensions, allowing injection of additional features without rewriting framework code
 ### 3. Automated testing is no more pain.
