@@ -8,7 +8,6 @@ import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.context.ContextDefinition
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.behavior.doWhen
-import net.apptronic.core.component.entity.behavior.setup
 import net.apptronic.core.component.entity.bindContext
 import net.apptronic.core.component.entity.entities.setAs
 import net.apptronic.core.component.entity.subscribe
@@ -64,7 +63,7 @@ open class ViewModel : Component {
     }
 
     fun stackNavigator(source: Entity<ViewModel>): StackNavigator {
-        return StackNavigator(this).setup {
+        return StackNavigator(this).apply {
             source.subscribe(context) {
                 set(it)
             }
@@ -106,7 +105,7 @@ open class ViewModel : Component {
     }
 
     fun listNavigator(source: Entity<List<ViewModel>>): ListNavigator {
-        return ListNavigator(this).setup {
+        return ListNavigator(this).apply {
             source.subscribe(context) {
                 set(it)
             }

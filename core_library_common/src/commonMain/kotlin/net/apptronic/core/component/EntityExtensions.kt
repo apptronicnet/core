@@ -4,7 +4,6 @@ import kotlinx.coroutines.CoroutineScope
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.component.context.Contextual
 import net.apptronic.core.component.entity.Entity
-import net.apptronic.core.component.entity.behavior.setup
 import net.apptronic.core.component.entity.entities.*
 import net.apptronic.core.component.entity.functions.onNextSuspend
 import net.apptronic.core.component.entity.subscribe
@@ -22,7 +21,7 @@ fun <T> Contextual.value(): Value<T> {
  * Property of view with some default value
  */
 fun <T> Contextual.value(defaultValue: T): Value<T> {
-    return value<T>().setup {
+    return value<T>().apply {
         set(defaultValue)
     }
 }
@@ -38,7 +37,7 @@ fun <T> Contextual.mutableValue(): MutableValue<T> {
 }
 
 fun <T> Contextual.mutableValue(defaultValue: T): MutableValue<T> {
-    return mutableValue<T>().setup {
+    return mutableValue<T>().apply {
         set(defaultValue)
     }
 }
