@@ -3,8 +3,8 @@ package net.apptronic.core.component.coroutines
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import net.apptronic.core.component.Component
 import net.apptronic.core.component.context.Context
+import net.apptronic.core.component.context.Contextual
 import net.apptronic.core.component.lifecycle.Lifecycle
 import net.apptronic.core.component.lifecycle.LifecycleStage
 import kotlin.coroutines.CoroutineContext
@@ -32,22 +32,18 @@ interface CoroutineLaunchers {
 
 }
 
-fun Context.coroutineLaunchers(): CoroutineLaunchers {
-    return CoroutineLaunchersImpl(this)
-}
-
-fun Component.coroutineLaunchers(): CoroutineLaunchers {
+fun Contextual.coroutineLaunchers(): CoroutineLaunchers {
     return CoroutineLaunchersImpl(context)
 }
 
-fun Component.coroutineDispatcher(descriptor: CoroutineDispatcherDescriptor): CoroutineDispatcher {
+fun Contextual.coroutineDispatcher(descriptor: CoroutineDispatcherDescriptor): CoroutineDispatcher {
     return context.coroutineDispatchers[descriptor]
 }
 
 /**
  * [CoroutineDispatcher] which matches to [Dispatchers.Main] (if not overridden by [Context])
  */
-val Component.mainDispatcher: CoroutineContext
+val Contextual.mainDispatcher: CoroutineContext
     get() {
         return coroutineDispatcher(MainDispatcherDescriptor)
     }
@@ -55,7 +51,7 @@ val Component.mainDispatcher: CoroutineContext
 /**
  * [CoroutineDispatcher] which matches to [Dispatchers.Default] (if not overridden by [Context])
  */
-val Component.defaultDispatcher: CoroutineContext
+val Contextual.defaultDispatcher: CoroutineContext
     get() {
         return coroutineDispatcher(BackgroundDispatcherDescriptor)
     }
@@ -63,16 +59,24 @@ val Component.defaultDispatcher: CoroutineContext
 /**
  * [CoroutineDispatcher] which matches to [Dispatchers.Unconfined] (if not overridden by [Context])
  */
-val Component.unconfinedDispatcher: CoroutineContext
+val Contextual.unconfinedDispatcher: CoroutineContext
     get() {
         return coroutineDispatcher(UnconfinedDispatcherDescriptor)
+    }
+
+/**
+ * Get instance of [ManualDispatcher].
+ */
+val Contextual.manualDispatcher: ManualDispatcher
+    get() {
+        return coroutineDispatcher(ManualDispatcherDescriptor) as? ManualDispatcher ?: ManualDispatcher()
     }
 
 /**
  * Get [CoroutineContext] which uses to [Dispatchers.Default] and executes all coroutines with specified
  * [priority] (if not overridden by [Context])
  */
-fun Component.priorityDispatcher(priority: Int = PRIORITY_MEDIUM): CoroutineContext {
+fun Contextual.priorityDispatcher(priority: Int = PRIORITY_MEDIUM): CoroutineContext {
     return context.coroutineDispatchers[BackgroundPriorityDispatcherDescriptor].withPriority(priority)
 }
 

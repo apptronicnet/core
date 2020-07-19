@@ -1,8 +1,8 @@
 package net.apptronic.core.component.entity.behavior
 
-import net.apptronic.core.ManualDispatcher
 import net.apptronic.core.assertListEquals
 import net.apptronic.core.component.coroutines.CoroutineDispatchers
+import net.apptronic.core.component.coroutines.ManualDispatcher
 import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.component.extensions.BaseComponent
 import net.apptronic.core.component.value
@@ -29,7 +29,7 @@ class ThrottleAsyncEntityTest {
         source.set("One")
         assertListEquals(results, listOf())
 
-        dispathcer.runAwaiting()
+        dispathcer.runAll()
         assertListEquals(results, listOf("One"))
 
         source.set("Two")
@@ -41,11 +41,11 @@ class ThrottleAsyncEntityTest {
         source.set("Four")
         assertListEquals(results, listOf("One"))
 
-        dispathcer.runAwaiting()
+        dispathcer.runAll()
         assertListEquals(results, listOf("One", "Four"))
 
         source.set("Five")
-        dispathcer.runAwaiting()
+        dispathcer.runAll()
         assertListEquals(results, listOf("One", "Four", "Five"))
     }
 

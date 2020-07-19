@@ -1,10 +1,10 @@
 package net.apptronic.core.features.dataprovider
 
 import kotlinx.coroutines.withContext
-import net.apptronic.core.ManualDispatcher
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.context.childContext
 import net.apptronic.core.component.context.dependencyModule
+import net.apptronic.core.component.coroutines.ManualDispatcher
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.entities.asProperty
 import net.apptronic.core.component.entity.functions.mapSuspend
@@ -57,7 +57,7 @@ class DataProviderWithCacheTest {
         val user1_1 = userComponent(1)
         assertFalse(user1_1.data.isSet())
 
-        manualDispatcher.runAwaiting()
+        manualDispatcher.runAll()
 
         assertTrue(user1_1.data.isSet())
 
@@ -74,7 +74,7 @@ class DataProviderWithCacheTest {
         // get same instance from cache
         assertTrue(user1_1.data.get() === user1_3.data.get())
 
-        manualDispatcher.runAwaiting()
+        manualDispatcher.runAll()
 
         // instance replaced by new after loading
         assertFalse(user1_1.data.get() === user1_3.data.get())
@@ -84,7 +84,7 @@ class DataProviderWithCacheTest {
         // load 2 new items to override cache
         val user2 = userComponent(2)
         val user3 = userComponent(3)
-        manualDispatcher.runAwaiting()
+        manualDispatcher.runAll()
         assertTrue(user2.data.isSet())
         assertTrue(user3.data.isSet())
         // and terminate them
@@ -95,7 +95,7 @@ class DataProviderWithCacheTest {
         val user1_4 = userComponent(1)
         assertFalse(user1_4.data.isSet())
 
-        manualDispatcher.runAwaiting()
+        manualDispatcher.runAll()
 
         // new instance returned from loading
         assertTrue(user1_4.data.isSet())

@@ -7,13 +7,28 @@ val MainDispatcherDescriptor = coroutineDispatcherDescriptor("Main")
 val BackgroundDispatcherDescriptor = coroutineDispatcherDescriptor("Background")
 val UnconfinedDispatcherDescriptor = coroutineDispatcherDescriptor("Unconfined")
 val BackgroundPriorityDispatcherDescriptor = coroutineDispatcherDescriptor("BackgroundPriorityDispatcher")
+val ManualDispatcherDescriptor = coroutineDispatcherDescriptor("ManualDispatcher")
 
+/**
+ * Create a [CoroutineDispatchers] using set of standard [CoroutineDispatcher].
+ */
 fun standardCoroutineDispatchers(): CoroutineDispatchers {
     return CoroutineDispatchers(Dispatchers.Main).also {
         it[MainDispatcherDescriptor] = Dispatchers.Main
         it[BackgroundDispatcherDescriptor] = Dispatchers.Default
         it[UnconfinedDispatcherDescriptor] = Dispatchers.Unconfined
         it[BackgroundPriorityDispatcherDescriptor] = BackgroundPriorityDispatcher(Dispatchers.Main, Dispatchers.Default)
+        it[ManualDispatcherDescriptor] = ManualDispatcher()
+    }
+}
+
+/**
+ * Create a [CoroutineDispatchers] using only [Dispatchers.Unconfined] and [ManualDispatcher].
+ */
+fun testCoroutineDispatchers(): CoroutineDispatchers {
+    return CoroutineDispatchers(Dispatchers.Unconfined).also {
+        it[BackgroundPriorityDispatcherDescriptor] = BackgroundPriorityDispatcher(Dispatchers.Unconfined, Dispatchers.Default)
+        it[ManualDispatcherDescriptor] = ManualDispatcher()
     }
 }
 

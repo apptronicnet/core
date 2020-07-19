@@ -1,14 +1,10 @@
 package net.apptronic.core.testutils
 
-import kotlinx.coroutines.Dispatchers
 import net.apptronic.core.component.context.BaseContext
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.coroutines.CoroutineDispatchers
+import net.apptronic.core.component.coroutines.testCoroutineDispatchers
 import net.apptronic.core.component.di.DependencyDispatcher
-
-fun testCoroutineDispatchers(): CoroutineDispatchers {
-    return CoroutineDispatchers(Dispatchers.Unconfined)
-}
 
 fun testContext(
         parent: Context? = null,

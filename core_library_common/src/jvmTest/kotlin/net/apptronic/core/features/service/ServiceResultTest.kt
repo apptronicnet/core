@@ -1,9 +1,9 @@
 package net.apptronic.core.features.service
 
 import kotlinx.coroutines.withContext
-import net.apptronic.core.ManualDispatcher
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.context.dependencyModule
+import net.apptronic.core.component.coroutines.ManualDispatcher
 import net.apptronic.core.component.coroutines.coroutineLaunchers
 import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.component.extensions.BaseComponent
@@ -95,7 +95,7 @@ class ServiceResultTest {
         assertTrue(user1.isInProgress.get())
         assertFalse(user1.parsed.isSet())
 
-        manualDispatcher.runAwaiting()
+        manualDispatcher.runAll()
 
         assertFalse(user1.isInProgress.get())
         assertEquals(Response.Success(1), user1.parsed.get())
@@ -106,7 +106,7 @@ class ServiceResultTest {
         assertEquals(errorList.size, 0)
 
         user1.source.set("245")
-        manualDispatcher.runAwaiting()
+        manualDispatcher.runAll()
 
         assertEquals(2, launches)
         assertEquals(successList.size, 2)
@@ -125,7 +125,7 @@ class ServiceResultTest {
         user1.source.set("4")
         user1.source.set("5")
 
-        manualDispatcher.runAwaiting()
+        manualDispatcher.runAll()
 
         assertEquals(Response.Success(5), user1.parsed.get())
 
@@ -139,7 +139,7 @@ class ServiceResultTest {
         val user1 = context.inject<UserComponent>()
         user1.source.set("Not an int")
 
-        manualDispatcher.runAwaiting()
+        manualDispatcher.runAll()
 
         assertTrue(user1.parsed.get() is Response.Error)
         assertEquals(1, launches)
@@ -158,7 +158,7 @@ class ServiceResultTest {
         user3.source.set("33")
         user4.source.set("Not an int")
 
-        manualDispatcher.runAwaiting()
+        manualDispatcher.runAll()
 
         assertEquals(Response.Success(11), user1.parsed.get())
         assertEquals(Response.Success(22), user2.parsed.get())
