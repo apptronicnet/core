@@ -6,9 +6,9 @@ import android.util.Log
 import net.apptronic.core.android.plugins.installAndroidApplicationPlugin
 import net.apptronic.core.plugins.installViewModelLogPlugin
 import net.apptronic.test.commons_sample_app.AppBinderFactory
+import net.apptronic.test.commons_sample_app.AppTransitionBuilder
 import net.apptronic.test.commons_sample_app.ApplicationScreenViewModel
 import net.apptronic.test.commons_sample_app.MainActivity
-import net.apptronic.test.commons_sample_app.transitions.AppTransitionBuilder
 
 class SampleAndroidApplication : Application() {
 

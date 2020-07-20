@@ -1,10 +1,14 @@
-package net.apptronic.core.android.viewmodel.transitions
+package net.apptronic.core.android.viewmodel.transitions.gestures
 
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
-import android.view.animation.LinearInterpolator
 import net.apptronic.core.android.R
+import net.apptronic.core.android.viewmodel.transitions.NavigationGestureDetector
+import net.apptronic.core.android.viewmodel.transitions.Transition
+import net.apptronic.core.android.viewmodel.transitions.TransitionGesture
+import net.apptronic.core.android.viewmodel.transitions.ViewSwitch
+import net.apptronic.core.android.viewmodel.transitions.siewswitches.backwardTransition
 import kotlin.math.max
 import kotlin.math.min
 
@@ -16,15 +20,12 @@ class BackwardTransitionGesture(
 ) : TransitionGesture() {
 
     init {
-        cancelDuration = ANIMATION_TIME
+        cancelDuration =
+            ANIMATION_TIME
     }
 
-    override fun createEnterTransition(containerView: View, backView: View): Transition<View>? {
-        return BackwardEnterTransition(containerView).withInterpolator(LinearInterpolator())
-    }
-
-    override fun createExitTransition(containerView: View, frontView: View): Transition<View>? {
-        return BackwardExitTransition(containerView).withInterpolator(LinearInterpolator())
+    override fun createTransition(viewSwitch: ViewSwitch): Transition<ViewSwitch> {
+        return viewSwitch.backwardTransition()
     }
 
     private fun detectionThreshold(): Float = min(
@@ -67,7 +68,7 @@ class BackwardTransitionGesture(
     override fun onMotionEvent(event: MotionEvent): Boolean {
         gestureDetector.onTouchEvent(event)
         if (event.actionMasked == MotionEvent.ACTION_MOVE) {
-            transitionProgress(max(event.x - startX, 0f) / containerView.width)
+            setProgress(max(event.x - startX, 0f) / containerView.width)
             return true
         }
         if (event.action == MotionEvent.ACTION_UP) {

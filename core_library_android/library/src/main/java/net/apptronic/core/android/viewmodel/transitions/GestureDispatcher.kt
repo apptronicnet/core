@@ -79,14 +79,14 @@ internal class GestureDispatcher(
                 if (transitionGesture != null) {
                     target.onGestureStarted()
                     transitionGesture.onStartEvent(event)
+                    val viewSwitch = ViewSwitch(
+                        entering = backView,
+                        exiting = frontView,
+                        isNewOnFront = false,
+                        container = touchableView
+                    )
                     this.activeGesture =
-                        GestureHandler(
-                            touchableView,
-                            frontView,
-                            backView,
-                            transitionGesture,
-                            GestureTargetWrapper(target)
-                        )
+                        GestureHandler(viewSwitch, transitionGesture, GestureTargetWrapper(target))
                 }
                 return this.activeGesture != null
             } else {

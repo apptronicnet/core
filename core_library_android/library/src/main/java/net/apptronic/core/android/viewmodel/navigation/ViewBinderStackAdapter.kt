@@ -5,9 +5,11 @@ import android.view.ViewGroup
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.ViewBinderFactory
 import net.apptronic.core.android.viewmodel.transitions.TransitionBuilder
+import net.apptronic.core.android.viewmodel.transitions.ViewSwitch
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelStackAdapter
 import net.apptronic.core.mvvm.viewmodel.navigation.StackNavigator
+import kotlin.math.max
 
 /**
  * Adapter for [StackNavigator]
@@ -52,7 +54,7 @@ open class ViewBinderStackAdapter(
                 transitionInfo
             )
         } else if (newBinder != null) {
-            onAdd(container, newBinder.getView(), isNewOnFront, transitionInfo)
+            onAdd(container, newBinder.getView(), transitionInfo)
         } else if (oldAndroidView != null) {
             onRemove(container, oldAndroidView.getView(), transitionInfo)
         }
@@ -61,17 +63,22 @@ open class ViewBinderStackAdapter(
     open fun onAdd(
         container: ViewGroup,
         newView: View,
-        isNewOnFront: Boolean,
         transitionInfo: Any?
     ) {
-        val transition = transitionBuilder.getEnterTransition(
-            container, newView, transitionInfo, defaultAnimationTime
+        val viewSwitch = ViewSwitch(
+            entering = newView,
+            exiting = null,
+            container = container,
+            isNewOnFront = true
         )
-        container.addView(newView, isNewOnFront)
+        val transition = transitionBuilder.getViewSwitchTransition(
+            viewSwitch, transitionInfo, defaultAnimationTime
+        )
+        container.addView(newView, true)
         newView.visibility = View.INVISIBLE
         transition.doOnStart {
             newView.visibility = View.VISIBLE
-        }.launch(newView)
+        }.launch(viewSwitch)
     }
 
     open fun onReplace(
@@ -81,24 +88,44 @@ open class ViewBinderStackAdapter(
         isNewOnFront: Boolean,
         transitionInfo: Any?
     ) {
-        onRemove(container, oldView, transitionInfo)
-        onAdd(container, newView, isNewOnFront, transitionInfo)
+        val viewSwitch = ViewSwitch(
+            entering = newView,
+            exiting = oldView,
+            container = container,
+            isNewOnFront = isNewOnFront
+        )
+        val transition = transitionBuilder.getViewSwitchTransition(
+            viewSwitch, transitionInfo, defaultAnimationTime
+        )
+        container.addView(newView, isNewOnFront)
+        newView.visibility = View.INVISIBLE
+        transition.doOnStart {
+            newView.visibility = View.VISIBLE
+        }.doOnCompleteOrCancel {
+            container.removeView(oldView)
+        }.launch(viewSwitch)
     }
 
     open fun onRemove(container: ViewGroup, oldView: View, transitionInfo: Any?) {
-        val transition = transitionBuilder.getExitTransition(
-            container, oldView, transitionInfo, defaultAnimationTime
+        val viewSwitch = ViewSwitch(
+            entering = null,
+            exiting = oldView,
+            container = container,
+            isNewOnFront = false
+        )
+        val transition = transitionBuilder.getViewSwitchTransition(
+            viewSwitch, transitionInfo, defaultAnimationTime
         )
         transition.doOnCompleteOrCancel {
             container.removeView(oldView)
-        }.launch(oldView)
+        }.launch(viewSwitch)
     }
 
     private fun ViewGroup.addView(child: View, toFront: Boolean) {
         if (toFront) {
             addView(child)
         } else {
-            addView(child, 0)
+            addView(child, max(childCount - 1, 0))
         }
     }
 

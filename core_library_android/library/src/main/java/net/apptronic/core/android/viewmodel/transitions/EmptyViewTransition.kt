@@ -13,9 +13,7 @@ class EmptyViewTransition : ViewTransition() {
     }
 
     override fun completeTransition(target: View, isCompleted: Boolean) {
-        target.translationX = 0f
-        target.translationY = 0f
-        target.alpha = 1f
+        // do nothing
     }
 
 }

@@ -8,9 +8,7 @@ import android.view.animation.Interpolator
 import net.apptronic.core.mvvm.viewmodel.navigation.BackNavigationStatus
 
 internal class GestureHandler(
-    private val containerView: View,
-    private val frontView: View,
-    private val backView: View,
+    private val viewSwitch: ViewSwitch,
     private val gesture: TransitionGesture,
     private val gestureTarget: GestureTarget
 ) : TransitionGesture.Callback {
@@ -22,14 +20,9 @@ internal class GestureHandler(
         gesture.callback = this
     }
 
-    private val enterTransition: Transition<View> =
-        gesture.createEnterTransition(containerView, backView) ?: EmptyViewTransition()
+    private val transition: Transition<ViewSwitch> = gesture.createTransition(viewSwitch)
 
-    private val exitTransition: Transition<View> =
-        gesture.createExitTransition(containerView, frontView) ?: EmptyViewTransition()
-
-    private val enterPlayer = TransitionPlayer(backView, enterTransition).apply { start() }
-    private val exitPlayer = TransitionPlayer(frontView, exitTransition).apply { start() }
+    private val player = TransitionPlayer(viewSwitch, transition).apply { start() }
 
     init {
         gestureTarget.getBackView()?.visibility = View.VISIBLE
@@ -47,9 +40,8 @@ internal class GestureHandler(
         cancelWithDuration(gesture.cancelDuration, false)
     }
 
-    override fun updateProgress(progress: Progress) {
-        enterPlayer.seekTo(progress)
-        exitPlayer.seekTo(progress)
+    override fun setProgress(progress: Progress) {
+        player.seekTo(progress)
     }
 
     override fun cancelTransition(duration: Long) {
@@ -85,12 +77,7 @@ internal class GestureHandler(
         interpolator: Interpolator,
         onComplete: () -> Unit
     ) {
-        enterPlayer.play(
-            gesture.progress, toProgress, duration, recallComplete = true
-        ) {
-            withInterpolator(interpolator)
-        }
-        exitPlayer.play(
+        player.play(
             gesture.progress, toProgress, duration, recallComplete = true
         ) {
             withInterpolator(interpolator)

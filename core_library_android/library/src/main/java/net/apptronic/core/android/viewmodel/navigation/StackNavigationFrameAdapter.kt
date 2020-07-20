@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.ViewBinderFactory
 import net.apptronic.core.android.viewmodel.transitions.TransitionBuilder
+import net.apptronic.core.android.viewmodel.transitions.ViewSwitch
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelListAdapter
 import net.apptronic.core.mvvm.viewmodel.navigation.BackNavigationStatus
@@ -89,28 +90,31 @@ class StackNavigationFrameAdapter(
                 setVisible(previousBinder.viewModel, false)
             }
 
-            val transition = navigatorAccess.getTransition(
+            val transitionInfo = navigatorAccess.getTransition(
                 previousBinder?.viewModel,
                 currentBinder?.viewModel
             )
 
-            if (currentBinder != null) {
-                transitionBuilder.getEnterTransition(
-                    container, currentBinder.view, transition, defaultAnimationTime
-                ).doOnStart {
-                    currentBinder.view.visibility = View.VISIBLE
-                }.launch(currentBinder.view)
-            }
-            if (previousBinder != null) {
-                transitionBuilder.getExitTransition(
-                    container, previousBinder.view, transition, defaultAnimationTime
-                ).doOnStart {
-                    isInTransition = true
-                }.doOnCompleteOrCancel {
-                    isInTransition = false
-                    binderHidden(previousBinder)
-                }.launch(previousBinder.view)
-            }
+            val viewSwitch = ViewSwitch(
+                entering = currentBinder?.view,
+                exiting = previousBinder?.view,
+                container = container,
+                isNewOnFront = (currentBinder?.position ?: -1) >= (previousBinder?.position ?: -1)
+            )
+            val transition = transitionBuilder.getViewSwitchTransition(
+                viewSwitch,
+                transitionInfo,
+                defaultAnimationTime
+            )
+            transition.doOnStart {
+                currentBinder?.view?.visibility = View.VISIBLE
+                isInTransition = true
+            }.doOnCompleteOrCancel {
+                isInTransition = false
+                previousBinder?.let {
+                    binderHidden((it))
+                }
+            }.launch(viewSwitch)
         }
     }
 

@@ -1,5 +1,9 @@
 package net.apptronic.core.android.viewmodel.transitions
 
+import android.view.animation.Interpolator
+
+typealias Progress = Float
+
 fun Progress.interpolate(start: Int, target: Int): Int {
     if (this <= 0f) {
         return start
@@ -46,4 +50,8 @@ fun Progress.interpolate(start: Double, target: Double): Double {
     val range = target - start
     val change = range * this.toDouble()
     return start + change
+}
+
+fun Progress.interpolateWith(interpolator: Interpolator?): Progress {
+    return interpolator?.getInterpolation(this) ?: this
 }

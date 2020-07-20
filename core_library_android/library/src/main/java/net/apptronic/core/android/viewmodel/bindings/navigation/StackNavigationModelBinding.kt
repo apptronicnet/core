@@ -9,7 +9,11 @@ import net.apptronic.core.android.viewmodel.BindingContainer
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.ViewBinderFactory
 import net.apptronic.core.android.viewmodel.navigation.StackNavigationFrameAdapter
-import net.apptronic.core.android.viewmodel.transitions.*
+import net.apptronic.core.android.viewmodel.transitions.GestureDispatcher
+import net.apptronic.core.android.viewmodel.transitions.GestureTarget
+import net.apptronic.core.android.viewmodel.transitions.NavigationGestureDetector
+import net.apptronic.core.android.viewmodel.transitions.TransitionBuilder
+import net.apptronic.core.android.viewmodel.transitions.gestures.BackwardTransitionGestureDetector
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.navigation.BackNavigationStatus
 import net.apptronic.core.mvvm.viewmodel.navigation.StackNavigationViewModel

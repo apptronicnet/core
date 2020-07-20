@@ -49,8 +49,6 @@ private object FrameScheduler {
 
 }
 
-typealias Progress = Float
-
 abstract class Transition<Target> : FrameScheduler.FrameListener {
 
     var interpolator: Interpolator = LinearInterpolator()
