@@ -1,10 +1,13 @@
 package net.apptronic.core
 
+import net.apptronic.core.base.observable.subject.ValueHolder
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.EntitySubscription
 import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.component.entity.subscriptions.EntitySubscriptionListener
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 
 inline fun <reified T> Entity<T>.record(): EntityRecorder<T> {
     return EntityRecorder(T::class.java, this)
@@ -17,10 +20,12 @@ class EntityRecorder<T> constructor(
 
     private val items = mutableListOf<T>()
     private var isUnsubscribed = false
+    private var last: ValueHolder<T>? = null
 
     init {
         val entitySubscription = source.subscribe {
             items.add(it)
+            last = ValueHolder(it)
         }
         entitySubscription.registerListener(this)
     }
@@ -67,9 +72,17 @@ class EntityRecorder<T> constructor(
             false
         }
         assert(sizeEquals && contentEquals) {
-            val expectedText = items.map { it.toString() }.joinToString(separator = ", ")
-            "Expected is size=${expected.size} [$expectedText] when actual $this"
+            val expectedText = expected.map { it.toString() }.joinToString(separator = ", ")
+            val actualText = items.map { it.toString() }.joinToString(separator = ", ")
+            "Content con equals:\n" +
+                    "Expected is: size=${expected.size} [$expectedText]\n" +
+                    "when actual: size=${items.size} [$actualText]"
         }
+    }
+
+    fun assertLast(value: T) {
+        assertNotNull(last)
+        assertEquals(value, last!!.value)
     }
 
     fun clear() {

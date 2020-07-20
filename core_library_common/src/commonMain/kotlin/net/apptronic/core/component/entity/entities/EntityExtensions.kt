@@ -4,6 +4,7 @@ import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.base.EntityValue
 import net.apptronic.core.component.entity.base.UpdateEntity
+import net.apptronic.core.component.entity.functions.toNullable
 import net.apptronic.core.component.entity.subscribe
 
 /**
@@ -46,6 +47,13 @@ fun <T> Entity<T>.withDefault(defaultValue: T): EntityValue<T> {
     return Value<T>(context).also {
         it.set(defaultValue)
         it.setAs(this)
+    }
+}
+
+fun <T> Entity<T>.withDefaultNull(): EntityValue<T?> {
+    return Value<T?>(context).also {
+        it.set(null)
+        it.setAs(this.toNullable())
     }
 }
 

@@ -1,14 +1,20 @@
 package net.apptronic.core.component.entity.behavior
 
 import kotlinx.coroutines.CoroutineScope
+import net.apptronic.core.base.observable.subject.asValueHolder
+import net.apptronic.core.base.observable.subject.unwrapValueHolder
+import net.apptronic.core.base.observable.subject.wrapValueHolder
 import net.apptronic.core.base.observable.subscribe
+import net.apptronic.core.component.context.Contextual
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.entities.Property
 import net.apptronic.core.component.entity.entities.Value
 import net.apptronic.core.component.entity.entities.setAs
+import net.apptronic.core.component.entity.entities.withDefaultNull
 import net.apptronic.core.component.entity.functions.anyValue
 import net.apptronic.core.component.entity.functions.entityFunction
 import net.apptronic.core.component.entity.functions.map
+import net.apptronic.core.component.entity.switchContext
 
 
 fun Entity<Boolean>.whenTrue(): Entity<Unit> {
@@ -45,30 +51,40 @@ fun Entity<Boolean>.doWhenFalse(action: () -> Unit): Entity<Boolean> {
     return this
 }
 
-fun whenever(entity: Entity<Boolean>, action: () -> Unit) {
-    entity.doWhenTrue(action)
+fun Contextual.whenever(entity: Entity<Boolean>, action: () -> Unit) {
+    entity.switchContext(context).doWhenTrue(action)
 }
 
-fun wheneverNot(entity: Entity<Boolean>, action: () -> Unit) {
-    entity.doWhenFalse(action)
+fun Contextual.wheneverNot(entity: Entity<Boolean>, action: () -> Unit) {
+    entity.switchContext(context).doWhenFalse(action)
+}
+
+fun <E> Entity<Boolean>.selectIf(ifTrue: Entity<E>): Entity<E> {
+    return entityFunction(this, ifTrue) { value, ifTrueValue ->
+        if (value) ifTrueValue.asValueHolder() else null
+    }.filterNotNull().unwrapValueHolder()
 }
 
 fun <E> Entity<Boolean>.selectIf(ifTrue: Entity<E>, ifFalse: Entity<E>): Entity<E> {
-    return entityFunction(this, ifTrue, ifFalse) { value, left, right ->
+    return entityFunction(
+            this,
+            ifTrue.wrapValueHolder().withDefaultNull(),
+            ifFalse.wrapValueHolder().withDefaultNull()
+    ) { value, left, right ->
         if (value) left else right
-    }
+    }.filterNotNull().unwrapValueHolder()
 }
 
 fun <E> Entity<Boolean>.selectIf(ifTrue: Entity<E>, ifFalse: E): Entity<E> {
-    return entityFunction(this, ifTrue) { value, left ->
-        if (value) left else ifFalse
-    }
+    return entityFunction(this, ifTrue.wrapValueHolder().withDefaultNull()) { value, left ->
+        if (value) left else ifFalse.asValueHolder()
+    }.filterNotNull().unwrapValueHolder()
 }
 
 fun <E> Entity<Boolean>.selectIf(ifTrue: E, ifFalse: Entity<E>): Entity<E> {
-    return entityFunction(this, ifFalse) { value, right ->
-        if (value) ifTrue else right
-    }
+    return entityFunction(this, ifFalse.wrapValueHolder().withDefaultNull()) { value, right ->
+        if (value) ifTrue.asValueHolder() else right
+    }.filterNotNull().unwrapValueHolder()
 }
 
 /**
