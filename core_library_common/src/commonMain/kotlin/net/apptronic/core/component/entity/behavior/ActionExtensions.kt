@@ -2,8 +2,7 @@ package net.apptronic.core.component.entity.behavior
 
 import kotlinx.coroutines.CoroutineScope
 import net.apptronic.core.component.context.Contextual
-import net.apptronic.core.component.coroutines.CoroutineLauncher
-import net.apptronic.core.component.coroutines.coroutineLaunchers
+import net.apptronic.core.component.coroutines.lifecycleCoroutineScope
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.functions.not
 import net.apptronic.core.component.entity.subscribe
@@ -20,7 +19,7 @@ class OrElseSubscription {
 
 }
 
-class OrElseSuspendSubscription(private val coroutineLauncher: CoroutineLauncher) {
+class OrElseSuspendSubscription(private val coroutineScope: CoroutineScope) {
 
     internal var action: (suspend CoroutineScope.() -> Unit)? = null
 
@@ -43,7 +42,7 @@ fun Contextual.doWhen(entity: Entity<Boolean>, action: () -> Unit): OrElseSubscr
 }
 
 fun Contextual.doWhenSuspend(entity: Entity<Boolean>, action: () -> Unit): OrElseSuspendSubscription {
-    val orElse = OrElseSuspendSubscription(coroutineLaunchers().scoped)
+    val orElse = OrElseSuspendSubscription(lifecycleCoroutineScope)
     entity.subscribeSuspend(context) {
         if (it) {
             action()

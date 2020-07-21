@@ -1,8 +1,9 @@
 package net.apptronic.core.features.service
 
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.launch
 import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.coroutines.coroutineLaunchers
+import net.apptronic.core.component.coroutines.lifecycleCoroutineScope
 import net.apptronic.core.component.di.DependencyDescriptor
 import net.apptronic.core.component.extensions.BaseComponent
 import net.apptronic.core.component.inject
@@ -38,8 +39,8 @@ internal class ServiceDispatcherImpl<T : Any, R : Any>(
     init {
         onEnterStage(STAGE_SERVICE_RUNNING) {
             val service = inject(serviceInstanceDescriptor)
-            val coroutineLauncher = coroutineLaunchers().scoped
-            coroutineLauncher.launch {
+            val coroutineScope = lifecycleCoroutineScope
+            coroutineScope.launch {
                 while (pendingRequests.isNotEmpty()) {
                     val next = pendingRequests.removeAt(0)
                     try {

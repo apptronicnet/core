@@ -2,7 +2,7 @@ package net.apptronic.core.mvvm.viewmodel.navigation
 
 import net.apptronic.core.base.observable.subject.ValueHolder
 import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.coroutines.coroutineLauncherLocal
+import net.apptronic.core.component.coroutines.contextCoroutineScope
 import net.apptronic.core.component.entity.base.EntityValue
 import net.apptronic.core.component.entity.base.SubjectEntity
 import net.apptronic.core.mvvm.viewmodel.ViewModel
@@ -12,7 +12,7 @@ abstract class Navigator<T>(val parent: ViewModel) : SubjectEntity<T>(), EntityV
 
     override val context: Context = parent.context
 
-    protected val coroutineLauncher = context.coroutineLauncherLocal()
+    protected val coroutineScope = context.contextCoroutineScope
 
     override fun getValueHolder(): ValueHolder<T>? {
         return ValueHolder(get())

@@ -1,7 +1,8 @@
 package net.apptronic.core.mvvm.common
 
 import kotlinx.coroutines.CoroutineScope
-import net.apptronic.core.component.coroutines.coroutineLaunchers
+import kotlinx.coroutines.launch
+import net.apptronic.core.component.coroutines.lifecycleCoroutineScope
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.base.UpdateEntity
 import net.apptronic.core.component.entity.behavior.whenAnyValue
@@ -48,7 +49,7 @@ fun SwitchViewModel.withLoadState(load: () -> Boolean?): SwitchViewModel {
  * Load initial state of switch. If [load] returns null state will no be set
  */
 fun SwitchViewModel.withLoadStateSuspend(load: suspend CoroutineScope.() -> Boolean?): SwitchViewModel {
-    coroutineLaunchers().scoped.launch {
+    lifecycleCoroutineScope.launch {
         load()?.let {
             setState(it)
         }

@@ -2,7 +2,8 @@ package net.apptronic.core.component.entity.exceptions
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.coroutineScope
-import net.apptronic.core.component.coroutines.coroutineLauncherScoped
+import net.apptronic.core.component.coroutines.lifecycleCoroutineScope
+import net.apptronic.core.component.coroutines.serialThrottler
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.base.UpdateEntity
 import net.apptronic.core.component.entity.functions.map
@@ -103,9 +104,9 @@ fun <T> Entity<TryCatchResult<T>>.onException(block: (Exception) -> Unit): Entit
 }
 
 fun <T> Entity<TryCatchResult<T>>.onExceptionSuspend(block: suspend CoroutineScope.(Exception) -> Unit): Entity<T> {
-    val coroutineLauncher = context.coroutineLauncherScoped()
+    val coroutineThrottler = context.lifecycleCoroutineScope.serialThrottler()
     return OnExceptionEntity(this) { exception ->
-        coroutineLauncher.launch {
+        coroutineThrottler.launch {
             block(exception)
         }
     }

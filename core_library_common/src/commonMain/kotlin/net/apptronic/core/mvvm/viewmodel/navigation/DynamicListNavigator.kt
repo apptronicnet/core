@@ -1,5 +1,6 @@
 package net.apptronic.core.mvvm.viewmodel.navigation
 
+import kotlinx.coroutines.launch
 import net.apptronic.core.base.collections.lazyListOf
 import net.apptronic.core.base.collections.simpleLazyListOf
 import net.apptronic.core.base.observable.subject.BehaviorSubject
@@ -158,7 +159,7 @@ class DynamicListNavigator<T : Any, Id : Any, VM : ViewModel>(
                 key.getId() == this
             }
         }
-        coroutineLauncher.launch {
+        coroutineScope.launch {
             val oldIds = staticItems.map { it.getId() }
             val newIds = value.map { it.getId() }
             val diff = getDiff(oldIds, newIds)

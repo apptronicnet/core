@@ -3,9 +3,8 @@ package net.apptronic.core.component.entity.behavior
 import kotlinx.coroutines.CoroutineScope
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.coroutines.CoroutineLauncher
-import net.apptronic.core.component.coroutines.coroutineLauncherScoped
-import net.apptronic.core.component.coroutines.serial
+import net.apptronic.core.component.coroutines.lifecycleCoroutineScope
+import net.apptronic.core.component.coroutines.serialThrottler
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.base.RelayEntity
 import net.apptronic.core.component.entity.functions.map
@@ -53,20 +52,22 @@ private class FilterEntitySuspend<T>(
 ) : RelayEntity<T>(source) {
 
     override fun onNewObserver(targetContext: Context, observer: Observer<T>): Observer<T> {
-        val coroutineLauncher = targetContext.coroutineLauncherScoped().serial()
-        return FilterSuspendObserver(observer, coroutineLauncher, filterFunction)
+        val coroutineScope = targetContext.lifecycleCoroutineScope
+        return FilterSuspendObserver(observer, coroutineScope, filterFunction)
     }
 
 }
 
 private class FilterSuspendObserver<T>(
         private val target: Observer<T>,
-        private val coroutineLauncher: CoroutineLauncher,
+        private val coroutineScope: CoroutineScope,
         private val filterFunction: suspend CoroutineScope.(T) -> Boolean
 ) : Observer<T> {
 
+    private val coroutineThrottler = coroutineScope.serialThrottler()
+
     override fun notify(value: T) {
-        coroutineLauncher.launch {
+        coroutineThrottler.launch {
             if (filterFunction(value)) {
                 target.notify(value)
             }

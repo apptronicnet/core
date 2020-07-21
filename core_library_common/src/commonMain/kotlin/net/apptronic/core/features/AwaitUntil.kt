@@ -2,9 +2,10 @@ package net.apptronic.core.features
 
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import net.apptronic.core.component.context.childContext
 import net.apptronic.core.component.context.close
-import net.apptronic.core.component.coroutines.coroutineLaunchers
+import net.apptronic.core.component.coroutines.contextCoroutineScope
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.subscribe
 
@@ -30,10 +31,10 @@ suspend fun <T> Entity<T>.awaitUntil(condition: (T) -> Boolean) {
 
 suspend fun <T> Entity<T>.awaitUntilSuspend(condition: suspend CoroutineScope.(T) -> Boolean) {
     val awaitContext = context.childContext()
-    val coroutineLauncher = awaitContext.coroutineLaunchers().local
+    val coroutineScope = awaitContext.contextCoroutineScope
     val deferred = CompletableDeferred<Unit>()
     val subscription = subscribe(awaitContext) {
-        coroutineLauncher.launch {
+        coroutineScope.launch {
             try {
                 if (condition(it)) {
                     deferred.complete(Unit)

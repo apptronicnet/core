@@ -5,8 +5,8 @@ import net.apptronic.core.base.observable.Observable
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.base.observable.subject.ValueHolder
 import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.coroutines.coroutineLauncherScoped
-import net.apptronic.core.component.coroutines.serial
+import net.apptronic.core.component.coroutines.lifecycleCoroutineScope
+import net.apptronic.core.component.coroutines.serialThrottler
 import net.apptronic.core.component.entity.base.ObservableEntity
 
 fun <T> Observable<T>.bindContext(context: Context): Entity<T> {
@@ -27,10 +27,10 @@ fun <T> Entity<T>.subscribe(callback: (T) -> Unit): EntitySubscription {
 }
 
 fun <T> Entity<T>.subscribeSuspend(callback: suspend CoroutineScope.(T) -> Unit): EntitySubscription {
-    val coroutineLauncher = context.coroutineLauncherScoped().serial()
+    val coroutineThrottler = context.lifecycleCoroutineScope.serialThrottler()
     return subscribe(object : Observer<T> {
         override fun notify(value: T) {
-            coroutineLauncher.launch {
+            coroutineThrottler.launch {
                 callback(value)
             }
         }
@@ -46,10 +46,10 @@ fun <T> Entity<T>.subscribe(context: Context, callback: (T) -> Unit): EntitySubs
 }
 
 fun <T> Entity<T>.subscribeSuspend(context: Context, callback: suspend CoroutineScope.(T) -> Unit): EntitySubscription {
-    val coroutineLauncher = context.coroutineLauncherScoped().serial()
+    val coroutineThrottler = context.lifecycleCoroutineScope.serialThrottler()
     return subscribe(context, object : Observer<T> {
         override fun notify(value: T) {
-            coroutineLauncher.launch {
+            coroutineThrottler.launch {
                 callback(value)
             }
         }

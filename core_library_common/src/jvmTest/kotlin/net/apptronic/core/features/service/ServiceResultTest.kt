@@ -1,10 +1,11 @@
 package net.apptronic.core.features.service
 
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.context.dependencyModule
 import net.apptronic.core.component.coroutines.ManualDispatcher
-import net.apptronic.core.component.coroutines.coroutineLaunchers
+import net.apptronic.core.component.coroutines.contextCoroutineScope
 import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.component.extensions.BaseComponent
 import net.apptronic.core.component.inject
@@ -63,7 +64,7 @@ class ServiceResultTest {
     }
 
     class UserComponent(context: Context) : BaseComponent(context) {
-        private val coroutineLauncher = coroutineLaunchers().local
+        private val coroutineScope = contextCoroutineScope
         val service = injectService(ParseStringAsIntService)
         val source = value<String>()
         val isInProgress = value<Boolean>()
@@ -71,7 +72,7 @@ class ServiceResultTest {
 
         init {
             source.subscribe {
-                coroutineLauncher.launch {
+                coroutineScope.launch {
                     isInProgress.set(true)
                     val result = try {
                         Response.Success(service.sendRequest(it))

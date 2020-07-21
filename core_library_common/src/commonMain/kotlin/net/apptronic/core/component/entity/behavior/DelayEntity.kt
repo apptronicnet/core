@@ -1,9 +1,10 @@
 package net.apptronic.core.component.entity.behavior
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.coroutines.CoroutineLauncher
-import net.apptronic.core.component.coroutines.coroutineLauncherScoped
+import net.apptronic.core.component.coroutines.lifecycleCoroutineScope
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.base.RelayEntity
 
@@ -21,18 +22,18 @@ private class DelayEntity<T>(
 ) : RelayEntity<T>(source) {
 
     override fun onNewObserver(targetContext: Context, observer: Observer<T>): Observer<T> {
-        val coroutineLauncher = targetContext.coroutineLauncherScoped()
-        return DelayObserver(observer, coroutineLauncher, timeInMillisProvider)
+        val coroutineScope = targetContext.lifecycleCoroutineScope
+        return DelayObserver(observer, coroutineScope, timeInMillisProvider)
     }
 
     private class DelayObserver<T>(
             private val target: Observer<T>,
-            private val coroutineLauncher: CoroutineLauncher,
+            private val coroutineScope: CoroutineScope,
             private val timeInMillisProvider: (T) -> Long
     ) : Observer<T> {
 
         override fun notify(value: T) {
-            coroutineLauncher.launch {
+            coroutineScope.launch {
                 val timeInMillis = timeInMillisProvider.invoke(value)
                 if (timeInMillis > 0L) {
                     kotlinx.coroutines.delay(timeInMillis)

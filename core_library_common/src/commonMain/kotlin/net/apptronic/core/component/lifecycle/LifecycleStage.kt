@@ -1,8 +1,9 @@
 package net.apptronic.core.component.lifecycle
 
 import net.apptronic.core.component.entity.EntitySubscription
+import net.apptronic.core.component.plugin.Extendable
 
-interface LifecycleStage {
+interface LifecycleStage : Extendable {
 
     fun doOnce(action: () -> Unit)
 

@@ -5,8 +5,6 @@ import android.view.animation.Interpolator
 import net.apptronic.core.android.viewmodel.transitions.Progress
 import net.apptronic.core.android.viewmodel.transitions.interpolate
 
-private val AlphaDescriptor = transformationDescriptor("Alpha")
-
 fun TransformationTransitionBuilder.alpha(
     startAlpha: Float, targetAlpha: Float, interpolator: Interpolator? = null
 ) {
@@ -17,14 +15,14 @@ class AlphaTransformation(
     private val startAlpha: Float, private val targetAlpha: Float
 ) : Transformation() {
 
-    override val descriptor: TransformationDescriptor = AlphaDescriptor
+    override val descriptor: TransformationDescriptor = Alpha
 
     override fun onStart(target: View, container: View) {
 
     }
 
     override fun applyTransformation(target: View, container: View, progress: Progress) {
-        target.alpha = progress.interpolate(startAlpha, targetAlpha)
+        target.alpha = progress.interpolate(startAlpha, targetAlpha, 0f, 1f)
     }
 
     override fun onClear(target: View) {

@@ -5,8 +5,6 @@ import android.view.animation.Interpolator
 import net.apptronic.core.android.viewmodel.transitions.Progress
 import net.apptronic.core.android.viewmodel.transitions.interpolate
 
-private val ScaleXDescriptor = transformationDescriptor("ScaleX")
-
 fun TransformationTransitionBuilder.scaleX(
     startScaleX: Float, targetScaleX: Float, interpolator: Interpolator? = null
 ) {
@@ -17,14 +15,14 @@ class ScaleXTransformation(
     private val startScaleX: Float, private val targetScaleX: Float
 ) : Transformation() {
 
-    override val descriptor: TransformationDescriptor = ScaleXDescriptor
+    override val descriptor: TransformationDescriptor = ScaleX
 
     override fun onStart(target: View, container: View) {
 
     }
 
     override fun applyTransformation(target: View, container: View, progress: Progress) {
-        target.scaleX = progress.interpolate(startScaleX, targetScaleX) * container.width
+        target.scaleX = progress.interpolate(startScaleX, targetScaleX, 0f, null) * container.width
     }
 
     override fun onClear(target: View) {

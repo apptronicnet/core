@@ -11,11 +11,11 @@ class CoroutineThrottlerTest {
 
     @Test
     fun shouldThrottleCorrectly() {
-        val coroutineLauncher = component.coroutineLaunchers().local.throttler()
+        val throttler = component.contextCoroutineScope.throttler()
         val await = CompletableDeferred<Unit>()
         var preInvoke1 = false
         var postInvoke1 = false
-        coroutineLauncher.launch {
+        throttler.launch {
             preInvoke1 = true
             await.await()
             postInvoke1 = true
@@ -24,7 +24,7 @@ class CoroutineThrottlerTest {
         assert(!postInvoke1)
 
         var invoke2 = false
-        coroutineLauncher.launch {
+        throttler.launch {
             invoke2 = true
         }
         assert(preInvoke1)
@@ -32,7 +32,7 @@ class CoroutineThrottlerTest {
         assert(!invoke2)
 
         var invoke3 = false
-        coroutineLauncher.launch {
+        throttler.launch {
             invoke3 = true
         }
         assert(preInvoke1)

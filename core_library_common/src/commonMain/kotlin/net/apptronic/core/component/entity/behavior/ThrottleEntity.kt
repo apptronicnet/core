@@ -1,10 +1,11 @@
 package net.apptronic.core.component.entity.behavior
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import net.apptronic.core.base.elapsedRealtimeMillis
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.coroutines.CoroutineLauncher
-import net.apptronic.core.component.coroutines.coroutineLauncherScoped
+import net.apptronic.core.component.coroutines.lifecycleCoroutineScope
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.base.RelayEntity
 
@@ -37,14 +38,14 @@ private class ThrottleEntity<T>(
 ) : RelayEntity<T>(source) {
 
     override fun onNewObserver(targetContext: Context, observer: Observer<T>): Observer<T> {
-        val coroutineLauncher = targetContext.coroutineLauncherScoped()
-        return ThrottleObserver(coroutineLauncher, observer, interval, delay)
+        val coroutineScope = targetContext.lifecycleCoroutineScope
+        return ThrottleObserver(coroutineScope, observer, interval, delay)
     }
 
 }
 
 private class ThrottleObserver<T>(
-        private val coroutineLauncher: CoroutineLauncher,
+        private val coroutineScope: CoroutineScope,
         val target: Observer<T>,
         val interval: Long,
         val delay: Long
@@ -64,7 +65,7 @@ private class ThrottleObserver<T>(
         if (lastUpdate == null || elapsedRealtimeMillis() - lastUpdate.time >= interval) {
             update = Update(elapsedRealtimeMillis(), value)
             if (delay > 0) {
-                coroutineLauncher.launch {
+                coroutineScope.launch {
                     if (delay > 0) {
                         kotlinx.coroutines.delay(delay)
                     }
@@ -80,7 +81,7 @@ private class ThrottleObserver<T>(
                 val timeFromLast = elapsedRealtimeMillis() - lastUpdate.time
                 val timeToNext = interval - timeFromLast
                 val waitTime = if (timeToNext < delay) delay else timeToNext
-                coroutineLauncher.launch {
+                coroutineScope.launch {
                     if (waitTime > 0) {
                         kotlinx.coroutines.delay(waitTime)
                     }

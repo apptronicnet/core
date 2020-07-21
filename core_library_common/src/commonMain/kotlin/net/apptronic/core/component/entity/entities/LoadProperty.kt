@@ -2,11 +2,12 @@ package net.apptronic.core.component.entity.entities
 
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.base.observable.subject.ValueHolder
 import net.apptronic.core.component.Component
 import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.coroutines.coroutineLauncherScoped
+import net.apptronic.core.component.coroutines.lifecycleCoroutineScope
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.behavior.delay
 import net.apptronic.core.component.entity.functions.not
@@ -50,7 +51,7 @@ class LoadProperty<R, T>(
         private val loadFunction: suspend CoroutineScope.(R) -> T
 ) : Property<T>(context) {
 
-    private val coroutineLauncher = context.coroutineLauncherScoped()
+    private val coroutineScope = context.lifecycleCoroutineScope
 
     /**
      * Defines is adding new subscriber should trigger reload or not
@@ -126,7 +127,7 @@ class LoadProperty<R, T>(
         if (request != null) {
             scheduleReload = false
             isReloading = true
-            coroutineLauncher.launch {
+            coroutineScope.launch {
                 try {
                     val result = loadFunction(request.value)
                     subject.update(result)

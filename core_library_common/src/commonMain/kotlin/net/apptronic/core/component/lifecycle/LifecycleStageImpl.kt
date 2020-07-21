@@ -5,6 +5,7 @@ import net.apptronic.core.base.concurrent.Volatile
 import net.apptronic.core.base.concurrent.requireNeverFrozen
 import net.apptronic.core.component.entity.EntitySubscription
 import net.apptronic.core.component.entity.subscriptions.EntitySubscriptionListener
+import net.apptronic.core.component.plugin.Extensions
 
 internal class LifecycleStageImpl(val parent: LifecycleStageParent,
                                   private val definition: LifecycleStageDefinition) :
@@ -223,5 +224,7 @@ internal class LifecycleStageImpl(val parent: LifecycleStageParent,
     override fun getStageDefinition(): LifecycleStageDefinition {
         return this.definition
     }
+
+    override val extensions: Extensions = Extensions()
 
 }

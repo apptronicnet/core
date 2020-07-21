@@ -5,8 +5,6 @@ import android.view.animation.Interpolator
 import net.apptronic.core.android.viewmodel.transitions.Progress
 import net.apptronic.core.android.viewmodel.transitions.interpolate
 
-private val TranslationYToSelfDescriptor = transformationDescriptor("TranslationYToSelf")
-
 fun TransformationTransitionBuilder.translateYToSelf(
     startY: Float, targetY: Float, interpolator: Interpolator? = null
 ) {
@@ -17,7 +15,7 @@ class TranslationYToSelfTransformation(
     private val startY: Float, private val targetY: Float
 ) : Transformation() {
 
-    override val descriptor: TransformationDescriptor = TranslationYToSelfDescriptor
+    override val descriptor: TransformationDescriptor = TranslationY
 
     override fun onStart(target: View, container: View) {
 

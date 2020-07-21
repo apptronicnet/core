@@ -5,8 +5,6 @@ import android.view.animation.Interpolator
 import net.apptronic.core.android.viewmodel.transitions.Progress
 import net.apptronic.core.android.viewmodel.transitions.interpolate
 
-private val ScaleYDescriptor = transformationDescriptor("ScaleY")
-
 fun TransformationTransitionBuilder.scaleY(
     startScaleY: Float, targetScaleY: Float, interpolator: Interpolator? = null
 ) {
@@ -17,14 +15,14 @@ class ScaleYTransformation(
     private val startScaleY: Float, private val targetScaleY: Float
 ) : Transformation() {
 
-    override val descriptor: TransformationDescriptor = ScaleYDescriptor
+    override val descriptor: TransformationDescriptor = ScaleY
 
     override fun onStart(target: View, container: View) {
 
     }
 
     override fun applyTransformation(target: View, container: View, progress: Progress) {
-        target.scaleY = progress.interpolate(startScaleY, targetScaleY) * container.width
+        target.scaleY = progress.interpolate(startScaleY, targetScaleY, 0f, null) * container.width
     }
 
     override fun onClear(target: View) {

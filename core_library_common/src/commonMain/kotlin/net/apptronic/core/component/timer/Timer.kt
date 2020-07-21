@@ -1,12 +1,14 @@
 package net.apptronic.core.component.timer
 
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import net.apptronic.core.base.elapsedRealtimeMillis
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.coroutines.CoroutineLauncher
-import net.apptronic.core.component.coroutines.coroutineLaunchers
+import net.apptronic.core.component.coroutines.createContextCoroutineScope
+import net.apptronic.core.component.coroutines.createLifecycleCoroutineScope
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.component.typedEvent
@@ -28,27 +30,27 @@ class Timer(
     private val interval = context.value(initialInterval)
 
     private val timerEvent = context.typedEvent<TimerTick>()
-    private var activeLauncher: CoroutineLauncher? = null
+    private var coroutineScope: CoroutineScope? = null
 
-    private fun coroutineLauncher(): CoroutineLauncher {
+    private fun createCoroutineScope(): CoroutineScope {
         return if (scopedToStage) {
-            context.coroutineLaunchers().scoped
+            context.createLifecycleCoroutineScope()
         } else {
-            context.coroutineLaunchers().local
+            context.createContextCoroutineScope()
         }
     }
 
     init {
         isRunning.subscribe(context) {
             if (it) {
-                val coroutineLauncher = coroutineLauncher()
-                activeLauncher = coroutineLauncher
-                coroutineLauncher.launch {
+                val coroutineScope = createCoroutineScope()
+                this.coroutineScope = coroutineScope
+                coroutineScope.launch {
                     runTimer()
                 }
             } else {
-                activeLauncher?.coroutineScope?.cancel("Timer stopped")
-                activeLauncher = null
+                coroutineScope?.cancel("Timer stopped")
+                coroutineScope = null
             }
         }
         context.lifecycle.onExitFromActiveStage {

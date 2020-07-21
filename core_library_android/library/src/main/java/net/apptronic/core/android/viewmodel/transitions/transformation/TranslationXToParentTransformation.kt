@@ -5,8 +5,6 @@ import android.view.animation.Interpolator
 import net.apptronic.core.android.viewmodel.transitions.Progress
 import net.apptronic.core.android.viewmodel.transitions.interpolate
 
-private val TranslationXToParentDescriptor = transformationDescriptor("TranslationXToParent")
-
 fun TransformationTransitionBuilder.translateXToParent(
     startX: Float, targetX: Float, interpolator: Interpolator? = null
 ) {
@@ -17,7 +15,7 @@ class TranslationXToParentTransformation(
     private val startX: Float, private val targetX: Float
 ) : Transformation() {
 
-    override val descriptor: TransformationDescriptor = TranslationXToParentDescriptor
+    override val descriptor: TransformationDescriptor = TranslationX
 
     override fun onStart(target: View, container: View) {
 

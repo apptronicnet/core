@@ -1,10 +1,11 @@
 package net.apptronic.core.component.entity.behavior
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.base.observable.subject.ValueHolder
 import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.coroutines.CoroutineLauncher
-import net.apptronic.core.component.coroutines.coroutineLauncherScoped
+import net.apptronic.core.component.coroutines.lifecycleCoroutineScope
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.base.RelayEntity
 
@@ -21,11 +22,11 @@ private class ThrottleAsyncEntity<T>(
 ) : RelayEntity<T>(source) {
 
     override fun onNewObserver(targetContext: Context, observer: Observer<T>): Observer<T> {
-        return ThrottleAsyncObserver(targetContext.coroutineLauncherScoped(), observer)
+        return ThrottleAsyncObserver(targetContext.lifecycleCoroutineScope, observer)
     }
 
     private class ThrottleAsyncObserver<T>(
-            private val coroutineLauncher: CoroutineLauncher,
+            private val coroutineScope: CoroutineScope,
             private val target: Observer<T>
     ) : Observer<T> {
 
@@ -36,7 +37,7 @@ private class ThrottleAsyncEntity<T>(
             nextValue = ValueHolder(value)
             if (!isProcessing) {
                 isProcessing = true
-                coroutineLauncher.launch {
+                coroutineScope.launch {
                     isProcessing = false
                     nextValue?.let { valueHolder ->
                         target.notify(valueHolder.value)

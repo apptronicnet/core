@@ -1,9 +1,10 @@
 package net.apptronic.core.component.di
 
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import net.apptronic.core.base.elapsedRealtimeMillis
 import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.coroutines.coroutineLauncherLocal
+import net.apptronic.core.component.coroutines.contextCoroutineScope
 
 internal sealed class ObjectProvider<TypeDeclaration>(
         objectKey: ObjectKey
@@ -136,7 +137,7 @@ private class SharedProvider<TypeDeclaration : Any>(
 
     override val typeName: String = "shared"
 
-    private val coroutineLauncher = context.coroutineLauncherLocal()
+    private val coroutineScope = context.contextCoroutineScope
 
     private class SharedInstance<T>(
             val instance: T,
@@ -206,7 +207,7 @@ private class SharedProvider<TypeDeclaration : Any>(
         if (unused.isNotEmpty()) {
             val lifetimeInUnused = elapsedRealtimeMillis() - unused[0].unusedFrom
             val delayTime = fallbackLifetime - lifetimeInUnused
-            coroutineLauncher.launch {
+            coroutineScope.launch {
                 if (delayTime > 0) {
                     delay(delayTime)
                 }

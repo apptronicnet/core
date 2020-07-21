@@ -1,37 +1,24 @@
 package net.apptronic.core.component.entity.entities
 
 import net.apptronic.core.base.observable.Observer
-import net.apptronic.core.base.observable.subject.ValueHolder
+import net.apptronic.core.base.observable.extensions.DistinctUntilChangedObserver
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.base.RelayEntity
+import net.apptronic.core.utils.EqComparator
+import net.apptronic.core.utils.SimpleEqComparator
 
-fun <T> Entity<T>.distinctUntilChanged(): Entity<T> {
-    return DistinctUntilChangedEntity(this)
+fun <T> Entity<T>.distinctUntilChanged(eqComparator: EqComparator<T> = SimpleEqComparator()): Entity<T> {
+    return DistinctUntilChangedEntity(this, eqComparator)
 }
 
-class DistinctUntilChangedEntity<T>(
-        source: Entity<T>
+private class DistinctUntilChangedEntity<T>(
+        source: Entity<T>,
+        private val eqComparator: EqComparator<T>
 ) : RelayEntity<T>(source) {
 
     override fun onNewObserver(targetContext: Context, observer: Observer<T>): Observer<T> {
-        return DistinctUntilChangedObserver(observer)
-    }
-
-}
-
-private class DistinctUntilChangedObserver<T>(
-        val target: Observer<T>
-) : Observer<T> {
-
-    private var lastValue: ValueHolder<T>? = null
-
-    override fun notify(value: T) {
-        val last = lastValue
-        if (last == null || last.value != value) {
-            lastValue = ValueHolder(value)
-            target.notify(value)
-        }
+        return DistinctUntilChangedObserver(observer, eqComparator)
     }
 
 }

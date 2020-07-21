@@ -6,28 +6,28 @@ import net.apptronic.core.component.extensions.BaseComponent
 import net.apptronic.core.testutils.testContext
 import org.junit.Test
 
-class SerialCoroutineLauncherTest {
+class SerialCoroutineThrottlerTest {
 
     val component = BaseComponent(testContext())
 
     @Test
     fun shouldExecuteSerially() {
-        val coroutineLauncher = component.coroutineLaunchers().local.serial()
+        val throttler = component.contextCoroutineScope.serialThrottler()
         val await1 = CompletableDeferred<Unit>()
         val await2 = CompletableDeferred<Unit>()
         val await3 = CompletableDeferred<Unit>()
         val invocations = mutableListOf<String>()
-        coroutineLauncher.launch {
+        throttler.launch {
             invocations.add("pre1")
             await1.await()
             invocations.add("post1")
         }
-        coroutineLauncher.launch {
+        throttler.launch {
             invocations.add("pre2")
             await2.await()
             invocations.add("post2")
         }
-        coroutineLauncher.launch {
+        throttler.launch {
             invocations.add("pre3")
             await3.await()
             invocations.add("post3")
