@@ -39,6 +39,22 @@ class IsCancellableJob(val isCancellable: Boolean, val wrappedJob: Job = Supervi
         wrappedJob.cancel(cause)
     }
 
+    override val key: CoroutineContext.Key<*>
+        get() {
+            return Job
+        }
+
+    override fun <R> fold(initial: R, operation: (R, CoroutineContext.Element) -> R): R {
+        return operation(initial, this)
+    }
+
+    override fun <E : CoroutineContext.Element> get(key: CoroutineContext.Key<E>): E? {
+        if (key == Job) {
+            return this as E
+        }
+        return super.get(key)
+    }
+
 }
 
 private fun retrieveLifecycleBoundScope(owner: Contextual, lifecycleStage: LifecycleStage): CoroutineScope {
@@ -63,10 +79,10 @@ private fun createLifecycleBoundScope(owner: Contextual, lifecycleStage: Lifecyc
             if (attachAsExtension) {
                 lifecycleStage.extensions.remove(LifecycleStageScopeExtensionDescriptor)
             }
-            coroutineContext.cancel(LifecycleStageExitException("Stage existed ${lifecycleStage.getStageName()}"))
+            job.forceCancel(LifecycleStageExitException("Stage existed ${lifecycleStage.getStageName()}"))
         }
     } else {
-        coroutineContext.cancel(LifecycleStageExitException("Context was terminated"))
+        job.forceCancel(LifecycleStageExitException("Context was terminated"))
         null
     }
     if (lifecycleSubscription != null) {

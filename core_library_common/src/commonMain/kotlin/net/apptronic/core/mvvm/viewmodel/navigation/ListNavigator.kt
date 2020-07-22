@@ -205,12 +205,12 @@ class ListNavigator internal constructor(
             }
         }
 
-        override fun setVisible(viewModel: ViewModel, isBound: Boolean) {
-            viewModel.getContainer()?.setVisible(isBound)
+        override fun setVisible(viewModel: ViewModel, isVisible: Boolean) {
+            viewModel.getContainer()?.setVisible(isVisible)
         }
 
-        override fun setFocused(viewModel: ViewModel, isBound: Boolean) {
-            viewModel.getContainer()?.setFocused(isBound)
+        override fun setFocused(viewModel: ViewModel, isFocused: Boolean) {
+            viewModel.getContainer()?.setFocused(isFocused)
         }
 
     }

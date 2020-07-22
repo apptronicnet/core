@@ -348,12 +348,12 @@ class DynamicListNavigator<T : Any, Id : Any, VM : ViewModel> internal construct
             }
         }
 
-        override fun setVisible(viewModel: ViewModel, isBound: Boolean) {
-            containers.findRecordForModel(viewModel)?.container?.setVisible(isBound)
+        override fun setVisible(viewModel: ViewModel, isVisible: Boolean) {
+            containers.findRecordForModel(viewModel)?.container?.setVisible(isVisible)
         }
 
-        override fun setFocused(viewModel: ViewModel, isBound: Boolean) {
-            containers.findRecordForModel(viewModel)?.container?.setFocused(isBound)
+        override fun setFocused(viewModel: ViewModel, isFocused: Boolean) {
+            containers.findRecordForModel(viewModel)?.container?.setFocused(isFocused)
         }
 
     }

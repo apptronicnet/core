@@ -6,8 +6,8 @@ interface ItemStateNavigator {
 
     fun setBound(viewModel: ViewModel, isBound: Boolean)
 
-    fun setVisible(viewModel: ViewModel, isBound: Boolean)
+    fun setVisible(viewModel: ViewModel, isVisible: Boolean)
 
-    fun setFocused(viewModel: ViewModel, isBound: Boolean)
+    fun setFocused(viewModel: ViewModel, isFocused: Boolean)
 
 }
