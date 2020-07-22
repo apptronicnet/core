@@ -9,12 +9,9 @@ import net.apptronic.core.component.context.ContextDefinition
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.behavior.doWhen
 import net.apptronic.core.component.entity.bindContext
-import net.apptronic.core.component.entity.entities.setAs
-import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.component.genericEvent
 import net.apptronic.core.component.lifecycle.LifecycleStage
 import net.apptronic.core.component.lifecycle.LifecycleStageDefinition
-import net.apptronic.core.mvvm.viewmodel.navigation.*
 
 open class ViewModel : Component {
 
@@ -56,60 +53,6 @@ open class ViewModel : Component {
             target.update(false)
         }
         return target
-    }
-
-    fun stackNavigator(): StackNavigator {
-        return StackNavigator(this)
-    }
-
-    fun stackNavigator(source: Entity<ViewModel>): StackNavigator {
-        return StackNavigator(this).apply {
-            source.subscribe(context) {
-                set(it)
-            }
-        }
-    }
-
-    fun <T, Id, VM : ViewModel> listBuilder(builder: ViewModelBuilder<T, Id, VM>): ViewModelListBuilder<T, Id, VM> {
-        return ViewModelListBuilder(this, builder)
-    }
-
-    fun listNavigator(): ListNavigator {
-        return ListNavigator(this)
-    }
-
-    fun <T, Id, VM : ViewModel> listNavigator(
-            source: Entity<out List<T>>,
-            builder: ViewModelBuilder<T, Id, VM>
-    ): ListNavigator {
-        val listBuilder = listBuilder(builder)
-        listBuilder.updateFrom(source)
-        return listNavigator().setAs(listBuilder)
-    }
-
-    fun <T : Any, Id: Any, VM : ViewModel> listDynamicNavigator(
-            builder: ViewModelBuilder<T, Id, VM>
-    ): DynamicListNavigator<T, Id, VM> {
-        return DynamicListNavigator(this, builder)
-    }
-
-    fun <T : Any, Id: Any, VM : ViewModel> listDynamicNavigator(
-            source: Entity<List<T>>,
-            builder: ViewModelBuilder<T, Id, VM>
-    ): DynamicListNavigator<T, Id, VM> {
-        val navigator = listDynamicNavigator(builder)
-        source.subscribe(context) {
-            navigator.set(it)
-        }
-        return navigator
-    }
-
-    fun listNavigator(source: Entity<List<ViewModel>>): ListNavigator {
-        return ListNavigator(this).apply {
-            source.subscribe(context) {
-                set(it)
-            }
-        }
     }
 
     @Suppress("UNUSED_PARAMETER")

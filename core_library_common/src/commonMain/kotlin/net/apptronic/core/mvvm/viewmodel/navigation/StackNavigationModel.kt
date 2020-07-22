@@ -1,8 +1,9 @@
 package net.apptronic.core.mvvm.viewmodel.navigation
 
+import net.apptronic.core.component.context.Context
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 
-interface StackNavigationModel {
+interface StackNavigationModel : INavigator {
 
     /**
      * Set stack to have single [ViewModel] without any animations.
@@ -15,6 +16,15 @@ interface StackNavigationModel {
         } else {
             clear(null)
         }
+    }
+
+    /**
+     * Set stack to have single [ViewModel] build from [builder] without any animations.
+     *
+     * This is designed for setting initial state of [StackNavigationModel]
+     */
+    fun set(builder: Context.() -> ViewModel) {
+        set(navigatorContext.builder())
     }
 
     /**
@@ -45,14 +55,35 @@ interface StackNavigationModel {
     fun replaceAll(viewModel: ViewModel, transitionInfo: Any? = null)
 
     /**
+     * Build [ViewModel] replace all [ViewModel]s from stack by it
+     */
+    fun replaceAll(transitionInfo: Any? = null, builder: Context.() -> ViewModel) {
+        replaceAll(navigatorContext.builder(), transitionInfo)
+    }
+
+    /**
      * Add [ViewModel] to stack
      */
     fun add(viewModel: ViewModel, transitionInfo: Any? = null)
 
     /**
+     * Build [ViewModel] and add it to stack
+     */
+    fun add(transitionInfo: Any? = null, builder: Context.() -> ViewModel) {
+        add(navigatorContext.builder(), transitionInfo)
+    }
+
+    /**
      * Replace last [ViewModel] in stack
      */
     fun replace(viewModel: ViewModel, transitionInfo: Any? = null)
+
+    /**
+     * Build [ViewModel] replace last [ViewModel] in stack by it
+     */
+    fun replace(transitionInfo: Any? = null, builder: Context.() -> ViewModel) {
+        replace(navigatorContext.builder(), transitionInfo)
+    }
 
     /**
      * Remove specific [ViewModel] for stack

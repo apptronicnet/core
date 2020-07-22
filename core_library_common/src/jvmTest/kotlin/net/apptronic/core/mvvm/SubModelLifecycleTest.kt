@@ -5,6 +5,7 @@ import net.apptronic.core.component.terminate
 import net.apptronic.core.mvvm.viewmodel.EmptyViewModelContext
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.navigation.ViewModelLifecycleController
+import net.apptronic.core.mvvm.viewmodel.navigation.stackNavigator
 import net.apptronic.core.testutils.testContext
 import org.junit.Test
 

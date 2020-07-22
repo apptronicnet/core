@@ -34,15 +34,10 @@ class DynamicListNavigatorTest : TestViewModel() {
     private fun static(type: String): Item = Item.Static(type)
     private fun dynamic(id: Int): Item = Item.Dynamic(id)
 
-    private val factory = ViewModelFactory<Item, String, ItemViewModel>().also {
-        it.addBuilder(StaticBuilder())
-        it.addBuilder(DynamicBuilder())
-    }
-
     private val sources = value<List<Item>>(emptyList())
     private val statics = value<List<Item>>(emptyList())
 
-    private val navigator = listDynamicNavigator(sources, factory)
+    private val navigator = listDynamicNavigator(sources, StaticBuilder() + DynamicBuilder())
 
     init {
         statics.subscribe {

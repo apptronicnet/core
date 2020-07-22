@@ -2,11 +2,29 @@ package net.apptronic.core.mvvm.viewmodel.navigation
 
 import kotlinx.coroutines.launch
 import net.apptronic.core.base.observable.subject.BehaviorSubject
+import net.apptronic.core.component.context.Context
+import net.apptronic.core.component.entity.Entity
+import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelStackAdapter
 
-class StackNavigator(
-        parent: ViewModel
+fun ViewModel.stackNavigator(navigatorContext: Context = this.context): StackNavigator {
+    context.verifyNavigatorContext(navigatorContext)
+    return StackNavigator(this, navigatorContext)
+}
+
+fun ViewModel.stackNavigator(source: Entity<ViewModel>, navigatorContext: Context = this.context): StackNavigator {
+    context.verifyNavigatorContext(navigatorContext)
+    return StackNavigator(this, navigatorContext).apply {
+        source.subscribe(navigatorContext) {
+            set(it)
+        }
+    }
+}
+
+class StackNavigator internal constructor(
+        parent: ViewModel,
+        override val navigatorContext: Context
 ) : Navigator<StackNavigatorStatus>(
         parent
 ), StackNavigationModel, VisibilityFilterableNavigator {
@@ -230,6 +248,7 @@ class StackNavigator(
     }
 
     private fun clearAndSet(viewModel: ViewModel?, transitionInfo: Any? = null) {
+        viewModel?.verifyContext()
         coroutineScope.launch {
             removeFromStack(stack)
             addStackItem(viewModel)
@@ -238,11 +257,13 @@ class StackNavigator(
     }
 
     override fun add(viewModel: ViewModel, transitionInfo: Any?) {
+        viewModel.verifyContext()
         addStackItem(viewModel)
         postRefreshState(transitionInfo)
     }
 
     override fun replace(viewModel: ViewModel, transitionInfo: Any?) {
+        viewModel.verifyContext()
         val actualItem = currentState.actualItem
         if (actualItem != null) {
             removeFromStack(actualItem)

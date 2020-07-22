@@ -3,17 +3,17 @@ package net.apptronic.core.mvvm.viewmodel.navigation
 import kotlin.math.min
 
 /**
- * Create [ListRecyclerNavigatorFilter] which uses [mappingFactory] to create [RecyclerListIndexMapping]
+ * Create [ListRecyclerNavigatorFilter] which uses [mappingFactory] to create [DynamicListIndexMapping]
  */
-fun mappingFactoryFilter(mappingFactory: (List<*>) -> RecyclerListIndexMapping): ListRecyclerNavigatorFilter {
+fun mappingFactoryFilter(mappingFactory: (List<*>) -> DynamicListIndexMapping): ListRecyclerNavigatorFilter {
     return StaticMappingFilter(mappingFactory)
 }
 
 private class StaticMappingFilter(
-        private val mappingFactory: (List<*>) -> RecyclerListIndexMapping
+        private val mappingFactory: (List<*>) -> DynamicListIndexMapping
 ) : ListRecyclerNavigatorFilter {
 
-    override fun filter(items: List<ListItem>, listDescription: Any?): RecyclerListIndexMapping {
+    override fun filter(items: List<ListItem>, listDescription: Any?): DynamicListIndexMapping {
         return mappingFactory.invoke(items)
     }
 
@@ -22,11 +22,11 @@ private class StaticMappingFilter(
 /**
  * This mapping does not modify list.
  */
-fun defaultMapping(source: List<*>): RecyclerListIndexMapping {
+fun defaultMapping(source: List<*>): DynamicListIndexMapping {
     return DefaultMapping(source)
 }
 
-private class DefaultMapping(private val source: List<*>) : RecyclerListIndexMapping {
+private class DefaultMapping(private val source: List<*>) : DynamicListIndexMapping {
 
     override fun getSize(): Int {
         return source.size
@@ -40,14 +40,14 @@ private class DefaultMapping(private val source: List<*>) : RecyclerListIndexMap
 /**
  * This mapping trims visibility of list to max size.
  */
-fun trimLengthMapping(source: List<*>, maxSize: Int): RecyclerListIndexMapping {
+fun trimLengthMapping(source: List<*>, maxSize: Int): DynamicListIndexMapping {
     return TrimLengthMapping(source, maxSize)
 }
 
 private class TrimLengthMapping(
         private val source: List<*>,
         private val maxSize: Int
-) : RecyclerListIndexMapping {
+) : DynamicListIndexMapping {
 
     override fun getSize(): Int {
         return min(source.size, maxSize)
@@ -69,7 +69,7 @@ fun takeWhileVisibleStaticsOnStartFilter(): ListRecyclerNavigatorFilter {
 
 private class TakeWhileVisibleStaticsOnStartFilter : ListRecyclerNavigatorFilter {
 
-    override fun filter(items: List<ListItem>, listDescription: Any?): RecyclerListIndexMapping {
+    override fun filter(items: List<ListItem>, listDescription: Any?): DynamicListIndexMapping {
         val firstNotStatic = items.indexOfFirst {
             !it.isStatic
         }

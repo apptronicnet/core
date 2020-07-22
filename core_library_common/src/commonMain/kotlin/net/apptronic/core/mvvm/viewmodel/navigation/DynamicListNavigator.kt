@@ -4,6 +4,7 @@ import kotlinx.coroutines.launch
 import net.apptronic.core.base.collections.lazyListOf
 import net.apptronic.core.base.collections.simpleLazyListOf
 import net.apptronic.core.base.observable.subject.BehaviorSubject
+import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.base.UpdateEntity
 import net.apptronic.core.component.entity.subscribe
@@ -15,12 +16,31 @@ import kotlin.reflect.KClass
 
 private const val DEFAULT_SAVED_ITEMS_SIZE = 10
 
+fun <T : Any, Id : Any, VM : ViewModel> ViewModel.listDynamicNavigator(
+        builder: ViewModelBuilder<in T, in Id, in VM>, navigatorContext: Context = this.context
+): DynamicListNavigator<T, Id, VM> {
+    context.verifyNavigatorContext(navigatorContext)
+    return DynamicListNavigator(this, builder, navigatorContext)
+}
+
+fun <T : Any, Id : Any, VM : ViewModel> ViewModel.listDynamicNavigator(
+        source: Entity<List<T>>,
+        builder: ViewModelBuilder<in T, in Id, in VM>,
+        navigatorContext: Context = this.context
+): DynamicListNavigator<T, Id, VM> {
+    val navigator = listDynamicNavigator(builder, navigatorContext)
+    source.subscribe(navigatorContext) {
+        navigator.set(it)
+    }
+    return navigator
+}
+
 @Suppress("UNCHECKED_CAST")
-class DynamicListNavigator<T : Any, Id : Any, VM : ViewModel>(
+class DynamicListNavigator<T : Any, Id : Any, VM : ViewModel> internal constructor(
         parent: ViewModel,
-        private val builder: ViewModelBuilder<T, Id, VM>
-) : BaseListNavigator<T>(parent),
-        UpdateEntity<List<T>>, VisibilityFilterableNavigator {
+        private val builder: ViewModelBuilder<in T, in Id, in VM>,
+        override val navigatorContext: Context
+) : BaseListNavigator<T>(parent), UpdateEntity<List<T>>, VisibilityFilterableNavigator {
 
     private data class RecyclerItemId(
             val clazz: KClass<*>,
@@ -34,7 +54,7 @@ class DynamicListNavigator<T : Any, Id : Any, VM : ViewModel>(
 
     private var visibilityFilters = VisibilityFilters<ViewModel>()
     private var listFilter: ListRecyclerNavigatorFilter = mappingFactoryFilter(::defaultMapping)
-    private var indexMapping: RecyclerListIndexMapping = listFilter.filter(emptyList(), null)
+    private var indexMapping: DynamicListIndexMapping = listFilter.filter(emptyList(), null)
 
     private val itemStateNavigator = ItemStateNavigatorImpl()
 
@@ -143,7 +163,7 @@ class DynamicListNavigator<T : Any, Id : Any, VM : ViewModel>(
         updateStatusSubject()
     }
 
-    fun setStaticItems(source: Entity<List<out T>>) {
+    fun setStaticItems(source: Entity<List<T>>) {
         source.subscribe(context) {
             setStaticItems(it)
         }
@@ -153,7 +173,7 @@ class DynamicListNavigator<T : Any, Id : Any, VM : ViewModel>(
      * Set list of items which is static. It means that [ViewModel]s for this items will be created immediately and
      * will not be removed when item is unbound.
      */
-    fun setStaticItems(value: List<out T>) {
+    fun setStaticItems(value: List<T>) {
         fun RecyclerItemId.getKey(): T? {
             return value.firstOrNull { key ->
                 key.getId() == this
@@ -188,15 +208,13 @@ class DynamicListNavigator<T : Any, Id : Any, VM : ViewModel>(
     }
 
     private fun T.getId(): RecyclerItemId {
-        val typeId = builder.getId(this)
+        val typeId = builder.getId(this) as Any
         return RecyclerItemId(this::class, typeId)
     }
 
     private fun onAdded(key: T): ViewModelContainer {
-        val viewModel = builder.onCreateViewModel(context, key)
-        if (viewModel.context.parent != context) {
-            throw IllegalArgumentException("$viewModel context should be direct child of Navigator context")
-        }
+        val viewModel: ViewModel = builder.onCreateViewModel(navigatorContext, key) as ViewModel
+        viewModel.verifyContext()
         val container = ViewModelContainer(viewModel, parent, visibilityFilters.isReadyToShow(viewModel))
         containers.add(key.getId(), container, key)
         container.getViewModel().onAttachToParent(this)

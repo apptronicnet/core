@@ -61,12 +61,9 @@ class ViewModelFactoryTest {
         }
     }
 
-    private val factory = ViewModelFactory<BaseType, BaseId, BaseViewModel>()
-
     @Test
     fun shouldCorrectlyHandleInt() {
-        factory.addBuilder(IntBuilder())
-        factory.addBuilder(StringBuilder())
+        val factory = IntBuilder() + StringBuilder()
         val item1 = TypeInt(1, "Some one 1")
         val item2 = TypeInt(2, "Some one 2")
         assert(factory.getId(item1) == IntId(1))
@@ -85,6 +82,7 @@ class ViewModelFactoryTest {
 
     @Test
     fun shouldCorrectlyHandleString() {
+        val factory = IntBuilder() + StringBuilder()
         factory.addBuilder(IntBuilder())
         factory.addBuilder(StringBuilder())
         val item1 = TypeString("a", "Some one 1")
@@ -105,15 +103,37 @@ class ViewModelFactoryTest {
 
     @Test(expected = IllegalArgumentException::class)
     fun shouldFailOnStringId() {
-        factory.addBuilder(IntBuilder())
+        val factory = viewModelFactory {
+            +IntBuilder()
+        }
         val item1 = TypeString("a", "Some one 1")
         factory.getId(item1)
     }
 
     @Test(expected = IllegalArgumentException::class)
     fun shouldFailOnStringType() {
-        factory.addBuilder(IntBuilder())
+        val factory = viewModelFactory {
+            +IntBuilder()
+        }
         val item1 = TypeString("a", "Some one 1")
+        factory.onCreateViewModel(context, item1)
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun shouldFailOnIntId() {
+        val factory = viewModelFactory {
+            +StringBuilder()
+        }
+        val item1 = TypeInt(1, "Some one 1")
+        factory.getId(item1)
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun shouldFailOnIntType() {
+        val factory = viewModelFactory {
+            +StringBuilder()
+        }
+        val item1 = TypeInt(1, "Some one 1")
         factory.onCreateViewModel(context, item1)
     }
 

@@ -1,15 +1,49 @@
 package net.apptronic.core.mvvm.viewmodel.navigation
 
 import net.apptronic.core.base.observable.subject.BehaviorSubject
+import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.base.UpdateEntity
 import net.apptronic.core.component.entity.entities.Value
+import net.apptronic.core.component.entity.entities.setAs
+import net.apptronic.core.component.entity.subscribe
+import net.apptronic.core.component.entity.switchContext
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.adapter.ItemStateNavigator
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelListAdapter
 
-class ListNavigator(
-        parent: ViewModel
+fun <T, Id, VM : ViewModel> ViewModel.listBuilder(builder: ViewModelBuilder<T, Id, VM>): ViewModelListBuilder<T, Id, VM> {
+    return ViewModelListBuilder(this, builder)
+}
+
+
+fun ViewModel.listNavigator(navigatorContext: Context = this.context): ListNavigator {
+    context.verifyNavigatorContext(navigatorContext)
+    return ListNavigator(this, navigatorContext)
+}
+
+fun <T, Id, VM : ViewModel> ViewModel.listNavigator(
+        source: Entity<out List<T>>,
+        builder: ViewModelBuilder<T, Id, VM>,
+        navigatorContext: Context = this.context
+): ListNavigator {
+    val listBuilder = listBuilder(builder)
+    listBuilder.updateFrom(source.switchContext(navigatorContext))
+    return listNavigator(navigatorContext).setAs(listBuilder)
+}
+
+fun ViewModel.listNavigator(source: Entity<List<ViewModel>>, navigatorContext: Context = this.context): ListNavigator {
+    context.verifyNavigatorContext(navigatorContext)
+    return ListNavigator(this, navigatorContext).apply {
+        source.subscribe(context) {
+            set(it)
+        }
+    }
+}
+
+class ListNavigator internal constructor(
+        parent: ViewModel,
+        override val navigatorContext: Context
 ) : BaseListNavigator<ViewModel>(parent),
         UpdateEntity<List<ViewModel>>, VisibilityFilterableNavigator {
 
@@ -112,9 +146,7 @@ class ListNavigator(
         }
         items = value.toTypedArray().toList()
         diff.added.forEach {
-            if (it.context.parent != context) {
-                throw IllegalArgumentException("$it context should be direct child of Navigator context")
-            }
+            it.verifyContext()
             onAdded(it)
         }
         refreshVisibility()

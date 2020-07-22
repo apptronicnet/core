@@ -1,11 +1,13 @@
 package net.apptronic.core.mvvm.viewmodel.navigation
 
+import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.value
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 
-fun ViewModel.stackNavigationModel(): StackNavigationViewModel {
-    return StackNavigationViewModel(context)
+fun ViewModel.stackNavigationModel(navigatorContext: Context = this.context): StackNavigationViewModel {
+    context.verifyNavigatorContext(navigatorContext)
+    return StackNavigationViewModel(context, navigatorContext)
 }
 
 /**
@@ -15,7 +17,10 @@ fun ViewModel.stackNavigationModel(): StackNavigationViewModel {
  *
  * Based on adapter implementation there may be no possibility to have interpretation for transitionInfo events.
  */
-class StackNavigationViewModel internal constructor(context: ViewModelContext) : ViewModel(context), StackNavigationModel {
+class StackNavigationViewModel internal constructor(
+        context: ViewModelContext,
+        override val navigatorContext: Context
+) : ViewModel(context), StackNavigationModel {
 
     init {
         doOnUnbind {
@@ -57,6 +62,9 @@ class StackNavigationViewModel internal constructor(context: ViewModelContext) :
     private fun update(action: (List<ViewModel>) -> List<ViewModel>) {
         val current = viewModels.get()
         val next = action(current)
+        next.forEach {
+            it.verifyContext()
+        }
         viewModels.set(next)
     }
 
@@ -91,6 +99,7 @@ class StackNavigationViewModel internal constructor(context: ViewModelContext) :
     }
 
     override fun add(viewModel: ViewModel, transitionInfo: Any?) {
+        viewModel.verifyContext()
         addTransition(currentViewModel(), viewModel, transitionInfo)
         update { previous ->
             mutableListOf<ViewModel>().apply {
@@ -144,6 +153,7 @@ class StackNavigationViewModel internal constructor(context: ViewModelContext) :
     }
 
     override fun replace(viewModel: ViewModel, transitionInfo: Any?) {
+        viewModel.verifyContext()
         addTransition(currentViewModel(), viewModel, transitionInfo)
         update { previous ->
             if (previous.isEmpty()) {
@@ -157,6 +167,7 @@ class StackNavigationViewModel internal constructor(context: ViewModelContext) :
     }
 
     override fun replaceAll(viewModel: ViewModel, transitionInfo: Any?) {
+        viewModel.verifyContext()
         addTransition(currentViewModel(), viewModel, transitionInfo)
         update {
             listOf(viewModel)

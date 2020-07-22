@@ -28,7 +28,7 @@ class ListItem(
 /**
  * This class applies filtering for [DynamicListNavigator]. In comparison with [ListNavigatorFilter] it does not
  * checks whole list as it may have huge size and take too much time to check. Instead of changes list if provides
- * [RecyclerListIndexMapping] for source list transformation dynamically when each concrete item is requested.
+ * [DynamicListIndexMapping] for source list transformation dynamically when each concrete item is requested.
  */
 interface ListRecyclerNavigatorFilter {
 
@@ -39,7 +39,7 @@ interface ListRecyclerNavigatorFilter {
      * @param lazy-allocated list of items
      * @param listDescription optional value set by [DynamicListNavigator.set] to help with list filtering and mapping
      */
-    fun filter(items: List<ListItem>, listDescription: Any?): RecyclerListIndexMapping
+    fun filter(items: List<ListItem>, listDescription: Any?): DynamicListIndexMapping
 
 }
 
@@ -48,7 +48,7 @@ interface ListRecyclerNavigatorFilter {
  * As source items list may be very big it is impossible to filter whole list. Instead of that filtering are performed
  * dynamically by remapping of indexes and list size by instance of this class.
  */
-interface RecyclerListIndexMapping {
+interface DynamicListIndexMapping {
 
     fun getSize(): Int
 
