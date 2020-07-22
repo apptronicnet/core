@@ -3,6 +3,7 @@ package net.apptronic.test.commons_sample_app.onboarding
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.inject
 import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.mvvm.viewmodel.navigation.stackNavigator
 import net.apptronic.test.commons_sample_app.onboarding.balance.BalanceRouter
 import net.apptronic.test.commons_sample_app.onboarding.balance.BalanceViewModel
 import net.apptronic.test.commons_sample_app.onboarding.currency.CurrencyRouter

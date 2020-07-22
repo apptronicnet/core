@@ -9,6 +9,7 @@ import net.apptronic.core.mvvm.viewmodel.EmptyViewModelContext
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 import net.apptronic.core.mvvm.viewmodel.adapter.BasicTransition
+import net.apptronic.core.mvvm.viewmodel.navigation.stackNavigator
 
 class PrevNextNavigationViewModel(
     parent: Context, contextDefinition: ContextDefinition<ViewModelContext> = EmptyViewModelContext

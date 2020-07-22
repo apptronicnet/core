@@ -6,6 +6,7 @@ import net.apptronic.core.component.entity.functions.map
 import net.apptronic.core.component.inject
 import net.apptronic.core.component.mutableValue
 import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.mvvm.viewmodel.navigation.listNavigator
 
 class ListScreenViewModel(parent: Context) : ViewModel(parent, listContext), ListController {
 

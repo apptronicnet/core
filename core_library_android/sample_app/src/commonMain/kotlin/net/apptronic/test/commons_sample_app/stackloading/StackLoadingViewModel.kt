@@ -6,10 +6,7 @@ import net.apptronic.core.component.genericEvent
 import net.apptronic.core.mvvm.viewmodel.EmptyViewModelContext
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.adapter.BasicTransition
-import net.apptronic.core.mvvm.viewmodel.navigation.actualModel
-import net.apptronic.core.mvvm.viewmodel.navigation.progress
-import net.apptronic.core.mvvm.viewmodel.navigation.size
-import net.apptronic.core.mvvm.viewmodel.navigation.visibleModel
+import net.apptronic.core.mvvm.viewmodel.navigation.*
 
 class StackLoadingViewModel(parent: Context) : ViewModel(parent, EmptyViewModelContext),
     StackRouter {

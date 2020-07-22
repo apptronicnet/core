@@ -4,6 +4,7 @@ import net.apptronic.core.component.context.Context
 import net.apptronic.core.mvvm.viewmodel.EmptyViewModelContext
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.adapter.BasicTransition
+import net.apptronic.core.mvvm.viewmodel.navigation.stackNavigator
 import net.apptronic.test.commons_sample_app.bottomsheet.bottomSheetViewModel
 import net.apptronic.test.commons_sample_app.convert.ConvertScreenViewModel
 import net.apptronic.test.commons_sample_app.lazylist.LazyListViewModel

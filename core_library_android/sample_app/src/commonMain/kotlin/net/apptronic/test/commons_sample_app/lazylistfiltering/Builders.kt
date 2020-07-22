@@ -13,7 +13,7 @@ class DynamicItem(
     val text: String
 )
 
-class StaticViewModelBuilder : ViewModelBuilder<StaticItem, String, StaticFilteredItemViewModel> {
+object StaticViewModelBuilder : ViewModelBuilder<StaticItem, String, StaticFilteredItemViewModel> {
 
     override fun getId(item: StaticItem): String {
         return item.id
@@ -25,7 +25,7 @@ class StaticViewModelBuilder : ViewModelBuilder<StaticItem, String, StaticFilter
 
 }
 
-class DynamicViewModelBuilder : ViewModelBuilder<DynamicItem, Int, DynamicItemViewModel> {
+object DynamicViewModelBuilder : ViewModelBuilder<DynamicItem, Int, DynamicItemViewModel> {
 
     override fun getId(item: DynamicItem): Int {
         return item.id

@@ -8,15 +8,13 @@ import net.apptronic.core.component.value
 import net.apptronic.core.mvvm.viewmodel.EmptyViewModelContext
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.navigation.hasHidden
+import net.apptronic.core.mvvm.viewmodel.navigation.listDynamicNavigator
+import net.apptronic.core.mvvm.viewmodel.navigation.plus
 import net.apptronic.core.mvvm.viewmodel.navigation.takeWhileVisibleStaticsOnStartFilter
-import net.apptronic.core.mvvm.viewmodel.navigation.viewModelFactory
 
 class LazyListFilterViewModel(parent: Context) : ViewModel(parent, EmptyViewModelContext) {
 
-    private val builder = viewModelFactory {
-        addBuilder(StaticViewModelBuilder())
-        addBuilder(DynamicViewModelBuilder())
-    }
+    private val builder = StaticViewModelBuilder + DynamicViewModelBuilder
 
     private val staticItems = value<List<Any>>()
     private val dynamicItems = value<List<DynamicItem>>()
