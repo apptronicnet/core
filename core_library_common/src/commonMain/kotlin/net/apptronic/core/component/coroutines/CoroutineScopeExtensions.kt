@@ -53,7 +53,7 @@ private fun createLifecycleBoundScope(owner: Contextual, lifecycleStage: Lifecyc
     val name = "${owner::class.simpleName}/$stageName"
     val isCancellableByUser = attachAsExtension.not()
     val job = IsCancellableJob(isCancellableByUser)
-    val coroutineContext: CoroutineContext = CoroutineName(name) + owner.defaultDispatcher + job
+    val coroutineContext: CoroutineContext = CoroutineName(name) + owner.mainDispatcher + job
     val coroutineScope = CoroutineScope(coroutineContext)
     val lifecycleSubscription: LifecycleSubscription? = if (lifecycleStage.isEntered()) {
         if (attachAsExtension) {

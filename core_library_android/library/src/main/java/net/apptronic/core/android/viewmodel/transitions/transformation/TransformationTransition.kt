@@ -12,12 +12,6 @@ class TransformationTransition(
 
     private val transformationsList = mutableListOf<Transformation>()
 
-    fun getRunningTransformations(): Map<TransformationDescriptor, Transformation> {
-        return transformationsList.associateBy {
-            it.descriptor
-        }
-    }
-
     override fun startTransition(target: View, interceptedTransition: Transition<View>?) {
         transformations.forEach {
             it.onStart(target, container)

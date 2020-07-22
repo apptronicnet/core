@@ -39,7 +39,7 @@ open class TransitionBuilder {
             BasicTransition.Next -> viewSwitch.nextTransition()
                 .withInterpolator(AccelerateDecelerateInterpolator())
                 .withDuration(duration)
-            BasicTransition.Fade -> viewSwitch.previousTransition()
+            BasicTransition.Previous -> viewSwitch.previousTransition()
                 .withInterpolator(AccelerateDecelerateInterpolator())
                 .withDuration(duration)
             BasicTransition.Forward -> viewSwitch.forwardTransition()
