@@ -8,6 +8,7 @@
 /out
 /site
 /_site
+/lib_ios
 .externalNativeBuild
 aws.credentials
 Gemfile.lock

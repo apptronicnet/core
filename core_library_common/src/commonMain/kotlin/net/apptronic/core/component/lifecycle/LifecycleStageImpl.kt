@@ -1,7 +1,6 @@
 package net.apptronic.core.component.lifecycle
 
 import net.apptronic.core.base.concurrent.AtomicEntity
-import net.apptronic.core.base.concurrent.Volatile
 import net.apptronic.core.base.concurrent.requireNeverFrozen
 import net.apptronic.core.component.entity.EntitySubscription
 import net.apptronic.core.component.entity.subscriptions.EntitySubscriptionListener
@@ -24,8 +23,8 @@ internal class LifecycleStageImpl(val parent: LifecycleStageParent,
     private val exitCallback = CompositeCallback()
     private val whenEnteredActions = requireNeverFrozen(HashMap<String, (() -> Unit)>())
 
-    private val enterHandler = Volatile<OnEnterHandlerImpl?>(null)
-    private val exitHandler = Volatile<OnExitHandlerImpl?>(null)
+    private var enterHandler: OnEnterHandlerImpl? = null
+    private var exitHandler: OnExitHandlerImpl? = null
     private val subscriptions = requireNeverFrozen(mutableListOf<EntitySubscription>())
 
     /**
@@ -103,8 +102,8 @@ internal class LifecycleStageImpl(val parent: LifecycleStageParent,
             return
         }
         parent.onChildEnter()
-        enterHandler.set(OnEnterHandlerImpl())
-        exitHandler.set(OnExitHandlerImpl())
+        enterHandler = OnEnterHandlerImpl()
+        exitHandler = OnExitHandlerImpl()
         isEntered = true
         enterCallback.execute()
         whenEnteredActions.values.forEach { it.invoke() }
@@ -130,7 +129,7 @@ internal class LifecycleStageImpl(val parent: LifecycleStageParent,
 
     private fun subscribeEnter(callback: LifecycleStage.OnEnterHandler.() -> Unit): EventCallback {
         return EventCallback {
-            enterHandler.get()?.callback()
+            enterHandler?.callback()
         }.apply {
             if (isEntered) {
                 execute()
@@ -171,7 +170,7 @@ internal class LifecycleStageImpl(val parent: LifecycleStageParent,
 
     private fun subscribeExit(callback: LifecycleStage.OnExitHandler.() -> Unit): EventCallback {
         return EventCallback {
-            exitHandler.get()?.callback()
+            exitHandler?.callback()
         }
     }
 

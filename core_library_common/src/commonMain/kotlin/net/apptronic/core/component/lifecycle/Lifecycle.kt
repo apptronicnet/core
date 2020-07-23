@@ -1,6 +1,5 @@
 package net.apptronic.core.component.lifecycle
 
-import net.apptronic.core.base.concurrent.Volatile
 import net.apptronic.core.base.concurrent.requireNeverFrozen
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.context.Contextual
@@ -34,7 +33,7 @@ class Lifecycle internal constructor() {
         val ROOT_STAGE = lifecycleStage("default_root_stage")
     }
 
-    private val isTerminated = Volatile(false)
+    private var isTerminated = false
 
     private val rootStageImpl: LifecycleStageImpl = LifecycleStageImpl(baseParent, ROOT_STAGE)
 
@@ -44,7 +43,7 @@ class Lifecycle internal constructor() {
         rootStageImpl.apply {
             enter()
             doOnExit {
-                isTerminated.set(true)
+                isTerminated = true
                 terminateChildren()
             }
         }
@@ -106,7 +105,7 @@ class Lifecycle internal constructor() {
     }
 
     fun isTerminated(): Boolean {
-        return isTerminated.get()
+        return isTerminated
     }
 
     internal fun enterStage(definition: LifecycleStageDefinition) {

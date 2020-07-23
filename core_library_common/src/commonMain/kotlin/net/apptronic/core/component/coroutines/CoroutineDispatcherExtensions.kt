@@ -23,7 +23,7 @@ val Contextual.mainDispatcher: CoroutineContext
  */
 val Contextual.defaultDispatcher: CoroutineContext
     get() {
-        return coroutineDispatcher(BackgroundDispatcherDescriptor)
+        return coroutineDispatcher(DefatultDispatcherDescriptor)
     }
 
 /**

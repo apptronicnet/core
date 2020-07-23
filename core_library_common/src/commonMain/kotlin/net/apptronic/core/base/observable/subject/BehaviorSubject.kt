@@ -1,6 +1,5 @@
 package net.apptronic.core.base.observable.subject
 
-import net.apptronic.core.base.concurrent.Volatile
 import net.apptronic.core.base.concurrent.requireNeverFrozen
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.base.observable.Subscription
@@ -17,26 +16,26 @@ open class BehaviorSubject<T> : Subject<T> {
 
     private val subscriptions = Subscriptions<T>()
 
-    private var valueHolder = Volatile<ValueHolder<T>?>(null)
+    private var valueHolder: ValueHolder<T>? = null
 
     fun clear() {
-        valueHolder.set(null)
+        valueHolder = null
     }
 
     override fun update(value: T) {
-        valueHolder.set(ValueHolder(value))
+        valueHolder = (ValueHolder(value))
         subscriptions.notifyObservers(value)
     }
 
     override fun subscribe(observer: Observer<T>): Subscription {
-        valueHolder.get()?.let {
+        valueHolder?.let {
             observer.notify(it.value)
         }
         return subscriptions.createSubscription(observer)
     }
 
     fun getValue(): ValueHolder<T>? {
-        return valueHolder.get()
+        return valueHolder
     }
 
 }

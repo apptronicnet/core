@@ -4,7 +4,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
 val MainDispatcherDescriptor = coroutineDispatcherDescriptor("Main")
-val BackgroundDispatcherDescriptor = coroutineDispatcherDescriptor("Background")
+val DefatultDispatcherDescriptor = coroutineDispatcherDescriptor("Default")
 val UnconfinedDispatcherDescriptor = coroutineDispatcherDescriptor("Unconfined")
 val BackgroundPriorityDispatcherDescriptor = coroutineDispatcherDescriptor("BackgroundPriorityDispatcher")
 val ManualDispatcherDescriptor = coroutineDispatcherDescriptor("ManualDispatcher")
@@ -15,7 +15,7 @@ val ManualDispatcherDescriptor = coroutineDispatcherDescriptor("ManualDispatcher
 fun standardCoroutineDispatchers(): CoroutineDispatchers {
     return CoroutineDispatchers(Dispatchers.Main).also {
         it[MainDispatcherDescriptor] = Dispatchers.Main
-        it[BackgroundDispatcherDescriptor] = Dispatchers.Default
+        it[DefatultDispatcherDescriptor] = Dispatchers.Default
         it[UnconfinedDispatcherDescriptor] = Dispatchers.Unconfined
         it[BackgroundPriorityDispatcherDescriptor] = BackgroundPriorityDispatcher(Dispatchers.Main, Dispatchers.Default)
         it[ManualDispatcherDescriptor] = ManualDispatcher()
@@ -33,7 +33,7 @@ fun testCoroutineDispatchers(): CoroutineDispatchers {
 }
 
 class CoroutineDispatchers(
-        val defaultDispatcher: CoroutineDispatcher
+        private val fallbackDispatcher: CoroutineDispatcher
 ) {
 
     private val dispatchers = mutableMapOf<CoroutineDispatcherDescriptor, CoroutineDispatcher>()
@@ -43,7 +43,7 @@ class CoroutineDispatchers(
     }
 
     operator fun get(descriptor: CoroutineDispatcherDescriptor): CoroutineDispatcher {
-        return dispatchers[descriptor] ?: defaultDispatcher
+        return dispatchers[descriptor] ?: fallbackDispatcher
     }
 
 }

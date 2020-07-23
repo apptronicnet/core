@@ -31,7 +31,7 @@ class BackgroundPriorityDispatcher(
         private val maxThreads: Int = 2
 ) : CoroutineDispatcher() {
 
-    private val internalScope = CoroutineScope(CoroutineName("BackgroundDispatcher") + schedulerDispatcher + Job())
+    private val internalScope = CoroutineScope(CoroutineName("BackgroundDispatcher") + schedulerDispatcher + SupervisorJob())
 
     private var running = 0
 

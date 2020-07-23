@@ -22,7 +22,7 @@ internal class CompositeCallback {
     }
 
     internal fun add(callback: EventCallback) {
-        callback.parent.set(this)
+        callback.parent = this
         innerCallbacks.add(callback)
     }
 

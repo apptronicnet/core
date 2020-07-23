@@ -1,7 +1,6 @@
 package net.apptronic.core.base.observable
 
 import net.apptronic.core.base.concurrent.Synchronized
-import net.apptronic.core.base.concurrent.Volatile
 import net.apptronic.core.base.concurrent.requireNeverFrozen
 
 class Subscriptions<T> {
@@ -34,17 +33,17 @@ class Subscriptions<T> {
             val observer: Observer<T>
     ) : Subscription {
 
-        private var isUnsubscribed = Volatile(false)
+        private var isUnsubscribed = false
 
         override fun unsubscribe() {
-            isUnsubscribed.set(true)
+            isUnsubscribed = true
             return sync.executeBlock {
                 subscriptions.remove(this)
             }
         }
 
         override fun isUnsubscribed(): Boolean {
-            return isUnsubscribed.get()
+            return isUnsubscribed
         }
 
     }
