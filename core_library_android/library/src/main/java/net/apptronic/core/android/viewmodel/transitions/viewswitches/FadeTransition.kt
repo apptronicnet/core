@@ -1,4 +1,4 @@
-package net.apptronic.core.android.viewmodel.transitions.siewswitches
+package net.apptronic.core.android.viewmodel.transitions.viewswitches
 
 import net.apptronic.core.android.viewmodel.transitions.ViewSwitch
 import net.apptronic.core.android.viewmodel.transitions.transformation.alpha

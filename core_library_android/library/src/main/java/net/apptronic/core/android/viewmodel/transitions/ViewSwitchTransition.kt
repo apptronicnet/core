@@ -21,7 +21,7 @@ class ViewSwitchTransition(
             enterTransition?.getRunningTransition(target.entering)
         }
         val exit = target.exiting?.let {
-            enterTransition?.getRunningTransition(target.exiting)
+            exitTransition?.getRunningTransition(target.exiting)
         }
         return if (enter != null || exit != null) {
             ViewSwitchTransition(enter, exit)

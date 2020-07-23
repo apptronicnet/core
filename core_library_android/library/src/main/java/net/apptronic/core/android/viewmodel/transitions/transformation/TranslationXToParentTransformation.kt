@@ -17,12 +17,18 @@ class TranslationXToParentTransformation(
 
     override val descriptor: TransformationDescriptor = TranslationX
 
-    override fun onStart(target: View, container: View) {
+    private var startValue = 0f
 
+    override fun onStart(target: View, container: View, isIntercepted: Boolean) {
+        startValue =
+            if (isIntercepted && container.width > 0)
+                target.translationX / container.width
+            else
+                startX
     }
 
     override fun applyTransformation(target: View, container: View, progress: Progress) {
-        target.translationX = progress.interpolate(startX, targetX) * container.width
+        target.translationX = progress.interpolate(startValue, targetX) * container.width
     }
 
     override fun onClear(target: View) {
@@ -34,6 +40,10 @@ class TranslationXToParentTransformation(
             target.translationX / container.width
         } else 0f
         return TranslationXToParentTransformation(start, 0f)
+    }
+
+    override fun reversed(): Transformation {
+        return TranslationXToParentTransformation(targetX, startX)
     }
 
 }

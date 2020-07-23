@@ -31,9 +31,9 @@ class TransformationTransitionBuilder internal constructor(
 }
 
 fun transformationTransition(
-    target: View, container: View, builder: TransformationTransitionBuilder.() -> Unit
+    target: View, container: View? = null, builder: TransformationTransitionBuilder.() -> Unit
 ): TransformationTransition {
-    return TransformationTransitionBuilder(target, container)
+    return TransformationTransitionBuilder(target, container ?: target)
         .apply(builder)
         .build()
 }

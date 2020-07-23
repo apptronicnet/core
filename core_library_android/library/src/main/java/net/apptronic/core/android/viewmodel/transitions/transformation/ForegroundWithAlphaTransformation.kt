@@ -25,16 +25,22 @@ class ForegroundWithAlphaTransformation(
 
     override val descriptor: TransformationDescriptor = ForegroundWithAlphaDescriptor
 
-    override fun onStart(target: View, container: View) {
+    private var startValue = 0f
+
+    override fun onStart(target: View, container: View, isIntercepted: Boolean) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             target.foreground = foreground
+            startValue = if (isIntercepted) (target.foreground?.alpha?.toFloat()
+                ?: 0f) / 255f else startAlpha
+        } else {
+            startValue = 0f
         }
     }
 
     override fun applyTransformation(target: View, container: View, progress: Progress) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             target.foreground?.alpha =
-                (progress.interpolate(startAlpha, targetAlpha) * 255f).toInt()
+                (progress.interpolate(startValue, targetAlpha) * 255f).toInt()
         }
     }
 
@@ -50,6 +56,10 @@ class ForegroundWithAlphaTransformation(
             target.foreground?.alpha ?: 255
         } else 255
         return ForegroundWithAlphaTransformation(startAlpha.toFloat() / 255f, 1f, foreground)
+    }
+
+    override fun reversed(): Transformation {
+        return ForegroundWithAlphaTransformation(targetAlpha, startAlpha, foreground)
     }
 
 }

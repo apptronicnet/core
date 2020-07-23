@@ -8,7 +8,7 @@ import net.apptronic.core.android.viewmodel.transitions.NavigationGestureDetecto
 import net.apptronic.core.android.viewmodel.transitions.Transition
 import net.apptronic.core.android.viewmodel.transitions.TransitionGesture
 import net.apptronic.core.android.viewmodel.transitions.ViewSwitch
-import net.apptronic.core.android.viewmodel.transitions.siewswitches.backwardTransition
+import net.apptronic.core.android.viewmodel.transitions.viewswitches.backwardTransition
 import kotlin.math.max
 import kotlin.math.min
 

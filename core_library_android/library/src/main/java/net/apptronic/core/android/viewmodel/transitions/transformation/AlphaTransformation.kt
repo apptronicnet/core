@@ -17,12 +17,14 @@ class AlphaTransformation(
 
     override val descriptor: TransformationDescriptor = Alpha
 
-    override fun onStart(target: View, container: View) {
+    private var startValue: Float = 0f
 
+    override fun onStart(target: View, container: View, isIntercepted: Boolean) {
+        startValue = if (isIntercepted) target.alpha else startAlpha
     }
 
     override fun applyTransformation(target: View, container: View, progress: Progress) {
-        target.alpha = progress.interpolate(startAlpha, targetAlpha, 0f, 1f)
+        target.alpha = progress.interpolate(startValue, targetAlpha, 0f, 1f)
     }
 
     override fun onClear(target: View) {
@@ -31,6 +33,10 @@ class AlphaTransformation(
 
     override fun onCancel(target: View, container: View): Transformation {
         return AlphaTransformation(target.alpha, 1f)
+    }
+
+    override fun reversed(): Transformation {
+        return AlphaTransformation(targetAlpha, startAlpha)
     }
 
 }

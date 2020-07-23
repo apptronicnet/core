@@ -1,4 +1,4 @@
-package net.apptronic.core.android.viewmodel.transitions.siewswitches
+package net.apptronic.core.android.viewmodel.transitions.viewswitches
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable

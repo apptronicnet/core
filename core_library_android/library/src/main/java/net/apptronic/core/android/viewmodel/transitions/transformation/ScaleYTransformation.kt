@@ -17,12 +17,14 @@ class ScaleYTransformation(
 
     override val descriptor: TransformationDescriptor = ScaleY
 
-    override fun onStart(target: View, container: View) {
+    private var startValue = 0f
 
+    override fun onStart(target: View, container: View, isIntercepted: Boolean) {
+        startValue = if (isIntercepted) target.scaleY else startScaleY
     }
 
     override fun applyTransformation(target: View, container: View, progress: Progress) {
-        target.scaleY = progress.interpolate(startScaleY, targetScaleY, 0f, null) * container.width
+        target.scaleY = progress.interpolate(startValue, targetScaleY, 0f, null)
     }
 
     override fun onClear(target: View) {
@@ -31,6 +33,10 @@ class ScaleYTransformation(
 
     override fun onCancel(target: View, container: View): Transformation {
         return ScaleYTransformation(target.scaleY, 1f)
+    }
+
+    override fun reversed(): Transformation {
+        return ScaleYTransformation(targetScaleY, startScaleY)
     }
 
 }

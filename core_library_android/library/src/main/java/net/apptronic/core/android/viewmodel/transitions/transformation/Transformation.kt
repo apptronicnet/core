@@ -15,13 +15,15 @@ abstract class Transformation {
         applyTransformation(target, container, progress.interpolateWith(interpolator))
     }
 
-    abstract fun onStart(target: View, container: View)
+    abstract fun onStart(target: View, container: View, isIntercepted: Boolean)
 
     abstract fun applyTransformation(target: View, container: View, progress: Progress)
 
     abstract fun onCancel(target: View, container: View): Transformation
 
     abstract fun onClear(target: View)
+
+    abstract fun reversed(): Transformation
 
 }
 

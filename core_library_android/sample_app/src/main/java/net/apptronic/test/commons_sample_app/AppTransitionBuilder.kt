@@ -27,7 +27,7 @@ class AppTransitionBuilder : TransitionBuilder() {
                     interpolator = AccelerateInterpolator()
 
                 }
-            }.withDuration(duration)
+            }.withDuration(duration * 10)
             else -> super.createViewSwitchTransition(viewSwitch, transitionInfo, duration)
         }
     }

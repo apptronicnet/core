@@ -112,7 +112,7 @@ class StackNavigationFrameAdapter(
             }.doOnCompleteOrCancel {
                 isInTransition = false
                 previousBinder?.let {
-                    binderHidden((it))
+                    binderHidden(it)
                 }
             }.launch(viewSwitch)
         }

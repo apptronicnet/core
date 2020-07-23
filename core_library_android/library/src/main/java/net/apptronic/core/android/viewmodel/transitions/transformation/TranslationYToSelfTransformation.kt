@@ -17,12 +17,18 @@ class TranslationYToSelfTransformation(
 
     override val descriptor: TransformationDescriptor = TranslationY
 
-    override fun onStart(target: View, container: View) {
+    private var startValue = 0f
 
+    override fun onStart(target: View, container: View, isIntercepted: Boolean) {
+        startValue =
+            if (isIntercepted && target.height > 0)
+                target.translationY / target.height
+            else
+                startY
     }
 
     override fun applyTransformation(target: View, container: View, progress: Progress) {
-        target.translationY = progress.interpolate(startY, targetY) * target.height
+        target.translationY = progress.interpolate(startValue, targetY) * target.height
     }
 
     override fun onClear(target: View) {
@@ -34,6 +40,10 @@ class TranslationYToSelfTransformation(
             target.translationY / target.height
         } else 0f
         return TranslationYToSelfTransformation(start, 0f)
+    }
+
+    override fun reversed(): Transformation {
+        return TranslationYToSelfTransformation(targetY, startY)
     }
 
 }

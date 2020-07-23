@@ -12,18 +12,32 @@ class TransformationTransition(
 
     private val transformationsList = mutableListOf<Transformation>()
 
+    fun reversed(): TransformationTransition {
+        val reversedTransformations: List<Transformation> = transformations.map {
+            val reversedTransformation = it.reversed()
+            reversedTransformation.interpolator = it.interpolator?.reversed()
+            reversedTransformation
+        }
+        return TransformationTransition(container, reversedTransformations)
+    }
+
     override fun startTransition(target: View, interceptedTransition: Transition<View>?) {
-        transformations.forEach {
-            it.onStart(target, container)
+        val interceptedTransformationKeys = mutableListOf<TransformationDescriptor>()
+        val cancellingTransformations = mutableListOf<Transformation>()
+        val mainTransformationKeys = transformations.map { it.descriptor }
+        if (interceptedTransition is TransformationTransition) {
+            interceptedTransition.transformations.forEach {
+                if (mainTransformationKeys.contains(it.descriptor)) {
+                    interceptedTransformationKeys.add(it.descriptor)
+                } else {
+                    cancellingTransformations.add(it)
+                }
+            }
         }
         transformationsList.addAll(transformations)
-        val keys = transformations.map { it.descriptor }
-        if (interceptedTransition is TransformationTransition) {
-            interceptedTransition.transformations.filterNot {
-                keys.contains(it.descriptor)
-            }.forEach {
-                transformationsList.add(it.onCancel(target, container))
-            }
+        transformationsList.addAll(cancellingTransformations)
+        transformationsList.forEach {
+            it.onStart(target, container, interceptedTransformationKeys.contains(it.descriptor))
         }
     }
 
