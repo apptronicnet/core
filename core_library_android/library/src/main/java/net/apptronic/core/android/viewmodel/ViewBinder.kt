@@ -18,11 +18,11 @@ private val SavedInstanceStateExtensionDescriptor = extensionDescriptor<SparseAr
 private val ViewBinderExtensionsDescriptor = extensionDescriptor<ViewBinder<*>>()
 
 fun ViewModel.requireBoundView() {
-    doOnVisible {
-        if (extensions[ViewBinderExtensionsDescriptor] == null) {
-            debugError(Error("$this have no ViewBinder"))
-        }
-    }
+//    doOnVisible {
+//        if (extensions[ViewBinderExtensionsDescriptor] == null) {
+//            debugError(Error("$this have no ViewBinder"))
+//        }
+//    }
 }
 
 /**
