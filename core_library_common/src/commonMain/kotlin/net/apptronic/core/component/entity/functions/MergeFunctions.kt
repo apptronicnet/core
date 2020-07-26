@@ -1,8 +1,7 @@
-package net.apptronic.core.component.entity.behavior
+package net.apptronic.core.component.entity.functions
 
 import kotlinx.coroutines.CoroutineScope
 import net.apptronic.core.component.entity.Entity
-import net.apptronic.core.component.entity.functions.*
 
 fun <R, A, B> merge(
         a: Entity<A>,

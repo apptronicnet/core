@@ -7,7 +7,9 @@ import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.coroutines.lifecycleCoroutineScope
 import net.apptronic.core.component.entity.Entity
+import net.apptronic.core.component.entity.base.EntityValue
 import net.apptronic.core.component.entity.base.RelayEntity
+import net.apptronic.core.component.entity.entities.asProperty
 
 /**
  * Creates new [Entity] which re-emits items from source, but applying filtering to prevent emitting items
@@ -27,8 +29,8 @@ fun <T> Entity<T>.throttle(
 fun <T> Entity<T>.throttleAndStore(
         interval: Long,
         delay: Long = 0
-): Entity<T> {
-    return throttle(interval, delay).storeLatest()
+): EntityValue<T> {
+    return throttle(interval, delay).asProperty()
 }
 
 private class ThrottleEntity<T>(

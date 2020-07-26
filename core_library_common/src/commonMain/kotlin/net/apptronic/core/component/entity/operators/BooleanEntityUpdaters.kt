@@ -1,4 +1,4 @@
-package net.apptronic.core.component.entity.updaters
+package net.apptronic.core.component.entity.operators
 
 import net.apptronic.core.component.entity.base.EntityValue
 import net.apptronic.core.component.entity.base.UpdateEntity
