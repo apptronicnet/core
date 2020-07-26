@@ -3,7 +3,6 @@ package net.apptronic.core.component.entity
 import kotlinx.coroutines.CoroutineScope
 import net.apptronic.core.base.observable.Observable
 import net.apptronic.core.base.observable.Observer
-import net.apptronic.core.base.observable.subject.ValueHolder
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.coroutines.lifecycleCoroutineScope
 import net.apptronic.core.component.coroutines.serialThrottler
@@ -54,28 +53,4 @@ fun <T> Entity<T>.subscribeSuspend(context: Context, callback: suspend Coroutine
             }
         }
     })
-}
-
-fun <T> ValueHolder<T>?.get(): T {
-    if (this != null) {
-        return this.value
-    } else {
-        throw ValueNotSetException()
-    }
-}
-
-
-fun <T> ValueHolder<T>?.getOrNull(): T? {
-    return this?.value
-}
-
-fun <T> ValueHolder<T>?.isSet(): Boolean {
-    return this != null
-}
-
-fun <T> ValueHolder<T>?.doIfSet(action: (T) -> Unit): Boolean {
-    return this?.let {
-        action.invoke(it.value)
-        true
-    } ?: false
 }

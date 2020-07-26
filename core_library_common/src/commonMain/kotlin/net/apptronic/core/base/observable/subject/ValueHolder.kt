@@ -1,6 +1,7 @@
 package net.apptronic.core.base.observable.subject
 
 import net.apptronic.core.component.entity.Entity
+import net.apptronic.core.component.entity.ValueNotSetException
 import net.apptronic.core.component.entity.functions.map
 
 class ValueHolder<T>(val value: T) {
@@ -21,4 +22,29 @@ fun <T> Entity<T>.wrapValueHolder(): Entity<ValueHolder<T>> {
 
 fun <T> Entity<ValueHolder<T>>.unwrapValueHolder(): Entity<T> {
     return map { it.value }
+}
+
+
+fun <T> ValueHolder<T>?.get(): T {
+    if (this != null) {
+        return this.value
+    } else {
+        throw ValueNotSetException()
+    }
+}
+
+
+fun <T> ValueHolder<T>?.getOrNull(): T? {
+    return this?.value
+}
+
+fun <T> ValueHolder<T>?.isSet(): Boolean {
+    return this != null
+}
+
+fun <T> ValueHolder<T>?.doIfSet(action: (T) -> Unit): Boolean {
+    return this?.let {
+        action.invoke(it.value)
+        true
+    } ?: false
 }

@@ -1,7 +1,8 @@
 package net.apptronic.core.component.entity.base
 
-import net.apptronic.core.base.observable.subject.ValueHolder
-import net.apptronic.core.component.entity.*
+import net.apptronic.core.base.observable.subject.*
+import net.apptronic.core.component.entity.Entity
+import net.apptronic.core.component.entity.ValueNotSetException
 
 /**
  * Type of [Entity] which holds value.

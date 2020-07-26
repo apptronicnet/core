@@ -1,11 +1,11 @@
 package net.apptronic.core.component.entity.behavior
 
-import net.apptronic.core.base.observable.subject.BehaviorSubject
 import net.apptronic.core.base.observable.subject.ValueHolder
-import net.apptronic.core.component.context.Context
+import net.apptronic.core.base.observable.subject.asValueHolder
+import net.apptronic.core.base.observable.subject.doIfSet
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.base.EntityValue
-import net.apptronic.core.component.entity.base.SubjectEntity
+import net.apptronic.core.component.entity.base.RelayEntity
 import net.apptronic.core.component.entity.subscribe
 
 fun <T> Entity<T>.asResendable(): ResendEntity<T> {
@@ -22,22 +22,25 @@ interface ResendEntity<T> : EntityValue<T> {
 
 }
 
-private class ResendOnSignalEntity<T>(wrappedEntity: Entity<T>) : SubjectEntity<T>(), ResendEntity<T> {
+private class ResendOnSignalEntity<T>(wrappedEntity: Entity<T>) : RelayEntity<T>(wrappedEntity), ResendEntity<T> {
 
-    override val context: Context = wrappedEntity.context
-    override val subject = BehaviorSubject<T>()
+    private var lastValue: ValueHolder<T>? = null
 
     init {
-        wrappedEntity.subscribe(context, subject)
+        wrappedEntity.subscribe {
+            lastValue = it.asValueHolder()
+        }
     }
 
     override fun getValueHolder(): ValueHolder<T>? {
-        return subject.getValue()
+        return lastValue
     }
 
     override fun resendSignal() {
-        subject.getValue()?.let {
-            subject.notify(it.value)
+        lastValue.doIfSet { value ->
+            getObservers().forEach {
+                it.notify(value)
+            }
         }
     }
 

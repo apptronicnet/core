@@ -13,8 +13,8 @@ abstract class BaseEntity<T> : Entity<T> {
 
     private val observers = mutableListOf<Observer<T>>()
 
-    fun getObservers(): List<Observer<T>> {
-        return observers
+    fun getObservers(): Array<Observer<T>> {
+        return observers.toTypedArray()
     }
 
     /**
