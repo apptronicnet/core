@@ -29,6 +29,4 @@ abstract class BaseListNavigator<T>(
 
     protected abstract fun onNotifyAdapter(adapter: ViewModelListAdapter)
 
-    internal abstract fun refreshVisibility()
-
 }

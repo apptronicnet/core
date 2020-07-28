@@ -71,6 +71,7 @@ class ListNavigator internal constructor(
 
     private fun updateSubject() {
         subject.update(items)
+        sendStatusUpdate()
     }
 
     override fun getVisibilityFilters(): VisibilityFilters<ViewModel> {
@@ -94,7 +95,7 @@ class ListNavigator internal constructor(
         return ListNavigatorStatus(items, visibleItems)
     }
 
-    override fun refreshVisibility() {
+    private fun refreshVisibility() {
         val source = items.map {
             ItemVisibilityRequest(it, it.getContainer()?.shouldShow() ?: true)
         }
@@ -157,7 +158,9 @@ class ListNavigator internal constructor(
         val container = ViewModelContainer(viewModel, parent, visibilityFilters.isReadyToShow(viewModel))
         containers[viewModel.componentId] = container
         container.getViewModel().onAttachToParent(this)
-        container.observeVisibilityChanged(::refreshVisibility)
+        container.observeVisibilityChanged {
+            refreshVisibility()
+        }
         container.setAttached(true)
     }
 

@@ -72,7 +72,7 @@ class DynamicListNavigator<T : Any, Id : Any, VM : ViewModel> internal construct
 
     fun setListFilter(listFilter: ListRecyclerNavigatorFilter) {
         this.listFilter = listFilter
-        refreshVisibility()
+        refreshVisibility(true)
     }
 
     private fun updateSubject() {
@@ -133,7 +133,7 @@ class DynamicListNavigator<T : Any, Id : Any, VM : ViewModel> internal construct
         containers.markAllRequiresUpdate()
         items = value
         this.listDescription = listDescription
-        refreshVisibility()
+        refreshVisibility(false)
         updateSubject()
         notifyAdapter()
     }
@@ -142,7 +142,7 @@ class DynamicListNavigator<T : Any, Id : Any, VM : ViewModel> internal construct
         adapter.onDataChanged(viewModels)
     }
 
-    override fun refreshVisibility() {
+    private fun refreshVisibility(notifyChanges: Boolean) {
         val filterable = simpleLazyListOf<T, ListItem>(
                 source = items,
                 mapFunction = { item ->
@@ -158,8 +158,10 @@ class DynamicListNavigator<T : Any, Id : Any, VM : ViewModel> internal construct
                 }
         )
         indexMapping = listFilter.filter(filterable, listDescription)
-        notifyAdapter()
-        updateStatusSubject()
+        if (notifyChanges) {
+            updateStatusSubject()
+            notifyAdapter()
+        }
     }
 
     fun setStaticItems(source: Entity<List<T>>) {
@@ -198,7 +200,7 @@ class DynamicListNavigator<T : Any, Id : Any, VM : ViewModel> internal construct
                 onAdded(it)
             }
         }
-        refreshVisibility()
+        refreshVisibility(true)
     }
 
     private fun shouldRetainInstance(key: T, viewModel: ViewModel): Boolean {
@@ -218,7 +220,7 @@ class DynamicListNavigator<T : Any, Id : Any, VM : ViewModel> internal construct
         container.getViewModel().onAttachToParent(this)
         container.observeVisibilityChanged {
             if (staticItems.contains(key)) {
-                refreshVisibility()
+                refreshVisibility(true)
             }
         }
         container.setAttached(true)
