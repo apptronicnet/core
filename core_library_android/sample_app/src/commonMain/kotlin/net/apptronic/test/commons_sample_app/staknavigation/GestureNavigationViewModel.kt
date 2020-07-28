@@ -2,7 +2,7 @@ package net.apptronic.test.commons_sample_app.staknavigation
 
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.context.ContextDefinition
-import net.apptronic.core.component.entity.updaters.increment
+import net.apptronic.core.component.entity.operators.increment
 import net.apptronic.core.component.toggle
 import net.apptronic.core.component.value
 import net.apptronic.core.mvvm.viewmodel.EmptyViewModelContext

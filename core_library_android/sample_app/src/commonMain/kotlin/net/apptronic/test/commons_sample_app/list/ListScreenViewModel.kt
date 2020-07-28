@@ -1,8 +1,8 @@
 package net.apptronic.test.commons_sample_app.list
 
 import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.entity.behavior.merge
 import net.apptronic.core.component.entity.functions.map
+import net.apptronic.core.component.entity.functions.merge
 import net.apptronic.core.component.inject
 import net.apptronic.core.component.mutableValue
 import net.apptronic.core.mvvm.viewmodel.ViewModel
