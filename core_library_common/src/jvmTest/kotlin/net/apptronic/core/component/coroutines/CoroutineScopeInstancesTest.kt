@@ -4,7 +4,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import net.apptronic.core.component.context.close
+import net.apptronic.core.component.context.terminate
 import net.apptronic.core.component.lifecycle.Lifecycle
 import net.apptronic.core.component.lifecycle.enterStage
 import net.apptronic.core.component.lifecycle.exitStage
@@ -32,7 +32,7 @@ class CoroutineScopeInstancesTest {
     @Test
     fun shouldNotExecuteOnLocal() {
         val coroutineScope = context.contextCoroutineScope
-        context.close()
+        context.terminate()
         var invoked = false
         coroutineScope.launch {
             invoked = true
@@ -53,7 +53,7 @@ class CoroutineScopeInstancesTest {
     @Test
     fun shouldNotExecuteOnScoped() {
         val coroutineScope = context.lifecycleCoroutineScope
-        context.close()
+        context.terminate()
         var invoked = false
         coroutineScope.launch {
             invoked = true

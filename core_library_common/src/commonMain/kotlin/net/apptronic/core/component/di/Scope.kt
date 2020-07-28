@@ -3,7 +3,7 @@ package net.apptronic.core.component.di
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.context.ContextDefinition
 import net.apptronic.core.component.context.childContext
-import net.apptronic.core.component.context.close
+import net.apptronic.core.component.context.terminate
 import net.apptronic.core.component.lifecycle.BASE_LIFECYCLE
 import net.apptronic.core.component.lifecycle.LifecycleDefinition
 import kotlin.reflect.KClass
@@ -126,7 +126,7 @@ abstract class Scope internal constructor(
             it.executeRecycle()
         }
         contexts.forEach {
-            it.close()
+            it.terminate()
         }
     }
 

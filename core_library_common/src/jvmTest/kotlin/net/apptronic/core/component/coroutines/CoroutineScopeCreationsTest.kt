@@ -2,7 +2,7 @@ package net.apptronic.core.component.coroutines
 
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
-import net.apptronic.core.component.context.close
+import net.apptronic.core.component.context.terminate
 import net.apptronic.core.component.lifecycle.Lifecycle
 import net.apptronic.core.component.lifecycle.enterStage
 import net.apptronic.core.component.lifecycle.exitStage
@@ -29,7 +29,7 @@ class CoroutineScopeCreationsTest {
     @Test
     fun shouldNotExecuteOnLocal() {
         val coroutineScope = context.createContextCoroutineScope()
-        context.close()
+        context.terminate()
         var invoked = false
         coroutineScope.launch {
             invoked = true

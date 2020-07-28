@@ -4,7 +4,7 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import net.apptronic.core.component.context.childContext
-import net.apptronic.core.component.context.close
+import net.apptronic.core.component.context.terminate
 import net.apptronic.core.component.coroutines.contextCoroutineScope
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.subscribe
@@ -25,7 +25,7 @@ suspend fun <T> Entity<T>.awaitUntil(condition: (T) -> Boolean) {
         deferred.await()
     } finally {
         subscription.unsubscribe()
-        awaitContext.close()
+        awaitContext.terminate()
     }
 }
 
@@ -48,6 +48,6 @@ suspend fun <T> Entity<T>.awaitUntilSuspend(condition: suspend CoroutineScope.(T
         deferred.await()
     } finally {
         subscription.unsubscribe()
-        awaitContext.close()
+        awaitContext.terminate()
     }
 }

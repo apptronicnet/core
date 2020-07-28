@@ -1,7 +1,7 @@
 package net.apptronic.core.base.core.di
 
 import net.apptronic.core.component.context.EmptyContext
-import net.apptronic.core.component.context.close
+import net.apptronic.core.component.context.terminate
 import net.apptronic.core.component.di.AutoRecycling
 import net.apptronic.core.component.di.declareModule
 import net.apptronic.core.component.extensions.BaseComponent
@@ -81,10 +81,10 @@ class SharedDataProviderTest {
         assert(instance1 === instance2)
         assert(instance1.isRecycled.not())
 
-        childContext1.close()
+        childContext1.terminate()
         assert(instance1.isRecycled.not())
 
-        childContext2.close()
+        childContext2.terminate()
         assert(instance1.isRecycled)
     }
 
@@ -94,7 +94,7 @@ class SharedDataProviderTest {
         val childComponent1 = BaseComponent(childContext1)
         val instance1 = childComponent1.inject<Shared>()
         assert(instance1.isRecycled.not())
-        childContext1.close()
+        childContext1.terminate()
         assert(instance1.isRecycled)
 
         val childContext2 = EmptyContext.createContext(context)
@@ -102,7 +102,7 @@ class SharedDataProviderTest {
         val instance2 = childComponent2.inject<Shared>()
         assert(instance1 !== instance2)
         assert(instance2.isRecycled.not())
-        childContext2.close()
+        childContext2.terminate()
         assert(instance2.isRecycled)
     }
 

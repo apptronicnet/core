@@ -1,6 +1,5 @@
 package net.apptronic.core.mvvm.viewmodel.navigation
 
-import kotlinx.coroutines.launch
 import net.apptronic.core.base.observable.subject.BehaviorSubject
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.Entity
@@ -107,9 +106,7 @@ class StackNavigator internal constructor(
     }
 
     private fun postRefreshState() {
-        coroutineScope.launch {
-            refreshState()
-        }
+        refreshState()
     }
 
     private fun refreshState() {
@@ -249,11 +246,9 @@ class StackNavigator internal constructor(
 
     private fun clearAndSet(viewModel: ViewModel?, transitionInfo: Any? = null) {
         viewModel?.verifyContext()
-        coroutineScope.launch {
             removeFromStack(stack)
             addStackItem(viewModel)
             postRefreshState(transitionInfo)
-        }
     }
 
     override fun add(viewModel: ViewModel, transitionInfo: Any?) {

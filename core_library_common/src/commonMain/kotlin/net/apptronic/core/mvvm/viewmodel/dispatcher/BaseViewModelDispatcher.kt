@@ -1,7 +1,7 @@
 package net.apptronic.core.mvvm.viewmodel.dispatcher
 
 import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.context.close
+import net.apptronic.core.component.context.terminate
 import net.apptronic.core.component.extensions.BaseComponent
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelParent
@@ -57,7 +57,7 @@ abstract class BaseViewModelDispatcher<T : ViewModel>(
 
     override fun recycleViewModel() {
         viewModel?.onDetachFromParent()
-        viewModel?.context?.close()
+        viewModel?.terminate()
         viewModel = null
     }
 

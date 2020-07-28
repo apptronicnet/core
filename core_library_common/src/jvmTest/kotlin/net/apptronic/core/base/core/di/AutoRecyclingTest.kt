@@ -2,7 +2,7 @@ package net.apptronic.core.base.core.di
 
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.context.EmptyContext
-import net.apptronic.core.component.context.close
+import net.apptronic.core.component.context.terminate
 import net.apptronic.core.component.di.AutoRecycling
 import net.apptronic.core.component.di.declareModule
 import net.apptronic.core.component.di.dependencyDescriptor
@@ -58,7 +58,7 @@ class AutoRecyclingTest {
         assert(component.instance is Implementation)
         assert((component.instance as Implementation).isRecycled.not())
 
-        context.close()
+        context.terminate()
         assert((component.instance).isRecycled)
     }
 

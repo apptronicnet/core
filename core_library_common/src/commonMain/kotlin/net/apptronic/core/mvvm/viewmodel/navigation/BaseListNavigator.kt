@@ -1,6 +1,5 @@
 package net.apptronic.core.mvvm.viewmodel.navigation
 
-import kotlinx.coroutines.launch
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelListAdapter
 
@@ -9,9 +8,6 @@ abstract class BaseListNavigator<T>(
 ) : Navigator<List<T>>(parent) {
 
     private var adapter: ViewModelListAdapter? = null
-
-    private var postRefreshingVisibility = false
-    private var postRefreshingAdapter = false
 
     fun setAdapter(adapter: ViewModelListAdapter) {
         this.adapter = adapter
@@ -25,29 +21,13 @@ abstract class BaseListNavigator<T>(
     protected abstract fun onSetAdapter(adapter: ViewModelListAdapter)
 
     fun notifyAdapter() {
-        if (!postRefreshingAdapter) {
-            postRefreshingAdapter = true
-            coroutineScope.launch {
-                val adapter = this@BaseListNavigator.adapter
-                if (adapter != null) {
-                    onNotifyAdapter(adapter)
-                }
-                postRefreshingAdapter = false
-            }
+        val adapter = this@BaseListNavigator.adapter
+        if (adapter != null) {
+            onNotifyAdapter(adapter)
         }
     }
 
     protected abstract fun onNotifyAdapter(adapter: ViewModelListAdapter)
-
-    internal fun postRefreshVisibility() {
-        if (!postRefreshingVisibility) {
-            postRefreshingVisibility = true
-            coroutineScope.launch {
-                refreshVisibility()
-                postRefreshingVisibility = false
-            }
-        }
-    }
 
     internal abstract fun refreshVisibility()
 

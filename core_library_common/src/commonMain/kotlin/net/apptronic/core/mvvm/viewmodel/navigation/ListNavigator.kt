@@ -79,7 +79,7 @@ class ListNavigator internal constructor(
 
     fun setListFilter(listFilter: ListNavigatorFilter) {
         this.listFilter = listFilter
-        postRefreshVisibility()
+        refreshVisibility()
     }
 
     override fun update(value: List<ViewModel>) {
@@ -157,7 +157,7 @@ class ListNavigator internal constructor(
         val container = ViewModelContainer(viewModel, parent, visibilityFilters.isReadyToShow(viewModel))
         containers[viewModel.componentId] = container
         container.getViewModel().onAttachToParent(this)
-        container.observeVisibilityChanged(::postRefreshVisibility)
+        container.observeVisibilityChanged(::refreshVisibility)
         container.setAttached(true)
     }
 

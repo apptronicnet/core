@@ -1,7 +1,7 @@
 package net.apptronic.core.component
 
 import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.context.close
+import net.apptronic.core.component.context.terminate
 import net.apptronic.core.component.entity.entities.setAs
 import net.apptronic.core.component.extensions.BaseComponent
 import net.apptronic.core.component.lifecycle.enterStage
@@ -216,7 +216,7 @@ class ContextInterpopTest {
 
         assert(parent.dataReflection.get() == "One")
 
-        another.context.close()
+        another.context.terminate()
 
         another.dataReflection.setAs(parent.data)
 

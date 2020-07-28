@@ -1,8 +1,6 @@
 package net.apptronic.core.mvvm.viewmodel.navigation
 
-import kotlinx.coroutines.CoroutineScope
 import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.coroutines.contextCoroutineScope
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 
 class IncorrectContextHierarchyException(msg: String) : IllegalArgumentException(msg)
@@ -13,11 +11,6 @@ class IncorrectContextHierarchyException(msg: String) : IllegalArgumentException
 interface INavigator {
 
     val navigatorContext: Context
-
-    val coroutineScope: CoroutineScope
-        get() {
-            return navigatorContext.contextCoroutineScope
-        }
 
     fun <T : ViewModel> childViewModel(builder: Context.() -> T): T {
         return navigatorContext.builder()

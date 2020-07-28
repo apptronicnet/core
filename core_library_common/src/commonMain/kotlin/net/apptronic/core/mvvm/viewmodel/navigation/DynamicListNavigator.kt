@@ -1,6 +1,5 @@
 package net.apptronic.core.mvvm.viewmodel.navigation
 
-import kotlinx.coroutines.launch
 import net.apptronic.core.base.collections.lazyListOf
 import net.apptronic.core.base.collections.simpleLazyListOf
 import net.apptronic.core.base.observable.subject.BehaviorSubject
@@ -73,7 +72,7 @@ class DynamicListNavigator<T : Any, Id : Any, VM : ViewModel> internal construct
 
     fun setListFilter(listFilter: ListRecyclerNavigatorFilter) {
         this.listFilter = listFilter
-        postRefreshVisibility()
+        refreshVisibility()
     }
 
     private fun updateSubject() {
@@ -179,28 +178,27 @@ class DynamicListNavigator<T : Any, Id : Any, VM : ViewModel> internal construct
                 key.getId() == this
             }
         }
-        coroutineScope.launch {
-            val oldIds = staticItems.map { it.getId() }
-            val newIds = value.map { it.getId() }
-            val diff = getDiff(oldIds, newIds)
-            diff.removed.forEach { id ->
-                containers.findRecordForId(id)?.let { record ->
-                    if (!record.container.getViewModel().isBound()) {
-                        val key = id.getKey()
-                        if (key != null) {
-                            onReadyToRemove(key)
-                        }
+
+        val oldIds = staticItems.map { it.getId() }
+        val newIds = value.map { it.getId() }
+        val diff = getDiff(oldIds, newIds)
+        diff.removed.forEach { id ->
+            containers.findRecordForId(id)?.let { record ->
+                if (!record.container.getViewModel().isBound()) {
+                    val key = id.getKey()
+                    if (key != null) {
+                        onReadyToRemove(key)
                     }
                 }
             }
-            staticItems = value
-            diff.added.forEach { id ->
-                id.getKey()?.let {
-                    onAdded(it)
-                }
-            }
-            refreshVisibility()
         }
+        staticItems = value
+        diff.added.forEach { id ->
+            id.getKey()?.let {
+                onAdded(it)
+            }
+        }
+        refreshVisibility()
     }
 
     private fun shouldRetainInstance(key: T, viewModel: ViewModel): Boolean {
@@ -220,7 +218,7 @@ class DynamicListNavigator<T : Any, Id : Any, VM : ViewModel> internal construct
         container.getViewModel().onAttachToParent(this)
         container.observeVisibilityChanged {
             if (staticItems.contains(key)) {
-                postRefreshVisibility()
+                refreshVisibility()
             }
         }
         container.setAttached(true)

@@ -1,7 +1,7 @@
 package net.apptronic.core.component.entity
 
 import net.apptronic.core.component.context.childContext
-import net.apptronic.core.component.context.close
+import net.apptronic.core.component.context.terminate
 import net.apptronic.core.component.entity.entities.*
 import net.apptronic.core.component.lifecycle.Lifecycle
 import net.apptronic.core.component.lifecycle.enterStage
@@ -39,7 +39,7 @@ abstract class ContextSwitchTest {
         source.set("One")
         assertEquals(result.get(), "One")
 
-        sourceContext.close()
+        sourceContext.terminate()
         source.set("Two")
         assertEquals(result.get(), "One")
     }
@@ -51,7 +51,7 @@ abstract class ContextSwitchTest {
         source.set("One")
         assertEquals(result.get(), "One")
 
-        targetContext.close()
+        targetContext.terminate()
         source.set("Two")
         assertEquals(result.get(), "One")
     }
