@@ -68,14 +68,14 @@ private class InnerViewBinding(
         val contentView: View = if (bindingType.detectAndCreate) {
             val container = targetView as? ViewGroup
             if (container != null && container.childCount == 0) {
-                val contentView = targetBinder.onCreateView(container)
+                val contentView = targetBinder.performCreateView(container.context, null, container)
                 targetBinder.onAttachView(contentView, container)
                 contentView
             } else targetView
         } else if (bindingType.createLayout) {
             val container = targetView as ViewGroup
             container.removeAllViews()
-            val contentView = targetBinder.onCreateView(container)
+            val contentView = targetBinder.performCreateView(container.context, null, container)
             targetBinder.onAttachView(contentView, container)
             contentView
         } else targetView

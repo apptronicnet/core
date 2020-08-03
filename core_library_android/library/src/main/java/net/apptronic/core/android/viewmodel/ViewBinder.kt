@@ -46,21 +46,43 @@ abstract class ViewBinder<T : ViewModel> : BindingContainer {
     private var bindings: Bindings? = null
 
     /**
-     * Create [View] for adding to [container]
+     * Invoke to create generic view for parameters
      */
-    open fun onCreateView(context: Context): View {
-        val layoutResId = this.layoutResId
-            ?: throw IllegalStateException("[layoutResId] is not specified for $this")
-        return LayoutInflater.from(context).inflate(layoutResId, null, false)
+    fun performCreateView(
+        context: Context, inflater: LayoutInflater?, container: ViewGroup?
+    ): View {
+        val realInflater = inflater ?: LayoutInflater.from(context)
+        return onCreateView(context, realInflater, container)
     }
 
     /**
      * Create [View] for adding to [container]
      */
-    open fun onCreateView(container: ViewGroup): View {
+    open fun onCreateView(context: Context, inflater: LayoutInflater, container: ViewGroup?): View {
         val layoutResId = this.layoutResId
             ?: throw IllegalStateException("[layoutResId] is not specified for $this")
-        return LayoutInflater.from(container.context).inflate(layoutResId, container, false)
+        return inflater.inflate(layoutResId, null, false)
+    }
+
+    /**
+     * Create [View] for [activity]
+     */
+    open fun onCreateActivityView(activity: Activity): View {
+        return onCreateView(activity, activity.layoutInflater, null)
+    }
+
+    /**
+     * Create [View] for [Dialog]
+     */
+    open fun onCreateDialogView(dialog: Dialog): View {
+        return performCreateView(dialog.context, null, null)
+    }
+
+    /**
+     * Create [Dialog] which should show [View]
+     */
+    open fun onCreateDialog(context: Context): Dialog {
+        return Dialog(context)
     }
 
     /**
@@ -73,28 +95,10 @@ abstract class ViewBinder<T : ViewModel> : BindingContainer {
     }
 
     /**
-     * Create [View] for [activity]
+     * Set [View] to [activity]
      */
-    open fun onCreateActivityView(activity: Activity): View {
-        val layoutResId = this.layoutResId
-            ?: throw IllegalStateException("[layoutResId] is not specified for $this")
-        return activity.layoutInflater.inflate(layoutResId, null)
-    }
-
-    /**
-     * Create [Dialog] which should show [View]
-     */
-    open fun onCreateDialog(context: Context): Dialog {
-        return Dialog(context)
-    }
-
-    /**
-     * Create [View] for [Dialog]
-     */
-    open fun onCreateDialogView(dialog: Dialog): View {
-        val layoutResId = this.layoutResId
-            ?: throw IllegalStateException("[layoutResId] is not specified for $this")
-        return LayoutInflater.from(dialog.context).inflate(layoutResId, null, false)
+    open fun onAttachActivityView(activity: Activity, view: View) {
+        activity.setContentView(view)
     }
 
     /**

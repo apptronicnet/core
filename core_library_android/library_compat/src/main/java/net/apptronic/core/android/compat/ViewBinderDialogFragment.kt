@@ -14,16 +14,14 @@ abstract class ViewBinderDialogFragment<T : ViewModel> : CoreCompatDialogFragmen
     private var viewBinder: ViewBinder<T>? = null
 
     final override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         viewBinder = buildViewBinder()
-        return if (container != null) {
-            viewBinder!!.onCreateView(container)
-        } else {
-            viewBinder!!.onCreateView(requireContext())
-        }
+        return viewBinder!!.onCreateView(
+            container?.context ?: requireContext(),
+            inflater,
+            container
+        )
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

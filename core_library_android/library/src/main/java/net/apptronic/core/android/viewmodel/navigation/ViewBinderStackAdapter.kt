@@ -36,7 +36,7 @@ open class ViewBinderStackAdapter(
         val newBinder =
             if (newModel != null) viewBinderFactory.getBinder(newModel) else null
         if (newBinder != null && newModel != null) {
-            val view = newBinder.onCreateView(container)
+            val view = newBinder.performCreateView(container.context, null, container)
             newBinder.performViewBinding(view, newModel)
         }
         setView(newBinder, isNewOnFront, transitionInfo)

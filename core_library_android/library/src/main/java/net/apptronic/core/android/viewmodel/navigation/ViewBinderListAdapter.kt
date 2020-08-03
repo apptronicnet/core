@@ -21,11 +21,13 @@ class ViewBinderListAdapter(
     }
 
     fun createView(typeId: Int, container: ViewGroup): View {
-        return viewBinderFactory.getBinder(typeId).onCreateView(container)
+        return viewBinderFactory.getBinder(typeId)
+            .performCreateView(container.context, null, container)
     }
 
     fun createView(viewModel: ViewModel, container: ViewGroup): View {
-        return viewBinderFactory.getBinder(viewModel).onCreateView(container)
+        return viewBinderFactory.getBinder(viewModel)
+            .performCreateView(container.context, null, container)
     }
 
     fun getViewType(position: Int): Int {
