@@ -9,6 +9,10 @@ import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.inject
 import net.apptronic.core.features.cache.CacheComponent
 
+fun <T : Any> Contextual.injectData(descriptor: DataProviderDescriptor<T, Unit>): Entity<T> {
+    return inject(descriptor.holderDescriptor, parameters { add(descriptor.keyDescriptor, Unit) }).provideData(context)
+}
+
 fun <T : Any, K : Any> Contextual.injectData(descriptor: DataProviderDescriptor<T, K>, key: K): Entity<T> {
     return inject(descriptor.holderDescriptor, parameters { add(descriptor.keyDescriptor, key) }).provideData(context)
 }

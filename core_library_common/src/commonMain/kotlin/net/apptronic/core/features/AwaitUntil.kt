@@ -29,6 +29,20 @@ suspend fun <T> Entity<T>.awaitUntil(condition: (T) -> Boolean) {
     }
 }
 
+suspend fun <T> Entity<T>.awaitUntil(value: T) {
+    awaitUntil<T> {
+        it == value
+    }
+}
+
+suspend fun Entity<Boolean>.awaitUntilTrue() {
+    awaitUntil(true)
+}
+
+suspend fun Entity<Boolean>.awaitUntilFalse() {
+    awaitUntil(false)
+}
+
 suspend fun <T> Entity<T>.awaitUntilSuspend(condition: suspend CoroutineScope.(T) -> Boolean) {
     val awaitContext = context.childContext()
     val coroutineScope = awaitContext.contextCoroutineScope
