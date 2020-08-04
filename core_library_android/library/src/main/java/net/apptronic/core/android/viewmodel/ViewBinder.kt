@@ -49,7 +49,7 @@ abstract class ViewBinder<T : ViewModel> : BindingContainer {
      * Invoke to create generic view for parameters
      */
     fun performCreateView(
-        context: Context, inflater: LayoutInflater?, container: ViewGroup?
+        context: Context, inflater: LayoutInflater? = null, container: ViewGroup? = null
     ): View {
         val realInflater = inflater ?: LayoutInflater.from(context)
         return onCreateView(context, realInflater, container)
@@ -61,7 +61,7 @@ abstract class ViewBinder<T : ViewModel> : BindingContainer {
     open fun onCreateView(context: Context, inflater: LayoutInflater, container: ViewGroup?): View {
         val layoutResId = this.layoutResId
             ?: throw IllegalStateException("[layoutResId] is not specified for $this")
-        return inflater.inflate(layoutResId, null, false)
+        return inflater.inflate(layoutResId, container, false)
     }
 
     /**
@@ -120,11 +120,11 @@ abstract class ViewBinder<T : ViewModel> : BindingContainer {
         }
     }
 
-    internal fun getViewModel(): ViewModel {
+    fun getViewModel(): ViewModel {
         return viewModel ?: throw IllegalStateException("No viewModel bound for $this")
     }
 
-    internal fun getView(): View {
+    fun getView(): View {
         return view ?: throw IllegalStateException("No view bound for $this")
     }
 
