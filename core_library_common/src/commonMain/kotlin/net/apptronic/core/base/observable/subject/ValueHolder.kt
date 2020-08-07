@@ -4,7 +4,7 @@ import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.ValueNotSetException
 import net.apptronic.core.component.entity.functions.map
 
-class ValueHolder<T>(val value: T) {
+data class ValueHolder<T>(val value: T) {
 
     override fun toString(): String {
         return "[$value]"

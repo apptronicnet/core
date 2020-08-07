@@ -1,4 +1,4 @@
-package net.apptronic.core.features
+package net.apptronic.core.component.entity.entities
 
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
@@ -9,7 +9,7 @@ import net.apptronic.core.component.coroutines.contextCoroutineScope
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.subscribe
 
-suspend fun <T> Entity<T>.awaitUntil(condition: (T) -> Boolean) {
+suspend fun <T> Entity<T>.awaitUntilCondition(condition: (T) -> Boolean) {
     val awaitContext = context.childContext()
     val deferred = CompletableDeferred<Unit>()
     val subscription = subscribe(awaitContext) {
@@ -29,21 +29,7 @@ suspend fun <T> Entity<T>.awaitUntil(condition: (T) -> Boolean) {
     }
 }
 
-suspend fun <T> Entity<T>.awaitUntil(value: T) {
-    awaitUntil<T> {
-        it == value
-    }
-}
-
-suspend fun Entity<Boolean>.awaitUntilTrue() {
-    awaitUntil(true)
-}
-
-suspend fun Entity<Boolean>.awaitUntilFalse() {
-    awaitUntil(false)
-}
-
-suspend fun <T> Entity<T>.awaitUntilSuspend(condition: suspend CoroutineScope.(T) -> Boolean) {
+suspend fun <T> Entity<T>.awaitUntilConditionSuspend(condition: suspend CoroutineScope.(T) -> Boolean) {
     val awaitContext = context.childContext()
     val coroutineScope = awaitContext.contextCoroutineScope
     val deferred = CompletableDeferred<Unit>()
@@ -64,4 +50,18 @@ suspend fun <T> Entity<T>.awaitUntilSuspend(condition: suspend CoroutineScope.(T
         subscription.unsubscribe()
         awaitContext.terminate()
     }
+}
+
+suspend fun <T> Entity<T>.awaitUntilValue(value: T) {
+    awaitUntilCondition<T> {
+        it == value
+    }
+}
+
+suspend fun Entity<Boolean>.awaitUntilTrue() {
+    awaitUntilValue(true)
+}
+
+suspend fun Entity<Boolean>.awaitUntilFalse() {
+    awaitUntilValue(false)
 }
