@@ -245,4 +245,61 @@ class StackNavigatorTest {
         assert(adapter.activeModel == page7)
     }
 
+    @Test
+    fun shouldCorrectlyReplaceStack() {
+        lifecycleController.setAttached(true)
+        lifecycleController.setBound(true)
+        root.navigator.setAdapter(adapter)
+        val page1 = createViewModel()
+        val page2 = createViewModel()
+        val page3 = createViewModel()
+        val page4 = createViewModel()
+        root.navigator.add(page1)
+        root.navigator.add(page2)
+        root.navigator.add(page3)
+        root.navigator.add(page4)
+        assert(page1.isStateAttached())
+        assert(page2.isStateAttached())
+        assert(page3.isStateAttached())
+        assert(page4.isStateBound())
+        assertNavigatorStackState(page1, page2, page3, page4)
+        assert(adapter.activeModel == page4)
+
+        val page5 = createViewModel()
+        val page6 = createViewModel()
+        val page7 = createViewModel()
+        root.navigator.replaceStack(listOf(page2, page3, page5, page6, page7))
+        assert(page1.isTerminated())
+        assert(page2.isStateAttached())
+        assert(page3.isStateAttached())
+        assert(page4.isTerminated())
+        assert(page5.isStateAttached())
+        assert(page6.isStateAttached())
+        assert(page7.isStateBound())
+        assertNavigatorStackState(page2, page3, page5, page6, page7)
+        assert(adapter.activeModel == page7)
+
+        val page8 = createViewModel()
+        val page9 = createViewModel()
+        root.navigator.updateStack {
+            it.toMutableList().apply {
+                remove(page3)
+                remove(page6)
+                add(page8)
+                add(page9)
+            }
+        }
+        assert(page1.isTerminated())
+        assert(page2.isStateAttached())
+        assert(page3.isTerminated())
+        assert(page4.isTerminated())
+        assert(page5.isStateAttached())
+        assert(page6.isTerminated())
+        assert(page7.isStateAttached())
+        assert(page8.isStateAttached())
+        assert(page9.isStateBound())
+        assertNavigatorStackState(page2, page5, page7, page8, page9)
+        assert(adapter.activeModel == page9)
+    }
+
 }

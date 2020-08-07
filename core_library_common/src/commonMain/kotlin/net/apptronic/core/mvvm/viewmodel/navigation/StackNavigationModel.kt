@@ -79,6 +79,21 @@ interface StackNavigationModel : INavigator {
     fun replace(viewModel: ViewModel, transitionInfo: Any? = null)
 
     /**
+     * Replace whole stack with new stack. [newStack] can contain [ViewModel]s from current stack - that [ViewModel]s
+     * will be retained inside navigator.
+     */
+    fun replaceStack(newStack: List<ViewModel>, transitionInfo: Any? = null)
+
+    /**
+     * Get current stack and update it by adding new [ViewModel]s or removing existing [ViewModel]s
+     */
+    fun updateStack(transitionInfo: Any? = null, update: (List<ViewModel>) -> List<ViewModel>) {
+        val current = getStack()
+        val next = update(current)
+        replaceStack(next, transitionInfo)
+    }
+
+    /**
      * Build [ViewModel] replace last [ViewModel] in stack by it
      */
     fun replace(transitionInfo: Any? = null, builder: Context.() -> ViewModel) {

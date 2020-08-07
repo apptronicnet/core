@@ -2,7 +2,9 @@ package net.apptronic.core.mvvm.viewmodel.navigation
 
 import net.apptronic.core.component.context.viewModelContext
 import net.apptronic.core.component.entity.subscribe
+import net.apptronic.core.component.lifecycle.enterStage
 import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.mvvm.viewmodel.ViewModelLifecycle
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelListAdapter
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelStackAdapter
 import net.apptronic.core.testutils.testContext
@@ -379,6 +381,58 @@ abstract class StackNavigationModelTests {
 
         assertFalse(stackNavigationModel.popBackStackTo(1))
         assertStack()
+    }
+
+    @Test
+    fun shouldCorrectlyReplaceStack() {
+        coreViewModel.enterStage(ViewModelLifecycle.STAGE_ATTACHED)
+        val page1 = childViewModel()
+        val page2 = childViewModel()
+        val page3 = childViewModel()
+        val page4 = childViewModel()
+        stackNavigationModel.add(page1)
+        stackNavigationModel.add(page2)
+        stackNavigationModel.add(page3)
+        stackNavigationModel.add(page4)
+        assert(page1.isStateAttached())
+        assert(page2.isStateAttached())
+        assert(page3.isStateAttached())
+        assert(page4.isStateAttached())
+        assertStack(page1, page2, page3, page4)
+
+        val page5 = childViewModel()
+        val page6 = childViewModel()
+        val page7 = childViewModel()
+        stackNavigationModel.replaceStack(listOf(page2, page3, page5, page6, page7))
+        assert(page1.isTerminated())
+        assert(page2.isStateAttached())
+        assert(page3.isStateAttached())
+        assert(page4.isTerminated())
+        assert(page5.isStateAttached())
+        assert(page6.isStateAttached())
+        assert(page7.isStateAttached())
+        assertStack(page2, page3, page5, page6, page7)
+
+        val page8 = childViewModel()
+        val page9 = childViewModel()
+        stackNavigationModel.updateStack {
+            it.toMutableList().apply {
+                remove(page3)
+                remove(page6)
+                add(page8)
+                add(page9)
+            }
+        }
+        assert(page1.isTerminated())
+        assert(page2.isStateAttached())
+        assert(page3.isTerminated())
+        assert(page4.isTerminated())
+        assert(page5.isStateAttached())
+        assert(page6.isTerminated())
+        assert(page7.isStateAttached())
+        assert(page8.isStateAttached())
+        assert(page9.isStateAttached())
+        assertStack(page2, page5, page7, page8, page9)
     }
 
 }

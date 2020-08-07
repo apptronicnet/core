@@ -85,6 +85,11 @@ class StackNavigationViewModel internal constructor(
         return viewModels.get().getOrNull(getSize() - 1)
     }
 
+    override fun replaceStack(newStack: List<ViewModel>, transitionInfo: Any?) {
+        addTransition(currentViewModel(), newStack.firstOrNull(), transitionInfo)
+        viewModels.set(newStack)
+    }
+
     /**
      * Retrieve transitionInfo object for switching between [from] and [to] [ViewModel]s
      */
@@ -135,7 +140,9 @@ class StackNavigationViewModel internal constructor(
     }
 
     override fun getStack(): List<ViewModel> {
-        return viewModels.get()
+        return mutableListOf<ViewModel>().apply {
+            addAll(viewModels.get())
+        }
     }
 
     override fun popBackStackTo(viewModel: ViewModel, transitionInfo: Any?): Boolean {
