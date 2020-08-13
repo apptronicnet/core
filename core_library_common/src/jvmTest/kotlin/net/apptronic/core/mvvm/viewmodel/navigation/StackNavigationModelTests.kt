@@ -5,7 +5,6 @@ import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.component.lifecycle.enterStage
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelLifecycle
-import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelListAdapter
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelStackAdapter
 import net.apptronic.core.testutils.testContext
 import org.junit.Test
@@ -442,7 +441,7 @@ class StackNavigatorVerificationTest : StackNavigationModelTests() {
     lateinit var status: StackNavigatorStatus
     var actualModel: ViewModel? = null
     val adapter = object : ViewModelStackAdapter() {
-        override fun onInvalidate(newModel: ViewModel?, isNewOnFront: Boolean, transitionInfo: Any?) {
+        override fun onInvalidate(newModel: ViewModel?, transitionInfo: TransitionInfo) {
             actualModel = newModel
         }
     }
@@ -470,10 +469,7 @@ class StackNavigationModelVerificationTest : StackNavigationModelTests() {
 
     lateinit var status: List<ViewModel>
 
-    val adapter = ViewModelListAdapter()
-
     override val stackNavigationModel = coreViewModel.stackNavigationModel().apply {
-        listNavigator.setAdapter(adapter)
         this.listNavigator.subscribe {
             status = it
         }
@@ -486,7 +482,7 @@ class StackNavigationModelVerificationTest : StackNavigationModelTests() {
             assert(item === viewModels[index])
             assert(stackNavigationModel.getItemAt(index) === viewModels[index])
         }
-        val adapterItems = adapter.getItems()
+        val adapterItems = stackNavigationModel.listNavigator.getViewModels()
         assert(adapterItems.size == viewModels.size)
         adapterItems.forEachIndexed { index, item ->
             assert(item === viewModels[index])

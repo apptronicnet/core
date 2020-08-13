@@ -6,10 +6,10 @@ import net.apptronic.core.base.observable.subject.BehaviorSubject
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.base.UpdateEntity
+import net.apptronic.core.component.entity.onchange.Next
 import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.component.value
 import net.apptronic.core.mvvm.viewmodel.ViewModel
-import net.apptronic.core.mvvm.viewmodel.adapter.ItemStateNavigator
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelListAdapter
 import kotlin.reflect.KClass
 
@@ -34,6 +34,18 @@ fun <T : Any, Id : Any, VM : ViewModel> ViewModel.listDynamicNavigator(
     return navigator
 }
 
+fun <T : Any, Id : Any, VM : ViewModel> ViewModel.listDynamicNavigatorOnChange(
+        source: Entity<Next<List<T>, Any?>>,
+        builder: ViewModelBuilder<in T, in Id, in VM>,
+        navigatorContext: Context = this.context
+): DynamicListNavigator<T, Id, VM> {
+    val navigator = listDynamicNavigator(builder, navigatorContext)
+    source.subscribe(navigatorContext) {
+        navigator.set(it.value, it.change)
+    }
+    return navigator
+}
+
 @Suppress("UNCHECKED_CAST")
 class DynamicListNavigator<T : Any, Id : Any, VM : ViewModel> internal constructor(
         parent: ViewModel,
@@ -54,8 +66,6 @@ class DynamicListNavigator<T : Any, Id : Any, VM : ViewModel> internal construct
     private var visibilityFilters = VisibilityFilters<ViewModel>()
     private var listFilter: ListRecyclerNavigatorFilter = mappingFactoryFilter(::defaultMapping)
     private var indexMapping: DynamicListIndexMapping = listFilter.filter(emptyList(), null)
-
-    private val itemStateNavigator = ItemStateNavigatorImpl()
 
     private var items: List<T> = emptyList()
     private var listDescription: Any? = null
@@ -128,18 +138,18 @@ class DynamicListNavigator<T : Any, Id : Any, VM : ViewModel> internal construct
     /**
      * Set source items list.
      */
-    fun set(value: List<T>, listDescription: Any? = null) {
+    fun set(value: List<T>, changeInfo: Any? = null, listDescription: Any? = null) {
         clearSaved()
         containers.markAllRequiresUpdate()
         items = value
         this.listDescription = listDescription
         refreshVisibility(false)
         updateSubject()
-        notifyAdapter()
+        notifyAdapter(changeInfo)
     }
 
-    override fun onNotifyAdapter(adapter: ViewModelListAdapter) {
-        adapter.onDataChanged(viewModels)
+    override fun onNotifyAdapter(adapter: ViewModelListAdapter, changeInfo: Any?) {
+        adapter.onDataChanged(viewModels, changeInfo)
     }
 
     private fun refreshVisibility(notifyChanges: Boolean) {
@@ -160,7 +170,7 @@ class DynamicListNavigator<T : Any, Id : Any, VM : ViewModel> internal construct
         indexMapping = listFilter.filter(filterable, listDescription)
         if (notifyChanges) {
             updateStatusSubject()
-            notifyAdapter()
+            notifyAdapter(null)
         }
     }
 
@@ -285,9 +295,7 @@ class DynamicListNavigator<T : Any, Id : Any, VM : ViewModel> internal construct
     }
 
     override fun onSetAdapter(adapter: ViewModelListAdapter) {
-        adapter.setNavigator(itemStateNavigator)
         parent.context.lifecycle.onExitFromActiveStage {
-            adapter.setNavigator(null)
             containers.getAll().forEach {
                 onRemoved(it.item)
             }
@@ -331,31 +339,43 @@ class DynamicListNavigator<T : Any, Id : Any, VM : ViewModel> internal construct
 
     }
 
-    private inner class ItemStateNavigatorImpl : ItemStateNavigator {
+    override fun getSize(): Int {
+        return viewModels.size
+    }
 
-        override fun setBound(viewModel: ViewModel, isBound: Boolean) {
-            if (isBound) {
-                containers.findRecordForModel(viewModel)?.let { record ->
-                    record.container.setBound(true)
-                }
-            } else {
-                containers.findRecordForModel(viewModel)?.let { record ->
-                    record.container.setBound(false)
-                    if (!shouldRetainInstance(record.item, viewModel as VM)) {
-                        onReadyToRemove(record.item)
-                    }
+    override fun getViewModelAt(index: Int): ViewModel {
+        return viewModels[index]
+    }
+
+    override fun getViewModels(): List<ViewModel> {
+        return viewModels
+    }
+
+    override fun indexOfViewModel(viewModel: ViewModel): Int {
+        return viewModels.indexOf(viewModel)
+    }
+
+    override fun setBound(viewModel: ViewModel, isBound: Boolean) {
+        if (isBound) {
+            containers.findRecordForModel(viewModel)?.let { record ->
+                record.container.setBound(true)
+            }
+        } else {
+            containers.findRecordForModel(viewModel)?.let { record ->
+                record.container.setBound(false)
+                if (!shouldRetainInstance(record.item, viewModel as VM)) {
+                    onReadyToRemove(record.item)
                 }
             }
         }
+    }
 
-        override fun setVisible(viewModel: ViewModel, isVisible: Boolean) {
-            containers.findRecordForModel(viewModel)?.container?.setVisible(isVisible)
-        }
+    override fun setVisible(viewModel: ViewModel, isVisible: Boolean) {
+        containers.findRecordForModel(viewModel)?.container?.setVisible(isVisible)
+    }
 
-        override fun setFocused(viewModel: ViewModel, isFocused: Boolean) {
-            containers.findRecordForModel(viewModel)?.container?.setFocused(isFocused)
-        }
-
+    override fun setFocused(viewModel: ViewModel, isFocused: Boolean) {
+        containers.findRecordForModel(viewModel)?.container?.setFocused(isFocused)
     }
 
 }

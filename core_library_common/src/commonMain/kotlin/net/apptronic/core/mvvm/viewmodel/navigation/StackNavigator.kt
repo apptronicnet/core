@@ -98,10 +98,16 @@ class StackNavigator internal constructor(
         return get()
     }
 
-    private var pendingTransition: Any? = null
+    private class PendingTransition(
+            val transitionInfo: Any?,
+            val stackTransition: StackTransition
+    )
 
-    private fun refreshState(postTransition: Any?) {
-        pendingTransition = postTransition
+    private var pendingTransition: PendingTransition? = null
+
+
+    private fun refreshState(postTransition: Any?, stackTransition: StackTransition) {
+        pendingTransition = PendingTransition(postTransition, stackTransition)
         refreshState()
     }
 
@@ -130,7 +136,11 @@ class StackNavigator internal constructor(
             currentAdapter?.let {
                 val newItem = newState.visibleItem
                 if (it.activeItem != newItem) {
-                    invalidateAdapter(newState.visibleItem, pendingTransition)
+                    invalidateAdapter(
+                            newState.visibleItem,
+                            pendingTransition?.transitionInfo,
+                            pendingTransition?.stackTransition ?: StackTransition.Auto
+                    )
                     pendingTransition = null
                 }
             } ?: run {
@@ -156,10 +166,15 @@ class StackNavigator internal constructor(
 
     private fun invalidateAdapter(
             newItem: ViewModelContainer?,
-            transitionInfo: Any?
+            transitionInfo: Any?,
+            stackTransition: StackTransition
     ) {
         val newItemIndex = newItem?.let { stack.indexOf(it) } ?: -1
-        val isNewOnFront = newItemIndex >= currentItemIndex
+        val isNewOnFront = when (stackTransition) {
+            StackTransition.Auto -> newItemIndex >= currentItemIndex
+            StackTransition.NewOnFront -> true
+            StackTransition.NewOnBack -> false
+        }
         currentItemIndex = newItemIndex
         currentAdapter?.apply {
             val oldItem = activeItem
@@ -169,8 +184,7 @@ class StackNavigator internal constructor(
             newItem?.setBound(true)
             adapter.onInvalidate(
                     newItem?.getViewModel(),
-                    isNewOnFront,
-                    transitionInfo
+                    TransitionInfo(isNewOnFront, transitionInfo)
             )
             if (newItem != null) {
                 newItem.setVisible(true)
@@ -192,7 +206,7 @@ class StackNavigator internal constructor(
      */
     fun setAdapter(adapter: ViewModelStackAdapter) {
         currentAdapter = CurrentAdapter(adapter)
-        invalidateAdapter(newItem = currentState.visibleItem, transitionInfo = null)
+        invalidateAdapter(newItem = currentState.visibleItem, transitionInfo = null, stackTransition = StackTransition.Auto)
         context.lifecycle.onExitFromActiveStage {
             val currentItem = currentState.visibleItem
             if (currentItem != null) {
@@ -216,13 +230,13 @@ class StackNavigator internal constructor(
      * Clear all [ViewModel]s from stack
      */
     override fun clear(transitionInfo: Any?) {
-        clearAndSet(null, transitionInfo)
+        clearAndSet(null, transitionInfo, StackTransition.Auto)
     }
 
-    override fun replaceAll(viewModel: ViewModel, transitionInfo: Any?) {
+    override fun replaceAll(viewModel: ViewModel, transitionInfo: Any?, stackTransition: StackTransition) {
         // to make transition for new item as for front
         currentItemIndex = -1
-        clearAndSet(viewModel, transitionInfo)
+        clearAndSet(viewModel, transitionInfo, stackTransition)
     }
 
     private fun createStackItem(viewModel: ViewModel): ViewModelContainer {
@@ -241,30 +255,30 @@ class StackNavigator internal constructor(
         }
     }
 
-    private fun clearAndSet(viewModel: ViewModel?, transitionInfo: Any? = null) {
+    private fun clearAndSet(viewModel: ViewModel?, transitionInfo: Any? = null, stackTransition: StackTransition) {
         viewModel?.verifyContext()
         removeFromStack(stack)
         addStackItem(viewModel)
-        refreshState(transitionInfo)
+        refreshState(transitionInfo, stackTransition)
     }
 
-    override fun add(viewModel: ViewModel, transitionInfo: Any?) {
+    override fun add(viewModel: ViewModel, transitionInfo: Any?, stackTransition: StackTransition) {
         viewModel.verifyContext()
         addStackItem(viewModel)
-        refreshState(transitionInfo)
+        refreshState(transitionInfo, stackTransition)
     }
 
-    override fun replace(viewModel: ViewModel, transitionInfo: Any?) {
+    override fun replace(viewModel: ViewModel, transitionInfo: Any?, stackTransition: StackTransition) {
         viewModel.verifyContext()
         val actualItem = currentState.actualItem
         if (actualItem != null) {
             removeFromStack(actualItem)
         }
         addStackItem(viewModel)
-        refreshState(transitionInfo)
+        refreshState(transitionInfo, stackTransition)
     }
 
-    override fun replaceStack(newStack: List<ViewModel>, transitionInfo: Any?) {
+    override fun replaceStack(newStack: List<ViewModel>, transitionInfo: Any?, stackTransition: StackTransition) {
         newStack.forEach {
             it.verifyContext()
         }
@@ -290,29 +304,29 @@ class StackNavigator internal constructor(
         newContainers.forEach {
             onAdded(it)
         }
-        refreshState(transitionInfo)
+        refreshState(transitionInfo, stackTransition)
     }
 
-    override fun remove(viewModel: ViewModel, transitionInfo: Any?) {
+    override fun remove(viewModel: ViewModel, transitionInfo: Any?, stackTransition: StackTransition) {
         val currentItem = stack.lastOrNull {
             it.getViewModel() == viewModel
         }
         if (currentItem != null) {
             removeFromStack(currentItem)
             if (currentItem.getViewModel() == viewModel) {
-                refreshState(transitionInfo)
+                refreshState(transitionInfo, stackTransition)
             } else {
                 refreshState()
             }
         }
     }
 
-    override fun popBackStackTo(viewModel: ViewModel, transitionInfo: Any?): Boolean {
+    override fun popBackStackTo(viewModel: ViewModel, transitionInfo: Any?, stackTransition: StackTransition): Boolean {
         return if (stack.any { it.getViewModel() == viewModel } && stack.lastOrNull()?.getViewModel() != viewModel) {
             while (stack.isNotEmpty() && stack.lastOrNull()?.getViewModel() != viewModel) {
                 removeFromStack(stack.last())
             }
-            refreshState(transitionInfo)
+            refreshState(transitionInfo, stackTransition)
             true
         } else {
             false
@@ -327,7 +341,9 @@ class StackNavigator internal constructor(
 
     private fun onAdded(item: ViewModelContainer) {
         item.getViewModel().onAttachToParent(this)
-        item.observeVisibilityChanged(::refreshState)
+        item.observeVisibilityChanged {
+            refreshState()
+        }
         item.setAttached(true)
     }
 

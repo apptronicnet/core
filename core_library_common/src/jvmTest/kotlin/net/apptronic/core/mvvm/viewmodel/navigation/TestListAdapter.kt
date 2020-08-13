@@ -1,19 +1,28 @@
 package net.apptronic.core.mvvm.viewmodel.navigation
 
 import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.mvvm.viewmodel.adapter.ItemStateNavigator
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelListAdapter
 
-class TestListAdapter : ViewModelListAdapter() {
+class TestListAdapter(
+        private val itemStateNavigator: ItemStateNavigator
+) : ViewModelListAdapter {
+
+    var items: List<ViewModel> = emptyList()
+
+    override fun onDataChanged(items: List<ViewModel>, changeInfo: Any?) {
+        this.items = items
+    }
 
     fun setFullBound(viewModel: ViewModel, state: Boolean) {
         if (state) {
-            setBound(viewModel, true)
-            setVisible(viewModel, true)
-            setFocused(viewModel, true)
+            itemStateNavigator.setBound(viewModel, true)
+            itemStateNavigator.setVisible(viewModel, true)
+            itemStateNavigator.setFocused(viewModel, true)
         } else {
-            setFocused(viewModel, false)
-            setVisible(viewModel, false)
-            setBound(viewModel, false)
+            itemStateNavigator.setFocused(viewModel, false)
+            itemStateNavigator.setVisible(viewModel, false)
+            itemStateNavigator.setBound(viewModel, false)
         }
     }
 

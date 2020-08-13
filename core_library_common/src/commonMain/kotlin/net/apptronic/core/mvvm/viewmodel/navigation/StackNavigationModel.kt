@@ -12,9 +12,9 @@ interface StackNavigationModel : INavigator {
      */
     fun set(viewModel: ViewModel?) {
         if (viewModel != null) {
-            replaceAll(viewModel, null)
+            replaceAll(viewModel)
         } else {
-            clear(null)
+            clear()
         }
     }
 
@@ -52,68 +52,68 @@ interface StackNavigationModel : INavigator {
     /**
      * Replace current [ViewModel] and all [ViewModel]s from stack by new [viewModel]
      */
-    fun replaceAll(viewModel: ViewModel, transitionInfo: Any? = null)
+    fun replaceAll(viewModel: ViewModel, transitionInfo: Any? = null, stackTransition: StackTransition = StackTransition.Auto)
 
     /**
      * Build [ViewModel] replace all [ViewModel]s from stack by it
      */
-    fun replaceAll(transitionInfo: Any? = null, builder: Context.() -> ViewModel) {
-        replaceAll(navigatorContext.builder(), transitionInfo)
+    fun replaceAll(transitionInfo: Any? = null, stackTransition: StackTransition = StackTransition.Auto, builder: Context.() -> ViewModel) {
+        replaceAll(navigatorContext.builder(), transitionInfo, stackTransition)
     }
 
     /**
      * Add [ViewModel] to stack
      */
-    fun add(viewModel: ViewModel, transitionInfo: Any? = null)
+    fun add(viewModel: ViewModel, transitionInfo: Any? = null, stackTransition: StackTransition = StackTransition.Auto)
 
     /**
      * Build [ViewModel] and add it to stack
      */
-    fun add(transitionInfo: Any? = null, builder: Context.() -> ViewModel) {
-        add(navigatorContext.builder(), transitionInfo)
+    fun add(transitionInfo: Any? = null, stackTransition: StackTransition = StackTransition.Auto, builder: Context.() -> ViewModel) {
+        add(navigatorContext.builder(), transitionInfo, stackTransition)
     }
 
     /**
      * Replace last [ViewModel] in stack
      */
-    fun replace(viewModel: ViewModel, transitionInfo: Any? = null)
+    fun replace(viewModel: ViewModel, transitionInfo: Any? = null, stackTransition: StackTransition = StackTransition.Auto)
 
     /**
      * Replace whole stack with new stack. [newStack] can contain [ViewModel]s from current stack - that [ViewModel]s
      * will be retained inside navigator.
      */
-    fun replaceStack(newStack: List<ViewModel>, transitionInfo: Any? = null)
+    fun replaceStack(newStack: List<ViewModel>, transitionInfo: Any? = null, stackTransition: StackTransition = StackTransition.Auto)
 
     /**
      * Get current stack and update it by adding new [ViewModel]s or removing existing [ViewModel]s
      */
-    fun updateStack(transitionInfo: Any? = null, update: (List<ViewModel>) -> List<ViewModel>) {
+    fun updateStack(transitionInfo: Any? = null, stackTransition: StackTransition = StackTransition.Auto, update: (List<ViewModel>) -> List<ViewModel>) {
         val current = getStack()
         val next = update(current)
-        replaceStack(next, transitionInfo)
+        replaceStack(next, transitionInfo, stackTransition)
     }
 
     /**
      * Build [ViewModel] replace last [ViewModel] in stack by it
      */
-    fun replace(transitionInfo: Any? = null, builder: Context.() -> ViewModel) {
-        replace(navigatorContext.builder(), transitionInfo)
+    fun replace(transitionInfo: Any? = null, stackTransition: StackTransition = StackTransition.Auto, builder: Context.() -> ViewModel) {
+        replace(navigatorContext.builder(), transitionInfo, stackTransition)
     }
 
     /**
      * Remove specific [ViewModel] for stack
      * @param transitionInfo will be used only if this [ViewModel] is now active
      */
-    fun remove(viewModel: ViewModel, transitionInfo: Any? = null)
+    fun remove(viewModel: ViewModel, transitionInfo: Any? = null, stackTransition: StackTransition = StackTransition.Auto)
 
     /**
      * Remove [ViewModel] at specific [index] of stack
      */
-    fun removeAt(index: Int, transitionInfo: Any? = null) {
+    fun removeAt(index: Int, transitionInfo: Any? = null, stackTransition: StackTransition = StackTransition.Auto) {
         if (index < 0 || index >= getSize()) {
             return
         }
-        remove(getItemAt(index), transitionInfo)
+        remove(getItemAt(index), transitionInfo, stackTransition)
     }
 
     /**
@@ -121,9 +121,9 @@ interface StackNavigationModel : INavigator {
      * empty
      * @return true if last model removed from stack
      */
-    fun removeLast(transitionInfo: Any? = null): Boolean {
+    fun removeLast(transitionInfo: Any? = null, stackTransition: StackTransition = StackTransition.Auto): Boolean {
         return if (getSize() > 0) {
-            remove(getItemAt(getSize() - 1), transitionInfo)
+            remove(getItemAt(getSize() - 1), transitionInfo, stackTransition)
             true
         } else {
             false
@@ -135,9 +135,9 @@ interface StackNavigationModel : INavigator {
      * empty or if current [ViewModel] is single in stack
      * @return true if last model removed from stack
      */
-    fun popBackStack(transitionInfo: Any? = null): Boolean {
+    fun popBackStack(transitionInfo: Any? = null, stackTransition: StackTransition = StackTransition.Auto): Boolean {
         return if (getSize() > 1) {
-            remove(getItemAt(getSize() - 1), transitionInfo)
+            remove(getItemAt(getSize() - 1), transitionInfo, stackTransition)
             true
         } else {
             false
@@ -149,14 +149,14 @@ interface StackNavigationModel : INavigator {
      * last or no model in stack
      */
     fun navigateBack(actionOnNonNavigate: () -> Unit = {}) {
-        navigateBack(null, actionOnNonNavigate)
+        navigateBack(null, StackTransition.Auto, actionOnNonNavigate)
     }
 
     /**
      * Remove last [ViewModel] from stack or execute action if current model is
      * last or no model in stack
      */
-    fun navigateBack(transitionInfo: Any?, actionOnNonNavigate: () -> Unit = {}) {
+    fun navigateBack(transitionInfo: Any?, stackTransition: StackTransition = StackTransition.Auto, actionOnNonNavigate: () -> Unit = {}) {
         if (!popBackStack(transitionInfo)) {
             actionOnNonNavigate()
         }
@@ -167,18 +167,18 @@ interface StackNavigationModel : INavigator {
      * Will do nothing if stack is empty of [viewModel] is not present in stack
      * @return true if anything is removed from stack
      */
-    fun popBackStackTo(viewModel: ViewModel, transitionInfo: Any? = null): Boolean
+    fun popBackStackTo(viewModel: ViewModel, transitionInfo: Any? = null, stackTransition: StackTransition = StackTransition.Auto): Boolean
 
     /**
      * Remove all [ViewModel]s from stack which are placed after specified index.
      * Will do nothing if stack is empty of index is out of stack
      * @return true if anything is removed from stack
      */
-    fun popBackStackTo(index: Int, transitionInfo: Any? = null): Boolean {
+    fun popBackStackTo(index: Int, transitionInfo: Any? = null, stackTransition: StackTransition = StackTransition.Auto): Boolean {
         if (index < 0 || index >= getSize()) {
             return false
         }
-        return popBackStackTo(getItemAt(index), transitionInfo)
+        return popBackStackTo(getItemAt(index), transitionInfo, stackTransition)
     }
 
 }

@@ -1,11 +1,18 @@
 package net.apptronic.core.mvvm.viewmodel.navigation
 
-import net.apptronic.core.base.observable.subject.BehaviorSubject
 import net.apptronic.core.base.observable.subscribe
 import net.apptronic.core.component.context.Context
+import net.apptronic.core.component.context.Contextual
 import net.apptronic.core.component.entity.Entity
-import net.apptronic.core.component.entity.base.SubjectEntity
+import net.apptronic.core.component.entity.onchange.Next
+import net.apptronic.core.component.entity.onchange.OnChangeProperty
+import net.apptronic.core.component.entity.onchange.OnChangeValue
+import net.apptronic.core.component.entity.onchange.onChangeValue
 import net.apptronic.core.mvvm.viewmodel.ViewModel
+
+fun <T, Id, VM : ViewModel> Contextual.viewModelListBuilder(builder: ViewModelBuilder<T, Id, VM>): ViewModelListBuilder<T, Id, VM> {
+    return ViewModelListBuilder(context, builder)
+}
 
 /**
  * Class created to perform updates of list of [ViewModel].
@@ -14,12 +21,11 @@ import net.apptronic.core.mvvm.viewmodel.ViewModel
  * for item in updated list already exists - it will not create new [ViewModel] but update
  * existing [ViewModel] and place it in updates list at required place.
  */
-class ViewModelListBuilder<T, Id, VM : ViewModel>(
-    private val parent: ViewModel,
-    private val builder: ViewModelBuilder<T, Id, VM>
-) : SubjectEntity<List<ViewModel>>(), ViewModelBuilder<T, Id, VM> by builder {
-
-    override val context: Context = parent.context
+class ViewModelListBuilder<T, Id, VM : ViewModel> internal constructor(
+        private val builderContext: Context,
+        private val builder: ViewModelBuilder<T, Id, VM>,
+        private val onChangeValue: OnChangeValue<List<ViewModel>, Any> = builderContext.onChangeValue()
+) : ViewModelBuilder<T, Id, VM> by builder, OnChangeProperty<List<ViewModel>, Any> by onChangeValue {
 
     private inner class ViewModelHolder(
             val id: Id,
@@ -28,11 +34,7 @@ class ViewModelListBuilder<T, Id, VM : ViewModel>(
 
     private val viewModelHolders = arrayListOf<ViewModelHolder>()
 
-    override val subject = BehaviorSubject<List<ViewModel>>()
-
-    init {
-        subject.update(emptyList())
-    }
+    private val viewModels = builderContext.onChangeValue<List<ViewModel>, Any>()
 
     /**
      * Update list of [ViewModel]s automatically from given [Entity]
@@ -42,9 +44,16 @@ class ViewModelListBuilder<T, Id, VM : ViewModel>(
     }
 
     /**
+     * Update list of [ViewModel]s automatically from given [Entity]
+     */
+    fun updateFromChanges(entity: Entity<out Next<out List<T>, out Any>>) {
+        entity.subscribe { update(it.value, it.change) }
+    }
+
+    /**
      * Update list of [ViewModel]s with new items.
      */
-    fun update(newList: List<T>) {
+    fun update(newList: List<T>, changeInfo: Any? = null) {
         val oldIds = viewModelHolders.map { it.id }
         val newIds = newList.map { getId(it) }
 
@@ -84,11 +93,11 @@ class ViewModelListBuilder<T, Id, VM : ViewModel>(
         }
         viewModelHolders.sortWith(PostArrangeComparator(newList))
         val result = viewModelHolders.map { it.viewModel }
-        subject.update(result)
+        onChangeValue.set(result, changeInfo)
     }
 
     private inner class PostArrangeComparator(items: List<T>) :
-        Comparator<ViewModelHolder> {
+            Comparator<ViewModelHolder> {
 
         private val indexes = hashMapOf<Id, Int>()
 

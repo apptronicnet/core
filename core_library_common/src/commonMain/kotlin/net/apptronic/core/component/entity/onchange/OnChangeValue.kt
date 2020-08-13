@@ -9,13 +9,7 @@ import net.apptronic.core.component.entity.entities.setAs
 import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.component.value
 
-/**
- * This variant of [Entity] designed to be property, which should pass additional information to observers when it's
- * changes, but not to store this information for new observers.
- */
-class OnChangeValue<T, E> internal constructor(
-        context: Context
-) : OnChangeProperty<T, E>(context), UpdateEntity<Next<T, E>> {
+interface OnChangeValue<T, E> : OnChangeProperty<T, E>, Entity<Next<T, E>>, UpdateEntity<Next<T, E>> {
 
     fun set(next: T, change: E? = null) {
         update(Next(next, change))
@@ -25,10 +19,7 @@ class OnChangeValue<T, E> internal constructor(
         update(Next(next, change))
     }
 
-    override fun update(value: Next<T, E>) {
-        this.change = value.change?.let { ValueHolder(it) }
-        this.value.update(value.value)
-    }
+    override fun update(value: Next<T, E>)
 
     fun getValueEntity(): Value<T> {
         val value = context.value<T>().setAs(takeValue())
@@ -43,6 +34,21 @@ class OnChangeValue<T, E> internal constructor(
             }
         }
         return value
+    }
+
+}
+
+/**
+ * This variant of [Entity] designed to be property, which should pass additional information to observers when it's
+ * changes, but not to store this information for new observers.
+ */
+class OnChangeValueImpl<T, E> internal constructor(
+        context: Context
+) : OnChangePropertyImpl<T, E>(context), OnChangeValue<T, E>, UpdateEntity<Next<T, E>> {
+
+    override fun update(value: Next<T, E>) {
+        this.change = value.change?.let { ValueHolder(it) }
+        this.value.update(value.value)
     }
 
 }

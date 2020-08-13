@@ -14,54 +14,28 @@ import net.apptronic.core.component.typedEvent
 import net.apptronic.core.component.value
 
 fun <T, E> Entity<Next<T, E>>.asOnChangeProperty(): OnChangeProperty<T, E> {
-    return OnChangeValue<T, E>(context).setAs(this)
+    return OnChangeValueImpl<T, E>(context).setAs(this)
 }
 
 fun <T, E> Contextual.onChangeProperty(source: Entity<Next<T, E>>): OnChangeProperty<T, E> {
     return onChangeValue<T, E>().setAs(source)
 }
 
-fun <T, E> Contextual.onChangeValue(): OnChangeValue<T, E> {
-    return OnChangeValue<T, E>(context)
+fun <T, E> Contextual.onChangeProperty(initValue: T): OnChangeProperty<T, E> {
+    return onChangeValue(initValue)
 }
 
-/**
- * This variant of [Entity] designed to be property, which should pass additional information to observers when it's
- * changes, but not to store this information for new observers.
- */
-abstract class OnChangeProperty<T, E> internal constructor(
-        final override val context: Context
-) : ObservableEntity<Next<T, E>>(), EntityValue<Next<T, E>> {
+fun <T, E> Contextual.onChangeValue(): OnChangeValue<T, E> {
+    return OnChangeValueImpl<T, E>(context)
+}
 
-    internal val value = context.value<T>()
-    internal var change: ValueHolder<E>? = null
-    private val updateEvent = context.typedEvent<Next<T, E>>()
-
-    override fun onObserverSubscribed(observer: Observer<Next<T, E>>) {
-        super.onObserverSubscribed(observer)
-        value.getValueHolder()?.let {
-            observer.notify(Next(it.value, null))
-        }
+fun <T, E> Contextual.onChangeValue(initValue: T): OnChangeValue<T, E> {
+    return OnChangeValueImpl<T, E>(context).apply {
+        set(initValue)
     }
+}
 
-    override fun onObserverUnsubscribed(observer: Observer<Next<T, E>>) {
-        super.onObserverUnsubscribed(observer)
-    }
-
-    init {
-        value.subscribe {
-            updateEvent.sendEvent(Next(it, change?.value))
-            change = null
-        }
-    }
-
-    override val observable: Observable<Next<T, E>> = updateEvent
-
-    override fun getValueHolder(): ValueHolder<Next<T, E>>? {
-        return value.getValueHolder()?.let {
-            ValueHolder<Next<T, E>>(Next(it.value, null))
-        }
-    }
+interface OnChangeProperty<T, E> : Entity<Next<T, E>>, EntityValue<Next<T, E>> {
 
     fun getValue(): T {
         return get().value
@@ -85,6 +59,42 @@ abstract class OnChangeProperty<T, E> internal constructor(
     fun getValueOr(fallbackValueProvider: () -> T): T {
         val valueHolder = getValueHolder()
         return valueHolder?.value?.value ?: fallbackValueProvider()
+    }
+
+}
+
+/**
+ * This variant of [Entity] designed to be property, which should pass additional information to observers when it's
+ * changes, but not to store this information for new observers.
+ */
+abstract class OnChangePropertyImpl<T, E> internal constructor(
+        final override val context: Context
+) : ObservableEntity<Next<T, E>>(), OnChangeProperty<T, E> {
+
+    internal val value = context.value<T>()
+    internal var change: ValueHolder<E>? = null
+    private val updateEvent = context.typedEvent<Next<T, E>>()
+
+    override fun onObserverSubscribed(observer: Observer<Next<T, E>>) {
+        super.onObserverSubscribed(observer)
+        value.getValueHolder()?.let {
+            observer.notify(Next(it.value, null))
+        }
+    }
+
+    init {
+        value.subscribe {
+            updateEvent.sendEvent(Next(it, change?.value))
+            change = null
+        }
+    }
+
+    override val observable: Observable<Next<T, E>> = updateEvent
+
+    override fun getValueHolder(): ValueHolder<Next<T, E>>? {
+        return value.getValueHolder()?.let {
+            ValueHolder<Next<T, E>>(Next(it.value, null))
+        }
     }
 
 }

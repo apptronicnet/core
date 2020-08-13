@@ -1,7 +1,7 @@
 package net.apptronic.core.mvvm.viewmodel.navigation
 
 import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.value
+import net.apptronic.core.component.entity.onchange.onChangeValue
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 
@@ -22,50 +22,26 @@ class StackNavigationViewModel internal constructor(
         override val navigatorContext: Context
 ) : ViewModel(context), StackNavigationModel {
 
-    init {
-        doOnUnbind {
-            clearUnusedTransitions()
-        }
+    private val viewModels = onChangeValue<List<ViewModel>, Any>(emptyList())
+
+    private fun updateInternal(transitionInfo: Any?, stackTransition: StackTransition, action: (MutableList<ViewModel>) -> Unit) {
+        val current = viewModels.get().value
+        val next = current.toTypedArray().toMutableList()
+        action(next)
+        updateInternal(transitionInfo, stackTransition, next)
     }
 
-    private val viewModels = value<List<ViewModel>>(emptyList())
-
-    private class Transition(
-            val from: ViewModel?,
-            val to: ViewModel?,
-            val transitionInfo: Any
-    )
-
-    private val transitions = mutableListOf<Transition>()
-
-    private fun addTransition(from: ViewModel?, to: ViewModel?, transitionInfo: Any?) {
-        if (isBound() && from != to) {
-            transitions.removeAll {
-                it.from == from && it.to == to
-            }
-            if (transitionInfo != null) {
-                transitions.add(Transition(from, to, transitionInfo))
-            }
-        }
-    }
-
-    private fun clearUnusedTransitions() {
-        val list = mutableListOf<ViewModel?>().apply {
-            add(null)
-            addAll(viewModels.get())
-        }
-        transitions.removeAll {
-            (list.contains(it.from) && list.contains(it.to)).not()
-        }
-    }
-
-    private fun update(action: (List<ViewModel>) -> List<ViewModel>) {
-        val current = viewModels.get()
-        val next = action(current)
+    private fun updateInternal(transitionInfo: Any?, stackTransition: StackTransition, next: List<ViewModel>) {
+        val current = viewModels.get().value
         next.forEach {
             it.verifyContext()
         }
-        viewModels.set(next)
+        val isNewOnFront = when (stackTransition) {
+            StackTransition.Auto -> next.size >= current.size
+            StackTransition.NewOnFront -> true
+            StackTransition.NewOnBack -> false
+        }
+        viewModels.set(next, TransitionInfo(isNewOnFront, transitionInfo))
     }
 
     /**
@@ -74,111 +50,73 @@ class StackNavigationViewModel internal constructor(
      * This will clear stack after [index].
      */
     fun onNavigated(index: Int) {
-        update {
-            it.take(index + 1)
-        }
+        val next = viewModels.get().value.take(index + 1)
+        updateInternal(null, StackTransition.Auto, next)
     }
 
-    val listNavigator: BaseListNavigator<ViewModel> = listNavigator(viewModels)
+    val listNavigator: BaseListNavigator<ViewModel> = listNavigatorOnChange(viewModels)
 
     private fun currentViewModel(): ViewModel? {
-        return viewModels.get().getOrNull(getSize() - 1)
+        return viewModels.get().value.getOrNull(getSize() - 1)
     }
 
-    override fun replaceStack(newStack: List<ViewModel>, transitionInfo: Any?) {
-        addTransition(currentViewModel(), newStack.firstOrNull(), transitionInfo)
-        viewModels.set(newStack)
+    override fun replaceStack(newStack: List<ViewModel>, transitionInfo: Any?, stackTransition: StackTransition) {
+        updateInternal(transitionInfo, stackTransition, newStack)
     }
 
-    /**
-     * Retrieve transitionInfo object for switching between [from] and [to] [ViewModel]s
-     */
-    fun getTransitionInfo(from: ViewModel?, to: ViewModel?): Any? {
-        val transition = transitions.firstOrNull {
-            it.from == from && it.to == to
-        }
-        if (transition != null) {
-            transitions.remove(transition)
-        }
-        return transition?.transitionInfo
-    }
-
-    override fun add(viewModel: ViewModel, transitionInfo: Any?) {
-        viewModel.verifyContext()
-        addTransition(currentViewModel(), viewModel, transitionInfo)
-        update { previous ->
-            mutableListOf<ViewModel>().apply {
-                addAll(previous)
-                add(viewModel)
-            }
+    override fun add(viewModel: ViewModel, transitionInfo: Any?, stackTransition: StackTransition) {
+        updateInternal(transitionInfo, stackTransition) {
+            it.add(viewModel)
         }
     }
 
-    override fun remove(viewModel: ViewModel, transitionInfo: Any?) {
-        val next = viewModels.get().filter {
-            it != viewModel
-        }
-        addTransition(currentViewModel(), next.lastOrNull(), transitionInfo)
-        update {
-            next
+    override fun remove(viewModel: ViewModel, transitionInfo: Any?, stackTransition: StackTransition) {
+        updateInternal(transitionInfo, stackTransition) {
+            it.remove(viewModel)
         }
     }
 
     override fun clear(transitionInfo: Any?) {
-        addTransition(currentViewModel(), null, transitionInfo)
-        update {
-            emptyList()
-        }
+        updateInternal(transitionInfo, StackTransition.Auto, emptyList())
     }
 
     override fun getItemAt(index: Int): ViewModel {
-        return viewModels.get()[index]
+        return viewModels.get().value[index]
     }
 
     override fun getSize(): Int {
-        return viewModels.get().size
+        return viewModels.get().value.size
     }
 
     override fun getStack(): List<ViewModel> {
         return mutableListOf<ViewModel>().apply {
-            addAll(viewModels.get())
+            addAll(viewModels.get().value)
         }
     }
 
-    override fun popBackStackTo(viewModel: ViewModel, transitionInfo: Any?): Boolean {
-        addTransition(currentViewModel(), viewModel, transitionInfo)
+    override fun popBackStackTo(viewModel: ViewModel, transitionInfo: Any?, stackTransition: StackTransition): Boolean {
         val previous = getStack().toTypedArray().toMutableList()
         val index = previous.indexOf(viewModel)
         if (index < 0) {
             return false
         }
         val next = previous.subList(0, index + 1)
-        update {
-            next
-        }
+        updateInternal(transitionInfo, stackTransition, next)
         return previous.size != next.size
     }
 
-    override fun replace(viewModel: ViewModel, transitionInfo: Any?) {
+    override fun replace(viewModel: ViewModel, transitionInfo: Any?, stackTransition: StackTransition) {
         viewModel.verifyContext()
-        addTransition(currentViewModel(), viewModel, transitionInfo)
-        update { previous ->
-            if (previous.isEmpty()) {
-                listOf(viewModel)
-            } else {
-                previous.dropLast(1).toMutableList().also {
-                    it.add(viewModel)
-                }
+        updateInternal(transitionInfo, stackTransition) {
+            if (it.size > 0) {
+                it.removeAt(it.size - 1)
             }
+            it.add(viewModel)
         }
     }
 
-    override fun replaceAll(viewModel: ViewModel, transitionInfo: Any?) {
-        viewModel.verifyContext()
-        addTransition(currentViewModel(), viewModel, transitionInfo)
-        update {
-            listOf(viewModel)
-        }
+    override fun replaceAll(viewModel: ViewModel, transitionInfo: Any?, stackTransition: StackTransition) {
+        updateInternal(transitionInfo, stackTransition, listOf(viewModel))
     }
 
 }

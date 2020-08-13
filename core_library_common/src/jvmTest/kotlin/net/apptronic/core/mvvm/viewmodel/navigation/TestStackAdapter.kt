@@ -9,10 +9,10 @@ internal class TestStackAdapter : ViewModelStackAdapter() {
     var lastTransition: Any? = null
     var lastOnFront: Boolean? = null
 
-    override fun onInvalidate(newModel: ViewModel?, isNewOnFront: Boolean, transitionInfo: Any?) {
+    override fun onInvalidate(newModel: ViewModel?, transitionInfo: TransitionInfo) {
         activeModel = newModel
-        lastOnFront = isNewOnFront
-        lastTransition = transitionInfo
+        lastOnFront = transitionInfo.isNewOnFront
+        lastTransition = transitionInfo.spec
     }
 
 }

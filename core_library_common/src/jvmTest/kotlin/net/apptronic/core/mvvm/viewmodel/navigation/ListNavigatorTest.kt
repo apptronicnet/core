@@ -8,7 +8,6 @@ import net.apptronic.core.component.terminate
 import net.apptronic.core.component.value
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelLifecycle
-import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelListAdapter
 import net.apptronic.core.testutils.testContext
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -25,16 +24,12 @@ class ListNavigatorTest {
 
     fun childModel() = ViewModel(rootViewModel.viewModelContext())
 
-    private val adapter = ViewModelListAdapter()
-    private var listenerItems: List<ViewModel> = emptyList()
+    private val adapter = TestListAdapter(navigator)
     private var listItems: List<ViewModel> = emptyList()
     private lateinit var status: ListNavigatorStatus
 
     fun addVerification() {
         navigator.setAdapter(adapter)
-        adapter.addListener {
-            listenerItems = adapter.getItems()
-        }
         navigator.subscribe {
             listItems = it
         }
@@ -50,14 +45,12 @@ class ListNavigatorTest {
     private fun verifyState(itemsList: List<ViewModel>) {
         assertEquals(itemsList.size, navigator.getStatus().all.size)
         assertEquals(itemsList.size, status.all.size)
-        assertEquals(itemsList.size, adapter.getItems().size)
-        assertEquals(itemsList.size, listenerItems.size)
+        assertEquals(itemsList.size, adapter.items.size)
         assertEquals(itemsList.size, listItems.size)
         itemsList.forEachIndexed { index, viewModel ->
             assertSame(viewModel, navigator.getStatus().all[index])
             assertSame(viewModel, status.all[index])
-            assertSame(viewModel, adapter.getItems()[index])
-            assertSame(viewModel, listenerItems[index])
+            assertSame(viewModel, adapter.items[index])
             assertSame(viewModel, listItems[index])
         }
     }
@@ -195,13 +188,13 @@ class ListNavigatorTest {
         rootViewModel.enterStage(ViewModelLifecycle.STAGE_FOCUSED)
         assertTrue(child1.isStateAttached())
 
-        adapter.setBound(child1, true)
+        navigator.setBound(child1, true)
         assertTrue(child1.isStateBound())
 
-        adapter.setVisible(child1, true)
+        navigator.setVisible(child1, true)
         assertTrue(child1.isStateVisible())
 
-        adapter.setFocused(child1, true)
+        navigator.setFocused(child1, true)
         assertTrue(child1.isStateFocused())
 
         rootViewModel.exitStage(ViewModelLifecycle.STAGE_FOCUSED)

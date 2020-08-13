@@ -85,9 +85,9 @@ internal class ViewModelContainer(
         focusedLocal.set(value)
     }
 
-    private var visibilityChangeCallback: () -> Unit = {}
+    private var visibilityChangeCallback: (Boolean) -> Unit = {}
 
-    fun observeVisibilityChanged(callback: () -> Unit) {
+    fun observeVisibilityChanged(callback: (Boolean) -> Unit) {
         visibilityChangeCallback = callback
     }
 
@@ -99,7 +99,7 @@ internal class ViewModelContainer(
         shouldShow.subscribe(viewModel.context) {
             if (shouldShowValue != it) {
                 shouldShowValue = it
-                visibilityChangeCallback.invoke()
+                visibilityChangeCallback.invoke(it)
             }
         }
     }
