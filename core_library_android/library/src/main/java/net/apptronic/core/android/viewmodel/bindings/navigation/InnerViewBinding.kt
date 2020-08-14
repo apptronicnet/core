@@ -7,6 +7,7 @@ import net.apptronic.core.android.viewmodel.Binding
 import net.apptronic.core.android.viewmodel.BindingContainer
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.ViewBinderFactory
+import net.apptronic.core.android.viewmodel.view.ViewContainerDelegate
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 
 enum class BindingType(
@@ -64,22 +65,35 @@ private class InnerViewBinding(
 ) : Binding() {
 
     override fun onBind(viewModel: ViewModel, viewBinder: ViewBinder<*>) {
+        val delegate = viewBinder.getViewDelegate<ViewContainerDelegate<*>>()
         val targetBinder = factory.invoke(targetViewModel)
         val contentView: View = if (bindingType.detectAndCreate) {
             val container = targetView as? ViewGroup
             if (container != null && container.childCount == 0) {
-                val contentView = targetBinder.performCreateView(container.context, null, container)
-                targetBinder.onAttachView(contentView, container)
+                val contentView = delegate.performCreateView(
+                    viewModel,
+                    targetBinder,
+                    container.context,
+                    null,
+                    container
+                )
+                delegate.performAttachView(viewModel, contentView, container)
                 contentView
             } else targetView
         } else if (bindingType.createLayout) {
             val container = targetView as ViewGroup
             container.removeAllViews()
-            val contentView = targetBinder.performCreateView(container.context, null, container)
-            targetBinder.onAttachView(contentView, container)
+            val contentView = delegate.performCreateView(
+                viewModel,
+                targetBinder,
+                container.context,
+                null,
+                container
+            )
+            delegate.performAttachView(viewModel, contentView, container)
             contentView
         } else targetView
-        targetBinder.performViewBinding(contentView, targetViewModel)
+        targetBinder.performViewBinding(targetViewModel, contentView)
     }
 
     override fun onUnbind(action: () -> Unit) {

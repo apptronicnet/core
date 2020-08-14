@@ -2,17 +2,19 @@ package net.apptronic.core.android.viewmodel
 
 import android.app.Activity
 import android.app.Dialog
-import android.content.Context
 import android.os.Parcelable
 import android.util.SparseArray
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
+import net.apptronic.core.android.viewmodel.view.ActivityDelegate
+import net.apptronic.core.android.viewmodel.view.DialogDelegate
+import net.apptronic.core.android.viewmodel.view.ViewContainerDelegate
 import net.apptronic.core.component.plugin.extensionDescriptor
 import net.apptronic.core.debugError
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelLifecycle
+import kotlin.reflect.KClass
 
 private val SavedInstanceStateExtensionDescriptor = extensionDescriptor<SparseArray<Parcelable>>()
 private val ViewBinderExtensionsDescriptor = extensionDescriptor<ViewBinder<*>>()
@@ -45,78 +47,32 @@ abstract class ViewBinder<T : ViewModel> : BindingContainer {
     private var view: View? = null
     private var bindings: Bindings? = null
 
-    /**
-     * Invoke to create generic view for parameters
-     */
-    fun performCreateView(
-        context: Context, inflater: LayoutInflater? = null, container: ViewGroup? = null
-    ): View {
-        val realInflater = inflater ?: LayoutInflater.from(context)
-        return onCreateView(context, realInflater, container)
+    private val delegates = mutableMapOf<KClass<*>, Any>()
+
+    inline fun <reified Delegate : Any> getViewDelegate(): Delegate {
+        return getViewDelegate(Delegate::class)
     }
 
     /**
-     * Create [View] for adding to [container]
+     * Called to create delegate which is responsible for interaction with concrete view type
      */
-    open fun onCreateView(context: Context, inflater: LayoutInflater, container: ViewGroup?): View {
-        val layoutResId = this.layoutResId
-            ?: throw IllegalStateException("[layoutResId] is not specified for $this")
-        return inflater.inflate(layoutResId, container, false)
+    @Suppress("UNCHECKED_CAST")
+    fun <Delegate : Any> getViewDelegate(type: KClass<Delegate>): Delegate {
+        delegates[type]?.let {
+            return@getViewDelegate it as Delegate
+        }
+        val delegate = onCreateViewDelegate(type) as? Delegate
+            ?: throw UnsupportedViewDelegateException("$this does not provide delegate for type $type")
+        delegates[type] = delegate
+        return delegates[type] as Delegate
     }
 
-    /**
-     * Create [View] for [activity]
-     */
-    open fun onCreateActivityView(activity: Activity): View {
-        return onCreateView(activity, activity.layoutInflater, null)
-    }
-
-    /**
-     * Create [View] for [Dialog]
-     */
-    open fun onCreateDialogView(dialog: Dialog): View {
-        return performCreateView(dialog.context, null, null)
-    }
-
-    /**
-     * Create [Dialog] which should show [View]
-     */
-    open fun onCreateDialog(context: Context): Dialog {
-        return Dialog(context)
-    }
-
-    /**
-     * Attach [view] to a [container] meaning it should be added and, if needed, perform additional
-     * actions
-     */
-    open fun onAttachView(view: View, container: ViewGroup) {
-        container.isSaveFromParentEnabled = false
-        container.addView(view)
-    }
-
-    /**
-     * Set [View] to [activity]
-     */
-    open fun onAttachActivityView(activity: Activity, view: View) {
-        activity.setContentView(view)
-    }
-
-    /**
-     * Attach [View] to [dialog]
-     */
-    open fun onAttachDialogView(dialog: Dialog, view: View) {
-        dialog.setContentView(view)
-    }
-
-    /**
-     * Called when [dialog] for [viewModel] is shown.
-     *
-     * May be called many times after save/restore [View] in case of [Activity] recreation. Each
-     * time new instance of [dialog] is created for same [viewModel]
-     */
-    open fun onDialogShown(dialog: Dialog, viewModel: ViewModel) {
-        dialog.setOnDismissListener {
-            viewModel.closeSelf()
+    open fun <Delegate : Any> onCreateViewDelegate(type: KClass<Delegate>): Any? {
+        return when (type) {
+            ViewContainerDelegate::class -> ViewContainerDelegate<T>()
+            ActivityDelegate::class -> ActivityDelegate<T>()
+            DialogDelegate::class -> DialogDelegate<T>()
+            else -> null
         }
     }
 
@@ -135,7 +91,8 @@ abstract class ViewBinder<T : ViewModel> : BindingContainer {
     /**
      * Bind [view] to [viewModel]
      */
-    fun performViewBinding(view: View, viewModel: ViewModel) {
+    @Suppress("UNCHECKED_CAST")
+    fun performViewBinding(viewModel: ViewModel, view: View) {
         if (viewModel.extensions[ViewBinderExtensionsDescriptor] != null) {
             debugError(Error("$viewModel already have bound view!!!"))
         }

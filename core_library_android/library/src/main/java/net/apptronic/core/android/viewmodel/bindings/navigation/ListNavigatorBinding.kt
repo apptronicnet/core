@@ -39,7 +39,8 @@ class ListNavigatorBinding(
         val viewModelAdapter =
             ViewBinderListAdapter(
                 factory,
-                styleAdapter
+                styleAdapter,
+                navigator
             )
         val adapter = RecyclerViewAdapter(viewModelAdapter, bindingStrategy)
         recyclerView.adapter = adapter

@@ -4,8 +4,10 @@ import android.app.Dialog
 import android.content.Context
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.ViewBinderFactory
+import net.apptronic.core.android.viewmodel.view.DialogDelegate
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelStackAdapter
+import net.apptronic.core.mvvm.viewmodel.navigation.TransitionInfo
 
 open class DialogBinderStackAdapter(
     private val context: Context,
@@ -16,55 +18,58 @@ open class DialogBinderStackAdapter(
         setup.invoke(viewBinderFactory)
     }
 
-    private class DialogAndView(
+    class DialogAndBinder(
         val viewBinder: ViewBinder<*>,
         val dialog: Dialog
     )
 
-    private var current: DialogAndView? = null
+    private var current: DialogAndBinder? = null
 
-    override fun onInvalidate(newModel: ViewModel?, isNewOnFront: Boolean, transitionInfo: Any?) {
+    override fun onInvalidate(newModel: ViewModel?, transitionInfo: TransitionInfo) {
         val newBinder =
             if (newModel != null) viewBinderFactory.getBinder(newModel) else null
         val next = if (newBinder != null && newModel != null) {
-            val dialog = newBinder.onCreateDialog(context)
-            val view = newBinder.onCreateDialogView(dialog)
-            newBinder.onAttachDialogView(dialog, view)
-            newBinder.performViewBinding(view, newModel)
-            DialogAndView(
-                newBinder,
-                dialog
-            )
+            val delegate = newBinder.getViewDelegate<DialogDelegate<*>>()
+            val dialog = delegate.performCreateDialog(newModel, newBinder, context)
+            val view = delegate.performCreateDialogView(newModel, newBinder, context)
+            newBinder.performViewBinding(newModel, view)
+            delegate.performAttachDialogView(newModel, newBinder, dialog, view)
+            DialogAndBinder(newBinder, dialog)
         } else null
-        setDialog(next, transitionInfo)
+        setDialog(next, transitionInfo.spec)
         next?.let {
-            it.viewBinder.onDialogShown(it.dialog, it.viewBinder.getViewModel())
+            val delegate = it.viewBinder.getViewDelegate<DialogDelegate<*>>()
+            delegate.performDialogShown(it.viewBinder.getViewModel(), it.viewBinder, it.dialog)
         }
     }
 
-    private fun setDialog(next: DialogAndView?, transitionInfo: Any?) {
+    private fun setDialog(next: DialogAndBinder?, transitionSpec: Any?) {
         val old = current
         current = next
         if (old != null && next != null) {
-            onReplace(old.dialog, next.dialog, transitionInfo)
+            onReplace(old, next, transitionSpec)
         } else if (next != null) {
-            onAdd(next.dialog, transitionInfo)
+            onAdd(next, transitionSpec)
         } else if (old != null) {
-            onRemove(old.dialog, transitionInfo)
+            onRemove(old, transitionSpec)
         }
     }
 
-    open fun onAdd(next: Dialog, transitionInfo: Any?) {
-        next.show()
+    open fun onAdd(next: DialogAndBinder, transitionSpec: Any?) {
+        val delegate = next.viewBinder.getViewDelegate<DialogDelegate<*>>()
+        delegate.performShowDialog(next.viewBinder.getViewModel(), next.viewBinder, next.dialog)
     }
 
-    open fun onReplace(previous: Dialog, next: Dialog, transitionInfo: Any?) {
-        onRemove(previous, transitionInfo)
-        onAdd(next, transitionInfo)
+    open fun onReplace(previous: DialogAndBinder, next: DialogAndBinder, transitionSpec: Any?) {
+        onRemove(previous, transitionSpec)
+        onAdd(next, transitionSpec)
     }
 
-    open fun onRemove(previous: Dialog, transitionInfo: Any?) {
-        previous.dismiss()
+    open fun onRemove(previous: DialogAndBinder, transitionSpec: Any?) {
+        val delegate = previous.viewBinder.getViewDelegate<DialogDelegate<*>>()
+        delegate.performDismissDialog(
+            previous.viewBinder.getViewModel(), previous.viewBinder, previous.dialog
+        )
     }
 
 }

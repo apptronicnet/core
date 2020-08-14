@@ -3,44 +3,41 @@ package net.apptronic.core.android.viewmodel.navigation
 import android.view.View
 import android.view.ViewGroup
 import net.apptronic.core.android.viewmodel.ViewBinder
-import net.apptronic.core.android.viewmodel.ViewBinderFactory
 import net.apptronic.core.android.viewmodel.transitions.TransitionBuilder
 import net.apptronic.core.android.viewmodel.transitions.ViewSwitch
 import net.apptronic.core.mvvm.viewmodel.ViewModel
-import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelListAdapter
 import net.apptronic.core.mvvm.viewmodel.navigation.BackNavigationStatus
 import net.apptronic.core.mvvm.viewmodel.navigation.HasBackNavigation
 import net.apptronic.core.mvvm.viewmodel.navigation.StackNavigationViewModel
+import net.apptronic.core.mvvm.viewmodel.navigation.TransitionInfo
 
 class StackNavigationFrameAdapter(
-    private val viewBinderFactory: ViewBinderFactory = ViewBinderFactory(),
     private val container: ViewGroup,
     private val transitionBuilder: TransitionBuilder = TransitionBuilder(),
     private val defaultAnimationTime: Long =
         container.resources.getInteger(android.R.integer.config_mediumAnimTime).toLong(),
     private val maxSavedViews: Int = 5,
-    private val navigatorAccess: NavigatorAccess
-) : ViewModelListAdapter() {
+    private val listAdapter: ViewBinderListAdapter
+) : ViewBinderListAdapter.UpdateListener {
 
     private var isInTransition = false
-
-    interface NavigatorAccess {
-
-        fun getTransition(from: ViewModel?, to: ViewModel?): Any?
-
-    }
+    private var items: List<ViewModel> = emptyList()
 
     private val viewBinders = mutableListOf<AttachedBinder>()
 
     init {
         container.removeAllViews()
-        addListener {
-            invalidateState()
-        }
+        listAdapter.addListener(this)
     }
 
     fun bind(model: StackNavigationViewModel) {
-        model.listNavigator.setAdapter(this)
+        model.listNavigator.setAdapter(listAdapter)
+    }
+
+    override fun onDataChanged(items: List<ViewModel>, changeInfo: Any?) {
+        this.items = items
+        val transitionInfo = changeInfo as? TransitionInfo ?: TransitionInfo(true, null)
+        invalidateState(transitionInfo)
     }
 
     private var currentBinder: AttachedBinder? = null
@@ -58,10 +55,10 @@ class StackNavigationFrameAdapter(
         }
     }
 
-    private fun invalidateState() {
+    private fun invalidateState(transitionInfo: TransitionInfo) {
         clearViews()
-        val currentViewModel = if (getSize() > 0) {
-            getItemAt(getSize() - 1)
+        val currentViewModel = if (listAdapter.getSize() > 0) {
+            listAdapter.getViewModelAt(listAdapter.getSize() - 1)
         } else {
             null
         }
@@ -74,7 +71,7 @@ class StackNavigationFrameAdapter(
         }
         val currentBinder = this.currentBinder
         viewBinders.toTypedArray().forEach {
-            val actual = getItems().contains(it.viewModel)
+            val actual = listAdapter.contains(it.viewModel)
             if (!actual) {
                 detachBinder(it, it != previousBinder)
             }
@@ -82,28 +79,23 @@ class StackNavigationFrameAdapter(
         removeSavedBindersIfNeeded()
         if (currentBinder != previousBinder) {
             if (currentBinder != null) {
-                setVisible(currentBinder.viewModel, true)
-                setFocused(currentBinder.viewModel, true)
+                listAdapter.setVisible(currentBinder.binder, true)
+                listAdapter.setFocused(currentBinder.binder, true)
             }
             if (previousBinder != null) {
-                setFocused(previousBinder.viewModel, false)
-                setVisible(previousBinder.viewModel, false)
+                listAdapter.setFocused(previousBinder.binder, false)
+                listAdapter.setVisible(previousBinder.binder, false)
             }
-
-            val transitionInfo = navigatorAccess.getTransition(
-                previousBinder?.viewModel,
-                currentBinder?.viewModel
-            )
 
             val viewSwitch = ViewSwitch(
                 entering = currentBinder?.view,
                 exiting = previousBinder?.view,
                 container = container,
-                isNewOnFront = (currentBinder?.position ?: -1) >= (previousBinder?.position ?: -1)
+                isNewOnFront = transitionInfo.isNewOnFront
             )
             val transition = transitionBuilder.getViewSwitchTransition(
                 viewSwitch,
-                transitionInfo,
+                transitionInfo.spec,
                 defaultAnimationTime
             )
             transition.doOnStart {
@@ -144,7 +136,7 @@ class StackNavigationFrameAdapter(
     }
 
     fun getViewAt(position: Int): View {
-        return getOrCreateBinder(getItemAt(position)).view
+        return getOrCreateBinder(listAdapter.getViewModelAt(position)).view
     }
 
     fun unbind() {
@@ -160,11 +152,9 @@ class StackNavigationFrameAdapter(
     }
 
     private fun attachBinder(viewModel: ViewModel): AttachedBinder {
-        val viewBinder = viewBinderFactory.getBinder(viewModel)
-        setBound(viewModel, true)
-        val view = viewBinder.performCreateView(container.context, null, container)
+        val view = listAdapter.createView(viewModel, container)
+        val viewBinder = listAdapter.bindView(viewModel, view)
         view.visibility = View.GONE
-        viewBinder.performViewBinding(view, viewModel)
         val attachedBinder = AttachedBinder(viewBinder)
         viewBinders.add(attachedBinder)
         sortBinders()
@@ -190,7 +180,6 @@ class StackNavigationFrameAdapter(
     }
 
     private fun sortBinders() {
-        val items = getItems()
         viewBinders.forEach {
             it.refreshPosition(items)
             container.removeAllViews()
@@ -205,7 +194,7 @@ class StackNavigationFrameAdapter(
         if (removeView) {
             container.removeView(binder.view)
         }
-        setBound(binder.viewModel, false)
+        listAdapter.unbindView(binder.binder)
         viewBinders.remove(binder)
     }
 

@@ -6,16 +6,18 @@ import androidx.recyclerview.widget.RecyclerView
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.navigation.ViewBinderListAdapter
 import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.mvvm.viewmodel.navigation.*
+
+private const val NO_TYPE = -1
+private const val NO_ID = -1L
 
 class RecyclerViewAdapter(
-    private val viewModelAdapter: ViewBinderListAdapter,
+    private val listAdapter: ViewBinderListAdapter,
     private val bindingStrategy: BindingStrategy
-) : RecyclerView.Adapter<RecyclerViewAdapter.ViewModelHolder>() {
+) : RecyclerView.Adapter<RecyclerViewAdapter.ViewModelHolder>(),
+    ViewBinderListAdapter.UpdateListener {
 
     private var isBound = true
-
-    private val NO_TYPE = -1
-    private val NO_ID = -1L
 
     fun onUnbound() {
         isBound = false
@@ -23,46 +25,64 @@ class RecyclerViewAdapter(
 
     init {
         setHasStableIds(true)
-        viewModelAdapter.addListener {
-            notifyDataSetChanged()
+        listAdapter.addListener(this)
+    }
+
+    override fun onDataChanged(items: List<ViewModel>, changeInfo: Any?) {
+        when (changeInfo) {
+            is ItemAdded -> notifyItemInserted(changeInfo.index)
+            is ItemRemoved -> notifyItemRemoved(changeInfo.index)
+            is ItemMoved -> notifyItemMoved(changeInfo.fromIndex, changeInfo.toIndex)
+            is RangeInserted -> notifyItemRangeInserted(
+                changeInfo.range.first,
+                changeInfo.range.endInclusive - changeInfo.range.first + 1
+            )
+            is RangeRemoved -> notifyItemRangeRemoved(
+                changeInfo.range.first,
+                changeInfo.range.endInclusive - changeInfo.range.first + 1
+            )
+            else -> notifyDataSetChanged()
         }
     }
 
     fun getItemAt(position: Int): ViewModel {
-        return viewModelAdapter.getItemAt(position)
+        return listAdapter.getViewModelAt(position)
     }
 
     override fun getItemId(position: Int): Long {
         return if (isBound) {
-            viewModelAdapter.getItemAt(position).componentId
+            listAdapter.getId(position)
         } else NO_ID
     }
 
     override fun getItemCount(): Int {
-        return viewModelAdapter.getSize()
+        return listAdapter.getSize()
     }
 
     override fun getItemViewType(position: Int): Int {
         return if (isBound) {
-            viewModelAdapter.getViewType(position)
+            listAdapter.getViewType(position)
         } else NO_TYPE
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewModelHolder {
         return if (isBound) {
-            ViewModelHolder(viewModelAdapter.createView(viewType, parent))
+            ViewModelHolder(listAdapter.createView(viewType, parent))
         } else ViewModelHolder(View(parent.context))
     }
 
     override fun onBindViewHolder(holder: ViewModelHolder, position: Int) {
         if (isBound) {
-            val viewModel = viewModelAdapter.getItemAt(position)
+            val viewModel = listAdapter.getViewModelAt(position)
             if (viewModel != holder.viewModel) {
                 if (bindingStrategy == BindingStrategy.UntilReused) {
                     unbindViewHolder(holder)
                 }
                 holder.viewModel = viewModel
-                holder.viewBinder = viewModelAdapter.bindView(viewModel, position, holder.itemView)
+                val binder = listAdapter.bindView(position, holder.itemView)
+                listAdapter.setVisible(binder, true)
+                listAdapter.setFocused(binder, true)
+                holder.viewBinder = binder
             }
         }
     }
@@ -77,7 +97,9 @@ class RecyclerViewAdapter(
     private fun unbindViewHolder(holder: ViewModelHolder) {
         val binder = holder.viewBinder
         if (binder != null) {
-            viewModelAdapter.unbindView(binder)
+            listAdapter.setFocused(binder, false)
+            listAdapter.setVisible(binder, false)
+            listAdapter.unbindView(binder)
             holder.viewModel = null
             holder.viewBinder = null
         }

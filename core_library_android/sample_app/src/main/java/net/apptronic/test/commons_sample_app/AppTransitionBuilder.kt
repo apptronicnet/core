@@ -13,10 +13,10 @@ class AppTransitionBuilder : TransitionBuilder() {
 
     override fun createViewSwitchTransition(
         viewSwitch: ViewSwitch,
-        transitionInfo: Any,
+        transitionSpec: Any,
         duration: Long
     ): Transition<ViewSwitch>? {
-        return when (transitionInfo) {
+        return when (transitionSpec) {
             AppTransition.BottomSheet -> viewSwitch.transition {
                 enter {
                     translateYToSelf(1f, 0f)
@@ -28,7 +28,7 @@ class AppTransitionBuilder : TransitionBuilder() {
 
                 }
             }.withDuration(duration)
-            else -> super.createViewSwitchTransition(viewSwitch, transitionInfo, duration)
+            else -> super.createViewSwitchTransition(viewSwitch, transitionSpec, duration)
         }
     }
 

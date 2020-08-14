@@ -35,7 +35,8 @@ private class PagerNavigatorBinding(
     override fun onBind(viewModel: ViewModel, viewBinder: ViewBinder<*>) {
         val viewModelAdapter =
             ViewBinderListAdapter(
-                factory
+                factory,
+                itemStateNavigator = navigator
             )
         viewPager.adapter = ViewPagerAdapter(viewModelAdapter).apply {
             if (titleFactory != null) {

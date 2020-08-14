@@ -2,6 +2,7 @@ package net.apptronic.core.android.compat
 
 import android.os.Bundle
 import net.apptronic.core.android.viewmodel.ViewBinder
+import net.apptronic.core.android.viewmodel.view.ActivityDelegate
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 
 abstract class ViewBinderActivity<T : ViewModel> : CoreCompatActivity<T>() {
@@ -13,9 +14,10 @@ abstract class ViewBinderActivity<T : ViewModel> : CoreCompatActivity<T>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewBinder = buildViewBinder()
-        val contentView = viewBinder!!.onCreateActivityView(this)
+        val delegate = viewBinder!!.getViewDelegate<ActivityDelegate<*>>()
+        val contentView = delegate.performCreateActivityView(viewModel, viewBinder!!, this)
         setContentView(contentView)
-        viewBinder!!.performViewBinding(contentView, viewModel)
+        viewBinder!!.performViewBinding(viewModel, contentView)
     }
 
     override fun onDestroy() {

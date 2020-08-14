@@ -36,10 +36,7 @@ class DialogNavigatorBinding(
 
     override fun onBind(viewModel: ViewModel, viewBinder: ViewBinder<*>) {
         navigator.setAdapter(
-            DialogBinderStackAdapter(
-                context,
-                factory
-            )
+            DialogBinderStackAdapter(context, factory)
         )
     }
 

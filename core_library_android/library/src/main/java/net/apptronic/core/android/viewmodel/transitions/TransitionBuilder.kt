@@ -12,10 +12,10 @@ open class TransitionBuilder {
 
     fun getViewSwitchTransition(
         viewSwitch: ViewSwitch,
-        transition: Any?,
+        transitionSpec: Any?,
         duration: Long
     ): Transition<ViewSwitch> {
-        return transition?.let {
+        return transitionSpec?.let {
             createViewSwitchTransition(viewSwitch, it, duration)
         } ?: ViewSwitchTransition(null, null)
 
@@ -25,15 +25,15 @@ open class TransitionBuilder {
      * Called when it needed to create animation transition for adding/removing/switching views
      *
      * @param viewSwitch is object which represents what is switching
-     * @param transitionInfo specification of transition
+     * @param transitionSpec specification of transition
      * @param duration desired animation time
      */
     open fun createViewSwitchTransition(
         viewSwitch: ViewSwitch,
-        transitionInfo: Any,
+        transitionSpec: Any,
         duration: Long
     ): Transition<ViewSwitch>? {
-        return when (transitionInfo) {
+        return when (transitionSpec) {
             BasicTransition.Fade -> viewSwitch.fadeTransition()
                 .withDuration(duration)
             BasicTransition.Next -> viewSwitch.nextTransition()

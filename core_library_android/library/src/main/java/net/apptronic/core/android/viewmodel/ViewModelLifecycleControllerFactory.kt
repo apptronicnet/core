@@ -2,6 +2,7 @@ package net.apptronic.core.android.viewmodel
 
 import android.app.Activity
 import android.view.View
+import net.apptronic.core.android.viewmodel.view.ActivityDelegate
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.navigation.ViewModelLifecycleController
 
@@ -11,9 +12,10 @@ fun <T : ViewModel> lifecycleController(
     activity: Activity
 ): ViewModelLifecycleController {
     viewModel.doOnBind {
-        val view = activityBinder.onCreateActivityView(activity)
-        activity.setContentView(view)
-        activityBinder.performViewBinding(view, viewModel)
+        val delegate = activityBinder.getViewDelegate<ActivityDelegate<*>>()
+        val view = delegate.performCreateActivityView(viewModel, activityBinder, activity)
+        delegate.performAttachActivityView(viewModel, activityBinder, activity, view)
+        activityBinder.performViewBinding(viewModel, view)
     }
     return ViewModelLifecycleController(viewModel)
 }
@@ -33,7 +35,7 @@ fun <T : ViewModel> lifecycleController(
     contentViewProvider: () -> View
 ): ViewModelLifecycleController {
     viewModel.doOnBind {
-        viewBinder.performViewBinding(contentViewProvider.invoke(), viewModel)
+        viewBinder.performViewBinding(viewModel, contentViewProvider.invoke())
     }
     return ViewModelLifecycleController(viewModel)
 }
@@ -54,7 +56,7 @@ fun <T : ViewModel> lifecycleController(
     contentView: View
 ): ViewModelLifecycleController {
     viewModel.doOnBind {
-        viewBinder.performViewBinding(contentView, viewModel)
+        viewBinder.performViewBinding(viewModel, contentView)
     }
     return ViewModelLifecycleController(viewModel)
 }

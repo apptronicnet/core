@@ -2,6 +2,7 @@ package net.apptronic.core.android.viewmodel
 
 import android.app.Activity
 import net.apptronic.core.android.plugins.getViewBinderFactoryFromExtension
+import net.apptronic.core.android.viewmodel.view.ActivityDelegate
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.dispatcher.ViewContainer
 import net.apptronic.core.mvvm.viewmodel.dispatcher.ViewModelDispatcher
@@ -14,9 +15,10 @@ fun <T : ViewModel> Activity.activityContainer(
     return ActivityViewContainerImpl<T>(
         this, dispatcher
     ) {
-        val view = activityBinder.onCreateActivityView(this)
+        val delegate = activityBinder.getViewDelegate<ActivityDelegate<*>>()
+        val view = delegate.performCreateActivityView(it, activityBinder, this)
         setContentView(view)
-        activityBinder.performViewBinding(view, it)
+        activityBinder.performViewBinding(it, view)
     }
 }
 
@@ -30,10 +32,11 @@ fun <T : ViewModel> Activity.activityContainer(
         val useFactory = factory
             ?: it.getViewBinderFactoryFromExtension()
             ?: throw IllegalArgumentException("ViewBinderFactory should be provided by parameters or Context.installViewFactoryPlugin()")
-        val activityView = useFactory.getBinder(it) as ViewBinder<T>
-        val view = activityView.onCreateActivityView(this)
+        val activityBinder = useFactory.getBinder(it) as ViewBinder<T>
+        val delegate = activityBinder.getViewDelegate<ActivityDelegate<*>>()
+        val view = delegate.performCreateActivityView(it, activityBinder, this)
         setContentView(view)
-        activityView.performViewBinding(view, it)
+        activityBinder.performViewBinding(it, view)
     }
 }
 

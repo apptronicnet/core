@@ -6,10 +6,11 @@ import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.ViewBinderFactory
 import net.apptronic.core.android.viewmodel.transitions.TransitionBuilder
 import net.apptronic.core.android.viewmodel.transitions.ViewSwitch
+import net.apptronic.core.android.viewmodel.view.ViewContainerDelegate
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelStackAdapter
 import net.apptronic.core.mvvm.viewmodel.navigation.StackNavigator
-import kotlin.math.max
+import net.apptronic.core.mvvm.viewmodel.navigation.TransitionInfo
 
 /**
  * Adapter for [StackNavigator]
@@ -32,38 +33,50 @@ open class ViewBinderStackAdapter(
 
     private var currentBinder: ViewBinder<*>? = null
 
-    override fun onInvalidate(newModel: ViewModel?, isNewOnFront: Boolean, transitionInfo: Any?) {
+    override fun onInvalidate(newModel: ViewModel?, transitionInfo: TransitionInfo) {
         val newBinder =
             if (newModel != null) viewBinderFactory.getBinder(newModel) else null
         if (newBinder != null && newModel != null) {
-            val view = newBinder.performCreateView(container.context, null, container)
-            newBinder.performViewBinding(view, newModel)
+            val delegate = newBinder.getViewDelegate<ViewContainerDelegate<*>>()
+            val view =
+                delegate.performCreateView(newModel, newBinder, container.context, null, container)
+            newBinder.performViewBinding(newModel, view)
         }
-        setView(newBinder, isNewOnFront, transitionInfo)
+        setView(newBinder, transitionInfo.isNewOnFront, transitionInfo.spec)
     }
 
-    private fun setView(newBinder: ViewBinder<*>?, isNewOnFront: Boolean, transitionInfo: Any?) {
-        val oldAndroidView = currentBinder
+    private fun setView(newBinder: ViewBinder<*>?, isNewOnFront: Boolean, transitionSpec: Any?) {
+        val oldBinder = currentBinder
         currentBinder = newBinder
-        if (oldAndroidView != null && newBinder != null) {
+        if (oldBinder != null && newBinder != null) {
             onReplace(
+                newBinder.getViewModel(),
+                newBinder,
                 container,
-                oldAndroidView.getView(),
+                oldBinder.getView(),
                 newBinder.getView(),
                 isNewOnFront,
-                transitionInfo
+                transitionSpec
             )
         } else if (newBinder != null) {
-            onAdd(container, newBinder.getView(), transitionInfo)
-        } else if (oldAndroidView != null) {
-            onRemove(container, oldAndroidView.getView(), transitionInfo)
+            onAdd(
+                newBinder.getViewModel(),
+                newBinder, container, newBinder.getView(), transitionSpec
+            )
+        } else if (oldBinder != null) {
+            onRemove(
+                oldBinder.getViewModel(),
+                oldBinder, container, oldBinder.getView(), transitionSpec
+            )
         }
     }
 
     open fun onAdd(
+        viewModel: ViewModel,
+        viewBinder: ViewBinder<*>,
         container: ViewGroup,
         newView: View,
-        transitionInfo: Any?
+        transitionSpec: Any?
     ) {
         val viewSwitch = ViewSwitch(
             entering = newView,
@@ -72,9 +85,9 @@ open class ViewBinderStackAdapter(
             isNewOnFront = true
         )
         val transition = transitionBuilder.getViewSwitchTransition(
-            viewSwitch, transitionInfo, defaultAnimationTime
+            viewSwitch, transitionSpec, defaultAnimationTime
         )
-        container.addView(newView, true)
+        addViewToContainer(viewModel, viewBinder, container, newView, true)
         newView.visibility = View.INVISIBLE
         transition.doOnStart {
             newView.visibility = View.VISIBLE
@@ -82,11 +95,13 @@ open class ViewBinderStackAdapter(
     }
 
     open fun onReplace(
+        viewModel: ViewModel,
+        viewBinder: ViewBinder<*>,
         container: ViewGroup,
         oldView: View,
         newView: View,
         isNewOnFront: Boolean,
-        transitionInfo: Any?
+        transitionSpec: Any?
     ) {
         val viewSwitch = ViewSwitch(
             entering = newView,
@@ -95,18 +110,25 @@ open class ViewBinderStackAdapter(
             isNewOnFront = isNewOnFront
         )
         val transition = transitionBuilder.getViewSwitchTransition(
-            viewSwitch, transitionInfo, defaultAnimationTime
+            viewSwitch, transitionSpec, defaultAnimationTime
         )
-        container.addView(newView, isNewOnFront)
+        addViewToContainer(viewModel, viewBinder, container, newView, isNewOnFront)
         newView.visibility = View.INVISIBLE
         transition.doOnStart {
             newView.visibility = View.VISIBLE
         }.doOnCompleteOrCancel {
-            container.removeView(oldView)
+            val delegate = viewBinder.getViewDelegate<ViewContainerDelegate<*>>()
+            delegate.performDetachView(viewModel, viewBinder, oldView, container)
         }.launch(viewSwitch)
     }
 
-    open fun onRemove(container: ViewGroup, oldView: View, transitionInfo: Any?) {
+    open fun onRemove(
+        viewModel: ViewModel,
+        viewBinder: ViewBinder<*>,
+        container: ViewGroup,
+        oldView: View,
+        transitionSpec: Any?
+    ) {
         val viewSwitch = ViewSwitch(
             entering = null,
             exiting = oldView,
@@ -114,19 +136,27 @@ open class ViewBinderStackAdapter(
             isNewOnFront = false
         )
         val transition = transitionBuilder.getViewSwitchTransition(
-            viewSwitch, transitionInfo, defaultAnimationTime
+            viewSwitch, transitionSpec, defaultAnimationTime
         )
         transition.doOnCompleteOrCancel {
             container.removeView(oldView)
         }.launch(viewSwitch)
     }
 
-    private fun ViewGroup.addView(child: View, toFront: Boolean) {
-        if (toFront) {
-            addView(child)
+    private fun addViewToContainer(
+        viewModel: ViewModel,
+        viewBinder: ViewBinder<*>,
+        container: ViewGroup,
+        child: View,
+        toFront: Boolean
+    ) {
+        val delegate = viewBinder.getViewDelegate<ViewContainerDelegate<*>>()
+        val position = if (toFront) {
+            container.childCount
         } else {
-            addView(child, max(childCount - 1, 0))
+            0
         }
+        delegate.performAttachView(viewModel, child, container, position)
     }
 
 }

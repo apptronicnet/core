@@ -9,6 +9,7 @@ import net.apptronic.core.android.viewmodel.BindingContainer
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.ViewBinderFactory
 import net.apptronic.core.android.viewmodel.navigation.StackNavigationFrameAdapter
+import net.apptronic.core.android.viewmodel.navigation.ViewBinderListAdapter
 import net.apptronic.core.android.viewmodel.transitions.GestureDispatcher
 import net.apptronic.core.android.viewmodel.transitions.GestureTarget
 import net.apptronic.core.android.viewmodel.transitions.NavigationGestureDetector
@@ -50,15 +51,13 @@ private class StackNavigationModelBinding(
     private val transitionBuilder: TransitionBuilder,
     private val defaultAnimationTime: Long,
     private val gestureDetector: NavigationGestureDetector?
-) : Binding(), StackNavigationFrameAdapter.NavigatorAccess {
-
-    override fun getTransition(from: ViewModel?, to: ViewModel?): Any? {
-        return navigationModel.getTransitionInfo(from, to)
-    }
+) : Binding() {
 
     override fun onBind(viewModel: ViewModel, viewBinder: ViewBinder<*>) {
+        val listAdapter =
+            ViewBinderListAdapter(factory, itemStateNavigator = navigationModel.listNavigator)
         val adapter = StackNavigationFrameAdapter(
-            factory, viewGroup, transitionBuilder, defaultAnimationTime, navigatorAccess = this
+            viewGroup, transitionBuilder, defaultAnimationTime, listAdapter = listAdapter
         )
         adapter.bind(navigationModel)
         if (gestureDetector != null) {
@@ -67,9 +66,11 @@ private class StackNavigationModelBinding(
                     gestureDetector
                 )
             gestureDispatcher.attach(viewGroup, GestureTargetImpl(navigationModel, adapter))
-            adapter.addListener {
-                gestureDispatcher.reset()
-            }
+            listAdapter.addListener(object : ViewBinderListAdapter.UpdateListener {
+                override fun onDataChanged(items: List<ViewModel>, changeInfo: Any?) {
+                    gestureDispatcher.reset()
+                }
+            })
             onUnbind {
                 adapter.unbind()
                 gestureDispatcher.detach()
@@ -83,7 +84,7 @@ private class StackNavigationModelBinding(
     ) : GestureTarget {
 
         override fun getBackNavigationStatus(): BackNavigationStatus {
-            if (adapter.getSize() <= 1) {
+            if (navigationModel.listNavigator.getSize() <= 1) {
                 return BackNavigationStatus.Restricted
             }
             return adapter.getBackNavigationStatus()
