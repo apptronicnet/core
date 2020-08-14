@@ -328,6 +328,7 @@ class DynamicListNavigator<T : Any, Id : Any, VM : ViewModel> internal construct
         }
 
         override fun indexOf(element: ViewModel): Int {
+
             // not applicable
             return -1
         }

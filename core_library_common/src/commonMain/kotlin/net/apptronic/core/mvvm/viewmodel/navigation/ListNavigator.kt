@@ -190,9 +190,9 @@ class ListNavigator internal constructor(
         container.getViewModel().onAttachToParent(this)
         container.observeVisibilityChanged {
             if (it) {
-                refreshVisibility(ItemShown(indexOfViewModel(viewModel), viewModel))
+                refreshVisibility(ItemAdded(indexOfViewModel(viewModel)))
             } else {
-                refreshVisibility(ItemHidden(indexOfViewModel(viewModel), viewModel))
+                refreshVisibility(ItemRemoved(indexOfViewModel(viewModel)))
             }
         }
         container.setAttached(true)

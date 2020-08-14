@@ -1,6 +1,11 @@
 package net.apptronic.core.mvvm.viewmodel.navigation
 
-import net.apptronic.core.mvvm.viewmodel.ViewModel
+class ItemAdded(val index: Int)
 
-class ItemShown(val index: Int, val viewModel: ViewModel)
-class ItemHidden(val index: Int, val viewModel: ViewModel)
+class ItemRemoved(val index: Int)
+
+class ItemMoved(val fromIndex: Int, val toIndex: Int)
+
+class RangeInserted(val range: IntRange)
+
+class RangeRemoved(val range: IntRange)
