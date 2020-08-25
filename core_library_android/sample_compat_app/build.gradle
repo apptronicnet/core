@@ -18,7 +18,7 @@ kotlin {
                 implementation kotlin('stdlib-common')
                 implementation kotlin('reflect')
                 implementation "net.apptronic.core:core-commons:${rootProject.ext.library_core_version}"
-                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:${rootProject.ext.coroutines_version}"
+                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:${rootProject.ext.coroutines_version}"
             }
         }
         androidMain {
