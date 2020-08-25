@@ -48,6 +48,7 @@ class IsCancellableJob(val isCancellable: Boolean, val wrappedJob: Job = Supervi
         return operation(initial, this)
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun <E : CoroutineContext.Element> get(key: CoroutineContext.Key<E>): E? {
         if (key == Job) {
             return this as E

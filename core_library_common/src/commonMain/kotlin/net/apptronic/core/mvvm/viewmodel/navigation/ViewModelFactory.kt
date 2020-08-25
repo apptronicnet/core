@@ -18,12 +18,9 @@ inline fun <reified T : Any, Id : Any, VM : ViewModel> ViewModelBuilder<T, Id, V
 inline operator fun <reified T1 : Any, reified T2 : Any, Id1 : Any, Id2 : Any, VM1 : ViewModel, VM2 : ViewModel>
         ViewModelBuilder<T1, Id1, VM1>.plus(other: ViewModelBuilder<T2, Id2, VM2>): ViewModelFactory {
     val builder = this
-    return if (this is ViewModelFactory) {
-        +other
-        this
-    } else viewModelFactory {
-        +builder
-        +other
+    return viewModelFactory {
+        addBuilder(T1::class, builder)
+        addBuilder(T2::class, other)
     }
 }
 
@@ -49,8 +46,12 @@ class ViewModelFactory : ViewModelBuilder<Any, Any, ViewModel> {
     }
 
     fun <SubT : Any, SubId : Any, SubVM : ViewModel> addBuilder(clazz: KClass<SubT>, builder: ViewModelBuilder<SubT, SubId, SubVM>) {
-        val wrapper = ViewModelBuilderWrapper(clazz, builder)
-        builders.add(wrapper)
+        if (builder is ViewModelFactory) {
+            builders.addAll(builder.builders)
+        } else {
+            val wrapper = ViewModelBuilderWrapper(clazz, builder)
+            builders.add(wrapper)
+        }
     }
 
     override fun getId(item: Any): Any {
