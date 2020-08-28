@@ -1,6 +1,6 @@
 package net.apptronic.core.component.di
 
-import net.apptronic.core.base.concurrent.AtomicEntity
+import net.apptronic.core.base.SerialIdGenerator
 import kotlin.reflect.KClass
 
 /**
@@ -13,14 +13,12 @@ sealed class DependencyDescriptor<T>(
 ) {
 
     private companion object {
-        val id = AtomicEntity<Int>(0)
+        val idGenerator by lazy {
+            SerialIdGenerator()
+        }
     }
 
-    internal val descriptorId: Int = id.let {
-        val value = it.get()
-        it.set(value + 1)
-        value
-    }
+    internal val descriptorId: Int = idGenerator.nextId().toInt()
 
     override fun hashCode(): Int {
         return descriptorId

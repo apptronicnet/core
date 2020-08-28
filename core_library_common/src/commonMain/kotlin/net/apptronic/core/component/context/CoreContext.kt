@@ -1,6 +1,5 @@
 package net.apptronic.core.component.context
 
-import net.apptronic.core.base.concurrent.requireNeverFrozen
 import net.apptronic.core.component.coroutines.CoroutineDispatchers
 import net.apptronic.core.component.coroutines.standardCoroutineDispatchers
 import net.apptronic.core.component.di.DependencyDispatcher
@@ -15,10 +14,6 @@ private class CoreContext(
         override val lifecycle: Lifecycle = Lifecycle(),
         override val coroutineDispatchers: CoroutineDispatchers
 ) : BaseContext() {
-
-    init {
-        requireNeverFrozen()
-    }
 
     override val dependencyDispatcher = DependencyDispatcher(this, null)
 

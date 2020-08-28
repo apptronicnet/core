@@ -1,12 +1,6 @@
 package net.apptronic.core.component.lifecycle
 
-import net.apptronic.core.base.concurrent.requireNeverFrozen
-
 internal class CompositeCallback {
-
-    init {
-        requireNeverFrozen()
-    }
 
     private val innerCallbacks = mutableListOf<EventCallback>()
 

@@ -13,16 +13,18 @@ buildscript {
     }
 }
 
+allprojects {
+    repositories {
+        google()
+        gradlePluginPortal()
+        mavenCentral()
+        jcenter()
+    }
+}
+
 apply plugin: "kotlin-multiplatform"
 apply plugin: "kotlinx-serialization"
 apply plugin: "maven-publish"
-
-repositories {
-    google()
-    gradlePluginPortal()
-    mavenCentral()
-    jcenter()
-}
 
 wrapper {
     gradleVersion = "6.1.1"
@@ -34,23 +36,18 @@ version = ext.library_core_version
 
 kotlin {
     jvm()
-    ios {
+    iosX64('ios') {
         binaries {
-            framework()
+            framework {
+                baseName = 'library'
+            }
         }
     }
     sourceSets {
         commonMain {
             dependencies {
-//                implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
                 implementation kotlin("reflect")
                 implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
-            }
-        }
-        commonTest {
-            dependencies {
-                implementation kotlin("test-common")
-                implementation kotlin("test-annotations-common")
             }
         }
         jvmMain {
@@ -64,7 +61,7 @@ kotlin {
                 implementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_version"
             }
         }
-        ios {
+        iosMain {
             dependencies {
                 implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-iosx64:$coroutines_version"
             }

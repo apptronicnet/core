@@ -1,7 +1,5 @@
 package net.apptronic.core.component.lifecycle
 
-import net.apptronic.core.base.concurrent.AtomicEntity
-import net.apptronic.core.base.concurrent.requireNeverFrozen
 import net.apptronic.core.component.entity.EntitySubscription
 import net.apptronic.core.component.entity.subscriptions.EntitySubscriptionListener
 import net.apptronic.core.component.plugin.Extensions
@@ -10,22 +8,18 @@ internal class LifecycleStageImpl(val parent: LifecycleStageParent,
                                   private val definition: LifecycleStageDefinition) :
         LifecycleStage, LifecycleStageParent, EntitySubscriptionListener {
 
-    init {
-        requireNeverFrozen()
-    }
-
-    private val childStage = AtomicEntity<LifecycleStageImpl?>(null)
+    private var childStage: LifecycleStageImpl? = null
 
     private var isEntered = false
     private var isTerminated = false
 
     private val enterCallback = CompositeCallback()
     private val exitCallback = CompositeCallback()
-    private val whenEnteredActions = requireNeverFrozen(HashMap<String, (() -> Unit)>())
+    private val whenEnteredActions = HashMap<String, (() -> Unit)>()
 
     private var enterHandler: OnEnterHandlerImpl? = null
     private var exitHandler: OnExitHandlerImpl? = null
-    private val subscriptions = requireNeverFrozen(mutableListOf<EntitySubscription>())
+    private val subscriptions = mutableListOf<EntitySubscription>()
 
     /**
      * This callbacks are internally created to be executed on exit stage command
@@ -54,10 +48,8 @@ internal class LifecycleStageImpl(val parent: LifecycleStageParent,
     }
 
     fun terminate() {
-        childStage.perform {
-            get()?.terminate()
-            set(null)
-        }
+        childStage?.terminate()
+        childStage = null
         if (isEntered) {
             exit()
         }
@@ -71,12 +63,12 @@ internal class LifecycleStageImpl(val parent: LifecycleStageParent,
     }
 
     fun last(): LifecycleStageImpl {
-        return childStage.get()?.last() ?: this
+        return childStage?.last() ?: this
     }
 
     fun lastEntered(): LifecycleStageImpl? {
         return if (isEntered) {
-            childStage.get()?.lastEntered() ?: this
+            childStage?.lastEntered() ?: this
         } else null
     }
 
@@ -84,16 +76,14 @@ internal class LifecycleStageImpl(val parent: LifecycleStageParent,
         return if (stageDefinition === this.definition) {
             this
         } else {
-            childStage.get()?.findStage(stageDefinition)
+            childStage?.findStage(stageDefinition)
         }
     }
 
     fun addStage(stageDefinition: LifecycleStageDefinition): LifecycleStage {
-        return childStage.perform {
-            get()?.terminate()
-            LifecycleStageImpl(this@LifecycleStageImpl, stageDefinition).also {
-                set(it)
-            }
+        childStage?.terminate()
+        return LifecycleStageImpl(this@LifecycleStageImpl, stageDefinition).also {
+            childStage = it
         }
     }
 
@@ -120,7 +110,7 @@ internal class LifecycleStageImpl(val parent: LifecycleStageParent,
             it.removeListener(this)
             it.unsubscribe()
         }
-        childStage.get()?.exit()
+        childStage?.exit()
         isEntered = false
         exitCallback.execute()
         inStageCallbacks.forEach { it.cancel() }
@@ -187,9 +177,6 @@ internal class LifecycleStageImpl(val parent: LifecycleStageParent,
     }
 
     private inner class OnEnterHandlerImpl : LifecycleStage.OnEnterHandler {
-        init {
-            requireNeverFrozen()
-        }
 
         override fun onExit(callback: LifecycleStage.OnExitHandler.() -> Unit): LifecycleSubscription {
             return doOnExit(callback)
@@ -199,9 +186,6 @@ internal class LifecycleStageImpl(val parent: LifecycleStageParent,
 
     private inner class OnExitHandlerImpl : LifecycleStage.OnExitHandler {
 
-        init {
-            requireNeverFrozen()
-        }
     }
 
     private fun cancelOnExit(callback: EventCallback) {

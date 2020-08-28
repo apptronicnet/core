@@ -1,6 +1,5 @@
 package net.apptronic.core.component.context
 
-import net.apptronic.core.base.concurrent.requireNeverFrozen
 import net.apptronic.core.component.coroutines.CoroutineDispatchers
 import net.apptronic.core.component.di.DependencyDispatcher
 import net.apptronic.core.component.lifecycle.Lifecycle
@@ -27,10 +26,6 @@ open class SubContext : BaseContext {
         this.coroutineDispatchers = parent.coroutineDispatchers
         this.dependencyDispatcher = DependencyDispatcher(this, parent.dependencyDispatcher)
         init()
-    }
-
-    init {
-        requireNeverFrozen()
     }
 
     private fun init() {
