@@ -39,7 +39,7 @@ kotlin {
     iosX64('ios') {
         binaries {
             framework {
-                baseName = 'library'
+                baseName = 'CoreLibraryCommon'
             }
         }
     }
@@ -109,21 +109,33 @@ task publishCoreLibrary {
     }
 }
 
-//task copyFramework {
-//    def buildType = project.findProperty('kotlin.build.type') ?: 'DEBUG'
-//    def target = project.findProperty('kotlin.target') ?: 'ios'
-//    dependsOn kotlin.targets."$target".binaries.getFramework(buildType).linkTask
-//
-//    doLast {
-//        def srcFile = kotlin.targets."$target".binaries.getFramework(buildType).outputFile
-//        def targetDir = rootProject.file("../lib_ios/framework")
-//        delete fileTree(dir: targetDir)
-//        targetDir.mkdirs()
-//        copy {
-//            from srcFile.parent
-//            into targetDir
-//            include 'core_library_common.framework/**'
-//            include 'core_library_common.framework.dSYM'
-//        }
-//    }
-//}
+def copyFrameworkTo(File targetDir) {
+    def srcFile = kotlin.targets."$target".binaries.getFramework(buildType).outputFile
+    delete fileTree(dir: targetDir)
+    targetDir.mkdirs()
+    copy {
+        from srcFile.parent
+        into targetDir
+        include 'CoreLibraryCommon.framework/**'
+        include 'CoreLibraryCommon.framework.dSYM'
+    }
+}
+
+task copyFramework {
+    def buildType = project.findProperty('kotlin.build.type') ?: 'DEBUG'
+    def target = project.findProperty('kotlin.target') ?: 'ios'
+    dependsOn kotlin.targets."$target".binaries.getFramework(buildType).linkTask
+
+    doLast {
+        def srcFile = kotlin.targets."$target".binaries.getFramework(buildType).outputFile
+        def targetDir = rootProject.file("../core_library_ios/ApptronicNetCoreSampleApp/CoreLibraryCommon")
+        delete fileTree(dir: targetDir)
+        targetDir.mkdirs()
+        copy {
+            from srcFile.parent
+            into targetDir
+            include 'CoreLibraryCommon.framework/**'
+            include 'CoreLibraryCommon.framework.dSYM'
+        }
+    }
+}

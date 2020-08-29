@@ -13,9 +13,7 @@ sealed class DependencyDescriptor<T>(
 ) {
 
     private companion object {
-        val idGenerator by lazy {
-            SerialIdGenerator()
-        }
+        val idGenerator = SerialIdGenerator()
     }
 
     internal val descriptorId: Int = idGenerator.nextId().toInt()

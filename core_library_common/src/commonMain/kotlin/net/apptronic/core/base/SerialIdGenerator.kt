@@ -1,11 +1,7 @@
 package net.apptronic.core.base
 
-class SerialIdGenerator(initialValue: Long = 0) {
+expect class SerialIdGenerator {
 
-    private var value = initialValue
-
-    fun nextId(): Long {
-        return value++
-    }
+    fun nextId(): Long
 
 }

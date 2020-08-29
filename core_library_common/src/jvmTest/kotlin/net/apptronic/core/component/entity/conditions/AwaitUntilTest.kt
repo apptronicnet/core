@@ -1,4 +1,4 @@
-package net.apptronic.core.component.entity.entities
+package net.apptronic.core.component.entity.conditions
 
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.launch

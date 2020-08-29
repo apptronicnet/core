@@ -1,11 +1,14 @@
 package net.apptronic.core.base.collections
 
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withTimeout
 import org.junit.Test
 
 class LinkedQueueTest {
 
     @Test
-    fun runTest() {
+    fun verifyTake() {
         val queue = LinkedQueue<Int>()
         assert(queue.take() == null)
         queue.add(1)
@@ -43,6 +46,29 @@ class LinkedQueueTest {
         assert(queue.take() == null)
         assert(queue.take() == null)
         assert(queue.take() == null)
+    }
+
+    @Test
+    fun verifyTakeAwait() {
+        val queue = LinkedQueue<Int>()
+        runBlocking {
+            withTimeout(1000) {
+                assert(queue.take() == null)
+                queue.add(1)
+                assert(queue.takeAwait() == 1)
+                queue.add(2)
+                queue.add(3)
+                queue.add(4)
+                assert(queue.takeAwait() == 2)
+                assert(queue.takeAwait() == 3)
+                assert(queue.takeAwait() == 4)
+                launch {
+                    queue.add(5)
+                }
+                assert(queue.take() == null)
+                assert(queue.takeAwait() == 5)
+            }
+        }
     }
 
 }

@@ -4,9 +4,7 @@ import net.apptronic.core.base.SerialIdGenerator
 
 object ComponentRegistry {
 
-    private val idGenerator by lazy {
-        SerialIdGenerator()
-    }
+    private val idGenerator = SerialIdGenerator()
 
     fun nextId(): Long {
         return idGenerator.nextId()
