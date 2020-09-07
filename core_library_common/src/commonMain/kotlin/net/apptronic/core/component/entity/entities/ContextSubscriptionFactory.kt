@@ -10,13 +10,16 @@ import net.apptronic.core.component.lifecycle.LifecycleStage
 
 fun <T> Entity<T>.performEntitySubscription(
         targetContext: Context,
-        source: Observable<T>, target: Observer<T>): EntitySubscription {
+        source: Observable<T>,
+        target: Observer<T>
+): EntitySubscription {
     return performEntitySubscription(context, targetContext, source, target)
 }
 
 private fun <T> performEntitySubscription(
         definitionContext: Context, targetContext: Context,
-        source: Observable<T>, target: Observer<T>): EntitySubscription {
+        source: Observable<T>, target: Observer<T>
+): EntitySubscription {
     val stages: List<LifecycleStage> = if (targetContext == definitionContext) {
         listOf(
                 definitionContext.lifecycle.let { it.getActiveStage() ?: it.rootStage }

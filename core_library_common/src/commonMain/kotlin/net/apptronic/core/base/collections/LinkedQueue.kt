@@ -1,8 +1,10 @@
 package net.apptronic.core.base.collections
 
 import kotlinx.coroutines.CompletableDeferred
+import net.apptronic.core.base.observable.Observer
+import net.apptronic.core.base.observable.subject.ValueHolder
 
-class LinkedQueue<T> {
+class LinkedQueue<T> : Queue<T>, Observer<T> {
 
     private class Node<T>(
             val value: T,
@@ -13,8 +15,9 @@ class LinkedQueue<T> {
     private var size = 0;
     private var start: Node<T>? = null
     private var end: Node<T>? = null
+    private var consumer: Queue.Consumer<T>? = null
 
-    fun take(): T? {
+    override fun take(): ValueHolder<T>? {
         val first = start
         return if (first != null) {
             start = first.next
@@ -22,17 +25,17 @@ class LinkedQueue<T> {
                 end = null
             }
             size--
-            first.value
+            ValueHolder(first.value)
         } else {
             null
         }
     }
 
-    suspend fun takeAwait(): T {
+    override suspend fun takeAwait(): T {
         while (true) {
             val result = take()
             if (result != null) {
-                return result
+                return result.value
             }
             val deferred = CompletableDeferred<Unit>()
             awaiting.add(deferred)
@@ -40,7 +43,12 @@ class LinkedQueue<T> {
         }
     }
 
-    fun add(item: T) {
+    override fun add(item: T) {
+        val consumer = this.consumer
+        if (consumer != null) {
+            consumer.onNext(item)
+            return
+        }
         size++
         val last = end
         if (last != null) {
@@ -58,18 +66,34 @@ class LinkedQueue<T> {
         }
     }
 
-    fun hasItems(): Boolean {
+    override fun hasItems(): Boolean {
         return start != null
     }
 
-    fun size(): Int {
+    override fun size(): Int {
         return size
     }
 
-    fun trim(maxSize: Int) {
+    override fun trim(maxSize: Int, trimHandler: (T) -> Unit) {
         while (size > maxSize) {
-            take()
+            take()?.let {
+                trimHandler(it.value)
+            }
         }
+    }
+
+    override fun notify(value: T) {
+        add(value)
+    }
+
+    override fun setConsumer(consumer: Queue.Consumer<T>) {
+        do {
+            val next = take()
+            next?.let {
+                consumer.onNext(it.value)
+            }
+        } while (next != null)
+        this.consumer = consumer
     }
 
 }

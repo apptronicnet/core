@@ -1,7 +1,7 @@
 package net.apptronic.core.component.coroutines
 
 import kotlinx.coroutines.*
-import net.apptronic.core.base.collections.LinkedQueue
+import net.apptronic.core.base.collections.queueOf
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -38,7 +38,7 @@ class CoroutineThrottler internal constructor(
     }
 
     private var isRunning: Boolean = false
-    private var queue = LinkedQueue<Task>()
+    private var queue = queueOf<Task>()
 
     fun launch(
             coroutineContext: CoroutineContext = coroutineScope.coroutineContext,
@@ -47,15 +47,18 @@ class CoroutineThrottler internal constructor(
     ): Job {
         val task = Task(coroutineContext, start, block)
         queue.add(task)
-        queue.trim(size)
+        queue.trim(size) {
+            task.deferred.completeExceptionally(CancellationException("Trimmed by CoroutineThrottler"))
+        }
         launchNext()
         return task.deferred
     }
 
     private fun launchNext() {
         if (!isRunning) {
-            val next = queue.take()
-            if (next != null) {
+            val nextHolder = queue.take()
+            if (nextHolder != null) {
+                val next = nextHolder.value
                 isRunning = true
                 val job = coroutineScope.launch(next.coroutineContext, next.start, next.block)
                 coroutineScope.launch {
@@ -64,10 +67,11 @@ class CoroutineThrottler internal constructor(
                         next.deferred.complete(Unit)
                     } catch (e: Exception) {
                         next.deferred.completeExceptionally(e)
-                    }
-                    isRunning = false
-                    if (isActive) {
-                        launchNext()
+                    } finally {
+                        isRunning = false
+                        if (isActive) {
+                            launchNext()
+                        }
                     }
                 }
             }

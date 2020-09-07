@@ -3,7 +3,7 @@ package net.apptronic.core.component.entity.conditions
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.coroutineScope
-import net.apptronic.core.base.collections.LinkedQueue
+import net.apptronic.core.base.collections.queueOf
 import net.apptronic.core.base.observable.subject.ValueHolder
 import net.apptronic.core.component.context.childContext
 import net.apptronic.core.component.context.terminate
@@ -17,7 +17,7 @@ fun <T> Entity<T>.createCondition(): Condition<T> {
 class Condition<T> internal constructor(val source: Entity<T>) {
 
     private val awaitContext = source.context.childContext()
-    private val queue = LinkedQueue<T>()
+    private val queue = queueOf<T>()
     private val isSetDeferred = CompletableDeferred<Unit>()
     private var current: ValueHolder<T>? = null
 

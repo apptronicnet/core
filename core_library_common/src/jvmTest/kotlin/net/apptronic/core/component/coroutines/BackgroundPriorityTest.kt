@@ -13,9 +13,9 @@ class BackgroundPriorityTest {
     private val executionQueue = mutableListOf<String>()
     private val scope = CoroutineScope(CoroutineName("Test") + Dispatchers.Unconfined + Job())
 
-    fun dispatch(coroutineContext: CoroutineContext, name: String) {
+    private fun dispatch(coroutineContext: CoroutineContext, name: String) {
         val job = scope.launch(coroutineContext) {
-            delay(1000)
+            delay(1)
             executionQueue.add(name)
         }
         jobs.add(job)
