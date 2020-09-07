@@ -1,12 +1,12 @@
 package net.apptronic.test.commons_sample_app.list
 
-import net.apptronic.core.base.concurrent.AtomicEntity
+import net.apptronic.core.base.SerialIdGenerator
 import net.apptronic.core.component.di.declareModule
 import net.apptronic.core.component.di.dependencyDescriptor
 import net.apptronic.core.mvvm.viewmodel.defineViewModelContext
 
 val ListControllerDescriptor = dependencyDescriptor<ListController>()
-val ListItemSerialGeneratorDescriptor = dependencyDescriptor<AtomicEntity<Int>>()
+val ListItemSerialGeneratorDescriptor = dependencyDescriptor<SerialIdGenerator>()
 val GenerateNextListItemIndexDescriptor = dependencyDescriptor<Int>()
 val ListItemTextViewModelDescriptor = dependencyDescriptor<ListItemTextViewModel>()
 val ListItemImageViewModelDescriptor = dependencyDescriptor<ListItemImageViewModel>()
@@ -18,16 +18,12 @@ val listContext = defineViewModelContext {
 private val listModule = declareModule {
 
     single(ListItemSerialGeneratorDescriptor) {
-        AtomicEntity(1)
+        SerialIdGenerator()
     }
 
     factory(GenerateNextListItemIndexDescriptor) {
-        val entity = inject(ListItemSerialGeneratorDescriptor)
-        entity.perform {
-            val value = get()
-            set(value + 1)
-            value
-        }
+        val generator = inject(ListItemSerialGeneratorDescriptor)
+        generator.nextId().toInt()
     }
 
     factory(ListItemTextViewModelDescriptor) {

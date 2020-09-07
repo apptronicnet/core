@@ -1,7 +1,7 @@
 package net.apptronic.test.commons_sample_app.throttle
 
 import kotlinx.coroutines.delay
-import net.apptronic.core.base.concurrent.AtomicEntity
+import net.apptronic.core.base.SerialIdGenerator
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.behavior.throttleMap
 import net.apptronic.core.component.entity.entities.setTo
@@ -14,15 +14,11 @@ import net.apptronic.core.mvvm.viewmodel.ViewModel
 
 class ThrottleSampleViewModel(parent: Context) : ViewModel(parent, EmptyViewModelContext) {
 
-    private val serialGenerator = AtomicEntity(1)
+    private val serialGenerator = SerialIdGenerator()
 
     val onClickEmitNewItem = genericEvent {
         currentItemIndex.set(
-            Source(serialGenerator.perform {
-                val current = get()
-                set(get() + 1)
-                return@perform current
-            })
+            Source(serialGenerator.nextId().toInt())
         )
     }
 
