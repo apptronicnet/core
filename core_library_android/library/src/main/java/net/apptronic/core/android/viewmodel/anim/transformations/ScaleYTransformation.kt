@@ -41,8 +41,12 @@ class ScaleYTransformation(private val from: Float, private val to: Float) : Vie
         target.scaleY = 1f
     }
 
-    override fun onCancel(target: View, container: View): ViewTransformation {
+    override fun cancelled(target: View, container: View): ViewTransformation {
         return ScaleYTransformation(target.scaleY, 1f)
+    }
+
+    override fun reversed(): ViewTransformation {
+        return ScaleYTransformation(from = to, to = from)
     }
 
 }

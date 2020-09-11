@@ -41,8 +41,12 @@ class ScaleXTransformation(private val from: Float, private val to: Float) : Vie
         target.scaleX = 1f
     }
 
-    override fun onCancel(target: View, container: View): ViewTransformation {
+    override fun cancelled(target: View, container: View): ViewTransformation {
         return ScaleXTransformation(target.scaleX, 1f)
+    }
+
+    override fun reversed(): ViewTransformation {
+        return ScaleXTransformation(from = to, to = from)
     }
 
 }

@@ -16,15 +16,22 @@ class AnimationDefinition internal constructor(
     private val buildFlow: TransformationBuilder.() -> Unit
 ) {
 
-
-    fun createAnimation(target: View, container: View, duration: Long): ViewAnimation {
+    fun createAnimation(
+        target: View, container: View, duration: Long, reversed: Boolean
+    ): ViewAnimation {
         val builder = TransformationBuilder()
         builder.buildFlow()
-        return ViewAnimation(target, container, builder.set(), duration, interpolator)
-    }
-
-    fun withInterpolator(interpolator: Interpolator): AnimationDefinition {
-        return AnimationDefinition(interpolator, buildFlow)
+        val targetInterpolator = if (!reversed) {
+            interpolator
+        } else {
+            ReverseInterpolator(interpolator)
+        }
+        val transformationSet = if (!reversed) {
+            builder.set()
+        } else {
+            builder.set().reversed()
+        }
+        return ViewAnimation(target, container, transformationSet, duration, targetInterpolator)
     }
 
 }

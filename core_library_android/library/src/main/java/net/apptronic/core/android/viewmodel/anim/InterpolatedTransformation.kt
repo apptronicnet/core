@@ -21,4 +21,8 @@ class InterpolatedTransformation internal constructor(
         transformation.onTransform(target, container, progress.interpolateWith(interpolator))
     }
 
+    override fun reversed(): ViewTransformation {
+        return transformation.reversed().interpolateWith(ReverseInterpolator(interpolator))
+    }
+
 }

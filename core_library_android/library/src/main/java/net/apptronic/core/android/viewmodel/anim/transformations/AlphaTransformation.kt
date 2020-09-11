@@ -41,8 +41,12 @@ class AlphaTransformation(private val from: Float, private val to: Float) : View
         target.alpha = 1f
     }
 
-    override fun onCancel(target: View, container: View): ViewTransformation {
+    override fun cancelled(target: View, container: View): ViewTransformation {
         return AlphaTransformation(target.alpha, 1f)
+    }
+
+    override fun reversed(): ViewTransformation {
+        return AlphaTransformation(from = to, to = from)
     }
 
 }

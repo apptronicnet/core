@@ -3,7 +3,8 @@ package net.apptronic.test.commons_sample_app.views
 import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import android.view.View
-import android.view.animation.*
+import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.DecelerateInterpolator
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.TextView
@@ -11,7 +12,6 @@ import kotlinx.android.synthetic.main.animation_demo.view.*
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.anim.AnimationDefinition
 import net.apptronic.core.android.viewmodel.anim.AnimationPlayer
-import net.apptronic.core.android.viewmodel.anim.TransformationBuilder
 import net.apptronic.core.android.viewmodel.anim.defineAnimation
 import net.apptronic.core.android.viewmodel.anim.transformations.*
 import net.apptronic.test.commons_sample_app.R
@@ -33,12 +33,19 @@ class AnimationDemoViewBinder : ViewBinder<AnimationDemoViewModel>() {
     private lateinit var exitAnimation: AnimationDefinition
     private lateinit var enterAnimation: AnimationDefinition
 
+    private fun View.addButtons(
+        enterName: String,
+        exitName: String,
+        animation: AnimationDefinition
+    ) {
+        radioEnter.addButton(enterName, animation)
+        radioExit.addButton(exitName, animation)
+    }
+
     private fun RadioGroup.addButton(
         name: String,
-        interpolator: Interpolator = LinearInterpolator(),
-        buildFlow: TransformationBuilder.() -> Unit
+        animation: AnimationDefinition
     ) {
-        val animation = defineAnimation(interpolator, buildFlow)
         val radioButton = LayoutInflater.from(context).inflate(
             R.layout.animation_demo_selector, this, false
         ) as RadioButton
@@ -70,12 +77,14 @@ class AnimationDemoViewBinder : ViewBinder<AnimationDemoViewModel>() {
         val exitingView = currentView
         enteringView.text = index.toString()
         enteringView.background = ColorDrawable(backgroundColor())
-        exitAnimation.createAnimation(exitingView, viewContainer, DURATION).doOnComplete {
-            viewContainer.removeView(exitingView)
-        }.playOn(player)
-        enterAnimation.createAnimation(enteringView, viewContainer, DURATION).doOnStart {
-            viewContainer.addView(enteringView)
-        }.playOn(player)
+        exitAnimation.createAnimation(exitingView, viewContainer, DURATION, reversed = true)
+            .doOnComplete {
+                viewContainer.removeView(exitingView)
+            }.playOn(player)
+        enterAnimation.createAnimation(enteringView, viewContainer, DURATION, reversed = false)
+            .doOnStart {
+                viewContainer.addView(enteringView)
+            }.playOn(player)
         currentView = enteringView
     }
 
@@ -87,68 +96,77 @@ class AnimationDemoViewBinder : ViewBinder<AnimationDemoViewModel>() {
             btnPlayAnimations.setOnClickListener {
                 playAnimations(player)
             }
-            with(radioEnter) {
-                addButton("Fade in") {
-                    alpha(0f, 1f)
-                }
-                addButton("Enter from left", DecelerateInterpolator()) {
-                    translateXToParent(-1f, 0f)
-                }
-                addButton("Enter from right", DecelerateInterpolator()) {
-                    translateXToParent(1f, 0f)
-                }
-                addButton("Fade from left") {
-                    translateXToSelf(-1f, 0f, AccelerateDecelerateInterpolator())
-                    alpha(0f, 1f)
-                }
-                addButton("Fade from right") {
-                    translateXToSelf(1f, 0f, AccelerateDecelerateInterpolator())
-                    alpha(0f, 1f)
-                }
-                addButton("Enter from top", DecelerateInterpolator()) {
-                    translateYToParent(-1f, 0f)
-                    scaleX(0f, 1f)
-                    scaleY(0f, 1f)
-                }
-                addButton("Enter from bottom", DecelerateInterpolator()) {
-                    translateYToParent(1f, 0f)
-                    scaleX(0f, 1f)
-                    scaleY(0f, 1f)
-                }
-            }
-            with(radioExit) {
-                addButton("Fade out") {
-                    alpha(1f, 0f)
-                }
-                addButton("Exit to left", AccelerateInterpolator()) {
-                    translateXToParent(0f, -1f)
-                }
-                addButton("Exit to right", AccelerateInterpolator()) {
-                    translateXToParent(0f, 1f)
-                }
-                addButton("Fade to left") {
-                    translateXToSelf(0f, -1f, AccelerateDecelerateInterpolator())
-                    alpha(1f, 0f)
-                }
-                addButton("Fade to right") {
-                    translateXToSelf(0f, 1f, AccelerateDecelerateInterpolator())
-                    alpha(1f, 0f)
-                }
-                addButton("Exit to top", AccelerateInterpolator()) {
-                    translateYToParent(0f, -1f)
-                    scaleX(1f, 0f)
-                    scaleY(1f, 0f)
-                }
-                addButton("Exit to bottom", AccelerateInterpolator()) {
-                    translateYToParent(0f, 1f)
-                    scaleX(1f, 0f)
-                    scaleY(1f, 0f)
-                }
-            }
+            addButtons(
+                "Fade in",
+                "Fade out",
+                FadeAnimation
+            )
+            addButtons(
+                "Enter from left",
+                "Exit to left",
+                FromLeftAnimation
+            )
+            addButtons(
+                "Enter from right",
+                "Exit to right",
+                FromRightAnimation
+            )
+            addButtons(
+                "Fade from left",
+                "Fade to left",
+                FadeLeftAnimation
+            )
+            addButtons(
+                "Fade from right",
+                "Fade to right",
+                FadeRightAnimation
+            )
+            addButtons(
+                "Enter from top",
+                "Exit to top",
+                ScaleTopAnimation
+            )
+            addButtons(
+                "Enter from bottom",
+                "Exit to bottom",
+                ScaleBottomAnimation
+            )
         }
         onUnbind {
             player.recycle()
         }
     }
 
+}
+
+val FadeAnimation = defineAnimation {
+    alpha(0f, 1f)
+}
+
+val FromLeftAnimation =
+    defineAnimation(DecelerateInterpolator()) { translateXToParent(-1f, 0f) }
+
+val FromRightAnimation =
+    defineAnimation(DecelerateInterpolator()) { translateXToParent(1f, 0f) }
+
+val FadeLeftAnimation = defineAnimation {
+    translateXToSelf(-1f, 0f, AccelerateDecelerateInterpolator())
+    alpha(0f, 1f)
+}
+
+val FadeRightAnimation = defineAnimation {
+    translateXToSelf(1f, 0f, AccelerateDecelerateInterpolator())
+    alpha(0f, 1f)
+}
+
+val ScaleTopAnimation = defineAnimation(DecelerateInterpolator()) {
+    translateYToParent(-1f, 0f)
+    scaleX(0f, 1f)
+    scaleY(0f, 1f)
+}
+
+val ScaleBottomAnimation = defineAnimation(DecelerateInterpolator()) {
+    translateYToParent(1f, 0f)
+    scaleX(0f, 1f)
+    scaleY(0f, 1f)
 }

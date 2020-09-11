@@ -16,7 +16,7 @@ abstract class TranslateYTransformation : ViewTransformation {
 
     override val descriptor: TransformationDescriptor = TranslateYTransformationDescriptor
 
-    override fun onCancel(target: View, container: View): ViewTransformation {
+    override fun cancelled(target: View, container: View): ViewTransformation {
         return TranslateYToValueTransformation(target.translationY, 0f)
     }
 
@@ -62,6 +62,10 @@ class TranslateYToValueTransformation(private val from: Float, private val to: F
         target.translationY = progress.interpolate(startValue, endValue)
     }
 
+    override fun reversed(): ViewTransformation {
+        return TranslateYToValueTransformation(from = to, to = from)
+    }
+
 }
 
 class TranslateYRelativeToSelfTransformation(private val from: Float, private val to: Float) :
@@ -84,6 +88,10 @@ class TranslateYRelativeToSelfTransformation(private val from: Float, private va
         target.translationY = progress.interpolate(startValue, endValue) * target.width
     }
 
+    override fun reversed(): ViewTransformation {
+        return TranslateYRelativeToSelfTransformation(from = to, to = from)
+    }
+
 }
 
 class TranslateYRelativeToParentTransformation(private val from: Float, private val to: Float) :
@@ -104,6 +112,10 @@ class TranslateYRelativeToParentTransformation(private val from: Float, private 
 
     override fun onTransform(target: View, container: View, progress: Progress) {
         target.translationY = progress.interpolate(startValue, endValue) * container.width
+    }
+
+    override fun reversed(): ViewTransformation {
+        return TranslateYRelativeToParentTransformation(from = to, to = from)
     }
 
 }

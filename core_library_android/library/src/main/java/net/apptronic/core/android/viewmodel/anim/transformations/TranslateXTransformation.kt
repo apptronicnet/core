@@ -16,7 +16,7 @@ abstract class TranslateXTransformation : ViewTransformation {
 
     override val descriptor: TransformationDescriptor = TranslateXTransformationDescriptor
 
-    override fun onCancel(target: View, container: View): ViewTransformation {
+    override fun cancelled(target: View, container: View): ViewTransformation {
         return TranslateXToValueTransformation(target.translationX, 0f)
     }
 
@@ -62,6 +62,10 @@ class TranslateXToValueTransformation(private val from: Float, private val to: F
         target.translationX = progress.interpolate(startValue, endValue)
     }
 
+    override fun reversed(): ViewTransformation {
+        return TranslateXToValueTransformation(from = to, to = from)
+    }
+
 }
 
 class TranslateXRelativeToSelfTransformation(private val from: Float, private val to: Float) :
@@ -82,6 +86,10 @@ class TranslateXRelativeToSelfTransformation(private val from: Float, private va
 
     override fun onTransform(target: View, container: View, progress: Progress) {
         target.translationX = progress.interpolate(startValue, endValue) * target.width
+    }
+
+    override fun reversed(): ViewTransformation {
+        return TranslateXRelativeToSelfTransformation(from = to, to = from)
     }
 
 }
@@ -106,4 +114,9 @@ class TranslateXRelativeToParentTransformation(private val from: Float, private 
         target.translationX = progress.interpolate(startValue, endValue) * container.width
     }
 
+    override fun reversed(): ViewTransformation {
+        return TranslateXRelativeToParentTransformation(from = to, to = from)
+    }
+
 }
+

@@ -35,6 +35,8 @@ interface ViewTransformation {
      */
     fun onReset(target: View, container: View)
 
-    fun onCancel(target: View, container: View): ViewTransformation
+    fun cancelled(target: View, container: View): ViewTransformation
+
+    fun reversed(): ViewTransformation
 
 }

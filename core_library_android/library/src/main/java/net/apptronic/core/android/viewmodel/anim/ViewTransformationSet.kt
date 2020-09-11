@@ -34,7 +34,7 @@ internal class ViewTransformationSet(
         val descriptors = transformationsToRun.map { it.descriptor }.toSet()
         intercepted.transformationsToRun.forEach {
             if (descriptors.contains(it.descriptor).not()) {
-                val cancellation = it.onCancel(target, container)
+                val cancellation = it.cancelled(target, container)
                 cancellation.onStart(target, container)
                 transformationsToRun.add(cancellation)
             }
@@ -51,6 +51,14 @@ internal class ViewTransformationSet(
         transformations.forEach {
             it.onReset(target, container)
         }
+    }
+
+    fun reversed(): ViewTransformationSet {
+        return ViewTransformationSet(
+            transformations.map {
+                it.reversed()
+            }
+        )
     }
 
 }
