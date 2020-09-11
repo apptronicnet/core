@@ -16,6 +16,10 @@ fun Progress.interpolate(start: Int, target: Int): Int {
     return start + change
 }
 
+fun Progress.reverse(): Progress {
+    return 1f - this
+}
+
 fun Progress.interpolate(start: Int, target: Int, min: Int?, max: Int?): Int {
     val interpolation = interpolate(start, target)
     return when {

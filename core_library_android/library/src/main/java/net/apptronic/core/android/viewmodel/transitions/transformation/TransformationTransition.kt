@@ -22,6 +22,7 @@ class TransformationTransition(
     }
 
     override fun startTransition(target: View, interceptedTransition: Transition<View>?) {
+        transformationsList.clear()
         val interceptedTransformationKeys = mutableListOf<TransformationDescriptor>()
         val cancellingTransformations = mutableListOf<Transformation>()
         val mainTransformationKeys = transformations.map { it.descriptor }

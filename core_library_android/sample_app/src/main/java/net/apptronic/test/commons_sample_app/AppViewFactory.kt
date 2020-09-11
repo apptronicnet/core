@@ -29,5 +29,7 @@ val AppBinderFactory = viewBinderFactory {
     add(::GestureNavigationViewBinder)
     add(::StackNavigationItemViewBinder)
     add(::PrevNextNavigationViewBinder)
-    add(::BottomSheetBinder)
+    add(::BottomSheetViewBinder)
+    add(::VisibilityDemoViewBinder)
+    add(::AnimationDemoViewBinder)
 }

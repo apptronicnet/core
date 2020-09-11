@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <item name="ViewAnimation" type="id" />
     <item name="TransitionAnimation" type="id" />
 
 </resources>

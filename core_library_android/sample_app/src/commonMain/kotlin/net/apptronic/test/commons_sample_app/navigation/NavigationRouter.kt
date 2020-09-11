@@ -24,4 +24,8 @@ interface NavigationRouter {
 
     fun openDynamicFilterListDemo()
 
+    fun openVisibilityDemo()
+
+    fun openAnimationDemo()
+
 }

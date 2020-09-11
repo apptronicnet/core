@@ -28,6 +28,11 @@
             android:textSize="16dp" />
 
         <Button
+            android:id="@+id/btnReplace"
+            android:layout_marginTop="16dp"
+            android:text="Replace" />
+
+        <Button
             android:id="@+id/btnHide"
             android:layout_marginTop="16dp"
             android:text="Hide" />

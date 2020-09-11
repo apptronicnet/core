@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#fff">
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp">
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/swSimple"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="Show simple content"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/contentSimple"
+            android:gravity="center"
+            android:padding="8dp"
+            android:text="Simple content"
+            android:textColor="#000"
+            android:background="#d0d0d0"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_height="1dp"
+            android:background="#888" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/swSimpleFadeIn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="Show fade in"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/contentSimpleFadeIn"
+            android:gravity="center"
+            android:padding="8dp"
+            android:text="Fade in"
+            android:background="#d0d0d0"
+            android:textColor="#000"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_height="1dp"
+            android:background="#888" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/swSimpleFadeOut"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="Show fade out"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/contentSimpleFadeOut"
+            android:gravity="center"
+            android:padding="8dp"
+            android:text="Fade out"
+            android:background="#d0d0d0"
+            android:textColor="#000"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_height="1dp"
+            android:background="#888" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/swSimpleFades"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="Show fades"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/contentSimpleFades"
+            android:gravity="center"
+            android:padding="8dp"
+            android:text="Fades"
+            android:background="#d0d0d0"
+            android:textColor="#000"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_height="1dp"
+            android:background="#888" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/isVisibleAnimatedSwitch1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="Builder ViewSwitch 1"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/isVisibleAnimatedSwitch1Content"
+            android:gravity="center"
+            android:padding="8dp"
+            android:text="Builder ViewSwitch 1"
+            android:background="#d0d0d0"
+            android:textColor="#000"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_height="1dp"
+            android:background="#888" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/isVisibleAnimatedSwitch2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="Builder ViewSwitch 2"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/isVisibleAnimatedSwitch2Content"
+            android:gravity="center"
+            android:padding="8dp"
+            android:text="Builder ViewSwitch 2"
+            android:background="#d0d0d0"
+            android:textColor="#000"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_height="1dp"
+            android:background="#888" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/isVisibleTransitionBuilder1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="Transition builder 1"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/isVisibleTransitionBuilder1Content"
+            android:gravity="center"
+            android:padding="8dp"
+            android:text="Transition builder 1"
+            android:background="#d0d0d0"
+            android:textColor="#000"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_height="1dp"
+            android:background="#888" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/isVisibleTransitionBuilder2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="Transition builder 2"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/isVisibleTransitionBuilder2Content"
+            android:gravity="center"
+            android:padding="8dp"
+            android:text="Transition builder 2"
+            android:background="#d0d0d0"
+            android:textColor="#000"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+    </TableLayout>
+
+</ScrollView>

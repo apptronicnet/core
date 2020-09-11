@@ -1,110 +1,130 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/scrollView"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#fff"
-    android:fillViewport="true"
-    android:gravity="center">
+    android:background="#fff">
 
-    <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <ScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:paddingTop="32dp"
-        android:paddingBottom="32dp">
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:gravity="center">
 
-        <TextView
+        <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="Demo of MVVM library"
-            android:textColor="@color/colorPrimary"
-            android:textSize="20dp"
-            android:textStyle="bold" />
+            android:paddingTop="32dp"
+            android:paddingBottom="32dp">
 
-        <Button
-            android:id="@+id/loginScreenDemo"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="24dp"
-            android:text="Login demo" />
+            <TextView
+                android:gravity="center"
+                android:text="Demo of MVVM library"
+                android:textColor="@color/colorPrimary"
+                android:textSize="20dp"
+                android:textStyle="bold" />
 
-        <Button
-            android:id="@+id/converterScreenDemo"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="24dp"
-            android:text="Converter demo" />
+            <Button
+                android:id="@+id/animationDemo"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="24dp"
+                android:text="Animation demo" />
 
-        <Button
-            android:id="@+id/listScreenDemo"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="24dp"
-            android:text="List demo" />
+            <Button
+                android:id="@+id/loginScreenDemo"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="24dp"
+                android:text="Login demo" />
 
-        <Button
-            android:id="@+id/pagesScreenDemo"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="24dp"
-            android:text="Pages demo" />
+            <Button
+                android:id="@+id/converterScreenDemo"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="24dp"
+                android:text="Converter demo" />
 
-        <Button
-            android:id="@+id/throttleScreenDemo"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="24dp"
-            android:text="Throttle demo" />
+            <Button
+                android:id="@+id/listScreenDemo"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="24dp"
+                android:text="List demo" />
 
-        <Button
-            android:id="@+id/lazyListDemo"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="24dp"
-            android:text="Lazy list demo" />
+            <Button
+                android:id="@+id/pagesScreenDemo"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="24dp"
+                android:text="Pages demo" />
 
-        <Button
-            android:id="@+id/filterListDemo"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="24dp"
-            android:text="Filter list demo" />
+            <Button
+                android:id="@+id/throttleScreenDemo"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="24dp"
+                android:text="Throttle demo" />
 
-        <Button
-            android:id="@+id/stackLoadingDemo"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="24dp"
-            android:text="Stack loading demo" />
+            <Button
+                android:id="@+id/lazyListDemo"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="24dp"
+                android:text="Lazy list demo" />
 
-        <Button
-            android:id="@+id/prevNextNavigationDemo"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="24dp"
-            android:text="Previous/next navigation" />
+            <Button
+                android:id="@+id/filterListDemo"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="24dp"
+                android:text="Filter list demo" />
 
-        <Button
-            android:id="@+id/gestureNavigationDemo"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="24dp"
-            android:text="Gesture navigation demo" />
+            <Button
+                android:id="@+id/stackLoadingDemo"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="24dp"
+                android:text="Stack loading demo" />
 
-        <Button
-            android:id="@+id/lazyFilterListDemo"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="24dp"
-            android:text="Lazy filter demo" />
+            <Button
+                android:id="@+id/prevNextNavigationDemo"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="24dp"
+                android:text="Previous/next navigation" />
 
-        <Button
-            android:id="@+id/bottomSheetDemo"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="24dp"
-            android:text="Bottom sheet demo" />
+            <Button
+                android:id="@+id/gestureNavigationDemo"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="24dp"
+                android:text="Gesture navigation demo" />
 
-    </TableLayout>
+            <Button
+                android:id="@+id/lazyFilterListDemo"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="24dp"
+                android:text="Lazy filter demo" />
 
-</ScrollView>
+            <Button
+                android:id="@+id/bottomSheetDemo"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="24dp"
+                android:text="Bottom sheet demo" />
+
+            <Button
+                android:id="@+id/visibilityDemo"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="24dp"
+                android:text="Visibility demo" />
+
+        </TableLayout>
+
+    </ScrollView>
+
+</FrameLayout>

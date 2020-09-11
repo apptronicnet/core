@@ -8,6 +8,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <View
+        android:id="@+id/fadeOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#90000000" />
+
     <RelativeLayout
         android:id="@+id/overlayContainer"
         android:layout_width="match_parent"

@@ -33,7 +33,7 @@ class TransformationTransitionBuilder internal constructor(
 fun transformationTransition(
     target: View, container: View? = null, builder: TransformationTransitionBuilder.() -> Unit
 ): TransformationTransition {
-    return TransformationTransitionBuilder(target, container ?: target)
+    return TransformationTransitionBuilder(target, container ?: target.parent as? View ?: target)
         .apply(builder)
         .build()
 }

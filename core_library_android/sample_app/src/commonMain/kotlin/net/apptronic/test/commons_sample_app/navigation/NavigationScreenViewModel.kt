@@ -59,4 +59,12 @@ class NavigationScreenViewModel(parent: Context, router: NavigationRouter) :
         overlayRouter.showBottomSheet()
     }
 
+    fun onShowVisibilityDemo() {
+        router.openVisibilityDemo()
+    }
+
+    fun onShowAnimationDemo() {
+        router.openAnimationDemo()
+    }
+
 }

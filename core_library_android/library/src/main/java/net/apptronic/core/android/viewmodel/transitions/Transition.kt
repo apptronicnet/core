@@ -31,6 +31,10 @@ private object FrameScheduler {
         }
     }
 
+    fun removeListener(frameListener: FrameListener) {
+        frameListeners.remove(frameListener)
+    }
+
     private fun scheduleFrame() {
         GlobalScope.launch(dispatcher) {
             sendFrame()
@@ -102,13 +106,13 @@ abstract class Transition<Target> : FrameScheduler.FrameListener {
         this.target = target
         progressInterpolator = interpolator
         val runningTransition = getRunningTransition(target)
-        setRunningTransition(target)
         if (runningTransition != null) {
             isIntercepting = true
             doInterceptInternal(target, runningTransition)
         } else {
             isIntercepting = false
         }
+        setRunningTransition(target)
         if (duration <= 0) {
             doStartInternal(target, SystemClock.elapsedRealtime())
             completeTransition(target)
@@ -133,9 +137,9 @@ abstract class Transition<Target> : FrameScheduler.FrameListener {
     }
 
     private fun doInterceptInternal(target: Target, runningTransition: Transition<Target>) {
+        runningTransition.cancel()
         doOnStartActions.forEach { it.invoke() }
         onStartTransition(target, runningTransition)
-        runningTransition.cancel()
     }
 
     private fun doStartInternal(target: Target, startTime: Long) {
@@ -149,6 +153,7 @@ abstract class Transition<Target> : FrameScheduler.FrameListener {
     }
 
     fun cancel() {
+        FrameScheduler.removeListener(this)
         isStarting = false
         val target = this.target
         if (target != null) {

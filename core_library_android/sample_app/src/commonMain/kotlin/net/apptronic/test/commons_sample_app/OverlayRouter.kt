@@ -4,4 +4,6 @@ interface OverlayRouter {
 
     fun showBottomSheet()
 
+    fun replaceBottomSheet()
+
 }

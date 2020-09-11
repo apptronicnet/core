@@ -3,8 +3,8 @@ package net.apptronic.core.android.viewmodel.transitions
 import android.view.View
 
 class ViewSwitchTransition(
-    private val enterTransition: Transition<View>?,
-    private val exitTransition: Transition<View>?
+    val enterTransition: Transition<View>?,
+    val exitTransition: Transition<View>?
 ) : Transition<ViewSwitch>() {
 
     override fun clearRunningTransition(target: ViewSwitch) {
