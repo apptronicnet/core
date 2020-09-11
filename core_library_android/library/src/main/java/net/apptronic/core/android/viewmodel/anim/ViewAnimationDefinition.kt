@@ -4,20 +4,21 @@ import android.view.View
 import android.view.animation.Interpolator
 import android.view.animation.LinearInterpolator
 
-fun defineAnimation(
+fun viewAnimation(
     interpolator: Interpolator = LinearInterpolator(),
     buildFlow: TransformationBuilder.() -> Unit
-): AnimationDefinition {
-    return AnimationDefinition(interpolator, buildFlow)
+): ViewAnimationDefinition {
+    return ViewAnimationDefinition(interpolator, buildFlow)
 }
 
-class AnimationDefinition internal constructor(
+class ViewAnimationDefinition internal constructor(
     private val interpolator: Interpolator,
-    private val buildFlow: TransformationBuilder.() -> Unit
+    private val buildFlow: TransformationBuilder.() -> Unit,
+    private val reversed: Boolean = false
 ) {
 
     fun createAnimation(
-        target: View, container: View, duration: Long, reversed: Boolean
+        target: View, container: View, duration: Long
     ): ViewAnimation {
         val builder = TransformationBuilder()
         builder.buildFlow()
@@ -32,6 +33,10 @@ class AnimationDefinition internal constructor(
             builder.set().reversed()
         }
         return ViewAnimation(target, container, transformationSet, duration, targetInterpolator)
+    }
+
+    fun reversed(): ViewAnimationDefinition {
+        return ViewAnimationDefinition(interpolator, buildFlow, reversed.not())
     }
 
 }

@@ -23,13 +23,8 @@ class ScaleYTransformation(private val from: Float, private val to: Float) : Vie
     private var startValue = 0f
     private var endValue = 0f
 
-    override fun onStart(target: View, container: View) {
-        startValue = from
-        endValue = to
-    }
-
-    override fun onIntercept(target: View, container: View) {
-        startValue = target.scaleY
+    override fun onStart(target: View, container: View, intercepting: Boolean) {
+        startValue = if (intercepting) target.scaleY else from
         endValue = to
     }
 

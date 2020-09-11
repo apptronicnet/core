@@ -14,12 +14,7 @@ interface ViewTransformation {
     /**
      * Initialize starting state of [target] view inside of [container]
      */
-    fun onStart(target: View, container: View)
-
-    /**
-     * Read existing state of [target] view inside of [container] as start state
-     */
-    fun onIntercept(target: View, container: View)
+    fun onStart(target: View, container: View, intercepting: Boolean)
 
     /**
      * Apply transformation to [target] view inside of [container] according to [progress].

@@ -48,13 +48,8 @@ class TranslateXToValueTransformation(private val from: Float, private val to: F
     private var startValue = 0f
     private var endValue = 0f
 
-    override fun onStart(target: View, container: View) {
-        startValue = from
-        endValue = to
-    }
-
-    override fun onIntercept(target: View, container: View) {
-        startValue = target.translationX
+    override fun onStart(target: View, container: View, intercepting: Boolean) {
+        startValue = if (intercepting) target.translationX else from
         endValue = to
     }
 
@@ -74,13 +69,8 @@ class TranslateXRelativeToSelfTransformation(private val from: Float, private va
     private var startValue = 0f
     private var endValue = 0f
 
-    override fun onStart(target: View, container: View) {
-        startValue = from
-        endValue = to
-    }
-
-    override fun onIntercept(target: View, container: View) {
-        startValue = target.translationX / target.width
+    override fun onStart(target: View, container: View, intercepting: Boolean) {
+        startValue = if (intercepting) target.translationX / target.width else from
         endValue = to
     }
 
@@ -100,13 +90,8 @@ class TranslateXRelativeToParentTransformation(private val from: Float, private 
     private var startValue = 0f
     private var endValue = 0f
 
-    override fun onStart(target: View, container: View) {
-        startValue = from
-        endValue = to
-    }
-
-    override fun onIntercept(target: View, container: View) {
-        startValue = target.translationX / container.width
+    override fun onStart(target: View, container: View, intercepting: Boolean) {
+        startValue = if (intercepting) target.translationX / container.width else from
         endValue = to
     }
 

@@ -13,7 +13,7 @@ internal class ViewTransformationSet(
         if (intercepted == null) {
             transformationsToRun.addAll(transformations)
             transformations.forEach {
-                it.onStart(target, container)
+                it.onStart(target, container, false)
                 transformationsToRun.add(it)
             }
         } else {
@@ -25,9 +25,9 @@ internal class ViewTransformationSet(
         val interceptedDescriptors = intercepted.transformationsToRun.map { it.descriptor }.toSet()
         transformations.forEach {
             if (interceptedDescriptors.contains(it.descriptor)) {
-                it.onIntercept(target, container)
+                it.onStart(target, container, true)
             } else {
-                it.onStart(target, container)
+                it.onStart(target, container, false)
             }
         }
         transformationsToRun.addAll(transformations)
@@ -35,7 +35,7 @@ internal class ViewTransformationSet(
         intercepted.transformationsToRun.forEach {
             if (descriptors.contains(it.descriptor).not()) {
                 val cancellation = it.cancelled(target, container)
-                cancellation.onStart(target, container)
+                cancellation.onStart(target, container, true)
                 transformationsToRun.add(cancellation)
             }
         }

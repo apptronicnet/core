@@ -10,10 +10,10 @@ import android.widget.RadioGroup
 import android.widget.TextView
 import kotlinx.android.synthetic.main.animation_demo.view.*
 import net.apptronic.core.android.viewmodel.ViewBinder
-import net.apptronic.core.android.viewmodel.anim.AnimationDefinition
 import net.apptronic.core.android.viewmodel.anim.AnimationPlayer
-import net.apptronic.core.android.viewmodel.anim.defineAnimation
+import net.apptronic.core.android.viewmodel.anim.ViewAnimationDefinition
 import net.apptronic.core.android.viewmodel.anim.transformations.*
+import net.apptronic.core.android.viewmodel.anim.viewAnimation
 import net.apptronic.test.commons_sample_app.R
 import net.apptronic.test.commons_sample_app.animation.AnimationDemoViewModel
 
@@ -30,13 +30,13 @@ class AnimationDemoViewBinder : ViewBinder<AnimationDemoViewModel>() {
         else -> 0xFF8888FF.toInt()
     }
 
-    private lateinit var exitAnimation: AnimationDefinition
-    private lateinit var enterAnimation: AnimationDefinition
+    private lateinit var exitAnimation: ViewAnimationDefinition
+    private lateinit var enterAnimation: ViewAnimationDefinition
 
     private fun View.addButtons(
         enterName: String,
         exitName: String,
-        animation: AnimationDefinition
+        animation: ViewAnimationDefinition
     ) {
         radioEnter.addButton(enterName, animation)
         radioExit.addButton(exitName, animation)
@@ -44,7 +44,7 @@ class AnimationDemoViewBinder : ViewBinder<AnimationDemoViewModel>() {
 
     private fun RadioGroup.addButton(
         name: String,
-        animation: AnimationDefinition
+        animation: ViewAnimationDefinition
     ) {
         val radioButton = LayoutInflater.from(context).inflate(
             R.layout.animation_demo_selector, this, false
@@ -59,7 +59,7 @@ class AnimationDemoViewBinder : ViewBinder<AnimationDemoViewModel>() {
                 enterAnimation = animation
             }
             if (this.id == R.id.radioExit) {
-                exitAnimation = animation
+                exitAnimation = animation.reversed()
             }
         }
         if (childCount == 0) {
@@ -77,11 +77,11 @@ class AnimationDemoViewBinder : ViewBinder<AnimationDemoViewModel>() {
         val exitingView = currentView
         enteringView.text = index.toString()
         enteringView.background = ColorDrawable(backgroundColor())
-        exitAnimation.createAnimation(exitingView, viewContainer, DURATION, reversed = true)
+        exitAnimation.createAnimation(exitingView, viewContainer, DURATION)
             .doOnComplete {
                 viewContainer.removeView(exitingView)
             }.playOn(player)
-        enterAnimation.createAnimation(enteringView, viewContainer, DURATION, reversed = false)
+        enterAnimation.createAnimation(enteringView, viewContainer, DURATION)
             .doOnStart {
                 viewContainer.addView(enteringView)
             }.playOn(player)
@@ -139,33 +139,33 @@ class AnimationDemoViewBinder : ViewBinder<AnimationDemoViewModel>() {
 
 }
 
-val FadeAnimation = defineAnimation {
+val FadeAnimation = viewAnimation {
     alpha(0f, 1f)
 }
 
 val FromLeftAnimation =
-    defineAnimation(DecelerateInterpolator()) { translateXToParent(-1f, 0f) }
+    viewAnimation(DecelerateInterpolator()) { translateXToParent(-1f, 0f) }
 
 val FromRightAnimation =
-    defineAnimation(DecelerateInterpolator()) { translateXToParent(1f, 0f) }
+    viewAnimation(DecelerateInterpolator()) { translateXToParent(1f, 0f) }
 
-val FadeLeftAnimation = defineAnimation {
+val FadeLeftAnimation = viewAnimation {
     translateXToSelf(-1f, 0f, AccelerateDecelerateInterpolator())
     alpha(0f, 1f)
 }
 
-val FadeRightAnimation = defineAnimation {
+val FadeRightAnimation = viewAnimation {
     translateXToSelf(1f, 0f, AccelerateDecelerateInterpolator())
     alpha(0f, 1f)
 }
 
-val ScaleTopAnimation = defineAnimation(DecelerateInterpolator()) {
+val ScaleTopAnimation = viewAnimation(DecelerateInterpolator()) {
     translateYToParent(-1f, 0f)
     scaleX(0f, 1f)
     scaleY(0f, 1f)
 }
 
-val ScaleBottomAnimation = defineAnimation(DecelerateInterpolator()) {
+val ScaleBottomAnimation = viewAnimation(DecelerateInterpolator()) {
     translateYToParent(1f, 0f)
     scaleX(0f, 1f)
     scaleY(0f, 1f)
