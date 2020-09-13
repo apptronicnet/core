@@ -6,6 +6,7 @@ import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.adapter.BasicTransition
 import net.apptronic.core.mvvm.viewmodel.navigation.stackNavigator
 import net.apptronic.test.commons_sample_app.animation.animationDemoViewModel
+import net.apptronic.test.commons_sample_app.animation.viewSwitchDemoViewModel
 import net.apptronic.test.commons_sample_app.bottomsheet.bottomSheetViewModel
 import net.apptronic.test.commons_sample_app.convert.ConvertScreenViewModel
 import net.apptronic.test.commons_sample_app.lazylist.LazyListViewModel
@@ -140,6 +141,10 @@ class ApplicationScreenNavigationRouterImpl(
 
     override fun openAnimationDemo() {
         parent.rootPage.add(BasicTransition.Forward) { animationDemoViewModel() }
+    }
+
+    override fun openViewSwitchDemo() {
+        parent.rootPage.add(BasicTransition.Forward) { viewSwitchDemoViewModel() }
     }
 
 }

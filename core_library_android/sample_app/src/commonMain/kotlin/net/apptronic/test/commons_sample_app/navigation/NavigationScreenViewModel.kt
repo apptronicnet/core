@@ -67,4 +67,8 @@ class NavigationScreenViewModel(parent: Context, router: NavigationRouter) :
         router.openAnimationDemo()
     }
 
+    fun onShowViewSwitchDemo() {
+        router.openViewSwitchDemo()
+    }
+
 }

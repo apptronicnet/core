@@ -3,6 +3,7 @@ package net.apptronic.core.android.anim.animations
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.animation.AccelerateDecelerateInterpolator
+import net.apptronic.core.android.anim.transformations.alpha
 import net.apptronic.core.android.anim.transformations.foregroundAlpha
 import net.apptronic.core.android.anim.transformations.translateXToParent
 import net.apptronic.core.android.anim.viewSwitch
@@ -38,7 +39,6 @@ val ViewSwitch_Forward = viewSwitch {
     }
 }
 
-
 val ViewSwitch_Backward = viewSwitch {
     enter(AccelerateDecelerateInterpolator()) {
         translateXToParent(-FORWARD_BACKWARD_OVERLAP, 0f)
@@ -46,5 +46,14 @@ val ViewSwitch_Backward = viewSwitch {
     }
     exit(AccelerateDecelerateInterpolator()) {
         translateXToParent(0f, 1f)
+    }
+}
+
+val ViewSwitch_Fade = viewSwitch {
+    enter(AccelerateDecelerateInterpolator()) {
+        alpha(0f, 1f)
+    }
+    exit(AccelerateDecelerateInterpolator()) {
+        alpha(1f, 0f)
     }
 }

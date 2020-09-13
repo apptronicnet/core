@@ -28,4 +28,6 @@ interface NavigationRouter {
 
     fun openAnimationDemo()
 
+    fun openViewSwitchDemo()
+
 }

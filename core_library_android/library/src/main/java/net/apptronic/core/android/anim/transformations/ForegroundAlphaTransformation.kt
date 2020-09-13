@@ -69,7 +69,7 @@ class ForegroundAlphaTransformation(
     }
 
     override fun cancelled(target: View, container: View): ViewTransformation {
-        return ForegroundAlphaTransformation(target.alpha, 0f, foreground)
+        return ForegroundAlphaTransformation(foreground.alpha.toFloat() / 255f, 0f, foreground)
     }
 
     override fun reversed(): ViewTransformation {

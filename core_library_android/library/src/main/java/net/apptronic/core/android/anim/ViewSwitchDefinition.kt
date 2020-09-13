@@ -25,8 +25,8 @@ class ViewSwitchDefinition(
 
 class ViewSwitchDefinitionBuilder internal constructor() {
 
-    private var enterDefinition = Animation_Empty
-    private var exitDefinition = Animation_Empty
+    private var enterDefinition: ViewAnimationDefinition = Animation_Empty
+    private var exitDefinition: ViewAnimationDefinition = Animation_Empty
 
     fun enter(
         interpolator: Interpolator = LinearInterpolator(),
@@ -35,11 +35,23 @@ class ViewSwitchDefinitionBuilder internal constructor() {
         enterDefinition = viewAnimation(interpolator, buildFlow)
     }
 
+    fun enter(
+        definition: ViewAnimationDefinition
+    ) {
+        enterDefinition = definition
+    }
+
     fun exit(
         interpolator: Interpolator = LinearInterpolator(),
         buildFlow: TransformationBuilder.() -> Unit
     ) {
         exitDefinition = viewAnimation(interpolator, buildFlow)
+    }
+
+    fun exit(
+        definition: ViewAnimationDefinition
+    ) {
+        exitDefinition = definition
     }
 
     internal fun build(): ViewSwitchDefinition {
