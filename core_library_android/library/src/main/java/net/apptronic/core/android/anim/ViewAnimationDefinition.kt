@@ -20,7 +20,7 @@ class ViewAnimationDefinition internal constructor(
     fun createAnimation(
         target: View, container: View, duration: Long
     ): ViewAnimation {
-        val builder = TransformationBuilder()
+        val builder = TransformationBuilder(target, container)
         builder.buildFlow()
         val targetInterpolator = if (!reversed) {
             interpolator

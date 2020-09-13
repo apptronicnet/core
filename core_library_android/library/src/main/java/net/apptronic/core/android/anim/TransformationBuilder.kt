@@ -1,6 +1,11 @@
 package net.apptronic.core.android.anim
 
-class TransformationBuilder internal constructor() {
+import android.content.Context
+import android.view.View
+
+class TransformationBuilder internal constructor(val target: View, val container: View) {
+
+    val context: Context = target.context
 
     private val transformations = mutableListOf<ViewTransformation>()
 

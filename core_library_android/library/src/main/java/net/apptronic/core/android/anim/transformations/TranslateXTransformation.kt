@@ -26,18 +26,20 @@ abstract class TranslateXTransformation : ViewTransformation {
 
 }
 
+fun TransformationBuilder.translateXPixels(
+    from: Float, to: Float, interpolator: Interpolator? = null
+) {
+    add(TranslateXToValueTransformation(from, to).interpolateWith(interpolator))
+}
+
 fun TransformationBuilder.translateXToSelf(
-    from: Float,
-    to: Float,
-    interpolator: Interpolator? = null
+    from: Float, to: Float, interpolator: Interpolator? = null
 ) {
     add(TranslateXRelativeToSelfTransformation(from, to).interpolateWith(interpolator))
 }
 
 fun TransformationBuilder.translateXToParent(
-    from: Float,
-    to: Float,
-    interpolator: Interpolator? = null
+    from: Float, to: Float, interpolator: Interpolator? = null
 ) {
     add(TranslateXRelativeToParentTransformation(from, to).interpolateWith(interpolator))
 }

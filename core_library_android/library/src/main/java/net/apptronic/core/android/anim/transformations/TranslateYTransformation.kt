@@ -26,18 +26,20 @@ abstract class TranslateYTransformation : ViewTransformation {
 
 }
 
+fun TransformationBuilder.translateYPixels(
+    from: Float, to: Float, interpolator: Interpolator? = null
+) {
+    add(TranslateYToValueTransformation(from, to).interpolateWith(interpolator))
+}
+
 fun TransformationBuilder.translateYToSelf(
-    from: Float,
-    to: Float,
-    interpolator: Interpolator? = null
+    from: Float, to: Float, interpolator: Interpolator? = null
 ) {
     add(TranslateYRelativeToSelfTransformation(from, to).interpolateWith(interpolator))
 }
 
 fun TransformationBuilder.translateYToParent(
-    from: Float,
-    to: Float,
-    interpolator: Interpolator? = null
+    from: Float, to: Float, interpolator: Interpolator? = null
 ) {
     add(TranslateYRelativeToParentTransformation(from, to).interpolateWith(interpolator))
 }
