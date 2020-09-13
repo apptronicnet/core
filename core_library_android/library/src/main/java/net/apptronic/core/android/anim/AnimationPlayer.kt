@@ -4,6 +4,7 @@ import android.os.SystemClock
 import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
+import net.apptronic.core.android.anim.animations.Animation_Empty
 
 class AnimationPlayer(private val rootView: View) : ViewTreeObserver.OnPreDrawListener {
 
@@ -26,10 +27,16 @@ class AnimationPlayer(private val rootView: View) : ViewTreeObserver.OnPreDrawLi
         }
     }
 
+    fun cancelAnimations(target: View) {
+        val animation = Animation_Empty.createAnimation(target, rootView, 0)
+        playAnimation(animation)
+    }
+
     internal fun onAnimationStarted(animation: ViewAnimation) {
         if (isAlive) {
             Log.d("AnimationPlayer", "onAnimationStarted(animation = $animation)")
             animations.add(animation)
+            rootView.invalidate()
         }
     }
 

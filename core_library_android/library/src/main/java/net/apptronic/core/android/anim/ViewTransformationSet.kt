@@ -22,13 +22,8 @@ internal class ViewTransformationSet(
     }
 
     private fun intercept(target: View, container: View, intercepted: ViewTransformationSet) {
-        val interceptedDescriptors = intercepted.transformationsToRun.map { it.descriptor }.toSet()
         transformations.forEach {
-            if (interceptedDescriptors.contains(it.descriptor)) {
-                it.onStart(target, container, true)
-            } else {
-                it.onStart(target, container, false)
-            }
+            it.onStart(target, container, true)
         }
         transformationsToRun.addAll(transformations)
         val descriptors = transformationsToRun.map { it.descriptor }.toSet()

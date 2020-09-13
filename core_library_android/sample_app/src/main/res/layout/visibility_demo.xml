@@ -9,6 +9,21 @@
         android:layout_height="wrap_content"
         android:padding="8dp">
 
+        <TextView
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
+            android:padding="16dp"
+            android:text="Demo for animated visibility changes"
+            android:textColor="#404040"
+            android:textSize="20dp" />
+
+        <CheckBox
+            android:id="@+id/chkInterceptAnimations"
+            android:layout_marginBottom="24dp"
+            android:checked="true"
+            android:padding="12dp"
+            android:text="Intercept animations" />
+
         <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/swSimple"
             android:layout_width="match_parent"
@@ -19,18 +34,18 @@
 
         <TextView
             android:id="@+id/contentSimple"
+            android:background="#d0d0d0"
             android:gravity="center"
             android:padding="8dp"
             android:text="Simple content"
             android:textColor="#000"
-            android:background="#d0d0d0"
             android:textSize="24sp"
             android:textStyle="bold" />
 
         <View
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
             android:layout_height="1dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
             android:background="#888" />
 
         <androidx.appcompat.widget.SwitchCompat
@@ -43,18 +58,18 @@
 
         <TextView
             android:id="@+id/contentSimpleFadeIn"
+            android:background="#d0d0d0"
             android:gravity="center"
             android:padding="8dp"
             android:text="Fade in"
-            android:background="#d0d0d0"
             android:textColor="#000"
             android:textSize="24sp"
             android:textStyle="bold" />
 
         <View
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
             android:layout_height="1dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
             android:background="#888" />
 
         <androidx.appcompat.widget.SwitchCompat
@@ -67,18 +82,18 @@
 
         <TextView
             android:id="@+id/contentSimpleFadeOut"
+            android:background="#d0d0d0"
             android:gravity="center"
             android:padding="8dp"
             android:text="Fade out"
-            android:background="#d0d0d0"
             android:textColor="#000"
             android:textSize="24sp"
             android:textStyle="bold" />
 
         <View
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
             android:layout_height="1dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
             android:background="#888" />
 
         <androidx.appcompat.widget.SwitchCompat
@@ -91,18 +106,18 @@
 
         <TextView
             android:id="@+id/contentSimpleFades"
+            android:background="#d0d0d0"
             android:gravity="center"
             android:padding="8dp"
             android:text="Fades"
-            android:background="#d0d0d0"
             android:textColor="#000"
             android:textSize="24sp"
             android:textStyle="bold" />
 
         <View
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
             android:layout_height="1dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
             android:background="#888" />
 
         <androidx.appcompat.widget.SwitchCompat
@@ -115,18 +130,18 @@
 
         <TextView
             android:id="@+id/isVisibleAnimatedSwitch1Content"
+            android:background="#d0d0d0"
             android:gravity="center"
             android:padding="8dp"
             android:text="Builder ViewSwitch 1"
-            android:background="#d0d0d0"
             android:textColor="#000"
             android:textSize="24sp"
             android:textStyle="bold" />
 
         <View
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
             android:layout_height="1dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
             android:background="#888" />
 
         <androidx.appcompat.widget.SwitchCompat
@@ -139,18 +154,18 @@
 
         <TextView
             android:id="@+id/isVisibleAnimatedSwitch2Content"
+            android:background="#d0d0d0"
             android:gravity="center"
             android:padding="8dp"
             android:text="Builder ViewSwitch 2"
-            android:background="#d0d0d0"
             android:textColor="#000"
             android:textSize="24sp"
             android:textStyle="bold" />
 
         <View
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
             android:layout_height="1dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
             android:background="#888" />
 
         <androidx.appcompat.widget.SwitchCompat
@@ -163,18 +178,18 @@
 
         <TextView
             android:id="@+id/isVisibleTransitionBuilder1Content"
+            android:background="#d0d0d0"
             android:gravity="center"
             android:padding="8dp"
             android:text="Transition builder 1"
-            android:background="#d0d0d0"
             android:textColor="#000"
             android:textSize="24sp"
             android:textStyle="bold" />
 
         <View
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
             android:layout_height="1dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
             android:background="#888" />
 
         <androidx.appcompat.widget.SwitchCompat
@@ -187,10 +202,10 @@
 
         <TextView
             android:id="@+id/isVisibleTransitionBuilder2Content"
+            android:background="#d0d0d0"
             android:gravity="center"
             android:padding="8dp"
             android:text="Transition builder 2"
-            android:background="#d0d0d0"
             android:textColor="#000"
             android:textSize="24sp"
             android:textStyle="bold" />

@@ -147,48 +147,49 @@ class AnimationDemoViewBinder : ViewBinder<AnimationDemoViewModel>() {
         }
     }
 
+    private val FadeAnimation = viewAnimation {
+        alpha(0f, 1f)
+    }
+
+    private val FromLeftAnimation =
+        viewAnimation(DecelerateInterpolator()) { translateXToParent(-1f, 0f) }
+
+    private val FromRightAnimation =
+        viewAnimation(DecelerateInterpolator()) { translateXToParent(1f, 0f) }
+
+    private val FadeLeftAnimation = viewAnimation {
+        translateXToSelf(-1f, 0f, AccelerateDecelerateInterpolator())
+        alpha(0f, 1f)
+    }
+
+    private val FadeRightAnimation = viewAnimation {
+        translateXToSelf(1f, 0f, AccelerateDecelerateInterpolator())
+        alpha(0f, 1f)
+    }
+
+    private val ScaleTopAnimation = viewAnimation(DecelerateInterpolator()) {
+        translateYToParent(-1f, 0f)
+        scaleX(0f, 1f)
+        scaleY(0f, 1f)
+    }
+
+    private val ScaleBottomAnimation = viewAnimation(DecelerateInterpolator()) {
+        translateYToParent(1f, 0f)
+        scaleX(0f, 1f)
+        scaleY(0f, 1f)
+    }
+
+    private val RollLeft = viewAnimation(DecelerateInterpolator()) {
+        translateXToSelf(-1f, 0f)
+        rotate(-360f, 0f)
+        alpha(0f, 1f)
+    }
+
+    private val RollRight = viewAnimation(DecelerateInterpolator()) {
+        translateXToSelf(1f, 0f)
+        rotate(360f, 0f)
+        alpha(0f, 1f)
+    }
+
 }
 
-val FadeAnimation = viewAnimation {
-    alpha(0f, 1f)
-}
-
-val FromLeftAnimation =
-    viewAnimation(DecelerateInterpolator()) { translateXToParent(-1f, 0f) }
-
-val FromRightAnimation =
-    viewAnimation(DecelerateInterpolator()) { translateXToParent(1f, 0f) }
-
-val FadeLeftAnimation = viewAnimation {
-    translateXToSelf(-1f, 0f, AccelerateDecelerateInterpolator())
-    alpha(0f, 1f)
-}
-
-val FadeRightAnimation = viewAnimation {
-    translateXToSelf(1f, 0f, AccelerateDecelerateInterpolator())
-    alpha(0f, 1f)
-}
-
-val ScaleTopAnimation = viewAnimation(DecelerateInterpolator()) {
-    translateYToParent(-1f, 0f)
-    scaleX(0f, 1f)
-    scaleY(0f, 1f)
-}
-
-val ScaleBottomAnimation = viewAnimation(DecelerateInterpolator()) {
-    translateYToParent(1f, 0f)
-    scaleX(0f, 1f)
-    scaleY(0f, 1f)
-}
-
-val RollLeft = viewAnimation(DecelerateInterpolator()) {
-    translateXToSelf(-1f, 0f)
-    rotate(-360f, 0f)
-    alpha(0f, 1f)
-}
-
-val RollRight = viewAnimation(DecelerateInterpolator()) {
-    translateXToSelf(1f, 0f)
-    rotate(360f, 0f)
-    alpha(0f, 1f)
-}

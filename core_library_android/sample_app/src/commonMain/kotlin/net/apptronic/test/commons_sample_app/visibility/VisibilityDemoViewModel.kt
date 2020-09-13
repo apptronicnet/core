@@ -10,6 +10,8 @@ fun Contextual.visibilityDemoViewModel() = VisibilityDemoViewModel(viewModelCont
 
 class VisibilityDemoViewModel(context: ViewModelContext) : ViewModel(context) {
 
+    val isInterceptAnimations = switchModel(true)
+
     val isSimplyVisible = switchModel(true)
     val isSimplyFadeIn = switchModel(true)
     val isSimplyFadeOut = switchModel(true)

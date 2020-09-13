@@ -82,12 +82,13 @@ class ViewAnimation internal constructor(
         if (intercepting != null) {
             Log.d("ViewAnimation", "$this intercepted $intercepting")
         }
-        intercepting?.cancel()
+        intercepting?.cancel(duration == 0L)
         target.setTag(R.id.ViewAnimation, this)
         onStartActions.forEach { it() }
         if (duration == 0L) {
             Log.d("ViewAnimation", "$this completed immediately")
             isCompleted = true
+            intercepting?.transformationSet?.reset(target, container)
             transformationSet.transform(target, container, 1f)
             finalize()
         } else {
@@ -115,10 +116,10 @@ class ViewAnimation internal constructor(
             Log.d("ViewAnimation", "$this completed")
             isCompleted = true
             transformationSet.transform(target, container, 1f)
-            container.post {
+            target.post {
                 finalize()
             }
-            false
+            true
         } else {
             val progress: Progress = (timestamp - startTime).toFloat() / duration.toFloat()
             transformationSet.transform(target, container, progress.interpolateWith(interpolator))
@@ -138,9 +139,12 @@ class ViewAnimation internal constructor(
         next?.start()
     }
 
-    private fun cancel() {
+    private fun cancel(reset: Boolean) {
         if (isFinalized && isCancelled) {
             return
+        }
+        if (reset) {
+            transformationSet.reset(target, container)
         }
         Log.d("ViewAnimation", "$this cancelled")
         onCancelActions.forEach { it() }
