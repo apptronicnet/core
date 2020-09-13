@@ -80,11 +80,11 @@ class AnimationDemoViewBinder : ViewBinder<AnimationDemoViewModel>() {
         exitAnimation.createAnimation(exitingView, viewContainer, DURATION)
             .doOnComplete {
                 viewContainer.removeView(exitingView)
-            }.playOn(player)
+            }.playOn(player, swInterceptAnimations.isChecked)
         enterAnimation.createAnimation(enteringView, viewContainer, DURATION)
             .doOnStart {
                 viewContainer.addView(enteringView)
-            }.playOn(player)
+            }.playOn(player, swInterceptAnimations.isChecked)
         currentView = enteringView
     }
 
@@ -131,6 +131,16 @@ class AnimationDemoViewBinder : ViewBinder<AnimationDemoViewModel>() {
                 "Exit to bottom",
                 ScaleBottomAnimation
             )
+            addButtons(
+                "Roll in left",
+                "Roll out left",
+                RollLeft
+            )
+            addButtons(
+                "Roll in right",
+                "Roll out right",
+                RollRight
+            )
         }
         onUnbind {
             player.recycle()
@@ -169,4 +179,16 @@ val ScaleBottomAnimation = viewAnimation(DecelerateInterpolator()) {
     translateYToParent(1f, 0f)
     scaleX(0f, 1f)
     scaleY(0f, 1f)
+}
+
+val RollLeft = viewAnimation(DecelerateInterpolator()) {
+    translateXToSelf(-1f, 0f)
+    rotate(-360f, 0f)
+    alpha(0f, 1f)
+}
+
+val RollRight = viewAnimation(DecelerateInterpolator()) {
+    translateXToSelf(1f, 0f)
+    rotate(360f, 0f)
+    alpha(0f, 1f)
 }

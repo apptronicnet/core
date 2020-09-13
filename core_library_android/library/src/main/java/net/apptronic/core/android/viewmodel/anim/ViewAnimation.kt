@@ -1,5 +1,6 @@
 package net.apptronic.core.android.viewmodel.anim
 
+import android.util.Log
 import android.view.View
 import android.view.animation.Interpolator
 import net.apptronic.core.android.R
@@ -17,6 +18,19 @@ class ViewAnimation internal constructor(
     private val onStartActions = mutableListOf<() -> Unit>()
     private val onCompleteActions = mutableListOf<() -> Unit>()
     private val onCancelActions = mutableListOf<() -> Unit>()
+    private var player: AnimationPlayer? = null
+
+    private class Next(
+        val player: AnimationPlayer,
+        val animation: ViewAnimation,
+        val intercept: Boolean
+    ) {
+        fun start() {
+            player.playAnimation(animation, intercept)
+        }
+    }
+
+    private var next: Next? = null
 
     fun doOnStart(action: () -> Unit): ViewAnimation {
         onStartActions.add(action)
@@ -42,17 +56,43 @@ class ViewAnimation internal constructor(
     private var isStarted = false
     private var isCompleted = false
     private var isCancelled = false
+    private var isFinalized = false
     private var startTime: Long = 0
     private var endTime: Long = 0
     private var intercepting: ViewAnimation? = null
 
-    internal fun start() {
-        intercepting = target.getTag(R.id.ViewAnimation) as? ViewAnimation
+    override fun toString(): String {
+        return "ViewAnimation[${hashCode()}]"
+    }
+
+    internal fun start(player: AnimationPlayer, intercept: Boolean) {
+        Log.d("ViewAnimation", "Launching $this")
+        val intercepting = target.getTag(R.id.ViewAnimation) as? ViewAnimation
+        if (intercepting != null && !intercept) {
+            Log.d("ViewAnimation", "$this adding to queue after $intercepting")
+            intercepting.next = Next(player, this, intercept)
+            return
+        }
+        this.player = player
+        doStartInternal(intercepting)
+    }
+
+    private fun doStartInternal(intercepting: ViewAnimation?) {
+        this.intercepting = intercepting
+        if (intercepting != null) {
+            Log.d("ViewAnimation", "$this intercepted $intercepting")
+        }
         intercepting?.cancel()
         target.setTag(R.id.ViewAnimation, this)
         onStartActions.forEach { it() }
         if (duration == 0L) {
-            complete()
+            Log.d("ViewAnimation", "$this completed immediately")
+            isCompleted = true
+            transformationSet.transform(target, container, 1f)
+            finalize()
+        } else {
+            Log.d("ViewAnimation", "$this running")
+            player?.onAnimationStarted(this)
         }
     }
 
@@ -72,9 +112,13 @@ class ViewAnimation internal constructor(
             intercepting = null
         }
         return if (timestamp >= endTime) {
-            complete()
+            Log.d("ViewAnimation", "$this completed")
             isCompleted = true
-            true
+            transformationSet.transform(target, container, 1f)
+            container.post {
+                finalize()
+            }
+            false
         } else {
             val progress: Progress = (timestamp - startTime).toFloat() / duration.toFloat()
             transformationSet.transform(target, container, progress.interpolateWith(interpolator))
@@ -82,28 +126,30 @@ class ViewAnimation internal constructor(
         }
     }
 
-    private fun complete() {
-        onCompleteActions.forEach { it() }
+    private fun finalize() {
+        if (!isCancelled && isFinalized) {
+            return
+        }
+        Log.d("ViewAnimation", "$this finalized")
+        isFinalized = true
         target.setTag(R.id.ViewAnimation, null)
         transformationSet.reset(target, container)
+        onCompleteActions.forEach { it() }
+        next?.start()
     }
 
     private fun cancel() {
+        if (isFinalized && isCancelled) {
+            return
+        }
+        Log.d("ViewAnimation", "$this cancelled")
         onCancelActions.forEach { it() }
+        target.setTag(R.id.ViewAnimation, null)
         isCancelled = true
     }
 
-    fun applyProgress(progress: Progress) {
-        if (!isStarted) {
-            start()
-            isStarted = true
-            transformationSet.start(target, container, null)
-        }
-        transformationSet.transform(target, container, progress)
-    }
-
-    fun playOn(player: AnimationPlayer) {
-        player.playAnimation(this)
+    fun playOn(player: AnimationPlayer, intercept: Boolean = true) {
+        player.playAnimation(this, intercept)
     }
 
 }
