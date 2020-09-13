@@ -1,7 +1,7 @@
-package net.apptronic.core.android.viewmodel.anim.animations
+package net.apptronic.core.android.anim.animations
 
-import net.apptronic.core.android.viewmodel.anim.transformations.*
-import net.apptronic.core.android.viewmodel.anim.viewAnimation
+import net.apptronic.core.android.anim.transformations.*
+import net.apptronic.core.android.anim.viewAnimation
 
 val Animation_Empty = viewAnimation { }
 

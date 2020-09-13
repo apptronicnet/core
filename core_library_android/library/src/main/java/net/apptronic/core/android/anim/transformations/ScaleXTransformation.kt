@@ -1,10 +1,10 @@
-package net.apptronic.core.android.viewmodel.anim.transformations
+package net.apptronic.core.android.anim.transformations
 
 import android.view.View
 import android.view.animation.Interpolator
-import net.apptronic.core.android.viewmodel.anim.TransformationBuilder
-import net.apptronic.core.android.viewmodel.anim.ViewTransformation
-import net.apptronic.core.android.viewmodel.anim.interpolateWith
+import net.apptronic.core.android.anim.TransformationBuilder
+import net.apptronic.core.android.anim.ViewTransformation
+import net.apptronic.core.android.anim.interpolateWith
 import net.apptronic.core.android.viewmodel.transitions.Progress
 import net.apptronic.core.android.viewmodel.transitions.interpolate
 import net.apptronic.core.android.viewmodel.transitions.transformation.TransformationDescriptor

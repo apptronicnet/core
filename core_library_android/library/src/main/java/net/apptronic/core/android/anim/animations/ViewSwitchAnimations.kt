@@ -1,11 +1,11 @@
-package net.apptronic.core.android.viewmodel.anim.animations
+package net.apptronic.core.android.anim.animations
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.animation.AccelerateDecelerateInterpolator
-import net.apptronic.core.android.viewmodel.anim.transformations.foregroundAlpha
-import net.apptronic.core.android.viewmodel.anim.transformations.translateXToParent
-import net.apptronic.core.android.viewmodel.anim.viewSwitch
+import net.apptronic.core.android.anim.transformations.foregroundAlpha
+import net.apptronic.core.android.anim.transformations.translateXToParent
+import net.apptronic.core.android.anim.viewSwitch
 
 const val FORWARD_BACKWARD_OVERLAP = 0.5f
 const val MAX_OVERLAY_ALPHA = 0.7f

@@ -1,4 +1,4 @@
-package net.apptronic.core.android.viewmodel.anim
+package net.apptronic.core.android.anim
 
 import android.util.Log
 import android.view.View

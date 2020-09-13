@@ -9,11 +9,11 @@ import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.TextView
 import kotlinx.android.synthetic.main.animation_demo.view.*
+import net.apptronic.core.android.anim.AnimationPlayer
+import net.apptronic.core.android.anim.ViewAnimationDefinition
+import net.apptronic.core.android.anim.transformations.*
+import net.apptronic.core.android.anim.viewAnimation
 import net.apptronic.core.android.viewmodel.ViewBinder
-import net.apptronic.core.android.viewmodel.anim.AnimationPlayer
-import net.apptronic.core.android.viewmodel.anim.ViewAnimationDefinition
-import net.apptronic.core.android.viewmodel.anim.transformations.*
-import net.apptronic.core.android.viewmodel.anim.viewAnimation
 import net.apptronic.test.commons_sample_app.R
 import net.apptronic.test.commons_sample_app.animation.AnimationDemoViewModel
 

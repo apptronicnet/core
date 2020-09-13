@@ -1,4 +1,4 @@
-package net.apptronic.core.android.viewmodel.anim
+package net.apptronic.core.android.anim
 
 class TransformationBuilder internal constructor() {
 

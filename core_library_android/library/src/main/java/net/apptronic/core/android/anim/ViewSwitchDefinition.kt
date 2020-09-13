@@ -1,8 +1,8 @@
-package net.apptronic.core.android.viewmodel.anim
+package net.apptronic.core.android.anim
 
 import android.view.animation.Interpolator
 import android.view.animation.LinearInterpolator
-import net.apptronic.core.android.viewmodel.anim.animations.Animation_Empty
+import net.apptronic.core.android.anim.animations.Animation_Empty
 
 fun viewSwitch(
     enterDefinition: ViewAnimationDefinition, exitDefinition: ViewAnimationDefinition

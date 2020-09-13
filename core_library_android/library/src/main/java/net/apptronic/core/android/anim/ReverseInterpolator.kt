@@ -1,4 +1,4 @@
-package net.apptronic.core.android.viewmodel.anim
+package net.apptronic.core.android.anim
 
 import android.view.animation.Interpolator
 import net.apptronic.core.android.viewmodel.transitions.reverse
