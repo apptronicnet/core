@@ -8,7 +8,7 @@ import net.apptronic.core.android.viewmodel.transitions.Progress
 import net.apptronic.core.android.viewmodel.transitions.interpolateWith
 
 class ViewAnimation internal constructor(
-    private val target: View,
+    val target: View,
     private val container: View,
     private val transformationSet: ViewTransformationSet,
     private val duration: Long,

@@ -1,5 +1,6 @@
 package net.apptronic.core.android.anim
 
+import android.view.View
 import android.view.animation.Interpolator
 import android.view.animation.LinearInterpolator
 import net.apptronic.core.android.anim.animations.Animation_Empty
@@ -21,7 +22,25 @@ fun viewSwitch(
 class ViewSwitchDefinition(
     val enter: ViewAnimationDefinition,
     val exit: ViewAnimationDefinition
-)
+) {
+
+    fun buildAnimationSet(
+        enter: View?,
+        exit: View?,
+        container: View,
+        duration: Long
+    ): ViewAnimationSet {
+        val animationSet = ViewAnimationSet(duration)
+        enter?.let {
+            animationSet.addAnimation(this.enter, it, container)
+        }
+        exit?.let {
+            animationSet.addAnimation(this.exit, it, container)
+        }
+        return animationSet
+    }
+
+}
 
 class ViewSwitchDefinitionBuilder internal constructor() {
 

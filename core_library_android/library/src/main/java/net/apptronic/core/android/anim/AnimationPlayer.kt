@@ -44,6 +44,12 @@ class AnimationPlayer(private val rootView: View) : ViewTreeObserver.OnPreDrawLi
         playAnimation(builder(), intercept)
     }
 
+    fun playAnimationSet(set: ViewAnimationSet, intercept: Boolean = true) {
+        set.animations.forEach {
+            it.playOn(this, intercept)
+        }
+    }
+
     override fun onPreDraw(): Boolean {
         return if (animations.isNotEmpty()) {
             val removed = animations.removeAll {
