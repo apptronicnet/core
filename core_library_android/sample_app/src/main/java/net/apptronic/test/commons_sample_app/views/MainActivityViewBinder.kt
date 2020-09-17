@@ -2,7 +2,7 @@ package net.apptronic.test.commons_sample_app.views
 
 import android.view.View
 import kotlinx.android.synthetic.main.activity_main.view.*
-import net.apptronic.core.android.anim.animations.Animation_Fade
+import net.apptronic.core.android.anim.animations.ViewAnimation_Fade
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.bindings.bindVisibleGone
 import net.apptronic.core.android.viewmodel.bindings.navigation.bindStackNavigator
@@ -27,7 +27,7 @@ class MainActivityViewBinder : ViewBinder<ApplicationScreenViewModel>() {
                 fadeOverlay,
                 isFadeOverlayVisible
             ) {
-                animation = Animation_Fade
+                animation = ViewAnimation_Fade
             }
             bindStackNavigator(overlayContainer, viewModel.overlayNavigator)
         }

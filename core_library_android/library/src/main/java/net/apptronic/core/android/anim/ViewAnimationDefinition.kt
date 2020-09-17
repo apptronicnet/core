@@ -46,4 +46,8 @@ class ViewAnimationDefinition internal constructor(
         }
     }
 
+    fun withInterpolator(overrideInterpolator: Interpolator): ViewAnimationDefinition {
+        return ViewAnimationDefinition(overrideInterpolator, buildFlow, reversed)
+    }
+
 }

@@ -1,20 +1,22 @@
 package net.apptronic.core.android.anim.transition
 
+import android.util.Log
 import android.view.View
 import android.view.animation.Interpolator
 import android.view.animation.LinearInterpolator
-import net.apptronic.core.android.anim.ViewAnimationDefinition
-import net.apptronic.core.android.anim.ViewAnimationSet
-import net.apptronic.core.android.anim.ViewTransformationBuilder
-import net.apptronic.core.android.anim.animations.Animation_Empty
-import net.apptronic.core.android.anim.viewAnimation
+import net.apptronic.core.android.anim.*
+import net.apptronic.core.android.anim.animations.ViewAnimation_Empty
 
 fun viewTransition(
     enterDefinition: ViewAnimationDefinition,
     exitDefinition: ViewAnimationDefinition,
-    order: ViewTransitionOrder = ViewTransitionOrder.Unspecified
+    order: ViewTransitionDirectionSpec = ViewTransitionDirectionSpec.Irrelevant
 ): ViewTransitionDefinition {
-    return ViewTransitionDefinition(enterDefinition, exitDefinition, order)
+    return viewTransition {
+        enter(enterDefinition)
+        exit(exitDefinition)
+        this.order = order
+    }
 }
 
 fun viewTransition(
@@ -26,63 +28,128 @@ fun viewTransition(
 }
 
 class ViewTransitionDefinition internal constructor(
-    val enter: ViewAnimationDefinition,
-    val exit: ViewAnimationDefinition,
-    val order: ViewTransitionOrder
+    /**
+     * Defines animation for entering view when it is on front
+     */
+    val enterFront: ViewAnimationDefinition,
+    /**
+     * Defines animation for exiting view when it is on front
+     */
+    val exitFront: ViewAnimationDefinition,
+    /**
+     * Defines animation for entering view when it is on back
+     */
+    val enterBack: ViewAnimationDefinition,
+    /**
+     * Defines animation for exiting view when it is on back
+     */
+    val exitBack: ViewAnimationDefinition,
+    /**
+     * Defines animation for entering view when no exiting view
+     */
+    val enterSingle: ViewAnimationDefinition,
+    /**
+     * Defines animation for exiting view when no entering view
+     */
+    val exitSingle: ViewAnimationDefinition,
+    /**
+     * Specifies supported orders
+     */
+    val order: ViewTransitionDirectionSpec
 ) {
 
-    fun buildAnimationSet(
-        enter: View?,
-        exit: View?,
+    fun buildTransition(
+        enter: View,
+        exit: View,
         container: View,
-        duration: Long
-    ): ViewAnimationSet {
+        duration: Long,
+        desiredDirection: ViewTransitionDirection?
+    ): ViewTransition {
+        val resultDesiredDirection = desiredDirection ?: ViewTransitionDirection.EnteringOnFront
         val animationSet = ViewAnimationSet(duration)
-        enter?.let {
-            animationSet.addAnimation(this.enter, it, container)
+        if (resultDesiredDirection == ViewTransitionDirection.EnteringOnFront) {
+            animationSet.addAnimation(enterFront, enter, container)
+            animationSet.addAnimation(exitBack, exit, container)
         }
-        exit?.let {
-            animationSet.addAnimation(this.exit, it, container)
+        if (resultDesiredDirection == ViewTransitionDirection.ExitingOnFront) {
+            animationSet.addAnimation(enterBack, enter, container)
+            animationSet.addAnimation(exitFront, exit, container)
         }
-        return animationSet
+        val direction = when (order) {
+            ViewTransitionDirectionSpec.EnteringOnFront -> ViewTransitionDirection.EnteringOnFront
+            ViewTransitionDirectionSpec.ExitingOnFront -> ViewTransitionDirection.ExitingOnFront
+            ViewTransitionDirectionSpec.Bidirectional -> resultDesiredDirection
+            ViewTransitionDirectionSpec.Irrelevant -> resultDesiredDirection
+        }
+        if (resultDesiredDirection != direction) {
+            Log.w(
+                "ViewTransitionDefinitio",
+                "Called buildTransition() with not supported desiredDirection"
+            )
+        }
+        return ViewTransition(animationSet, direction)
+    }
+
+    fun buildSingleEnter(target: View, container: View, duration: Long): ViewAnimation {
+        return enterSingle.createAnimation(target, container, duration)
+    }
+
+    fun buildSingleExit(target: View, container: View, duration: Long): ViewAnimation {
+        return exitSingle.createAnimation(target, container, duration)
     }
 
 }
 
 class TransitionDefinitionBuilder internal constructor() {
 
-    private var enterDefinition: ViewAnimationDefinition = Animation_Empty
-    private var exitDefinition: ViewAnimationDefinition = Animation_Empty
-    var order: ViewTransitionOrder = ViewTransitionOrder.Unspecified
+    var enterFront: ViewAnimationDefinition = ViewAnimation_Empty
+    var enterBack: ViewAnimationDefinition = ViewAnimation_Empty
+    var exitFront: ViewAnimationDefinition = ViewAnimation_Empty
+    var exitBack: ViewAnimationDefinition = ViewAnimation_Empty
+    var enterSingle: ViewAnimationDefinition = ViewAnimation_Empty
+    var exitSingle: ViewAnimationDefinition = ViewAnimation_Empty
+    var order: ViewTransitionDirectionSpec = ViewTransitionDirectionSpec.Irrelevant
 
     fun enter(
         interpolator: Interpolator = LinearInterpolator(),
         buildFlow: ViewTransformationBuilder.() -> Unit
     ) {
-        enterDefinition = viewAnimation(interpolator, buildFlow)
+        enter(viewAnimation(interpolator, buildFlow))
     }
 
     fun enter(
         definition: ViewAnimationDefinition
     ) {
-        enterDefinition = definition
+        enterFront = definition
+        enterBack = definition
+        enterSingle = definition
     }
 
     fun exit(
         interpolator: Interpolator = LinearInterpolator(),
         buildFlow: ViewTransformationBuilder.() -> Unit
     ) {
-        exitDefinition = viewAnimation(interpolator, buildFlow)
+        exit(viewAnimation(interpolator, buildFlow))
     }
 
     fun exit(
         definition: ViewAnimationDefinition
     ) {
-        exitDefinition = definition
+        exitFront = definition
+        exitBack = definition
+        exitSingle = definition
     }
 
     internal fun build(): ViewTransitionDefinition {
-        return ViewTransitionDefinition(enterDefinition, exitDefinition, order)
+        return ViewTransitionDefinition(
+            enterFront = enterFront,
+            exitFront = exitFront,
+            enterBack = enterBack,
+            exitBack = exitBack,
+            enterSingle = enterSingle,
+            exitSingle = exitSingle,
+            order = order
+        )
     }
 
 }

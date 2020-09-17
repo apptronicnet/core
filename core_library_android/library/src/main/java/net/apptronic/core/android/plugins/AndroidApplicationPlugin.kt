@@ -2,6 +2,7 @@ package net.apptronic.core.android.plugins
 
 import android.app.Activity
 import android.app.Application
+import net.apptronic.core.android.anim.adapter.ViewTransitionAdapter
 import net.apptronic.core.android.viewmodel.ViewBinderFactory
 import net.apptronic.core.android.viewmodel.requireBoundView
 import net.apptronic.core.android.viewmodel.transitions.TransitionBuilder
@@ -28,6 +29,7 @@ class AndroidApplicationPlugin internal constructor(
 
     private var viewBinderFactory: ViewBinderFactory? = null
     private var transitionBuilder: TransitionBuilder? = null
+    private var viewTransitionAdapter: ViewTransitionAdapter? = null
     private val activityBindingPlugin = ActivityBindingPlugin(androidApplication)
 
     class Builder internal constructor(androidApplication: Application) {
@@ -38,8 +40,13 @@ class AndroidApplicationPlugin internal constructor(
             target.viewBinderFactory = viewBinderFactory
         }
 
+        @Deprecated("Replaced by net.apptronic.core.android.anim.*")
         fun transitionBuilder(transitionBuilder: TransitionBuilder) {
             target.transitionBuilder = transitionBuilder
+        }
+
+        fun viewTransitionAdapter(viewTransitionAdapter: ViewTransitionAdapter) {
+            target.viewTransitionAdapter = viewTransitionAdapter
         }
 
         fun <A : Activity, VM : ViewModel> bindActivity(
@@ -56,6 +63,9 @@ class AndroidApplicationPlugin internal constructor(
         }
         transitionBuilder?.let {
             context.installTransitionBuilderPlugin(it)
+        }
+        viewTransitionAdapter?.let {
+            context.installViewTransitionAdapterPlugin(it)
         }
         context.installPlugin(ActivityBindingPluginDescriptor, activityBindingPlugin)
     }

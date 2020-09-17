@@ -2,10 +2,11 @@ package net.apptronic.core.android.viewmodel.navigation
 
 import android.view.View
 import android.view.ViewGroup
+import net.apptronic.core.android.anim.AnimationPlayer
+import net.apptronic.core.android.anim.adapter.*
+import net.apptronic.core.android.anim.transition.ViewTransitionDirection
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.ViewBinderFactory
-import net.apptronic.core.android.viewmodel.transitions.TransitionBuilder
-import net.apptronic.core.android.viewmodel.transitions.ViewSwitch
 import net.apptronic.core.android.viewmodel.view.ViewContainerDelegate
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelStackAdapter
@@ -17,15 +18,17 @@ import net.apptronic.core.mvvm.viewmodel.navigation.TransitionInfo
  *
  * @param container in which [View] should be added
  * @param viewBinderFactory to create [ViewBinder] for [ViewModel]
- * @param transitionBuilder for creating animations
+ * @param viewTransitionAdapter for creating animations
  */
 open class ViewBinderStackAdapter(
     private val container: ViewGroup,
     private val viewBinderFactory: ViewBinderFactory = ViewBinderFactory(),
-    private val transitionBuilder: TransitionBuilder = TransitionBuilder(),
+    private val viewTransitionAdapter: ViewTransitionAdapter,
     private val defaultAnimationTime: Long =
-        container.resources.getInteger(android.R.integer.config_mediumAnimTime).toLong()
+        container.resources.getInteger(android.R.integer.config_mediumAnimTime).toLong(),
 ) : ViewModelStackAdapter() {
+
+    private val player = AnimationPlayer(container)
 
     fun bindings(setup: ViewBinderFactory.() -> Unit) {
         setup.invoke(viewBinderFactory)
@@ -78,20 +81,17 @@ open class ViewBinderStackAdapter(
         newView: View,
         transitionSpec: Any?
     ) {
-        val viewSwitch = ViewSwitch(
-            entering = newView,
-            exiting = null,
+        val spec = SingleTransitionSpec(
+            target = newView,
             container = container,
-            isNewOnFront = true
+            duration = defaultAnimationTime,
+            transitionSpec = transitionSpec
         )
-        val transition = transitionBuilder.getViewSwitchTransition(
-            viewSwitch, transitionSpec, defaultAnimationTime
-        )
-        addViewToContainer(viewModel, viewBinder, container, newView, true)
-        newView.visibility = View.INVISIBLE
-        transition.doOnStart {
+        val animation = viewTransitionAdapter.buildSingleEnterOrEmpty(spec)
+        animation.doOnStart {
+            addViewToContainer(viewModel, viewBinder, container, newView, true)
             newView.visibility = View.VISIBLE
-        }.launch(viewSwitch)
+        }.playOn(player, true)
     }
 
     open fun onReplace(
@@ -103,23 +103,28 @@ open class ViewBinderStackAdapter(
         isNewOnFront: Boolean,
         transitionSpec: Any?
     ) {
-        val viewSwitch = ViewSwitch(
-            entering = newView,
-            exiting = oldView,
+        val spec = ViewTransitionSpec(
+            enter = newView,
+            exit = oldView,
             container = container,
-            isNewOnFront = isNewOnFront
+            duration = defaultAnimationTime,
+            transitionSpec = transitionSpec,
+            direction = if (isNewOnFront)
+                ViewTransitionDirection.EnteringOnFront
+            else
+                ViewTransitionDirection.ExitingOnFront
         )
-        val transition = transitionBuilder.getViewSwitchTransition(
-            viewSwitch, transitionSpec, defaultAnimationTime
-        )
-        addViewToContainer(viewModel, viewBinder, container, newView, isNewOnFront)
-        newView.visibility = View.INVISIBLE
-        transition.doOnStart {
+        val transition = viewTransitionAdapter.buildViewTransitionOrEmpty(spec)
+        transition.viewAnimationSet.getAnimation(newView)?.doOnStart {
+            val addNewOnFront = transition.direction == ViewTransitionDirection.EnteringOnFront
+            addViewToContainer(viewModel, viewBinder, container, newView, addNewOnFront)
             newView.visibility = View.VISIBLE
-        }.doOnCompleteOrCancel {
+        }
+        transition.viewAnimationSet.getAnimation(oldView)?.doOnCompleteOrCancel {
             val delegate = viewBinder.getViewDelegate<ViewContainerDelegate<*>>()
             delegate.performDetachView(viewModel, viewBinder, oldView, container)
-        }.launch(viewSwitch)
+        }
+        transition.viewAnimationSet.playOn(player, true)
     }
 
     open fun onRemove(
@@ -129,18 +134,17 @@ open class ViewBinderStackAdapter(
         oldView: View,
         transitionSpec: Any?
     ) {
-        val viewSwitch = ViewSwitch(
-            entering = null,
-            exiting = oldView,
+        val spec = SingleTransitionSpec(
+            target = oldView,
             container = container,
-            isNewOnFront = false
+            duration = defaultAnimationTime,
+            transitionSpec = transitionSpec
         )
-        val transition = transitionBuilder.getViewSwitchTransition(
-            viewSwitch, transitionSpec, defaultAnimationTime
-        )
-        transition.doOnCompleteOrCancel {
+        val animation = viewTransitionAdapter.buildSingleExitOrEmpty(spec)
+        animation.doOnCompleteOrCancel {
             container.removeView(oldView)
-        }.launch(viewSwitch)
+        }
+        animation.playOn(player, true)
     }
 
     private fun addViewToContainer(

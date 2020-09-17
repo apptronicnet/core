@@ -4,11 +4,9 @@ import android.os.SystemClock
 import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
-import net.apptronic.core.android.anim.animations.Animation_Empty
+import net.apptronic.core.android.anim.animations.ViewAnimation_Empty
 
 class AnimationPlayer(private val rootView: View) : ViewTreeObserver.OnPreDrawListener {
-
-    private var isAlive = true
 
     init {
         Log.d("AnimationPlayer", "Initialized on $rootView")
@@ -17,27 +15,41 @@ class AnimationPlayer(private val rootView: View) : ViewTreeObserver.OnPreDrawLi
 
     private val animations = mutableListOf<ViewAnimation>()
 
-    fun playAnimation(animation: ViewAnimation, intercept: Boolean = true) {
-        if (isAlive) {
-            Log.d(
-                "AnimationPlayer",
-                "playAnimation(animation = $animation, intercept = $intercept)"
-            )
-            animation.start(this, intercept)
+    private var viewTreeObserver: ViewTreeObserver? = null
+
+    private fun refreshAttachState() {
+        if (viewTreeObserver?.isAlive == false) {
+            viewTreeObserver = null
+        }
+        if (animations.isEmpty() != (viewTreeObserver == null)) {
+            if (viewTreeObserver == null) {
+                viewTreeObserver = rootView.viewTreeObserver
+                viewTreeObserver?.addOnPreDrawListener(this)
+            } else {
+                viewTreeObserver?.removeOnPreDrawListener(this)
+                viewTreeObserver = null
+            }
         }
     }
 
+    fun playAnimation(animation: ViewAnimation, intercept: Boolean = true) {
+        Log.d(
+            "AnimationPlayer",
+            "playAnimation(animation = $animation, intercept = $intercept)"
+        )
+        animation.start(this, intercept)
+    }
+
     fun cancelAnimations(target: View) {
-        val animation = Animation_Empty.createAnimation(target, rootView, 0)
+        val animation = ViewAnimation_Empty.createAnimation(target, rootView, 0)
         playAnimation(animation)
     }
 
     internal fun onAnimationStarted(animation: ViewAnimation) {
-        if (isAlive) {
-            Log.d("AnimationPlayer", "onAnimationStarted(animation = $animation)")
-            animations.add(animation)
-            rootView.invalidate()
-        }
+        Log.d("AnimationPlayer", "onAnimationStarted(animation = $animation)")
+        animations.add(animation)
+        rootView.invalidate()
+        refreshAttachState()
     }
 
     fun playAnimation(intercept: Boolean = true, builder: () -> ViewAnimation) {
@@ -59,14 +71,18 @@ class AnimationPlayer(private val rootView: View) : ViewTreeObserver.OnPreDrawLi
                 }
                 completed
             }
+            if (removed) {
+                refreshAttachState()
+            }
             !removed
         } else true
     }
 
+    @Deprecated("Not needed more")
     fun recycle() {
-        Log.d("AnimationPlayer", "Recycled on $rootView")
-        isAlive = false
-        rootView.viewTreeObserver.removeOnPreDrawListener(this)
+//        Log.d("AnimationPlayer", "Recycled on $rootView")
+//        isAlive = false
+//        rootView.viewTreeObserver.removeOnPreDrawListener(this)
     }
 
 }

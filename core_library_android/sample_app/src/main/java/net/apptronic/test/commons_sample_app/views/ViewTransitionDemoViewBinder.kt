@@ -10,9 +10,12 @@ import android.widget.Button
 import android.widget.TextView
 import kotlinx.android.synthetic.main.view_switch_demo.view.*
 import net.apptronic.core.android.anim.AnimationPlayer
+import net.apptronic.core.android.anim.adapter.*
 import net.apptronic.core.android.anim.playback
 import net.apptronic.core.android.anim.transformations.*
-import net.apptronic.core.android.anim.transition.*
+import net.apptronic.core.android.anim.transition.ViewTransitionDirection
+import net.apptronic.core.android.anim.transition.ViewTransitionDirectionSpec
+import net.apptronic.core.android.anim.transition.viewTransition
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.mvvm.viewmodel.adapter.BasicTransition
 import net.apptronic.test.commons_sample_app.R
@@ -57,24 +60,26 @@ class ViewTransitionDemoViewBinder : ViewBinder<ViewTransitionDemoViewModel>() {
         val exitingView = currentView
         enteringView.text = index.toString()
         enteringView.background = ColorDrawable(backgroundColor())
-        val animationSet = LocalAdapter.buildViewTransition(
-            enteringView,
-            exitingView,
-            switchContainer,
-            duration,
-            transitionInfo
-        )!!
-        animationSet.getAnimation(exitingView)?.doOnComplete {
+        val transition = LocalAdapter.buildViewTransitionOrEmpty(
+            ViewTransitionSpec(
+                enteringView,
+                exitingView,
+                switchContainer,
+                duration,
+                transitionInfo
+            )
+        )
+        transition.viewAnimationSet.getAnimation(exitingView)?.doOnComplete {
             switchContainer.removeView(exitingView)
         }
-        animationSet.getAnimation(enteringView)?.doOnStart {
-            if (LocalAdapter.getOrder(transitionInfo) == ViewTransitionOrder.ExitingOnFront) {
+        transition.viewAnimationSet.getAnimation(enteringView)?.doOnStart {
+            if (transition.direction == ViewTransitionDirection.ExitingOnFront) {
                 switchContainer.addView(enteringView, 0)
             } else {
                 switchContainer.addView(enteringView)
             }
         }
-        player.playAnimationSet(animationSet, true)
+        transition.viewAnimationSet.playOn(player, true)
         currentView = enteringView
     }
 
@@ -85,9 +90,9 @@ class ViewTransitionDemoViewBinder : ViewBinder<ViewTransitionDemoViewModel>() {
             currentView.background = ColorDrawable(backgroundColor())
             addButton("Next", BasicTransition.Next)
             addButton("Previous", BasicTransition.Previous)
+            addButton("Fade", BasicTransition.Fade)
             addButton("Forward", BasicTransition.Forward)
             addButton("Backward", BasicTransition.Backward)
-            addButton("Fade", BasicTransition.Fade)
             addButton("Sheet", ReplaceTransition)
         }
         onUnbind {
@@ -108,13 +113,14 @@ class ViewTransitionDemoViewBinder : ViewBinder<ViewTransitionDemoViewModel>() {
             elevationDp(0f, 0f, 0f, AccelerateInterpolator().playback(0f, 0.1f))
             translationZDp(0f, 0f, 0f, AccelerateInterpolator().playback(0f, 0.1f))
         }
-        order = ViewTransitionOrder.EnteringOnFront
+        order = ViewTransitionDirectionSpec.EnteringOnFront
     }
 
     private val CustomAdapter = viewTransitionAdapter {
         bindTransition(ReplaceTransition, ReplaceSheet).durationMultiplier(1.8f)
     }
 
-    private val LocalAdapter = compositeViewTransitionAdapter(CustomAdapter, BasicTransitionAdapter)
+    private val LocalAdapter =
+        compositeViewTransitionAdapter(CustomAdapter, BasicViewTransitionAdapter)
 
 }

@@ -81,8 +81,8 @@ class VisibilityAnimator internal constructor(
     var viewTransition: ViewTransitionDefinition? = null
         set(value) {
             field = value
-            enter = value?.enter
-            exit = value?.exit
+            enter = value?.enterSingle
+            exit = value?.exitSingle
         }
 
     var enter: ViewAnimationDefinition? = null

@@ -5,8 +5,8 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import kotlinx.android.synthetic.main.visibility_demo.view.*
-import net.apptronic.core.android.anim.animations.Animation_Fade
 import net.apptronic.core.android.anim.animations.Transition_Next
+import net.apptronic.core.android.anim.animations.ViewAnimation_Fade
 import net.apptronic.core.android.anim.transformations.*
 import net.apptronic.core.android.anim.transition.viewTransition
 import net.apptronic.core.android.anim.viewAnimation
@@ -31,21 +31,21 @@ class VisibilityDemoViewBinder : ViewBinder<VisibilityDemoViewModel>() {
 
             bindSwitch(swSimpleFadeIn, viewModel.isSimplyFadeIn)
             bindVisibleInvisible(contentSimpleFadeIn, viewModel.isSimplyFadeIn.observeState()) {
-                enter = Animation_Fade
+                enter = ViewAnimation_Fade
                 duration = this@VisibilityDemoViewBinder.duration
                 intercept(viewModel.isInterceptAnimations.observeState())
             }
 
             bindSwitch(swSimpleFadeOut, viewModel.isSimplyFadeOut)
             bindVisibleInvisible(contentSimpleFadeOut, viewModel.isSimplyFadeOut.observeState()) {
-                exit = Animation_Fade.reversed()
+                exit = ViewAnimation_Fade.reversed()
                 duration = this@VisibilityDemoViewBinder.duration
                 intercept(viewModel.isInterceptAnimations.observeState())
             }
 
             bindSwitch(swSimpleFades, viewModel.isSimplyFades)
             bindVisibleInvisible(contentSimpleFades, viewModel.isSimplyFades.observeState()) {
-                animation = Animation_Fade
+                animation = ViewAnimation_Fade
                 duration = this@VisibilityDemoViewBinder.duration
                 intercept(viewModel.isInterceptAnimations.observeState())
             }

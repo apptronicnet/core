@@ -1,14 +1,13 @@
 package net.apptronic.core.android.viewmodel.bindings.navigation
 
 import android.view.ViewGroup
-import net.apptronic.core.android.plugins.getTransitionBuilderFromExtension
+import net.apptronic.core.android.anim.adapter.ViewTransitionAdapter
 import net.apptronic.core.android.plugins.getViewBinderFactoryFromExtension
 import net.apptronic.core.android.viewmodel.Binding
 import net.apptronic.core.android.viewmodel.BindingContainer
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.ViewBinderFactory
 import net.apptronic.core.android.viewmodel.navigation.ViewBinderStackAdapter
-import net.apptronic.core.android.viewmodel.transitions.TransitionBuilder
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.navigation.StackNavigator
 
@@ -16,21 +15,21 @@ fun BindingContainer.bindStackNavigator(
     viewGroup: ViewGroup,
     navigator: StackNavigator,
     factory: ViewBinderFactory? = null,
-    transitionBuilder: TransitionBuilder? = null,
+    transitionAdapter: ViewTransitionAdapter? = null,
     defaultAnimationTime: Long = viewGroup.resources.getInteger(android.R.integer.config_mediumAnimTime)
         .toLong()
 ) {
     val resultFactory = factory
         ?: navigator.parent.getViewBinderFactoryFromExtension()
         ?: throw IllegalArgumentException("ViewBinderFactory should be provided by parameters or Context.installViewFactoryPlugin()")
-    val resultTransitionBuilder = transitionBuilder
-        ?: navigator.parent.getTransitionBuilderFromExtension()
-        ?: TransitionBuilder()
+    val resultTransitionAdapter = getComposedViewTransitionAdapter(
+        transitionAdapter, navigator.parent
+    )
     +StackNavigatorBinding(
         viewGroup,
         navigator,
         resultFactory,
-        resultTransitionBuilder,
+        resultTransitionAdapter,
         defaultAnimationTime
     )
 }
@@ -39,7 +38,7 @@ private class StackNavigatorBinding(
     private val viewGroup: ViewGroup,
     private val navigator: StackNavigator,
     private val factory: ViewBinderFactory,
-    private val transitionBuilder: TransitionBuilder,
+    private val viewTransitionAdapter: ViewTransitionAdapter,
     private val defaultAnimationTime: Long
 ) : Binding() {
 
@@ -48,7 +47,7 @@ private class StackNavigatorBinding(
             ViewBinderStackAdapter(
                 viewGroup,
                 factory,
-                transitionBuilder,
+                viewTransitionAdapter,
                 defaultAnimationTime
             )
         )
