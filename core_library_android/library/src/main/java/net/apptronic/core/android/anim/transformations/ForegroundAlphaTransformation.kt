@@ -4,18 +4,12 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.view.View
 import android.view.animation.Interpolator
-import net.apptronic.core.android.anim.TransformationBuilder
-import net.apptronic.core.android.anim.ViewTransformation
-import net.apptronic.core.android.anim.interpolateWith
-import net.apptronic.core.android.viewmodel.transitions.Progress
-import net.apptronic.core.android.viewmodel.transitions.interpolate
-import net.apptronic.core.android.viewmodel.transitions.transformation.TransformationDescriptor
-import net.apptronic.core.android.viewmodel.transitions.transformation.transformationDescriptor
+import net.apptronic.core.android.anim.*
 
 val ForegroundAlphaTransformationDescriptor =
-    transformationDescriptor("ForegroundAlphaTransformation")
+    viewTransformationDescriptor("ForegroundAlphaTransformation")
 
-fun TransformationBuilder.foregroundAlpha(
+fun ViewTransformationBuilder.foregroundAlpha(
     from: Float,
     to: Float,
     foreground: Drawable,
@@ -30,7 +24,7 @@ class ForegroundAlphaTransformation(
     private val foreground: Drawable
 ) : ViewTransformation {
 
-    override val descriptor: TransformationDescriptor = ForegroundAlphaTransformationDescriptor
+    override val descriptor: ViewTransformationDescriptor = ForegroundAlphaTransformationDescriptor
 
     private var startValue = 0f
     private var endValue = 0f

@@ -5,6 +5,7 @@ import android.view.MotionEvent
 import android.view.View
 import net.apptronic.core.mvvm.viewmodel.navigation.BackNavigationStatus
 
+@Deprecated("Replaced by net.apptronic.core.android.anim.*")
 internal class GestureDispatcher(
     private val gestureDetector: NavigationGestureDetector
 ) {

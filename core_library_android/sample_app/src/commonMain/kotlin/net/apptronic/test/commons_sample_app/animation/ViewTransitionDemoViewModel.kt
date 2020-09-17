@@ -5,6 +5,6 @@ import net.apptronic.core.component.context.viewModelContext
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 
-fun Contextual.viewSwitchDemoViewModel() = ViewSwitchDemoViewModel(viewModelContext())
+fun Contextual.viewTransitionDemoViewModel() = ViewTransitionDemoViewModel(viewModelContext())
 
-class ViewSwitchDemoViewModel(context: ViewModelContext) : ViewModel(context)
+class ViewTransitionDemoViewModel(context: ViewModelContext) : ViewModel(context)

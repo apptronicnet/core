@@ -2,7 +2,9 @@ package net.apptronic.core.android.viewmodel.transitions
 
 import android.view.View
 import net.apptronic.core.android.R
+import net.apptronic.core.android.anim.Progress
 
+@Deprecated("Replaced by net.apptronic.core.android.anim.*")
 abstract class ViewTransition : Transition<View>() {
 
     final override fun getRunningTransition(target: View): Transition<View>? {

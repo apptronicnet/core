@@ -1,7 +1,9 @@
 package net.apptronic.core.android.viewmodel.transitions
 
 import android.view.MotionEvent
+import net.apptronic.core.android.anim.Progress
 
+@Deprecated("Replaced by net.apptronic.core.android.anim.*")
 abstract class TransitionGesture {
 
     internal interface Callback {

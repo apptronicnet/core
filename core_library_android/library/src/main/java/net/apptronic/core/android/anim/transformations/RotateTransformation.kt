@@ -2,23 +2,17 @@ package net.apptronic.core.android.anim.transformations
 
 import android.view.View
 import android.view.animation.Interpolator
-import net.apptronic.core.android.anim.TransformationBuilder
-import net.apptronic.core.android.anim.ViewTransformation
-import net.apptronic.core.android.anim.interpolateWith
-import net.apptronic.core.android.viewmodel.transitions.Progress
-import net.apptronic.core.android.viewmodel.transitions.interpolate
-import net.apptronic.core.android.viewmodel.transitions.transformation.TransformationDescriptor
-import net.apptronic.core.android.viewmodel.transitions.transformation.transformationDescriptor
+import net.apptronic.core.android.anim.*
 
-val RotateTransformationDescriptor = transformationDescriptor("RotateTransformation")
+val RotateTransformationDescriptor = viewTransformationDescriptor("RotateTransformation")
 
-fun TransformationBuilder.rotate(from: Float, to: Float, interpolator: Interpolator? = null) {
+fun ViewTransformationBuilder.rotate(from: Float, to: Float, interpolator: Interpolator? = null) {
     add(RotateTransformation(from, to).interpolateWith(interpolator))
 }
 
 class RotateTransformation(private val from: Float, private val to: Float) : ViewTransformation {
 
-    override val descriptor: TransformationDescriptor = RotateTransformationDescriptor
+    override val descriptor: ViewTransformationDescriptor = RotateTransformationDescriptor
 
     private var startValue = 0f
     private var endValue = 0f

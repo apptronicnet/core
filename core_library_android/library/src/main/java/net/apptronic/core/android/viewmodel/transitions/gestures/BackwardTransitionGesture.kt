@@ -15,6 +15,7 @@ import kotlin.math.min
 private const val ANIMATION_TIME = 300L
 private const val MAX_FLING_DETECTION_THRESHOLD = 0.25f
 
+@Deprecated("Replaced by net.apptronic.core.android.anim.*")
 class BackwardTransitionGesture(
     private val containerView: View
 ) : TransitionGesture() {

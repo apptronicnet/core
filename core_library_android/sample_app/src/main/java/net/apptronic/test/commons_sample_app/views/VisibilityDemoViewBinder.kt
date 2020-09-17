@@ -1,13 +1,14 @@
 package net.apptronic.test.commons_sample_app.views
 
 import android.view.View
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import kotlinx.android.synthetic.main.visibility_demo.view.*
 import net.apptronic.core.android.anim.animations.Animation_Fade
-import net.apptronic.core.android.anim.animations.ViewSwitch_Fade
-import net.apptronic.core.android.anim.animations.ViewSwitch_Next
+import net.apptronic.core.android.anim.animations.Transition_Next
 import net.apptronic.core.android.anim.transformations.*
+import net.apptronic.core.android.anim.transition.viewTransition
 import net.apptronic.core.android.anim.viewAnimation
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.bindings.bindSwitch
@@ -89,7 +90,7 @@ class VisibilityDemoViewBinder : ViewBinder<VisibilityDemoViewModel>() {
                 isVisibleTransitionBuilder1Content,
                 viewModel.isVisibleTransitionBuilder1.observeState()
             ) {
-                viewSwitch = ViewSwitch_Fade
+                viewTransition = ScaleTransition
                 duration = this@VisibilityDemoViewBinder.duration
                 intercept(viewModel.isInterceptAnimations.observeState())
             }
@@ -99,11 +100,24 @@ class VisibilityDemoViewBinder : ViewBinder<VisibilityDemoViewModel>() {
                 isVisibleTransitionBuilder2Content,
                 viewModel.isVisibleTransitionBuilder2.observeState()
             ) {
-                viewSwitch = ViewSwitch_Next
+                viewTransition = Transition_Next
                 duration = this@VisibilityDemoViewBinder.duration
                 intercept(viewModel.isInterceptAnimations.observeState())
             }
         }
     }
 
+}
+
+private val ScaleTransition = viewTransition {
+    enter(AccelerateDecelerateInterpolator()) {
+        scaleX(0f, 1f)
+        scaleY(0f, 1f)
+        translateXToSelf(-0.5f, 0f)
+    }
+    exit(AccelerateDecelerateInterpolator()) {
+        scaleX(1f, 0f)
+        scaleY(1f, 0f)
+        translateXToSelf(0f, 0.5f)
+    }
 }

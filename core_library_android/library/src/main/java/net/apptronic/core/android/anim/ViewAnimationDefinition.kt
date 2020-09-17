@@ -6,37 +6,44 @@ import android.view.animation.LinearInterpolator
 
 fun viewAnimation(
     interpolator: Interpolator = LinearInterpolator(),
-    buildFlow: TransformationBuilder.() -> Unit
+    buildFlow: ViewTransformationBuilder.() -> Unit
 ): ViewAnimationDefinition {
     return ViewAnimationDefinition(interpolator, buildFlow)
 }
 
 class ViewAnimationDefinition internal constructor(
     private val interpolator: Interpolator,
-    private val buildFlow: TransformationBuilder.() -> Unit,
+    private val buildFlow: ViewTransformationBuilder.() -> Unit,
     private val reversed: Boolean = false
 ) {
 
     fun createAnimation(
         target: View, container: View, duration: Long
     ): ViewAnimation {
-        val builder = TransformationBuilder(target, container)
-        builder.buildFlow()
         val targetInterpolator = if (!reversed) {
             interpolator
         } else {
             ReverseInterpolator(interpolator)
         }
-        val transformationSet = if (!reversed) {
-            builder.set()
-        } else {
-            builder.set().reversed()
-        }
-        return ViewAnimation(target, container, transformationSet, duration, targetInterpolator)
+        return ViewAnimation(target, container, this, duration, targetInterpolator)
     }
 
     fun reversed(): ViewAnimationDefinition {
         return ViewAnimationDefinition(interpolator, buildFlow, reversed.not())
+    }
+
+    internal fun createTransformationSet(
+        target: View,
+        container: View,
+        intercepted: Set<ViewTransformationDescriptor>
+    ): ViewTransformationSet {
+        val builder = ViewTransformationBuilder(target, container, intercepted)
+        builder.buildFlow()
+        return if (reversed) {
+            builder.set().reversed()
+        } else {
+            builder.set()
+        }
     }
 
 }

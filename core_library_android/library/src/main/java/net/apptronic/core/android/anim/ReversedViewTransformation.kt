@@ -1,10 +1,8 @@
 package net.apptronic.core.android.anim
 
 import android.view.View
-import net.apptronic.core.android.viewmodel.transitions.Progress
-import net.apptronic.core.android.viewmodel.transitions.reverse
 
-class ReversedTransformation internal constructor(
+class ReversedViewTransformation internal constructor(
     private val transformation: ViewTransformation
 ) : ViewTransformation by transformation {
 

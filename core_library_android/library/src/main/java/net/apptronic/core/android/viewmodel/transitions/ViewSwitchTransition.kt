@@ -1,7 +1,10 @@
 package net.apptronic.core.android.viewmodel.transitions
 
 import android.view.View
+import net.apptronic.core.android.anim.Progress
+import net.apptronic.core.android.anim.interpolateWith
 
+@Deprecated("Replaced by net.apptronic.core.android.anim.*")
 class ViewSwitchTransition(
     val enterTransition: Transition<View>?,
     val exitTransition: Transition<View>?

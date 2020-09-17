@@ -5,6 +5,7 @@ import net.apptronic.core.android.viewmodel.transitions.Transition
 import net.apptronic.core.android.viewmodel.transitions.ViewSwitch
 import net.apptronic.core.android.viewmodel.transitions.ViewSwitchTransition
 
+@Deprecated("Replaced by net.apptronic.core.android.anim.*")
 class ViewSwitchTransitionBuilder internal constructor(
     private val viewSwitch: ViewSwitch
 ) {
@@ -35,6 +36,7 @@ class ViewSwitchTransitionBuilder internal constructor(
 
 }
 
+@Deprecated("Replaced by net.apptronic.core.android.anim.*")
 fun ViewSwitch.transition(
     builder: ViewSwitchTransitionBuilder.() -> Unit
 ): Transition<ViewSwitch> {

@@ -1,8 +1,21 @@
 package net.apptronic.core.android.viewmodel.transitions.transformation
 
-val TranslationX = transformationDescriptor("TranslationX")
-val TranslationY = transformationDescriptor("TranslationY")
-val ScaleX = transformationDescriptor("ScaleX")
-val ScaleY = transformationDescriptor("ScaleY")
-val Alpha = transformationDescriptor("Alpha")
-val ForegroundWithAlpha = transformationDescriptor("ForegroundWithAlpha")
+import net.apptronic.core.android.anim.viewTransformationDescriptor
+
+@Deprecated("Replaced by net.apptronic.core.android.anim.*")
+val TranslationX = viewTransformationDescriptor("TranslationX")
+
+@Deprecated("Replaced by net.apptronic.core.android.anim.*")
+val TranslationY = viewTransformationDescriptor("TranslationY")
+
+@Deprecated("Replaced by net.apptronic.core.android.anim.*")
+val ScaleX = viewTransformationDescriptor("ScaleX")
+
+@Deprecated("Replaced by net.apptronic.core.android.anim.*")
+val ScaleY = viewTransformationDescriptor("ScaleY")
+
+@Deprecated("Replaced by net.apptronic.core.android.anim.*")
+val Alpha = viewTransformationDescriptor("Alpha")
+
+@Deprecated("Replaced by net.apptronic.core.android.anim.*")
+val ForegroundWithAlpha = viewTransformationDescriptor("ForegroundWithAlpha")

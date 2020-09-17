@@ -3,7 +3,7 @@ package net.apptronic.core.android.viewmodel.bindings
 import android.view.View
 import net.apptronic.core.android.anim.AnimationPlayer
 import net.apptronic.core.android.anim.ViewAnimationDefinition
-import net.apptronic.core.android.anim.ViewSwitchDefinition
+import net.apptronic.core.android.anim.transition.ViewTransitionDefinition
 import net.apptronic.core.android.viewmodel.Binding
 import net.apptronic.core.android.viewmodel.BindingContainer
 import net.apptronic.core.android.viewmodel.ViewBinder
@@ -78,7 +78,7 @@ class VisibilityAnimator internal constructor(
             exit = value?.reversed()
         }
 
-    var viewSwitch: ViewSwitchDefinition? = null
+    var viewTransition: ViewTransitionDefinition? = null
         set(value) {
             field = value
             enter = value?.enter

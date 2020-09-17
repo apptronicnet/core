@@ -2,20 +2,23 @@ package net.apptronic.core.android.viewmodel.transitions.transformation
 
 import android.view.View
 import android.view.animation.Interpolator
-import net.apptronic.core.android.viewmodel.transitions.Progress
-import net.apptronic.core.android.viewmodel.transitions.interpolate
+import net.apptronic.core.android.anim.Progress
+import net.apptronic.core.android.anim.ViewTransformationDescriptor
+import net.apptronic.core.android.anim.interpolate
 
+@Deprecated("Replaced by net.apptronic.core.android.anim.*")
 fun TransformationTransitionBuilder.scaleX(
     startScaleX: Float, targetScaleX: Float, interpolator: Interpolator? = null
 ) {
     add(ScaleXTransformation(startScaleX, targetScaleX), interpolator)
 }
 
+@Deprecated("Replaced by net.apptronic.core.android.anim.*")
 class ScaleXTransformation(
     private val startScaleX: Float, private val targetScaleX: Float
 ) : Transformation() {
 
-    override val descriptor: TransformationDescriptor = ScaleX
+    override val descriptor: ViewTransformationDescriptor = ScaleX
 
     private var startValue = 0f
 

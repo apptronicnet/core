@@ -1,15 +1,13 @@
 package net.apptronic.core.android.anim
 
 import android.view.View
-import net.apptronic.core.android.viewmodel.transitions.Progress
-import net.apptronic.core.android.viewmodel.transitions.transformation.TransformationDescriptor
 
 interface ViewTransformation {
 
     /**
      * Descriptor identifying parameter which is modified by this [ViewTransformation]
      */
-    val descriptor: TransformationDescriptor
+    val descriptor: ViewTransformationDescriptor
 
     /**
      * Initialize starting state of [target] view inside of [container]

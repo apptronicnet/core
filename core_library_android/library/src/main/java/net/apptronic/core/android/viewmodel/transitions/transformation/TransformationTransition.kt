@@ -1,10 +1,12 @@
 package net.apptronic.core.android.viewmodel.transitions.transformation
 
 import android.view.View
-import net.apptronic.core.android.viewmodel.transitions.Progress
+import net.apptronic.core.android.anim.Progress
+import net.apptronic.core.android.anim.ViewTransformationDescriptor
 import net.apptronic.core.android.viewmodel.transitions.Transition
 import net.apptronic.core.android.viewmodel.transitions.ViewTransition
 
+@Deprecated("Replaced by net.apptronic.core.android.anim.*")
 class TransformationTransition(
     private val container: View,
     private val transformations: List<Transformation>
@@ -23,7 +25,7 @@ class TransformationTransition(
 
     override fun startTransition(target: View, interceptedTransition: Transition<View>?) {
         transformationsList.clear()
-        val interceptedTransformationKeys = mutableListOf<TransformationDescriptor>()
+        val interceptedTransformationKeys = mutableListOf<ViewTransformationDescriptor>()
         val cancellingTransformations = mutableListOf<Transformation>()
         val mainTransformationKeys = transformations.map { it.descriptor }
         if (interceptedTransition is TransformationTransition) {

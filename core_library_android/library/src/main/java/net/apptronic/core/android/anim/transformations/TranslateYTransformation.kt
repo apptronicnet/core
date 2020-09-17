@@ -2,19 +2,13 @@ package net.apptronic.core.android.anim.transformations
 
 import android.view.View
 import android.view.animation.Interpolator
-import net.apptronic.core.android.anim.TransformationBuilder
-import net.apptronic.core.android.anim.ViewTransformation
-import net.apptronic.core.android.anim.interpolateWith
-import net.apptronic.core.android.viewmodel.transitions.Progress
-import net.apptronic.core.android.viewmodel.transitions.interpolate
-import net.apptronic.core.android.viewmodel.transitions.transformation.TransformationDescriptor
-import net.apptronic.core.android.viewmodel.transitions.transformation.transformationDescriptor
+import net.apptronic.core.android.anim.*
 
-val TranslateYTransformationDescriptor = transformationDescriptor("TranslateYTransformation")
+val TranslateYTransformationDescriptor = viewTransformationDescriptor("TranslateYTransformation")
 
 abstract class TranslateYTransformation : ViewTransformation {
 
-    override val descriptor: TransformationDescriptor = TranslateYTransformationDescriptor
+    override val descriptor: ViewTransformationDescriptor = TranslateYTransformationDescriptor
 
     override fun cancelled(target: View, container: View): ViewTransformation {
         return TranslateYToValueTransformation(target.translationY, 0f)
@@ -26,19 +20,19 @@ abstract class TranslateYTransformation : ViewTransformation {
 
 }
 
-fun TransformationBuilder.translateYPixels(
+fun ViewTransformationBuilder.translateYPixels(
     from: Float, to: Float, interpolator: Interpolator? = null
 ) {
     add(TranslateYToValueTransformation(from, to).interpolateWith(interpolator))
 }
 
-fun TransformationBuilder.translateYToSelf(
+fun ViewTransformationBuilder.translateYToSelf(
     from: Float, to: Float, interpolator: Interpolator? = null
 ) {
     add(TranslateYRelativeToSelfTransformation(from, to).interpolateWith(interpolator))
 }
 
-fun TransformationBuilder.translateYToParent(
+fun ViewTransformationBuilder.translateYToParent(
     from: Float, to: Float, interpolator: Interpolator? = null
 ) {
     add(TranslateYRelativeToParentTransformation(from, to).interpolateWith(interpolator))

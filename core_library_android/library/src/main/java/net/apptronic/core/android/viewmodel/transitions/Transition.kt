@@ -6,7 +6,9 @@ import android.view.animation.LinearInterpolator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import net.apptronic.core.android.anim.Progress
 
+@Deprecated("Replaced by net.apptronic.core.android.anim.*")
 private object FrameScheduler {
 
     interface FrameListener {
@@ -53,6 +55,7 @@ private object FrameScheduler {
 
 }
 
+@Deprecated("Replaced by net.apptronic.core.android.anim.*")
 abstract class Transition<Target> : FrameScheduler.FrameListener {
 
     var interpolator: Interpolator = LinearInterpolator()

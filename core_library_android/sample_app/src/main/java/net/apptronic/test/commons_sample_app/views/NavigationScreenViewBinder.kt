@@ -27,7 +27,7 @@ class NavigationScreenViewBinder : ViewBinder<NavigationScreenViewModel>() {
             bindClickListener(bottomSheetDemo, viewModel::onShowBottomSheetDemo)
             bindClickListener(visibilityDemo, viewModel::onShowVisibilityDemo)
             bindClickListener(animationDemo, viewModel::onShowAnimationDemo)
-            bindClickListener(viewSwitchDemo, viewModel::onShowViewSwitchDemo)
+            bindClickListener(viewTransitionDemo, viewModel::onShowViewTransitionDemo)
         }
     }
 

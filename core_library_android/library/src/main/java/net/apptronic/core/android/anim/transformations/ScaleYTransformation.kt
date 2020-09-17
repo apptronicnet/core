@@ -2,23 +2,17 @@ package net.apptronic.core.android.anim.transformations
 
 import android.view.View
 import android.view.animation.Interpolator
-import net.apptronic.core.android.anim.TransformationBuilder
-import net.apptronic.core.android.anim.ViewTransformation
-import net.apptronic.core.android.anim.interpolateWith
-import net.apptronic.core.android.viewmodel.transitions.Progress
-import net.apptronic.core.android.viewmodel.transitions.interpolate
-import net.apptronic.core.android.viewmodel.transitions.transformation.TransformationDescriptor
-import net.apptronic.core.android.viewmodel.transitions.transformation.transformationDescriptor
+import net.apptronic.core.android.anim.*
 
-val ScaleYTransformationDescriptor = transformationDescriptor("ScaleYTransformation")
+val ScaleYTransformationDescriptor = viewTransformationDescriptor("ScaleYTransformation")
 
-fun TransformationBuilder.scaleY(from: Float, to: Float, interpolator: Interpolator? = null) {
+fun ViewTransformationBuilder.scaleY(from: Float, to: Float, interpolator: Interpolator? = null) {
     add(ScaleYTransformation(from, to).interpolateWith(interpolator))
 }
 
 class ScaleYTransformation(private val from: Float, private val to: Float) : ViewTransformation {
 
-    override val descriptor: TransformationDescriptor = ScaleYTransformationDescriptor
+    override val descriptor: ViewTransformationDescriptor = ScaleYTransformationDescriptor
 
     private var startValue = 0f
     private var endValue = 0f

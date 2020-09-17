@@ -4,11 +4,15 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.view.View
 import android.view.animation.Interpolator
-import net.apptronic.core.android.viewmodel.transitions.Progress
-import net.apptronic.core.android.viewmodel.transitions.interpolate
+import net.apptronic.core.android.anim.Progress
+import net.apptronic.core.android.anim.ViewTransformationDescriptor
+import net.apptronic.core.android.anim.interpolate
+import net.apptronic.core.android.anim.viewTransformationDescriptor
 
-private val ForegroundWithAlphaDescriptor = transformationDescriptor("ForegroundWithAlpha")
+@Deprecated("Replaced by net.apptronic.core.android.anim.*")
+private val ForegroundWithAlphaDescriptor = viewTransformationDescriptor("ForegroundWithAlpha")
 
+@Deprecated("Replaced by net.apptronic.core.android.anim.*")
 fun TransformationTransitionBuilder.foregroundWithAlpha(
     startAlpha: Float, targetAlpha: Float, foreground: Drawable?, interpolator: Interpolator? = null
 ) {
@@ -17,13 +21,14 @@ fun TransformationTransitionBuilder.foregroundWithAlpha(
     }
 }
 
+@Deprecated("Replaced by net.apptronic.core.android.anim.*")
 class ForegroundWithAlphaTransformation(
     private val startAlpha: Float,
     private val targetAlpha: Float,
     private val foreground: Drawable
 ) : Transformation() {
 
-    override val descriptor: TransformationDescriptor = ForegroundWithAlphaDescriptor
+    override val descriptor: ViewTransformationDescriptor = ForegroundWithAlphaDescriptor
 
     private var startValue = 0f
 

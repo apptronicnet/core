@@ -7,9 +7,13 @@ import net.apptronic.core.android.viewmodel.transitions.transformation.foregroun
 import net.apptronic.core.android.viewmodel.transitions.transformation.transition
 import net.apptronic.core.android.viewmodel.transitions.transformation.translateXToParent
 
+@Deprecated("Replaced by net.apptronic.core.android.anim.*")
 const val FORWARD_BACKWARD_OVERLAP = 0.5f
+
+@Deprecated("Replaced by net.apptronic.core.android.anim.*")
 const val MAX_OVERLAY_ALPHA = 0.7f
 
+@Deprecated("Replaced by net.apptronic.core.android.anim.*")
 fun ViewSwitch.forwardTransition() = transition {
     enter {
         translateXToParent(1f, 0f)

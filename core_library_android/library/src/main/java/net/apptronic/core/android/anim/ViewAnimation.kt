@@ -4,13 +4,11 @@ import android.util.Log
 import android.view.View
 import android.view.animation.Interpolator
 import net.apptronic.core.android.R
-import net.apptronic.core.android.viewmodel.transitions.Progress
-import net.apptronic.core.android.viewmodel.transitions.interpolateWith
 
 class ViewAnimation internal constructor(
     val target: View,
     private val container: View,
-    private val transformationSet: ViewTransformationSet,
+    private val definition: ViewAnimationDefinition,
     private val duration: Long,
     private val interpolator: Interpolator
 ) {
@@ -89,13 +87,15 @@ class ViewAnimation internal constructor(
             Log.d("ViewAnimation", "$this completed immediately")
             isCompleted = true
             intercepting?.transformationSet?.reset(target, container)
-            transformationSet.transform(target, container, 1f)
+            transformationSet?.transform(target, container, 1f)
             finalize()
         } else {
             Log.d("ViewAnimation", "$this running")
             player?.onAnimationStarted(this)
         }
     }
+
+    private var transformationSet: ViewTransformationSet? = null
 
     /**
      * Play animation frame
@@ -109,20 +109,27 @@ class ViewAnimation internal constructor(
             isStarted = true
             startTime = timestamp
             endTime = startTime + duration
-            transformationSet.start(target, container, intercepting?.transformationSet)
+            val interceptedTransformationDefinitions =
+                intercepting?.transformationSet?.getRunningDefinitions() ?: emptySet()
+            transformationSet = definition.createTransformationSet(
+                target,
+                container,
+                interceptedTransformationDefinitions
+            )
+            transformationSet?.start(target, container, intercepting?.transformationSet)
             intercepting = null
         }
         return if (timestamp >= endTime) {
             Log.d("ViewAnimation", "$this completed")
             isCompleted = true
-            transformationSet.transform(target, container, 1f)
+            transformationSet?.transform(target, container, 1f)
             target.post {
                 finalize()
             }
             true
         } else {
             val progress: Progress = (timestamp - startTime).toFloat() / duration.toFloat()
-            transformationSet.transform(target, container, progress.interpolateWith(interpolator))
+            transformationSet?.transform(target, container, progress.interpolateWith(interpolator))
             false
         }
     }
@@ -134,7 +141,7 @@ class ViewAnimation internal constructor(
         Log.d("ViewAnimation", "$this finalized")
         isFinalized = true
         target.setTag(R.id.ViewAnimation, null)
-        transformationSet.reset(target, container)
+        transformationSet?.reset(target, container)
         onCompleteActions.forEach { it() }
         next?.start()
     }
@@ -144,7 +151,7 @@ class ViewAnimation internal constructor(
             return
         }
         if (reset) {
-            transformationSet.reset(target, container)
+            transformationSet?.reset(target, container)
         }
         Log.d("ViewAnimation", "$this cancelled")
         onCancelActions.forEach { it() }

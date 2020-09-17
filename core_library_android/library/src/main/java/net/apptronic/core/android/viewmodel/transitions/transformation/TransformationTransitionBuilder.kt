@@ -3,6 +3,7 @@ package net.apptronic.core.android.viewmodel.transitions.transformation
 import android.view.View
 import android.view.animation.Interpolator
 
+@Deprecated("Replaced by net.apptronic.core.android.anim.*")
 class TransformationTransitionBuilder internal constructor(
     val target: View, val container: View
 ) {
@@ -30,6 +31,7 @@ class TransformationTransitionBuilder internal constructor(
 
 }
 
+@Deprecated("Replaced by net.apptronic.core.android.anim.*")
 fun transformationTransition(
     target: View, container: View? = null, builder: TransformationTransitionBuilder.() -> Unit
 ): TransformationTransition {

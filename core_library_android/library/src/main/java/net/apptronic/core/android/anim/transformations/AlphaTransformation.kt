@@ -2,23 +2,17 @@ package net.apptronic.core.android.anim.transformations
 
 import android.view.View
 import android.view.animation.Interpolator
-import net.apptronic.core.android.anim.TransformationBuilder
-import net.apptronic.core.android.anim.ViewTransformation
-import net.apptronic.core.android.anim.interpolateWith
-import net.apptronic.core.android.viewmodel.transitions.Progress
-import net.apptronic.core.android.viewmodel.transitions.interpolate
-import net.apptronic.core.android.viewmodel.transitions.transformation.TransformationDescriptor
-import net.apptronic.core.android.viewmodel.transitions.transformation.transformationDescriptor
+import net.apptronic.core.android.anim.*
 
-val AlphaTransformationDescriptor = transformationDescriptor("AlphaTransformation")
+val AlphaTransformationDescriptor = viewTransformationDescriptor("AlphaTransformation")
 
-fun TransformationBuilder.alpha(from: Float, to: Float, interpolator: Interpolator? = null) {
+fun ViewTransformationBuilder.alpha(from: Float, to: Float, interpolator: Interpolator? = null) {
     add(AlphaTransformation(from, to).interpolateWith(interpolator))
 }
 
 class AlphaTransformation(private val from: Float, private val to: Float) : ViewTransformation {
 
-    override val descriptor: TransformationDescriptor = AlphaTransformationDescriptor
+    override val descriptor: ViewTransformationDescriptor = AlphaTransformationDescriptor
 
     private var startValue = 0f
     private var endValue = 0f

@@ -2,12 +2,14 @@ package net.apptronic.core.android.viewmodel.transitions.transformation
 
 import android.view.View
 import android.view.animation.Interpolator
-import net.apptronic.core.android.viewmodel.transitions.Progress
-import net.apptronic.core.android.viewmodel.transitions.interpolateWith
+import net.apptronic.core.android.anim.Progress
+import net.apptronic.core.android.anim.ViewTransformationDescriptor
+import net.apptronic.core.android.anim.interpolateWith
 
+@Deprecated("Replaced by net.apptronic.core.android.anim.*")
 abstract class Transformation {
 
-    abstract val descriptor: TransformationDescriptor
+    abstract val descriptor: ViewTransformationDescriptor
 
     var interpolator: Interpolator? = null
 

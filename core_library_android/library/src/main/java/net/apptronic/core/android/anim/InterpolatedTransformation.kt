@@ -2,8 +2,6 @@ package net.apptronic.core.android.anim
 
 import android.view.View
 import android.view.animation.Interpolator
-import net.apptronic.core.android.viewmodel.transitions.Progress
-import net.apptronic.core.android.viewmodel.transitions.interpolateWith
 
 fun ViewTransformation.interpolateWith(interpolator: Interpolator?): ViewTransformation {
     return if (interpolator != null) {

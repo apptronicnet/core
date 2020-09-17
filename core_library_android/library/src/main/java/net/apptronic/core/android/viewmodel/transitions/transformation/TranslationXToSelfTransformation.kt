@@ -2,20 +2,23 @@ package net.apptronic.core.android.viewmodel.transitions.transformation
 
 import android.view.View
 import android.view.animation.Interpolator
-import net.apptronic.core.android.viewmodel.transitions.Progress
-import net.apptronic.core.android.viewmodel.transitions.interpolate
+import net.apptronic.core.android.anim.Progress
+import net.apptronic.core.android.anim.ViewTransformationDescriptor
+import net.apptronic.core.android.anim.interpolate
 
+@Deprecated("Replaced by net.apptronic.core.android.anim.*")
 fun TransformationTransitionBuilder.translateXToSelf(
     startX: Float, targetX: Float, interpolator: Interpolator? = null
 ) {
     add(TranslationXToSelfTransformation(startX, targetX), interpolator)
 }
 
+@Deprecated("Replaced by net.apptronic.core.android.anim.*")
 class TranslationXToSelfTransformation(
     private val startX: Float, private val targetX: Float
 ) : Transformation() {
 
-    override val descriptor: TransformationDescriptor = TranslationX
+    override val descriptor: ViewTransformationDescriptor = TranslationX
 
     private var startValue = 0f
 

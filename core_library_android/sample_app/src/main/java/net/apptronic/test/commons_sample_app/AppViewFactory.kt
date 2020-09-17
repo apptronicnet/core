@@ -32,5 +32,5 @@ val AppBinderFactory = viewBinderFactory {
     add(::BottomSheetViewBinder)
     add(::VisibilityDemoViewBinder)
     add(::AnimationDemoViewBinder)
-    add(::ViewSwitchDemoViewBinder)
+    add(::ViewTransitionDemoViewBinder)
 }

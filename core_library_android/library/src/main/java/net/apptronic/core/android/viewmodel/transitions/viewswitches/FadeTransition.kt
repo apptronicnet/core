@@ -4,6 +4,7 @@ import net.apptronic.core.android.viewmodel.transitions.ViewSwitch
 import net.apptronic.core.android.viewmodel.transitions.transformation.alpha
 import net.apptronic.core.android.viewmodel.transitions.transformation.transition
 
+@Deprecated("Replaced by net.apptronic.core.android.anim.*")
 fun ViewSwitch.fadeTransition() = transition {
     if (exiting == null) {
         enter {

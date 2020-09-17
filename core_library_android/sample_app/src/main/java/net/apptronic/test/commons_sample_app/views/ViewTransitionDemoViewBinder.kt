@@ -10,16 +10,17 @@ import android.widget.Button
 import android.widget.TextView
 import kotlinx.android.synthetic.main.view_switch_demo.view.*
 import net.apptronic.core.android.anim.AnimationPlayer
-import net.apptronic.core.android.anim.ViewSwitchDefinition
-import net.apptronic.core.android.anim.animations.*
 import net.apptronic.core.android.anim.playback
 import net.apptronic.core.android.anim.transformations.*
-import net.apptronic.core.android.anim.viewSwitch
+import net.apptronic.core.android.anim.transition.*
 import net.apptronic.core.android.viewmodel.ViewBinder
+import net.apptronic.core.mvvm.viewmodel.adapter.BasicTransition
 import net.apptronic.test.commons_sample_app.R
-import net.apptronic.test.commons_sample_app.animation.ViewSwitchDemoViewModel
+import net.apptronic.test.commons_sample_app.animation.ViewTransitionDemoViewModel
 
-class ViewSwitchDemoViewBinder : ViewBinder<ViewSwitchDemoViewModel>() {
+private val ReplaceTransition = Any()
+
+class ViewTransitionDemoViewBinder : ViewBinder<ViewTransitionDemoViewModel>() {
 
     private val duration = 750L
 
@@ -37,9 +38,7 @@ class ViewSwitchDemoViewBinder : ViewBinder<ViewSwitchDemoViewModel>() {
 
     private fun View.addButton(
         name: String,
-        viewSwitch: ViewSwitchDefinition,
-        forward: Boolean,
-        length: Float = 1f
+        transitionInfo: Any
     ) {
         val button = LayoutInflater.from(context).inflate(
             R.layout.view_switch_demo_button, controlGrid, false
@@ -47,64 +46,75 @@ class ViewSwitchDemoViewBinder : ViewBinder<ViewSwitchDemoViewModel>() {
         button.text = name
         controlGrid.addView(button)
         button.setOnClickListener {
-            playSwitch(viewSwitch, forward, length)
+            playSwitch(transitionInfo)
         }
     }
 
-    private fun View.playSwitch(viewSwitch: ViewSwitchDefinition, forward: Boolean, length: Float) {
+    private fun View.playSwitch(transitionInfo: Any) {
         index++
         val enteringView = LayoutInflater.from(context)
             .inflate(R.layout.view_switch_demo_item, switchContainer, false) as TextView
         val exitingView = currentView
         enteringView.text = index.toString()
         enteringView.background = ColorDrawable(backgroundColor())
-        viewSwitch.exit.createAnimation(exitingView, switchContainer, (duration * length).toLong())
-            .doOnComplete {
-                switchContainer.removeView(exitingView)
-            }.playOn(player)
-        viewSwitch.enter.createAnimation(
+        val animationSet = LocalAdapter.buildViewTransition(
             enteringView,
+            exitingView,
             switchContainer,
-            (duration * length).toLong()
-        )
-            .doOnStart {
-                if (forward) {
-                    switchContainer.addView(enteringView)
-                } else {
-                    switchContainer.addView(enteringView, 0)
-                }
-            }.playOn(player)
+            duration,
+            transitionInfo
+        )!!
+        animationSet.getAnimation(exitingView)?.doOnComplete {
+            switchContainer.removeView(exitingView)
+        }
+        animationSet.getAnimation(enteringView)?.doOnStart {
+            if (LocalAdapter.getOrder(transitionInfo) == ViewTransitionOrder.ExitingOnFront) {
+                switchContainer.addView(enteringView, 0)
+            } else {
+                switchContainer.addView(enteringView)
+            }
+        }
+        player.playAnimationSet(animationSet, true)
         currentView = enteringView
     }
 
-    override fun onBindView(view: View, viewModel: ViewSwitchDemoViewModel) {
+    override fun onBindView(view: View, viewModel: ViewTransitionDemoViewModel) {
         player = AnimationPlayer(view)
         with(view) {
             currentView = firstItem as TextView
             currentView.background = ColorDrawable(backgroundColor())
-            addButton("Next", ViewSwitch_Next, true)
-            addButton("Previous", ViewSwitch_Previous, false)
-            addButton("Forward", ViewSwitch_Forward, true)
-            addButton("Backward", ViewSwitch_Backward, false)
-            addButton("Fade", ViewSwitch_Fade, true)
-            addButton("Sheet", ReplaceSheet, true, 3f)
+            addButton("Next", BasicTransition.Next)
+            addButton("Previous", BasicTransition.Previous)
+            addButton("Forward", BasicTransition.Forward)
+            addButton("Backward", BasicTransition.Backward)
+            addButton("Fade", BasicTransition.Fade)
+            addButton("Sheet", ReplaceTransition)
         }
         onUnbind {
             player.recycle()
         }
     }
 
-    private val ReplaceSheet = viewSwitch {
+    private val ReplaceSheet = viewTransition {
         enter {
             scaleX(0.5f, 1f, AccelerateDecelerateInterpolator().playback(0.5f, 1f))
             scaleY(0.5f, 1f, AccelerateDecelerateInterpolator().playback(0.5f, 1f))
             elevationDp(24f, 0f, 0f, AccelerateDecelerateInterpolator().playback(0.5f, 1f))
+            translationZDp(-24f, 0f, 0f, AccelerateDecelerateInterpolator().playback(0.5f, 1f))
             translateYToParent(1f, 0f, DecelerateInterpolator().playback(0f, 0.65f))
         }
         exit {
             alpha(1f, 0f, AccelerateInterpolator().playback(0.7f, 1f))
             elevationDp(0f, 0f, 0f, AccelerateInterpolator().playback(0f, 0.1f))
+            translationZDp(0f, 0f, 0f, AccelerateInterpolator().playback(0f, 0.1f))
         }
+        order = ViewTransitionOrder.EnteringOnFront
     }
+
+    private val CustomAdapter = viewTransitionAdapter {
+        bindTransition(ReplaceTransition, ReplaceSheet).durationMultiplier(1.8f)
+    }
+
+    private val LocalAdapter = compositeViewTransitionAdapter(CustomAdapter, BasicTransitionAdapter)
 
 }

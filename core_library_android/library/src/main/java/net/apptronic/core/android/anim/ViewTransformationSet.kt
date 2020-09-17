@@ -1,13 +1,16 @@
 package net.apptronic.core.android.anim
 
 import android.view.View
-import net.apptronic.core.android.viewmodel.transitions.Progress
 
 internal class ViewTransformationSet(
     private val transformations: List<ViewTransformation>
 ) {
 
     private val transformationsToRun = mutableListOf<ViewTransformation>()
+
+    fun getRunningDefinitions(): Set<ViewTransformationDescriptor> {
+        return transformationsToRun.map { it.descriptor }.toSet()
+    }
 
     fun start(target: View, container: View, intercepted: ViewTransformationSet?) {
         if (intercepted == null) {

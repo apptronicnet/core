@@ -1,5 +1,9 @@
 package net.apptronic.core.android.viewmodel.transitions
 
+import net.apptronic.core.android.anim.Progress
+import net.apptronic.core.android.anim.interpolate
+
+@Deprecated("Replaced by net.apptronic.core.android.anim.*")
 class TransitionPlayer<Target>(
     private val target: Target,
     private val transition: Transition<Target>
@@ -48,6 +52,7 @@ class TransitionPlayer<Target>(
  * This type of transition plays another transition from [startProgress] to [endProgress]
  * using interpolator from this transition itself
  */
+@Deprecated("Replaced by net.apptronic.core.android.anim.*")
 private class PlaybackTransition<Target>(
     private val targetOfTarget: Target,
     private val startProgress: Float,

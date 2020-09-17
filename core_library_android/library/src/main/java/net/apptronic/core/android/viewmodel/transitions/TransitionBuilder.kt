@@ -8,6 +8,7 @@ import net.apptronic.core.mvvm.viewmodel.navigation.StackNavigator
 /**
  * Base class for animations implementation. Allows to animate changes for [StackNavigator]
  */
+@Deprecated("Replaced by net.apptronic.core.android.anim.*")
 open class TransitionBuilder {
 
     fun getViewSwitchTransition(
