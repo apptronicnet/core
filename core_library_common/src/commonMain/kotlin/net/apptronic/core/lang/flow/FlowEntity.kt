@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import net.apptronic.core.UnderDevelopment
 import net.apptronic.core.base.observable.BasicSubscription
 import net.apptronic.core.base.observable.Observable
 import net.apptronic.core.base.observable.Observer
@@ -20,10 +21,12 @@ import net.apptronic.core.component.entity.entities.performEntitySubscription
 /**
  * Takes [Flow] and creates new [Entity] from all values emitted by this flow for each new [Observer].
  */
+@UnderDevelopment
 fun <T> Flow<T>.asEntity(context: Context): Entity<T> {
     return FlowEntity(context, this)
 }
 
+@UnderDevelopment
 class FlowEntity<T> internal constructor(
         override val context: Context,
         private val flow: Flow<T>

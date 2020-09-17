@@ -4,6 +4,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.launch
+import net.apptronic.core.UnderDevelopment
 import net.apptronic.core.base.observable.BasicSubscription
 import net.apptronic.core.base.observable.Observable
 import net.apptronic.core.base.observable.Observer
@@ -14,10 +15,12 @@ import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.EntitySubscription
 import net.apptronic.core.component.entity.entities.performEntitySubscription
 
+@UnderDevelopment
 fun <T> ReceiveChannel<T>.asEntity(context: Context): Entity<T> {
     return ChannelEntity(context, this)
 }
 
+@UnderDevelopment
 class ChannelEntity<T>(override val context: Context, private val channel: ReceiveChannel<T>) : Entity<T> {
 
     override fun subscribe(targetContext: Context, observer: Observer<T>): EntitySubscription {

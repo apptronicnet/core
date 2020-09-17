@@ -1,10 +1,12 @@
 package net.apptronic.core.commons.cache
 
 import kotlinx.coroutines.Job
+import net.apptronic.core.UnderDevelopment
 import net.apptronic.core.base.elapsedRealtimeMillis
 import net.apptronic.core.base.observable.subject.ValueHolder
 import net.apptronic.core.component.context.Context
 
+@UnderDevelopment
 class SimpleCache<T, K>(
         context: Context,
         private val maxCount: Int = 32,
