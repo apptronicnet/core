@@ -328,6 +328,7 @@ CollectionExtensions.kt
 CombineFunctions.kt
 EntityFunction.kt
 GenericFunctions.kt
+MergeFunctions.kt
 NumericFunctions.kt
 NumericFunctionsExt.kt
 StringFunctions.kt
@@ -420,4 +421,4 @@ ___
 
 [Back to Manual](../manual.md)
 
-Next topic: [App UI implementation with ViewModels](view_models.md)
+Next topic: [Implementation of Components: advanced reactive behavior](reactive_behavior_advanced.md)

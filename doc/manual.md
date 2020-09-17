@@ -23,6 +23,8 @@ How to implement app architecture with **apptronic.net/core** framework
 
 [Implementation of Components: reactive behavior](common/reactive_behavior.md)
 
+[Implementation of Components: advanced reactive behavior](common/reactive_behavior_advanced.md)
+
 [App UI implementation with ViewModels](common/view_models.md)
 
 [Using Dependency Injection](common/dependency_injection.md)

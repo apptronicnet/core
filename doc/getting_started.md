@@ -8,9 +8,24 @@ First open Intellij Idea / Android Studio and start Kotlin Multiplatform project
 
 ##### Setup build.gradle
 
+| **Dependency**              | **Version** |
+|-----------------------------|-------------|
+| apptronic.net/core-commons  | 0.6.0.0     |
+| apptronic.net/core-android  | 0.6.0.0     |
+| Kotlin                      | 1.4.0       |
+| Coroutines                  | 1.3.9       |
+
 Add maven repository:
 
 ```groovy
+buildscript {
+    ...
+    dependencies {
+        ...
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.10"
+    }
+}
+
 allprojects {
     repositories {
         maven {
@@ -30,18 +45,19 @@ kotlin {
             dependencies {
                 implementation kotlin('stdlib-common')
                 implementation kotlin('reflect')
-                implementation "net.apptronic.core:core-commons:${version}"
-                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:1.3.5"
+                implementation "net.apptronic.core:core-commons:0.6.0.0"
+                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.9"
             }
         }
         androidMain {
             dependencies {
                 implementation kotlin('stdlib')
-                implementation "net.apptronic.core:core-android:${version}"
-                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.5"
+                implementation "net.apptronic.core:core-android:0.6.0.0"
+                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9"
                 implementation "androidx.recyclerview:recyclerview:1.1.0" // for lists
                 implementation "androidx.viewpager:viewpager:1.0.0" // for pages
-            }
+                implementation 'androidx.core:core-ktx:1.3.1' // for easier view binding
+              }
         }
     }
 }
@@ -54,6 +70,7 @@ AppContext.kt
 ```kotlin
 // this class is renposible for declaring core app Context, which will be alive while
 // app itself alive
+
 val AppContext = coreContext {
      // later you can add initialization of DI modules here
 }
@@ -63,6 +80,7 @@ AppComponent.kt
 
 ```kotlin
 // this class is declaration of Core-level component, responsible for app behavior
+
 class AppComponent(context: Context) : BaseComponent(context) {
 
     // this item is managing core app UI model (AppViewModel for these case)
@@ -79,6 +97,7 @@ AppViewModel.kt
 ```kotlin
 // this class contains application UI model.
 // Inner navigation implemented with Navigators (ListNavigator, StackNavigator)
+
 class AppViewModel(parent: Context) : ViewModel(parent, EmptyViewModelContext) {
 
     val message = value("Hello from apptronic.net Core")
@@ -115,7 +134,7 @@ class App : Application() {
         // also we need to install Android plugin, which extend framework to work with it's Android binding library
         AppContext.installAndroidApplicationPlugin(this) {
             // this specifial common view factory to be used in all bindings
-            viewFactory(AppViewFactory)
+            binderFactory(AppBinderFactory)
             // this specifies binding between Activity and concrete ViewModel type
             // last parameter is optional invocation for system onBackPressed button
             bindActivity(MainActivity::class, AppViewModel::class) {
@@ -150,11 +169,12 @@ app_view.xml
 ```
 
 
-AppView.kt
+AppViewBinder.kt
 
 ```kotlin
 // this class declares View layer for concrete ViewModel type
-class AppView : AndroidView<AppViewModel>() {
+
+class AppViewBinder : AndroidView<AppViewModel>() {
 
     // baseic declaration of some layout to be used
     override var layoutResId: Int? = R.layout.app_view
@@ -170,15 +190,16 @@ class AppView : AndroidView<AppViewModel>() {
 }
 ```
 
-AppViewFactory.kt
+AppBinderFactory.kt
 
 ```kotlin
 // this object is registry ob View to ViewModel bindings
 // it was used on installation of Android plugin and will be used by detault in all navigators
 // and for Activity bindings
 // it is possible to override it for concrete Navigator biding if needed
-val AppViewFactory = androidViewFactory {
-    addBinding(::AppView)
+
+val AppBinderFactory = viewBinderFactory {
+    addBinding(::AppViewBinder)
 }
 ```
 
