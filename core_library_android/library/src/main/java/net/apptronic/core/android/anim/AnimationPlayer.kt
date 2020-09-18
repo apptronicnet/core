@@ -59,8 +59,9 @@ class AnimationPlayer(private val rootView: View) : ViewTreeObserver.OnPreDrawLi
 
     override fun onPreDraw(): Boolean {
         return if (animations.isNotEmpty()) {
+            val systemClockTime = SystemClock.elapsedRealtime()
             val removed = animations.removeAll {
-                val completed = it.playFrame(SystemClock.elapsedRealtime())
+                val completed = it.playFrame(systemClockTime)
                 if (completed) {
                     Log.d("AnimationPlayer", "onPreDraw completed $it")
                 }
@@ -68,6 +69,11 @@ class AnimationPlayer(private val rootView: View) : ViewTreeObserver.OnPreDrawLi
             }
             if (removed) {
                 refreshAttachState()
+            }
+            if (animations.isNotEmpty()) {
+                rootView.post {
+                    rootView.invalidate()
+                }
             }
             !removed
         } else true
