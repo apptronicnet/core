@@ -45,7 +45,7 @@ class AndroidApplicationPlugin internal constructor(
             target.transitionBuilder = transitionBuilder
         }
 
-        fun viewTransitionAdapter(viewTransitionFactory: ViewTransitionFactory) {
+        fun viewTransitionFactory(viewTransitionFactory: ViewTransitionFactory) {
             target.viewTransitionFactory = viewTransitionFactory
         }
 
@@ -65,7 +65,7 @@ class AndroidApplicationPlugin internal constructor(
             context.installTransitionBuilderPlugin(it)
         }
         viewTransitionFactory?.let {
-            context.installViewTransitionAdapterPlugin(it)
+            context.installViewTransitionFactoryPlugin(it)
         }
         context.installPlugin(ActivityBindingPluginDescriptor, activityBindingPlugin)
     }

@@ -22,7 +22,7 @@ fun BindingContainer.bindStackNavigator(
     val resultFactory = factory
         ?: navigator.parent.getViewBinderFactoryFromExtension()
         ?: throw IllegalArgumentException("ViewBinderFactory should be provided by parameters or Context.installViewFactoryPlugin()")
-    val resultTransitionAdapter = getComposedViewTransitionAdapter(
+    val resultTransitionAdapter = getComposedViewTransitionFactory(
         transitionFactory, navigator.parent
     )
     +StackNavigatorBinding(

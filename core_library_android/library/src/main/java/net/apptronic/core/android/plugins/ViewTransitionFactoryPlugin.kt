@@ -8,28 +8,28 @@ import net.apptronic.core.component.plugin.extensionDescriptor
 import net.apptronic.core.component.plugin.pluginDescriptor
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 
-fun Context.installViewTransitionAdapterPlugin(factory: ViewTransitionFactory) {
-    installPlugin(ViewTransitionAdapterPluginDescriptor, ViewTransitionAdapterPlugin(factory))
+fun Context.installViewTransitionFactoryPlugin(factory: ViewTransitionFactory) {
+    installPlugin(ViewTransitionFactoryPluginDescriptor, ViewTransitionFactoryPlugin(factory))
 }
 
-private val ViewTransitionAdapterPluginDescriptor = pluginDescriptor<ViewTransitionAdapterPlugin>()
+private val ViewTransitionFactoryPluginDescriptor = pluginDescriptor<ViewTransitionFactoryPlugin>()
 
-private class ViewTransitionAdapterPlugin(
+private class ViewTransitionFactoryPlugin(
     private val factory: ViewTransitionFactory
 ) : Plugin() {
 
     override fun onComponent(component: Component) {
         super.onComponent(component)
         if (component is ViewModel) {
-            component.extensions[DefaultViewTransitionAdapterExtensionDescriptor] = factory
+            component.extensions[DefaultViewTransitionFactoryExtensionDescriptor] = factory
         }
     }
 
 }
 
-private val DefaultViewTransitionAdapterExtensionDescriptor =
+private val DefaultViewTransitionFactoryExtensionDescriptor =
     extensionDescriptor<ViewTransitionFactory>()
 
-fun ViewModel.getDefaultViewTransitionAdapterFromPlugin(): ViewTransitionFactory? {
-    return extensions[DefaultViewTransitionAdapterExtensionDescriptor]
+fun ViewModel.getDefaultViewTransitionFactoryFromPlugin(): ViewTransitionFactory? {
+    return extensions[DefaultViewTransitionFactoryExtensionDescriptor]
 }

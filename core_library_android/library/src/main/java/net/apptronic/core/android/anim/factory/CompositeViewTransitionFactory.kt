@@ -3,7 +3,7 @@ package net.apptronic.core.android.anim.factory
 import net.apptronic.core.android.anim.ViewAnimation
 import net.apptronic.core.android.anim.transition.ViewTransition
 
-fun compositeViewTransitionAdapter(vararg factories: ViewTransitionFactory?): ViewTransitionFactory {
+fun compositeViewTransitionFactory(vararg factories: ViewTransitionFactory?): ViewTransitionFactory {
     return CompositeViewTransitionFactory(factories.filterNotNull())
 }
 

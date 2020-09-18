@@ -118,6 +118,6 @@ class ViewTransitionDemoViewBinder : ViewBinder<ViewTransitionDemoViewModel>() {
     }
 
     private val LocalAdapter =
-        compositeViewTransitionAdapter(CustomAdapter, BasicViewTransitionFactory)
+        compositeViewTransitionFactory(CustomAdapter, BasicViewTransitionFactory)
 
 }
