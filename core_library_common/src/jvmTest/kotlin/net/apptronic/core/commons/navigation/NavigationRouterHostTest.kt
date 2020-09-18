@@ -14,19 +14,19 @@ class NavigationRouterHostTest {
 
     val coreContext = testContext()
 
-    class HostViewModel(context: ViewModelContext) : ViewModel(context), NavigationCallback<Any> {
+    class HostViewModel(context: ViewModelContext) : ViewModel(context), NavigationHandler<Any> {
 
         val navigationEvents = typedEvent<Any>()
 
         init {
             hostNavigationRouter()
-            registerNavigationCallback(this)
+            registerNavigationHandler(this)
         }
 
         val router = injectNavigationRouter()
 
-        override fun onNavigationEvent(event: Any): Boolean {
-            navigationEvents.sendEvent(event)
+        override fun onNavigationCommand(command: Any): Boolean {
+            navigationEvents.sendEvent(command)
             return true
         }
 
@@ -36,32 +36,32 @@ class NavigationRouterHostTest {
     fun verifyNavigationRouterHost() {
         val viewModel = HostViewModel(coreContext.viewModelContext())
         val events = viewModel.navigationEvents.record()
-        viewModel.router.sendEvent(1)
-        viewModel.router.sendEvent(2)
-        viewModel.router.sendBroadcastEvent(3)
+        viewModel.router.sendCommands(1)
+        viewModel.router.sendCommands(2)
+        viewModel.router.sendCommandsBroadcast(3)
         events.assertItems(1, 2, 3)
     }
 
     private fun Contextual.dependencyViewModel() = DependencyViewModel(
             viewModelContext {
                 dependencyModule {
-                    hostNavigationRouter()
+                    navigationRouter()
                 }
             }
     )
 
-    class DependencyViewModel(context: ViewModelContext) : ViewModel(context), NavigationCallback<Any> {
+    class DependencyViewModel(context: ViewModelContext) : ViewModel(context), NavigationHandler<Any> {
 
         val navigationEvents = typedEvent<Any>()
 
         init {
-            registerNavigationCallback(this)
+            registerNavigationHandler(this)
         }
 
         val router = injectNavigationRouter()
 
-        override fun onNavigationEvent(event: Any): Boolean {
-            navigationEvents.sendEvent(event)
+        override fun onNavigationCommand(command: Any): Boolean {
+            navigationEvents.sendEvent(command)
             return true
         }
 
@@ -71,9 +71,9 @@ class NavigationRouterHostTest {
     fun verifyNavigationRouterDependency() {
         val viewModel = coreContext.dependencyViewModel()
         val events = viewModel.navigationEvents.record()
-        viewModel.router.sendEvent(1)
-        viewModel.router.sendEvent(2)
-        viewModel.router.sendBroadcastEvent(3)
+        viewModel.router.sendCommands(1)
+        viewModel.router.sendCommands(2)
+        viewModel.router.sendCommandsBroadcast(3)
         events.assertItems(1, 2, 3)
     }
 

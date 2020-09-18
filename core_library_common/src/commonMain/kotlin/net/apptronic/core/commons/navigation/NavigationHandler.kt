@@ -3,7 +3,7 @@ package net.apptronic.core.commons.navigation
 import net.apptronic.core.UnderDevelopment
 
 @UnderDevelopment
-interface NavigationCallback<T> {
+interface NavigationHandler<T> {
 
     companion object {
         val NAVIGATION_PRIORITY_LOWEST = 10
@@ -13,9 +13,9 @@ interface NavigationCallback<T> {
         val NAVIGATION_PRIORITY_HIGHEST = 1000000
     }
 
-    val navigationCallbackPriority: Int
+    val navigationHandlerPriority: Int
         get() = NAVIGATION_PRIORITY_DEFAULT
 
-    fun onNavigationEvent(event: T): Boolean
+    fun onNavigationCommand(command: T): Boolean
 
 }

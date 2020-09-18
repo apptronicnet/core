@@ -7,12 +7,14 @@ import net.apptronic.core.component.di.ModuleDefinition
 import net.apptronic.core.component.di.SingleScope
 import net.apptronic.core.component.inject
 
+typealias DefaultNavigationHandler = NavigationHandler<Any>
+
 @UnderDevelopment
 val DefaultNavigationRouterDescriptor = navigationRouterDescriptor<Any>()
 
 @UnderDevelopment
 fun Contextual.hostNavigationRouter(): NavigationRouter<Any> {
-    return hostNavigationRouter(DefaultNavigationRouterDescriptor, BaseNavigationRouter(childContext()))
+    return hostNavigationRouter(DefaultNavigationRouterDescriptor, BasicNavigationRouter(childContext()))
 }
 
 @UnderDevelopment
@@ -25,21 +27,28 @@ fun <T> Contextual.hostNavigationRouter(
 
 @UnderDevelopment
 fun <T> Contextual.hostNavigationRouter(
-        descriptor: NavigationRouterDescriptor<T>, router: NavigationRouter<T>
+        descriptor: NavigationRouterDescriptor<T>, router: NavigationRouter<T> = BasicNavigationRouter(childContext())
 ): NavigationRouter<T> {
     context.dependencyDispatcher.addInstance(descriptor.dependencyDescriptor, router)
     return router
 }
 
 @UnderDevelopment
-fun ModuleDefinition.hostNavigationRouter() {
-    hostNavigationRouter(DefaultNavigationRouterDescriptor) {
-        BaseNavigationRouter(scopedContext())
+fun ModuleDefinition.navigationRouter() {
+    navigationRouter(DefaultNavigationRouterDescriptor) {
+        BasicNavigationRouter(scopedContext())
     }
 }
 
 @UnderDevelopment
-fun <T> ModuleDefinition.hostNavigationRouter(
+fun <T> ModuleDefinition.navigationRouter(descriptor: NavigationRouterDescriptor<T>) {
+    navigationRouter(DefaultNavigationRouterDescriptor) {
+        BasicNavigationRouter(scopedContext())
+    }
+}
+
+@UnderDevelopment
+fun <T> ModuleDefinition.navigationRouter(
         descriptor: NavigationRouterDescriptor<T>, builder: SingleScope.() -> NavigationRouter<T>
 ) {
     single(descriptor.dependencyDescriptor, builder)
@@ -56,12 +65,12 @@ fun <T> Contextual.injectNavigationRouter(descriptor: NavigationRouterDescriptor
 }
 
 @UnderDevelopment
-fun Contextual.registerNavigationCallback(callback: NavigationCallback<Any>) {
-    registerNavigationCallback(DefaultNavigationRouterDescriptor, callback)
+fun Contextual.registerNavigationHandler(handler: DefaultNavigationHandler) {
+    registerNavigationHandler(DefaultNavigationRouterDescriptor, handler)
 }
 
 @UnderDevelopment
-fun <T> Contextual.registerNavigationCallback(descriptor: NavigationRouterDescriptor<T>, callback: NavigationCallback<T>) {
+fun <T> Contextual.registerNavigationHandler(descriptor: NavigationRouterDescriptor<T>, handler: NavigationHandler<T>) {
     val router = inject(descriptor.dependencyDescriptor)
-    router.registerCallback(context, callback)
+    router.registerHandler(context, handler)
 }

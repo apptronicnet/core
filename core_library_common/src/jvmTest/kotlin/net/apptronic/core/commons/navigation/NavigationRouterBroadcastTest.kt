@@ -17,19 +17,19 @@ class NavigationRouterBroadcastTest {
         private fun Contextual.childViewModel() = ChildViewModel(viewModelContext())
     }
 
-    class HostViewModel(context: ViewModelContext) : ViewModel(context), NavigationCallback<Any> {
+    class HostViewModel(context: ViewModelContext) : ViewModel(context), NavigationHandler<Any> {
 
         val navigationEvents = typedEvent<Any>()
 
         init {
             hostNavigationRouter()
-            registerNavigationCallback(this)
+            registerNavigationHandler(this)
         }
 
         val router = injectNavigationRouter()
 
-        override fun onNavigationEvent(event: Any): Boolean {
-            navigationEvents.sendEvent(event)
+        override fun onNavigationCommand(command: Any): Boolean {
+            navigationEvents.sendEvent(command)
             return true
         }
 
@@ -39,16 +39,16 @@ class NavigationRouterBroadcastTest {
 
     }
 
-    class ChildViewModel(context: ViewModelContext) : ViewModel(context), NavigationCallback<Any> {
+    class ChildViewModel(context: ViewModelContext) : ViewModel(context), NavigationHandler<Any> {
 
         val navigationEvents = typedEvent<Any>()
 
         init {
-            registerNavigationCallback(this)
+            registerNavigationHandler(this)
         }
 
-        override fun onNavigationEvent(event: Any): Boolean {
-            navigationEvents.sendEvent(event)
+        override fun onNavigationCommand(command: Any): Boolean {
+            navigationEvents.sendEvent(command)
             return true
         }
 
@@ -61,10 +61,10 @@ class NavigationRouterBroadcastTest {
         val eventsChild1 = viewModel.child1.navigationEvents.record()
         val eventsChild2 = viewModel.child2.navigationEvents.record()
         val eventsChildOfChild = viewModel.childOfChild.navigationEvents.record()
-        viewModel.router.sendBroadcastEvent(1)
-        viewModel.router.sendBroadcastEvent(2)
-        viewModel.router.sendBroadcastEvent(3)
-        viewModel.router.sendBroadcastEvent(4)
+        viewModel.router.sendCommandsBroadcast(1)
+        viewModel.router.sendCommandsBroadcast(2)
+        viewModel.router.sendCommandsBroadcast(3)
+        viewModel.router.sendCommandsBroadcast(4)
         eventsRoot.assertItems(1, 2, 3, 4)
         eventsChild1.assertItems(1, 2, 3, 4)
         eventsChild2.assertItems(1, 2, 3, 4)
