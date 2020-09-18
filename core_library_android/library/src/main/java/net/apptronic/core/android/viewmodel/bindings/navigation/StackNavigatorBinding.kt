@@ -1,7 +1,7 @@
 package net.apptronic.core.android.viewmodel.bindings.navigation
 
 import android.view.ViewGroup
-import net.apptronic.core.android.anim.adapter.ViewTransitionAdapter
+import net.apptronic.core.android.anim.factory.ViewTransitionFactory
 import net.apptronic.core.android.plugins.getViewBinderFactoryFromExtension
 import net.apptronic.core.android.viewmodel.Binding
 import net.apptronic.core.android.viewmodel.BindingContainer
@@ -15,7 +15,7 @@ fun BindingContainer.bindStackNavigator(
     viewGroup: ViewGroup,
     navigator: StackNavigator,
     factory: ViewBinderFactory? = null,
-    transitionAdapter: ViewTransitionAdapter? = null,
+    transitionFactory: ViewTransitionFactory? = null,
     defaultAnimationTime: Long = viewGroup.resources.getInteger(android.R.integer.config_mediumAnimTime)
         .toLong()
 ) {
@@ -23,7 +23,7 @@ fun BindingContainer.bindStackNavigator(
         ?: navigator.parent.getViewBinderFactoryFromExtension()
         ?: throw IllegalArgumentException("ViewBinderFactory should be provided by parameters or Context.installViewFactoryPlugin()")
     val resultTransitionAdapter = getComposedViewTransitionAdapter(
-        transitionAdapter, navigator.parent
+        transitionFactory, navigator.parent
     )
     +StackNavigatorBinding(
         viewGroup,
@@ -38,7 +38,7 @@ private class StackNavigatorBinding(
     private val viewGroup: ViewGroup,
     private val navigator: StackNavigator,
     private val factory: ViewBinderFactory,
-    private val viewTransitionAdapter: ViewTransitionAdapter,
+    private val viewTransitionFactory: ViewTransitionFactory,
     private val defaultAnimationTime: Long
 ) : Binding() {
 
@@ -47,7 +47,7 @@ private class StackNavigatorBinding(
             ViewBinderStackAdapter(
                 viewGroup,
                 factory,
-                viewTransitionAdapter,
+                viewTransitionFactory,
                 defaultAnimationTime
             )
         )

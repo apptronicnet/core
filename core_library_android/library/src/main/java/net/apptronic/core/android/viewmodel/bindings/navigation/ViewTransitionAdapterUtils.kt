@@ -1,18 +1,18 @@
 package net.apptronic.core.android.viewmodel.bindings.navigation
 
-import net.apptronic.core.android.anim.adapter.BasicViewTransitionAdapter
-import net.apptronic.core.android.anim.adapter.ViewTransitionAdapter
-import net.apptronic.core.android.anim.adapter.compositeViewTransitionAdapter
+import net.apptronic.core.android.anim.factory.BasicViewTransitionFactory
+import net.apptronic.core.android.anim.factory.ViewTransitionFactory
+import net.apptronic.core.android.anim.factory.compositeViewTransitionAdapter
 import net.apptronic.core.android.plugins.getDefaultViewTransitionAdapterFromPlugin
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 
 fun getComposedViewTransitionAdapter(
-    provided: ViewTransitionAdapter?,
+    provided: ViewTransitionFactory?,
     viewModel: ViewModel?
-): ViewTransitionAdapter {
+): ViewTransitionFactory {
     return compositeViewTransitionAdapter(
         provided,
         viewModel?.getDefaultViewTransitionAdapterFromPlugin(),
-        BasicViewTransitionAdapter
+        BasicViewTransitionFactory
     )
 }

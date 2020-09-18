@@ -10,7 +10,7 @@ import android.widget.Button
 import android.widget.TextView
 import kotlinx.android.synthetic.main.view_switch_demo.view.*
 import net.apptronic.core.android.anim.AnimationPlayer
-import net.apptronic.core.android.anim.adapter.*
+import net.apptronic.core.android.anim.factory.*
 import net.apptronic.core.android.anim.playback
 import net.apptronic.core.android.anim.transformations.*
 import net.apptronic.core.android.anim.transition.ViewTransitionDirection
@@ -113,11 +113,11 @@ class ViewTransitionDemoViewBinder : ViewBinder<ViewTransitionDemoViewModel>() {
         order = ViewTransitionDirectionSpec.EnteringOnFront
     }
 
-    private val CustomAdapter = viewTransitionAdapter {
+    private val CustomAdapter = viewTransitionFactory {
         bindTransition(ReplaceTransition, ReplaceSheet).durationMultiplier(1.8f)
     }
 
     private val LocalAdapter =
-        compositeViewTransitionAdapter(CustomAdapter, BasicViewTransitionAdapter)
+        compositeViewTransitionAdapter(CustomAdapter, BasicViewTransitionFactory)
 
 }

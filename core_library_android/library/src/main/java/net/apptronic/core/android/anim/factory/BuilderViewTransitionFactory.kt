@@ -1,18 +1,18 @@
-package net.apptronic.core.android.anim.adapter
+package net.apptronic.core.android.anim.factory
 
 import net.apptronic.core.android.anim.ViewAnimation
 import net.apptronic.core.android.anim.transition.ViewTransition
-import net.apptronic.core.android.anim.transition.ViewTransitionAdapterBuilder
+import net.apptronic.core.android.anim.transition.ViewTransitionFactoryBuilder
 
-fun viewTransitionAdapter(buildFlow: ViewTransitionAdapterBuilder.() -> Unit): ViewTransitionAdapter {
-    val builder = ViewTransitionAdapterBuilder()
+fun viewTransitionFactory(buildFlow: ViewTransitionFactoryBuilder.() -> Unit): ViewTransitionFactory {
+    val builder = ViewTransitionFactoryBuilder()
     builder.buildFlow()
-    return BuilderViewTransitionAdapter(builder)
+    return BuilderViewTransitionFactory(builder)
 }
 
-internal class BuilderViewTransitionAdapter internal constructor(
-    private val builder: ViewTransitionAdapterBuilder
-) : ViewTransitionAdapter {
+internal class BuilderViewTransitionFactory internal constructor(
+    private val builder: ViewTransitionFactoryBuilder
+) : ViewTransitionFactory {
 
     private fun buildSingleAnimation(
         spec: SingleTransitionSpec, isEnter: Boolean

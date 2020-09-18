@@ -1,9 +1,9 @@
-package net.apptronic.core.android.anim.adapter
+package net.apptronic.core.android.anim.factory
 
 import net.apptronic.core.android.anim.animations.*
 import net.apptronic.core.mvvm.viewmodel.adapter.BasicTransition
 
-val BasicViewTransitionAdapter: ViewTransitionAdapter = viewTransitionAdapter {
+val BasicViewTransitionFactory = viewTransitionFactory {
     bindTransition(BasicTransition.Fade, Transition_Fade)
     bindTransition(BasicTransition.Previous, Transition_Previous)
     bindTransition(BasicTransition.Next, Transition_Next)

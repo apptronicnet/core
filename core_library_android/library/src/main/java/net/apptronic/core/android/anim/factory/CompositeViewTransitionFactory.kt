@@ -1,18 +1,18 @@
-package net.apptronic.core.android.anim.adapter
+package net.apptronic.core.android.anim.factory
 
 import net.apptronic.core.android.anim.ViewAnimation
 import net.apptronic.core.android.anim.transition.ViewTransition
 
-fun compositeViewTransitionAdapter(vararg adapters: ViewTransitionAdapter?): ViewTransitionAdapter {
-    return CompositeViewTransitionAdapter(adapters.filterNotNull())
+fun compositeViewTransitionAdapter(vararg factories: ViewTransitionFactory?): ViewTransitionFactory {
+    return CompositeViewTransitionFactory(factories.filterNotNull())
 }
 
-private class CompositeViewTransitionAdapter(
-    private val adapters: List<ViewTransitionAdapter>
-) : ViewTransitionAdapter {
+private class CompositeViewTransitionFactory(
+    private val factories: List<ViewTransitionFactory>
+) : ViewTransitionFactory {
 
     override fun buildViewTransition(spec: ViewTransitionSpec): ViewTransition? {
-        adapters.forEach { adapter ->
+        factories.forEach { adapter ->
             adapter.buildViewTransition(spec)?.let {
                 return it
             }
@@ -21,7 +21,7 @@ private class CompositeViewTransitionAdapter(
     }
 
     override fun buildSingleEnter(spec: SingleTransitionSpec): ViewAnimation? {
-        adapters.forEach { adapter ->
+        factories.forEach { adapter ->
             adapter.buildSingleEnter(spec)?.let {
                 return it
             }
@@ -30,7 +30,7 @@ private class CompositeViewTransitionAdapter(
     }
 
     override fun buildSingleExit(spec: SingleTransitionSpec): ViewAnimation? {
-        adapters.forEach { adapter ->
+        factories.forEach { adapter ->
             adapter.buildSingleExit(spec)?.let {
                 return it
             }
