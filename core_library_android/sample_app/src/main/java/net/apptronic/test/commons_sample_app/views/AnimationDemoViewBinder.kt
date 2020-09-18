@@ -142,9 +142,6 @@ class AnimationDemoViewBinder : ViewBinder<AnimationDemoViewModel>() {
                 RollRight
             )
         }
-        onUnbind {
-            player.recycle()
-        }
     }
 
     private val FadeAnimation = viewAnimation {

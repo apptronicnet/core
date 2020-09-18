@@ -2,17 +2,20 @@ package net.apptronic.test.commons_sample_app.throttle
 
 import kotlinx.coroutines.delay
 import net.apptronic.core.base.SerialIdGenerator
-import net.apptronic.core.component.context.Context
+import net.apptronic.core.component.context.Contextual
+import net.apptronic.core.component.context.viewModelContext
 import net.apptronic.core.component.entity.behavior.throttleMap
 import net.apptronic.core.component.entity.entities.setTo
 import net.apptronic.core.component.entity.functions.map
 import net.apptronic.core.component.entity.functions.mapOr
 import net.apptronic.core.component.genericEvent
 import net.apptronic.core.component.value
-import net.apptronic.core.mvvm.viewmodel.EmptyViewModelContext
 import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 
-class ThrottleSampleViewModel(parent: Context) : ViewModel(parent, EmptyViewModelContext) {
+fun Contextual.throttleSampleViewModel() = ThrottleSampleViewModel(viewModelContext())
+
+class ThrottleSampleViewModel internal constructor(context: ViewModelContext) : ViewModel(context) {
 
     private val serialGenerator = SerialIdGenerator()
 

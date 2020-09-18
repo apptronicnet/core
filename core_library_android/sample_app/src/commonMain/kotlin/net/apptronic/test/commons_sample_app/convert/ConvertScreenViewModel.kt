@@ -1,14 +1,17 @@
 package net.apptronic.test.commons_sample_app.convert
 
-import net.apptronic.core.component.context.Context
+import net.apptronic.core.component.context.Contextual
+import net.apptronic.core.component.context.viewModelContext
 import net.apptronic.core.component.entity.functions.map
 import net.apptronic.core.component.entity.functions.mapOrNull
 import net.apptronic.core.component.entity.functions.merge
 import net.apptronic.core.component.value
-import net.apptronic.core.mvvm.viewmodel.EmptyViewModelContext
 import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 
-class ConvertScreenViewModel(parent: Context) : ViewModel(parent, EmptyViewModelContext) {
+fun Contextual.convertScreenViewModel() = ConvertScreenViewModel(viewModelContext())
+
+class ConvertScreenViewModel internal constructor(context: ViewModelContext) : ViewModel(context) {
 
     /**
      * Input field with user text of distance

@@ -16,7 +16,7 @@ class MainActivityViewBinder : ViewBinder<ApplicationScreenViewModel>() {
 
     override fun onBindView(view: View, viewModel: ApplicationScreenViewModel) {
         with(view) {
-            bindStackNavigator(container, viewModel.rootPage)
+            bindStackNavigator(container, viewModel.appNavigator)
             val isFadeOverlayVisible = viewModel.overlayNavigator.map {
                 it.visibleModel != null
             }

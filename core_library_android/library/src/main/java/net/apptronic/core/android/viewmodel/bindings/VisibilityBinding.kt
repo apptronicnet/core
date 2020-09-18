@@ -51,9 +51,6 @@ private class VisibilityBinding(
                 view.visibility = if (isVisible) View.VISIBLE else invisibleState
             }
         }
-        onUnbind {
-            player.recycle()
-        }
     }
 
 }

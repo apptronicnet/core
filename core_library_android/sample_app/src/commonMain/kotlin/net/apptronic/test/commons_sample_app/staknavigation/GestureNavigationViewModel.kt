@@ -1,19 +1,20 @@
 package net.apptronic.test.commons_sample_app.staknavigation
 
-import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.context.ContextDefinition
+import net.apptronic.core.component.context.Contextual
+import net.apptronic.core.component.context.viewModelContext
 import net.apptronic.core.component.entity.operators.increment
 import net.apptronic.core.component.toggle
 import net.apptronic.core.component.value
-import net.apptronic.core.mvvm.viewmodel.EmptyViewModelContext
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 import net.apptronic.core.mvvm.viewmodel.adapter.BasicTransition
 import net.apptronic.core.mvvm.viewmodel.navigation.stackNavigationModel
 
-class GestureNavigationViewModel(
-    parent: Context, contextDefinition: ContextDefinition<ViewModelContext> = EmptyViewModelContext
-) : ViewModel(parent, contextDefinition) {
+fun Contextual.gestureNavigationViewModel() = GestureNavigationViewModel(viewModelContext())
+
+class GestureNavigationViewModel internal constructor(
+    context: ViewModelContext
+) : ViewModel(context) {
 
     private val index = value<Int>(1)
     private val nextColor = toggle(*StackItemColor.values())

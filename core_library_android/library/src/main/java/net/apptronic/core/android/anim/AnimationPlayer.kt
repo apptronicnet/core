@@ -8,11 +8,6 @@ import net.apptronic.core.android.anim.animations.ViewAnimation_Empty
 
 class AnimationPlayer(private val rootView: View) : ViewTreeObserver.OnPreDrawListener {
 
-    init {
-        Log.d("AnimationPlayer", "Initialized on $rootView")
-        rootView.viewTreeObserver.addOnPreDrawListener(this)
-    }
-
     private val animations = mutableListOf<ViewAnimation>()
 
     private var viewTreeObserver: ViewTreeObserver? = null
@@ -32,7 +27,7 @@ class AnimationPlayer(private val rootView: View) : ViewTreeObserver.OnPreDrawLi
         }
     }
 
-    fun playAnimation(animation: ViewAnimation, intercept: Boolean = true) {
+    fun playAnimation(animation: ViewAnimation, intercept: Boolean) {
         Log.d(
             "AnimationPlayer",
             "playAnimation(animation = $animation, intercept = $intercept)"
@@ -42,7 +37,7 @@ class AnimationPlayer(private val rootView: View) : ViewTreeObserver.OnPreDrawLi
 
     fun cancelAnimations(target: View) {
         val animation = ViewAnimation_Empty.createAnimation(target, rootView, 0)
-        playAnimation(animation)
+        playAnimation(animation, true)
     }
 
     internal fun onAnimationStarted(animation: ViewAnimation) {
@@ -52,11 +47,11 @@ class AnimationPlayer(private val rootView: View) : ViewTreeObserver.OnPreDrawLi
         refreshAttachState()
     }
 
-    fun playAnimation(intercept: Boolean = true, builder: () -> ViewAnimation) {
+    fun playAnimation(intercept: Boolean, builder: () -> ViewAnimation) {
         playAnimation(builder(), intercept)
     }
 
-    fun playAnimationSet(set: ViewAnimationSet, intercept: Boolean = true) {
+    fun playAnimationSet(set: ViewAnimationSet, intercept: Boolean) {
         set.animations.forEach {
             it.playOn(this, intercept)
         }
@@ -76,13 +71,6 @@ class AnimationPlayer(private val rootView: View) : ViewTreeObserver.OnPreDrawLi
             }
             !removed
         } else true
-    }
-
-    @Deprecated("Not needed more")
-    fun recycle() {
-//        Log.d("AnimationPlayer", "Recycled on $rootView")
-//        isAlive = false
-//        rootView.viewTreeObserver.removeOnPreDrawListener(this)
     }
 
 }

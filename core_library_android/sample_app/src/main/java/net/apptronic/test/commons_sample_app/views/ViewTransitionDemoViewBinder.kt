@@ -95,9 +95,6 @@ class ViewTransitionDemoViewBinder : ViewBinder<ViewTransitionDemoViewModel>() {
             addButton("Backward", BasicTransition.Backward)
             addButton("Sheet", ReplaceTransition)
         }
-        onUnbind {
-            player.recycle()
-        }
     }
 
     private val ReplaceSheet = viewTransition {

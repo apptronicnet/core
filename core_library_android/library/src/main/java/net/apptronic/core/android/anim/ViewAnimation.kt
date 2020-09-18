@@ -159,7 +159,7 @@ class ViewAnimation internal constructor(
         isCancelled = true
     }
 
-    fun playOn(player: AnimationPlayer, intercept: Boolean = true) {
+    fun playOn(player: AnimationPlayer, intercept: Boolean) {
         player.playAnimation(this, intercept)
     }
 

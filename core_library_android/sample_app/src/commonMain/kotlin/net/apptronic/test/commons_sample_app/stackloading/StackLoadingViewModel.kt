@@ -1,14 +1,17 @@
 package net.apptronic.test.commons_sample_app.stackloading
 
-import net.apptronic.core.component.context.Context
+import net.apptronic.core.component.context.Contextual
+import net.apptronic.core.component.context.viewModelContext
 import net.apptronic.core.component.entity.functions.map
 import net.apptronic.core.component.genericEvent
-import net.apptronic.core.mvvm.viewmodel.EmptyViewModelContext
 import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 import net.apptronic.core.mvvm.viewmodel.adapter.BasicTransition
 import net.apptronic.core.mvvm.viewmodel.navigation.*
 
-class StackLoadingViewModel(parent: Context) : ViewModel(parent, EmptyViewModelContext),
+fun Contextual.stackLoadingViewModel() = StackLoadingViewModel(viewModelContext())
+
+class StackLoadingViewModel internal constructor(context: ViewModelContext) : ViewModel(context),
     StackRouter {
 
     init {

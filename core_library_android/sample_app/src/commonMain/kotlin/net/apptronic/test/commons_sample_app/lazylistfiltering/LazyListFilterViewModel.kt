@@ -1,18 +1,21 @@
 package net.apptronic.test.commons_sample_app.lazylistfiltering
 
 import net.apptronic.core.base.collections.wrapLists
-import net.apptronic.core.component.context.Context
+import net.apptronic.core.component.context.Contextual
+import net.apptronic.core.component.context.viewModelContext
 import net.apptronic.core.component.entity.functions.map
 import net.apptronic.core.component.entity.functions.merge
 import net.apptronic.core.component.value
-import net.apptronic.core.mvvm.viewmodel.EmptyViewModelContext
 import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 import net.apptronic.core.mvvm.viewmodel.navigation.hasHidden
 import net.apptronic.core.mvvm.viewmodel.navigation.listDynamicNavigator
 import net.apptronic.core.mvvm.viewmodel.navigation.plus
 import net.apptronic.core.mvvm.viewmodel.navigation.takeWhileVisibleStaticsOnStartFilter
 
-class LazyListFilterViewModel(parent: Context) : ViewModel(parent, EmptyViewModelContext) {
+fun Contextual.lazyListFilterViewModel() = LazyListFilterViewModel(viewModelContext())
+
+class LazyListFilterViewModel internal constructor(context: ViewModelContext) : ViewModel(context) {
 
     private val builder = StaticViewModelBuilder + DynamicViewModelBuilder
 

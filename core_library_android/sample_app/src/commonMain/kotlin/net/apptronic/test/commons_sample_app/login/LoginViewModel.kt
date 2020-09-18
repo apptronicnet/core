@@ -1,16 +1,21 @@
 package net.apptronic.test.commons_sample_app.login
 
 import net.apptronic.core.base.observable.subscribe
-import net.apptronic.core.component.context.Context
+import net.apptronic.core.commons.navigation.injectNavigationRouter
+import net.apptronic.core.component.context.Contextual
+import net.apptronic.core.component.context.viewModelContext
 import net.apptronic.core.component.genericEvent
-import net.apptronic.core.component.inject
 import net.apptronic.core.mvvm.common.textInput
 import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.mvvm.viewmodel.ViewModelContext
+import net.apptronic.test.commons_sample_app.OpenRegistrationScreen
 
-class LoginViewModel(parent: Context, loginRouter: LoginRouter) :
-    ViewModel(parent, loginContext(loginRouter)), RegistrationListener {
+fun Contextual.loginViewModel() = LoginViewModel(viewModelContext())
 
-    private val loginRouter = inject(LoginRouterDescriptor)
+class LoginViewModel internal constructor(context: ViewModelContext) : ViewModel(context),
+    RegistrationListener {
+
+    private val router = injectNavigationRouter()
 
     val login = textInput("")
 
@@ -22,7 +27,7 @@ class LoginViewModel(parent: Context, loginRouter: LoginRouter) :
 
     init {
         registerClick.subscribe {
-            loginRouter.openRegistrationScreen(this)
+            router.sendCommands(OpenRegistrationScreen(this))
         }
     }
 

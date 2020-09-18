@@ -5,13 +5,13 @@ import kotlinx.android.synthetic.main.screen_navigation.view.*
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.bindings.bindClickListener
 import net.apptronic.test.commons_sample_app.R
-import net.apptronic.test.commons_sample_app.navigation.NavigationScreenViewModel
+import net.apptronic.test.commons_sample_app.main.MainScreenViewModel
 
-class NavigationScreenViewBinder : ViewBinder<NavigationScreenViewModel>() {
+class NavigationScreenViewBinder : ViewBinder<MainScreenViewModel>() {
 
     override var layoutResId: Int? = R.layout.screen_navigation
 
-    override fun onBindView(view: View, viewModel: NavigationScreenViewModel) {
+    override fun onBindView(view: View, viewModel: MainScreenViewModel) {
         with(view) {
             bindClickListener(loginScreenDemo, viewModel::onClickLoginDemo)
             bindClickListener(converterScreenDemo, viewModel::onClickConverterDemo)

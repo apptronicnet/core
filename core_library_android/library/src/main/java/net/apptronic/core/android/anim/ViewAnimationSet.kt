@@ -20,7 +20,7 @@ class ViewAnimationSet(
         return animations.firstOrNull { it.target == target }
     }
 
-    fun playOn(player: AnimationPlayer, intercept: Boolean = true) {
+    fun playOn(player: AnimationPlayer, intercept: Boolean) {
         player.playAnimationSet(this, intercept)
     }
 
