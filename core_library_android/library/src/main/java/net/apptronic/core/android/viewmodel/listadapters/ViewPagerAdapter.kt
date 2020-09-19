@@ -22,7 +22,8 @@ class ViewPagerAdapter(
     }
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
-        val view = binderAdapter.createView(position, container)
+        val viewModel = binderAdapter.getViewModelAt(position)
+        val view = binderAdapter.createView(viewModel, container)
         val binder = binderAdapter.bindView(position, view)
         container.addView(view)
         return binder

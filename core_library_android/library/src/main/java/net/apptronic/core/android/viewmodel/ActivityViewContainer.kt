@@ -71,11 +71,10 @@ private class ActivityViewContainerImpl<T : ViewModel>(
 ) : ActivityViewContainer<T>, ViewContainer<T> {
 
     private lateinit var lifecycleController: ViewModelLifecycleController
+    private lateinit var viewModel: T
 
     override fun onAddedViewModel(viewModel: T) {
-        viewModel.doOnBind {
-            onBindAction(viewModel)
-        }
+        this.viewModel = viewModel
         lifecycleController = ViewModelLifecycleController(viewModel)
     }
 
@@ -87,6 +86,7 @@ private class ActivityViewContainerImpl<T : ViewModel>(
         dispatcher.registerContainer(this)
         lifecycleController.setAttached(true)
         lifecycleController.setBound(true)
+        onBindAction(viewModel)
     }
 
     override fun onActivityStart() {
