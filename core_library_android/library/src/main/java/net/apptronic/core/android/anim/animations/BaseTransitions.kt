@@ -55,7 +55,7 @@ private val Transition_Fade_Enter = viewAnimation(AccelerateDecelerateInterpolat
     alpha(0f, 1f)
 }
 
-private val Transition_Fade_Exit = viewAnimation(AccelerateDecelerateInterpolator()) {
+private val Transition_Fade_Exit_Back = viewAnimation(AccelerateDecelerateInterpolator()) {
     if (isIntercepting(
             TranslationZTransformationDescriptor,
             ElevationTransformationDescriptor
@@ -65,14 +65,15 @@ private val Transition_Fade_Exit = viewAnimation(AccelerateDecelerateInterpolato
     }
 }
 
-private val Transition_Fade_Exit_Single = viewAnimation(AccelerateDecelerateInterpolator()) {
+private val Transition_Fade_Exit = viewAnimation(AccelerateDecelerateInterpolator()) {
     alpha(1f, 0f)
 }
 
 val Transition_Fade = viewTransition {
     enterFront = Transition_Fade_Enter
     exitFront = Transition_Fade_Exit
+    exitBack = Transition_Fade_Exit_Back
     enterSingle = Transition_Fade_Enter
-    exitSingle = Transition_Fade_Exit_Single
+    exitSingle = Transition_Fade_Exit
     order = ViewTransitionDirectionSpec.Bidirectional
 }
