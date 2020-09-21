@@ -75,14 +75,8 @@ class RecyclerViewAdapter(
         if (isBound) {
             val viewModel = listAdapter.getViewModelAt(position)
             if (viewModel != holder.viewModel) {
-                if (bindingStrategy == BindingStrategy.UntilReused) {
-                    unbindViewHolder(holder)
-                }
-                holder.viewModel = viewModel
-                val binder = listAdapter.bindView(position, holder.itemView)
-                listAdapter.setVisible(binder, true)
-                listAdapter.setFocused(binder, true)
-                holder.viewBinder = binder
+                doUnbindViewHolder(holder)
+                doBindViewHolder(holder, position)
             }
         }
     }
@@ -90,11 +84,19 @@ class RecyclerViewAdapter(
     override fun onViewRecycled(holder: ViewModelHolder) {
         super.onViewRecycled(holder)
         if (bindingStrategy == BindingStrategy.MatchRecycle) {
-            unbindViewHolder(holder)
+            doUnbindViewHolder(holder)
         }
     }
 
-    private fun unbindViewHolder(holder: ViewModelHolder) {
+    private fun doBindViewHolder(holder: ViewModelHolder, position: Int) {
+        holder.viewModel = listAdapter.getViewModelAt(position)
+        val binder = listAdapter.bindView(position, holder.itemView)
+        listAdapter.setVisible(binder, true)
+        listAdapter.setFocused(binder, true)
+        holder.viewBinder = binder
+    }
+
+    private fun doUnbindViewHolder(holder: ViewModelHolder) {
         val binder = holder.viewBinder
         if (binder != null) {
             listAdapter.setFocused(binder, false)

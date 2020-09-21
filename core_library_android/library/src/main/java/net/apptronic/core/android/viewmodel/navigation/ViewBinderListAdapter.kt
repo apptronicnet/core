@@ -97,6 +97,11 @@ class ViewBinderListAdapter(
         styleAdapter.applyViewStyle(view, position, items)
         return if (oldBinder != null) {
             if (oldBinder.getViewModel() != viewModel) {
+                // TODO should not happen in RecyclerView
+                // TODO need to check
+                setFocused(oldBinder, false)
+                setVisible(oldBinder, false)
+                // END TODO
                 unbindView(oldBinder)
                 performNewBinding(viewModel, view)
             } else {
@@ -119,7 +124,7 @@ class ViewBinderListAdapter(
     fun unbindView(viewBinder: ViewBinder<*>) {
         val viewModel = viewBinder.getViewModel()
         if (boundViews.containsKey(viewModel.componentId)) {
-            itemStateNavigator.setFocused(viewModel, false)
+            itemStateNavigator.setBound(viewModel, false)
             boundViews.remove(viewModel.componentId)
         }
     }
