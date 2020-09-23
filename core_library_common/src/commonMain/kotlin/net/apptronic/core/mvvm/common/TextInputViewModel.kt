@@ -66,6 +66,16 @@ class TextInputViewModel : ViewModel {
         inputUpdateRequest.sendEvent(InputUpdateRequest(text, realSelection))
     }
 
+    fun setSelection(selection: Int) {
+        setSelection(selection..selection)
+    }
+
+    fun setSelection(selection: IntRange) {
+        val realSelection = selection.normalize(getText())
+        this.selection.set(realSelection)
+        inputUpdateRequest.sendEvent(InputUpdateRequest(getText(), realSelection))
+    }
+
     fun updateText(text: String) {
         if (this.text.get() != text) {
             this.text.set(text)
