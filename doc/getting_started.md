@@ -10,9 +10,9 @@ First open Intellij Idea / Android Studio and start Kotlin Multiplatform project
 
 | **Dependency**              | **Version** |
 |-----------------------------|-------------|
-| apptronic.net/core-commons  | 0.6.0.0     |
-| apptronic.net/core-android  | 0.6.0.0     |
-| Kotlin                      | 1.4.0       |
+| apptronic.net/core-commons  | 0.7.0       |
+| apptronic.net/core-android  | 0.7.0       |
+| Kotlin                      | 1.4.10      |
 | Coroutines                  | 1.3.9       |
 
 Add maven repository:
