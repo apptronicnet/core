@@ -45,14 +45,14 @@ kotlin {
             dependencies {
                 implementation kotlin('stdlib-common')
                 implementation kotlin('reflect')
-                implementation "net.apptronic.core:core-commons:0.6.0.0"
+                implementation "net.apptronic.core:core-commons:0.7.0"
                 implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.9"
             }
         }
         androidMain {
             dependencies {
                 implementation kotlin('stdlib')
-                implementation "net.apptronic.core:core-android:0.6.0.0"
+                implementation "net.apptronic.core:core-android:0.7.0"
                 implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9"
                 implementation "androidx.recyclerview:recyclerview:1.1.0" // for lists
                 implementation "androidx.viewpager:viewpager:1.0.0" // for pages
