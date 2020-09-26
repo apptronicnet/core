@@ -5,6 +5,8 @@ import net.apptronic.core.view.CoreView
 import net.apptronic.core.view.CoreViewSet
 import net.apptronic.core.view.ViewProperty
 import net.apptronic.core.view.base.CoreViewBuilder
+import net.apptronic.core.view.dimension.CoreDimension
+import net.apptronic.core.view.dimension.setAsCoreDimension
 import net.apptronic.core.view.layer.CoreViewLayer
 import net.apptronic.core.view.properties.CoreColor
 import net.apptronic.core.view.shape.CoreDrawable
@@ -14,30 +16,50 @@ import net.apptronic.core.view.shape.CoreDrawable
  */
 interface IDividerContainerView : CoreView {
 
-    val dividerHeight: ViewProperty<Number>
+    val dividerSize: ViewProperty<CoreDimension>
 
-    var divider: CoreViewLayer?
+    val divider: ViewProperty<CoreViewLayer?>
 
-    fun dividerHeight(value: Number) {
-        dividerHeight.set(value)
+    val dividerOnTop: ViewProperty<Boolean>
+
+    val dividerOnBottom: ViewProperty<Boolean>
+
+    fun dividerSize(value: Number) {
+        dividerSize.setAsCoreDimension(value)
     }
 
-    fun dividerHeight(source: Observable<Number>) {
-        dividerHeight.set(source)
+    fun dividerSize(source: Observable<Number>) {
+        dividerSize.setAsCoreDimension(source)
     }
 
     fun divider(color: CoreColor) {
-        divider = CoreViewLayer.Color(color)
+        divider.set(CoreViewLayer.Color(color))
     }
 
     fun divider(drawable: CoreDrawable) {
-        divider = CoreViewLayer.Drawable(drawable)
+        divider.set(CoreViewLayer.Drawable(drawable))
+    }
+
+    fun dividerOnTop(value: Boolean) {
+        dividerOnTop.set(value)
+    }
+
+    fun dividerOnTop(source: Observable<Boolean>) {
+        dividerOnTop.set(source)
+    }
+
+    fun dividerOnBottom(value: Boolean) {
+        dividerOnBottom.set(value)
+    }
+
+    fun dividerOnBottom(source: Observable<Boolean>) {
+        dividerOnBottom.set(source)
     }
 
     fun divider(backgroundBuilder: CoreViewBuilder.() -> Unit) {
         val set = CoreViewSet(viewConfiguration)
         set.backgroundBuilder()
-        divider = CoreViewLayer.ViewSet(set)
+        divider.set(CoreViewLayer.ViewSet(set))
     }
 
 }

@@ -5,20 +5,20 @@ import net.apptronic.core.view.properties.VerticalAlignment
 
 interface CoreContentView : CoreView {
 
-    var contentAlignmentVertical: VerticalAlignment
-    var contentAlignmentHorizontal: HorizontalAlignment
+    val contentAlignmentVertical: ViewProperty<VerticalAlignment>
+    val contentAlignmentHorizontal: ViewProperty<HorizontalAlignment>
 
     fun contentAlignment(vertical: VerticalAlignment) {
-        contentAlignmentVertical = vertical
+        contentAlignmentVertical.set(vertical)
     }
 
     fun contentAlignment(horizontal: HorizontalAlignment) {
-        contentAlignmentHorizontal = horizontal
+        contentAlignmentHorizontal.set(horizontal)
     }
 
     fun contentAlignment(horizontal: HorizontalAlignment, vertical: VerticalAlignment) {
-        contentAlignmentHorizontal = horizontal
-        contentAlignmentVertical = vertical
+        contentAlignmentHorizontal.set(horizontal)
+        contentAlignmentVertical.set(vertical)
     }
 
 }

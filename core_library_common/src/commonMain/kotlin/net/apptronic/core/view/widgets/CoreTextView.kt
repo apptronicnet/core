@@ -3,7 +3,10 @@ package net.apptronic.core.view.widgets
 import net.apptronic.core.view.BaseCoreView
 import net.apptronic.core.view.base.CoreViewBuilder
 import net.apptronic.core.view.base.ViewConfiguration
-import net.apptronic.core.view.properties.*
+import net.apptronic.core.view.properties.Black
+import net.apptronic.core.view.properties.DefaultAlignment
+import net.apptronic.core.view.properties.HorizontalAlignment
+import net.apptronic.core.view.properties.VerticalAlignment
 import net.apptronic.core.view.widgets.commons.ICoreTextView
 
 open class CoreTextView internal constructor(viewConfiguration: ViewConfiguration) : BaseCoreView(viewConfiguration), ICoreTextView {
@@ -14,9 +17,9 @@ open class CoreTextView internal constructor(viewConfiguration: ViewConfiguratio
 
     override var textSize = viewProperty<Number>(16)
 
-    override var contentAlignmentHorizontal: HorizontalAlignment = ToStart
+    override var contentAlignmentHorizontal = viewProperty<HorizontalAlignment>(DefaultAlignment)
 
-    override var contentAlignmentVertical: VerticalAlignment = ToTop
+    override var contentAlignmentVertical = viewProperty<VerticalAlignment>(DefaultAlignment)
 
 }
 

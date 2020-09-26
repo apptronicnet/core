@@ -6,7 +6,7 @@ import net.apptronic.core.view.ViewProperty
 
 interface IEnabledDisabledView : CoreView {
 
-    var isEnabled: ViewProperty<Boolean>
+    val isEnabled: ViewProperty<Boolean>
 
     fun enabled(value: Boolean) {
         isEnabled.set(value)

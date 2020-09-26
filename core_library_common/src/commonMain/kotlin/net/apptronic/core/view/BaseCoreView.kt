@@ -1,6 +1,8 @@
 package net.apptronic.core.view
 
 import net.apptronic.core.view.base.ViewConfiguration
+import net.apptronic.core.view.dimension.CoreDimension
+import net.apptronic.core.view.dimension.CoreDimensionZero
 import net.apptronic.core.view.dimension.CoreLayoutDimension
 import net.apptronic.core.view.dimension.FitToContentDimension
 import net.apptronic.core.view.layer.CoreViewLayer
@@ -26,28 +28,26 @@ abstract class BaseCoreView(override val viewConfiguration: ViewConfiguration) :
 
     override fun recycle() {
         viewProperties.forEach { it.recycle() }
-        background?.recycle()
-        foreground?.recycle()
     }
 
-    override var layoutAlignmentHorizontal: HorizontalAlignment = DefaultAlignment
-    override var layoutAlignmentVertical: VerticalAlignment = DefaultAlignment
+    override val layoutAlignmentHorizontal = viewProperty<HorizontalAlignment>(DefaultAlignment)
+    override val layoutAlignmentVertical = viewProperty<VerticalAlignment>(DefaultAlignment)
 
-    override var width: CoreLayoutDimension = FitToContentDimension()
-    override var height: CoreLayoutDimension = FitToContentDimension()
+    override val width = viewProperty<CoreLayoutDimension>(FitToContentDimension)
+    override val height = viewProperty<CoreLayoutDimension>(FitToContentDimension)
 
-    override var background: CoreViewLayer? = null
-    override var foreground: CoreViewLayer? = null
+    override val background = viewProperty<CoreViewLayer?>(null)
+    override val foreground = viewProperty<CoreViewLayer?>(null)
 
-    override val paddingTop = viewProperty<Number>(0)
-    override val paddingBottom = viewProperty<Number>(0)
-    override val paddingStart = viewProperty<Number>(0)
-    override val paddingEnd = viewProperty<Number>(0)
-    override val indentTop = viewProperty<Number>(0)
-    override val indentBottom = viewProperty<Number>(0)
-    override val indentStart = viewProperty<Number>(0)
-    override val indentEnd = viewProperty<Number>(0)
-    override val shadow = viewProperty<Number>(0)
+    override val paddingTop = viewProperty<CoreDimension>(CoreDimensionZero)
+    override val paddingBottom = viewProperty<CoreDimension>(CoreDimensionZero)
+    override val paddingStart = viewProperty<CoreDimension>(CoreDimensionZero)
+    override val paddingEnd = viewProperty<CoreDimension>(CoreDimensionZero)
+    override val indentTop = viewProperty<CoreDimension>(CoreDimensionZero)
+    override val indentBottom = viewProperty<CoreDimension>(CoreDimensionZero)
+    override val indentStart = viewProperty<CoreDimension>(CoreDimensionZero)
+    override val indentEnd = viewProperty<CoreDimension>(CoreDimensionZero)
+    override val shadow = viewProperty<CoreDimension>(CoreDimensionZero)
     override val visibility = viewProperty(Visibility.Visible)
 
 }

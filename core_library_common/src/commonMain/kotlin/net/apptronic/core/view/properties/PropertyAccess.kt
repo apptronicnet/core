@@ -6,10 +6,10 @@ import net.apptronic.core.view.dimension.FitToParentDimension
 interface PropertyAccess {
 
     val FitToParent: FitToParentDimension
-        get() = FitToParentDimension()
+        get() = FitToParentDimension
 
     val FitToContent: FitToContentDimension
-        get() = FitToContentDimension()
+        get() = FitToContentDimension
 
     val Visible: Visibility
         get() = Visibility.Visible

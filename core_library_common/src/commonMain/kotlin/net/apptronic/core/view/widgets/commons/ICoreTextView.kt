@@ -8,11 +8,11 @@ import net.apptronic.core.view.properties.CoreColor
 
 interface ICoreTextView : CoreView, CoreContentView {
 
-    var text: ViewProperty<String>
+    val text: ViewProperty<String>
 
-    var textColor: ViewProperty<CoreColor>
+    val textColor: ViewProperty<CoreColor>
 
-    var textSize: ViewProperty<Number>
+    val textSize: ViewProperty<Number>
 
     fun text(text: String) {
         this.text.set(text)

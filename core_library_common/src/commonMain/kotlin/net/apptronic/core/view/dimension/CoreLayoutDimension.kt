@@ -1,17 +1,32 @@
 package net.apptronic.core.view.dimension
 
+import net.apptronic.core.base.observable.Observable
+import net.apptronic.core.view.ViewProperty
+
 interface CoreLayoutDimension
 
-class RelativeToParentDimension internal constructor(val relativeSize: Float) : CoreLayoutDimension
-
-class FitToParentDimension internal constructor() : CoreLayoutDimension
-
-class FitToContentDimension internal constructor() : CoreLayoutDimension
-
-class ExactLayoutDimension internal constructor(val value: CoreDimension) : CoreLayoutDimension
-
-fun exactLayoutDimension(value: Number): ExactLayoutDimension {
-    return ExactLayoutDimension(value.asCoreDimension())
+object FitToParentDimension : AbstractDimensionNumber(-1f), CoreLayoutDimension {
+    override fun toString(): String = "FitToParent"
 }
 
-fun RelativeToParent(relativeSize: Float) = RelativeToParentDimension(relativeSize)
+object FitToContentDimension : AbstractDimensionNumber(-1f), CoreLayoutDimension {
+    override fun toString(): String = "FitToContent"
+}
+
+fun Number.asCoreLayoutDimension(): CoreLayoutDimension {
+    if (this is CoreLayoutDimension) {
+        return this
+    } else {
+        return DiscreteCoreDimension(this.toFloat())
+    }
+}
+
+fun ViewProperty<CoreLayoutDimension>.setAsCoreLayoutDimension(value: Number) {
+    set(DiscreteCoreDimension(value.toFloat()))
+}
+
+fun ViewProperty<CoreLayoutDimension>.setAsCoreLayoutDimension(source: Observable<Number>) {
+    set(source) {
+        it.asCoreDimension()
+    }
+}

@@ -32,6 +32,7 @@ class ViewProperty<T> internal constructor(initialValue: T) : Observable<T> {
     }
 
     internal fun recycle() {
+        recycleCurrent()
         subscriptions.forEach {
             it.unsubscribe()
         }
@@ -40,15 +41,30 @@ class ViewProperty<T> internal constructor(initialValue: T) : Observable<T> {
         currentSubscription = null
     }
 
+    private fun recycleCurrent() {
+        subject.getValue()?.value?.let {
+            if (it is Recyclable) {
+                it.recycle()
+            }
+        }
+    }
+
+    private fun update(next: T) {
+        recycleCurrent()
+        subject.update(next)
+    }
+
     fun set(value: T) {
         currentSubscription?.unsubscribe()
         currentSubscription = null
-        subject.update(value)
+        update(value)
     }
 
     fun set(source: Observable<T>) {
         currentSubscription?.unsubscribe()
-        currentSubscription = source.subscribe(subject)
+        currentSubscription = source.subscribe {
+            update(it)
+        }
     }
 
     fun <E> set(source: Observable<E>, function: (E) -> T) {
@@ -56,6 +72,10 @@ class ViewProperty<T> internal constructor(initialValue: T) : Observable<T> {
         currentSubscription = source.subscribe {
             subject.update(function(it))
         }
+    }
+
+    fun get(): T {
+        return subject.getValue()!!.value
     }
 
 }

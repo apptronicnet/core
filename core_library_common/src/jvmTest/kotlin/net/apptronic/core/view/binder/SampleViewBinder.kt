@@ -1,20 +1,22 @@
-package net.apptronic.core.view
+package net.apptronic.core.view.binder
 
 import net.apptronic.core.component.value
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 import net.apptronic.core.mvvm.viewmodel.adapter.BasicTransition
-import net.apptronic.core.view.binder.CoreViewBinder
 import net.apptronic.core.view.container.frameContainer
 import net.apptronic.core.view.container.stackContainer
 import net.apptronic.core.view.dimension.pixels
 import net.apptronic.core.view.properties.*
 import net.apptronic.core.view.shape.rectangleDrawable
+import net.apptronic.core.view.viewStyle
+import net.apptronic.core.view.viewTheme
 import net.apptronic.core.view.widgets.CoreTextButtonView
 import net.apptronic.core.view.widgets.CoreTextView
 import net.apptronic.core.view.widgets.buttonTextView
 import net.apptronic.core.view.widgets.commons.ICoreTextView
 import net.apptronic.core.view.widgets.textView
+import net.apptronic.core.view.wrapperView
 
 class SampleViewModel(context: ViewModelContext) : ViewModel(context) {
 

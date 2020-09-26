@@ -1,9 +1,9 @@
 package net.apptronic.core.view
 
-interface CoreViewHolder {
+interface CoreViewHolder : Recyclable {
 
     val isRecycled: Boolean
 
-    fun recycle()
+    override fun recycle()
 
 }

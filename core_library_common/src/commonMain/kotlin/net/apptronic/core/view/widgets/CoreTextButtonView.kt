@@ -18,13 +18,13 @@ class CoreTextButtonView(viewConfiguration: ViewConfiguration) : BaseCoreView(vi
 
     override var textSize = viewProperty<Number>(16)
 
-    override var onClick: () -> Any = {}
+    override var onClick = viewProperty<() -> Any>({})
 
-    override var onLongClick: () -> Any = {}
+    override var onLongClick = viewProperty<() -> Any>({})
 
-    override var contentAlignmentHorizontal: HorizontalAlignment = DefaultAlignment
+    override var contentAlignmentHorizontal = viewProperty<HorizontalAlignment>(DefaultAlignment)
 
-    override var contentAlignmentVertical: VerticalAlignment = DefaultAlignment
+    override var contentAlignmentVertical = viewProperty<VerticalAlignment>(DefaultAlignment)
 
     override var isEnabled = viewProperty(true)
 

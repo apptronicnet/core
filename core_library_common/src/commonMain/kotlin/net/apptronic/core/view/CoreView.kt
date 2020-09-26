@@ -4,8 +4,10 @@ import net.apptronic.core.base.observable.Observable
 import net.apptronic.core.view.base.CoreViewBase
 import net.apptronic.core.view.base.CoreViewBuilder
 import net.apptronic.core.view.container.commons.ICoreContainerView
+import net.apptronic.core.view.dimension.CoreDimension
 import net.apptronic.core.view.dimension.CoreLayoutDimension
-import net.apptronic.core.view.dimension.exactLayoutDimension
+import net.apptronic.core.view.dimension.setAsCoreDimension
+import net.apptronic.core.view.dimension.setAsCoreLayoutDimension
 import net.apptronic.core.view.layer.CoreViewLayer
 import net.apptronic.core.view.properties.*
 import net.apptronic.core.view.shape.CoreDrawable
@@ -22,27 +24,26 @@ interface CoreView : CoreViewBase, PropertyAccess {
      */
     fun <T> viewProperty(initialValue: T): ViewProperty<T>
 
-    override fun recycle() {
-        background?.recycle()
-        foreground?.recycle()
-    }
+    val layoutAlignmentHorizontal: ViewProperty<HorizontalAlignment>
+    val layoutAlignmentVertical: ViewProperty<VerticalAlignment>
 
-    var layoutAlignmentHorizontal: HorizontalAlignment
-    var layoutAlignmentVertical: VerticalAlignment
+    val width: ViewProperty<CoreLayoutDimension>
+    val height: ViewProperty<CoreLayoutDimension>
 
-    var width: CoreLayoutDimension
-    var height: CoreLayoutDimension
+    val paddingTop: ViewProperty<CoreDimension>
+    val paddingBottom: ViewProperty<CoreDimension>
+    val paddingStart: ViewProperty<CoreDimension>
+    val paddingEnd: ViewProperty<CoreDimension>
+    val indentTop: ViewProperty<CoreDimension>
+    val indentBottom: ViewProperty<CoreDimension>
+    val indentStart: ViewProperty<CoreDimension>
+    val indentEnd: ViewProperty<CoreDimension>
 
-    val paddingTop: ViewProperty<Number>
-    val paddingBottom: ViewProperty<Number>
-    val paddingStart: ViewProperty<Number>
-    val paddingEnd: ViewProperty<Number>
-    val indentTop: ViewProperty<Number>
-    val indentBottom: ViewProperty<Number>
-    val indentStart: ViewProperty<Number>
-    val indentEnd: ViewProperty<Number>
-    val shadow: ViewProperty<Number>
+    val shadow: ViewProperty<CoreDimension>
     val visibility: ViewProperty<Visibility>
+
+    val background: ViewProperty<CoreViewLayer?>
+    val foreground: ViewProperty<CoreViewLayer?>
 
     /**
      * Apple all [style]s to this [CoreView]
@@ -65,50 +66,32 @@ interface CoreView : CoreViewBase, PropertyAccess {
     }
 
     fun layoutAlignment(vertical: VerticalAlignment) {
-        layoutAlignmentVertical = vertical
+        layoutAlignmentVertical.set(vertical)
     }
 
     fun layoutAlignment(horizontal: HorizontalAlignment) {
-        layoutAlignmentHorizontal = horizontal
+        layoutAlignmentHorizontal.set(horizontal)
     }
 
     fun layoutAlignment(horizontal: HorizontalAlignment, vertical: VerticalAlignment) {
-        layoutAlignmentHorizontal = horizontal
-        layoutAlignmentVertical = vertical
-    }
-
-    var background: CoreViewLayer?
-    var foreground: CoreViewLayer?
-
-    fun width(dimension: CoreLayoutDimension) {
-        width = dimension
+        layoutAlignmentHorizontal.set(horizontal)
+        layoutAlignmentVertical.set(vertical)
     }
 
     fun width(size: Number) {
-        width = exactLayoutDimension(size)
+        width.setAsCoreLayoutDimension(size)
     }
 
-    fun height(dimension: CoreLayoutDimension) {
-        height = dimension
+    fun width(source: Observable<Number>) {
+        width.setAsCoreLayoutDimension(source)
     }
 
     fun height(size: Number) {
-        height = exactLayoutDimension(size)
+        height.setAsCoreLayoutDimension(size)
     }
 
-    fun size(width: CoreLayoutDimension, height: CoreLayoutDimension) {
-        width(width)
-        height(height)
-    }
-
-    fun size(width: CoreLayoutDimension, height: Number) {
-        width(width)
-        height(height)
-    }
-
-    fun size(width: Number, height: CoreLayoutDimension) {
-        width(width)
-        height(height)
+    fun height(source: Observable<Number>) {
+        height.setAsCoreLayoutDimension(source)
     }
 
     fun size(width: Number, height: Number) {
@@ -117,35 +100,35 @@ interface CoreView : CoreViewBase, PropertyAccess {
     }
 
     fun background(color: CoreColor) {
-        background = CoreViewLayer.Color(color)
+        background.set(CoreViewLayer.Color(color))
     }
 
     fun background(drawable: CoreDrawable) {
-        background = CoreViewLayer.Drawable(drawable)
+        background.set(CoreViewLayer.Drawable(drawable))
     }
 
     fun background(backgroundBuilder: CoreViewBuilder.() -> Unit) {
         val set = CoreViewSet(viewConfiguration)
         set.backgroundBuilder()
-        background = CoreViewLayer.ViewSet(set)
+        background.set(CoreViewLayer.ViewSet(set))
     }
 
     fun foreground(color: CoreColor) {
-        background = CoreViewLayer.Color(color)
+        background.set(CoreViewLayer.Color(color))
     }
 
     fun foreground(drawable: CoreDrawable) {
-        background = CoreViewLayer.Drawable(drawable)
+        background.set(CoreViewLayer.Drawable(drawable))
     }
 
     fun foreground(backgroundBuilder: CoreViewBuilder.() -> Unit) {
         val set = CoreViewSet(viewConfiguration)
         set.backgroundBuilder()
-        background = CoreViewLayer.ViewSet(set)
+        background.set(CoreViewLayer.ViewSet(set))
     }
 
     fun shadow(value: Number) {
-        shadow.set(value)
+        shadow.setAsCoreDimension(value)
     }
 
     fun visibility(value: Visibility) {
@@ -191,67 +174,67 @@ interface CoreView : CoreViewBase, PropertyAccess {
     }
 
     fun indentStart(value: Number) {
-        indentStart.set(value)
+        indentStart.setAsCoreDimension(value)
     }
 
     fun indentEnd(value: Number) {
-        indentEnd.set(value)
+        indentEnd.setAsCoreDimension(value)
     }
 
     fun indentLeft(value: Number) {
         if (isLTR) {
-            indentStart.set(value)
+            indentStart.setAsCoreDimension(value)
         } else {
-            indentEnd.set(value)
+            indentEnd.setAsCoreDimension(value)
         }
     }
 
     fun indentRight(value: Number) {
         if (isLTR) {
-            indentEnd.set(value)
+            indentEnd.setAsCoreDimension(value)
         } else {
-            indentStart.set(value)
+            indentStart.setAsCoreDimension(value)
         }
     }
 
     fun indentTop(value: Number) {
-        indentTop.set(value)
+        indentTop.setAsCoreDimension(value)
     }
 
     fun indentBottom(value: Number) {
-        indentBottom.set(value)
+        indentBottom.setAsCoreDimension(value)
     }
 
     fun indentStart(source: Observable<Number>) {
-        indentStart.set(source)
+        indentStart.setAsCoreDimension(source)
     }
 
     fun indentEnd(source: Observable<Number>) {
-        indentEnd.set(source)
+        indentEnd.setAsCoreDimension(source)
     }
 
     fun indentLeft(source: Observable<Number>) {
         if (isLTR) {
-            indentStart.set(source)
+            indentStart.setAsCoreDimension(source)
         } else {
-            indentEnd.set(source)
+            indentEnd.setAsCoreDimension(source)
         }
     }
 
     fun indentRight(source: Observable<Number>) {
         if (isLTR) {
-            indentEnd.set(source)
+            indentEnd.setAsCoreDimension(source)
         } else {
-            indentStart.set(source)
+            indentStart.setAsCoreDimension(source)
         }
     }
 
     fun indentTop(source: Observable<Number>) {
-        indentTop.set(source)
+        indentTop.setAsCoreDimension(source)
     }
 
     fun indentBottom(source: Observable<Number>) {
-        indentBottom.set(source)
+        indentBottom.setAsCoreDimension(source)
     }
 
     fun padding(
@@ -277,67 +260,67 @@ interface CoreView : CoreViewBase, PropertyAccess {
     }
 
     fun paddingStart(value: Number) {
-        paddingStart.set(value)
+        paddingStart.setAsCoreDimension(value)
     }
 
     fun paddingEnd(value: Number) {
-        paddingEnd.set(value)
+        paddingEnd.setAsCoreDimension(value)
     }
 
     fun paddingLeft(value: Number) {
         if (isLTR) {
-            paddingStart.set(value)
+            paddingStart.setAsCoreDimension(value)
         } else {
-            paddingEnd.set(value)
+            paddingEnd.setAsCoreDimension(value)
         }
     }
 
     fun paddingRight(value: Number) {
         if (isLTR) {
-            paddingEnd.set(value)
+            paddingEnd.setAsCoreDimension(value)
         } else {
-            paddingStart.set(value)
+            paddingStart.setAsCoreDimension(value)
         }
     }
 
     fun paddingTop(value: Number) {
-        paddingTop.set(value)
+        paddingTop.setAsCoreDimension(value)
     }
 
     fun paddingBottom(value: Number) {
-        paddingBottom.set(value)
+        paddingBottom.setAsCoreDimension(value)
     }
 
     fun paddingStart(source: Observable<Number>) {
-        paddingStart.set(source)
+        paddingStart.setAsCoreDimension(source)
     }
 
     fun paddingEnd(source: Observable<Number>) {
-        paddingEnd.set(source)
+        paddingEnd.setAsCoreDimension(source)
     }
 
     fun paddingLeft(source: Observable<Number>) {
         if (isLTR) {
-            paddingStart.set(source)
+            paddingStart.setAsCoreDimension(source)
         } else {
-            paddingEnd.set(source)
+            paddingEnd.setAsCoreDimension(source)
         }
     }
 
     fun paddingRight(source: Observable<Number>) {
         if (isLTR) {
-            paddingEnd.set(source)
+            paddingEnd.setAsCoreDimension(source)
         } else {
-            paddingStart.set(source)
+            paddingStart.setAsCoreDimension(source)
         }
     }
 
     fun paddingTop(source: Observable<Number>) {
-        paddingTop.set(source)
+        paddingTop.setAsCoreDimension(source)
     }
 
     fun paddingBottom(source: Observable<Number>) {
-        paddingBottom.set(source)
+        paddingBottom.setAsCoreDimension(source)
     }
 
 }

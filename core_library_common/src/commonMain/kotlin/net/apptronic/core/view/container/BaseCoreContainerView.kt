@@ -18,9 +18,9 @@ abstract class BaseCoreContainerView(viewConfiguration: ViewConfiguration) : Bas
 
     private val children = mutableListOf<CoreView>()
 
-    override var contentAlignmentHorizontal: HorizontalAlignment = DefaultAlignment
+    override var contentAlignmentHorizontal = viewProperty<HorizontalAlignment>(DefaultAlignment)
 
-    override var contentAlignmentVertical: VerticalAlignment = DefaultAlignment
+    override var contentAlignmentVertical = viewProperty<VerticalAlignment>(DefaultAlignment)
 
     override fun getChildren(): List<CoreView> {
         return children

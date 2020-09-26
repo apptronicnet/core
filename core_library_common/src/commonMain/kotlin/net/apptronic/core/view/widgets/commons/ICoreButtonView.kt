@@ -2,44 +2,44 @@ package net.apptronic.core.view.widgets.commons
 
 import net.apptronic.core.base.observable.subject.Subject
 import net.apptronic.core.view.CoreContentView
+import net.apptronic.core.view.ViewProperty
 
 interface ICoreButtonView : CoreContentView, IEnabledDisabledView {
 
-    var onClick: () -> Any
+    val onClick: ViewProperty<() -> Any>
 
-    var onLongClick: () -> Any
+    val onLongClick: ViewProperty<() -> Any>
 
     fun onClick(action: () -> Any) {
-        onClick = action
+        onClick.set(action)
     }
 
     fun onClick(subject: Subject<Unit>) {
-        onClick = {
+        onClick.set {
             subject.update(Unit)
         }
     }
 
     fun <T> onClick(subject: Subject<T>, value: T) {
-        onClick = {
+        onClick.set {
             subject.update(value)
         }
     }
 
     fun onLongClick(action: () -> Any) {
-        onLongClick = action
+        onLongClick.set(action)
     }
 
     fun onLongClick(subject: Subject<Unit>) {
-        onLongClick = {
+        onLongClick.set {
             subject.update(Unit)
         }
     }
 
     fun <T> onLongClick(subject: Subject<T>, value: T) {
-        onLongClick = {
+        onLongClick.set {
             subject.update(value)
         }
     }
-
 
 }

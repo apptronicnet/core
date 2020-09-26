@@ -1,5 +1,7 @@
 package net.apptronic.core.view.container.commons
 
+import net.apptronic.core.base.observable.Observable
+import net.apptronic.core.view.ViewProperty
 import net.apptronic.core.view.base.CoreViewBuilder
 import net.apptronic.core.view.properties.LayoutOrientation
 import net.apptronic.core.view.widgets.CoreSpacerView
@@ -10,10 +12,14 @@ import net.apptronic.core.view.widgets.spacerView
  */
 interface ICoreOrientationContainerView : CoreViewBuilder {
 
-    var orientation: LayoutOrientation
+    val orientation: ViewProperty<LayoutOrientation>
 
     fun orientation(orientation: LayoutOrientation) {
-        this.orientation = orientation
+        this.orientation.set(orientation)
+    }
+
+    fun orientation(source: Observable<LayoutOrientation>) {
+        this.orientation.set(orientation)
     }
 
     val Vertical: LayoutOrientation
@@ -28,8 +34,8 @@ interface ICoreOrientationContainerView : CoreViewBuilder {
     fun spacerView(size: Number, builder: CoreSpacerView.() -> Unit = {}) {
         spacerView {
             when {
-                orientation == Horizontal || orientation == HorizontalReversed -> width(size)
-                orientation == Vertical || orientation == VerticalReversed -> height(size)
+                orientation.get() == Horizontal || orientation.get() == HorizontalReversed -> width(size)
+                orientation.get() == Vertical || orientation.get() == VerticalReversed -> height(size)
             }
             builder()
         }
