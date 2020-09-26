@@ -1,4 +1,4 @@
-package net.apptronic.core.view.widgets
+package net.apptronic.core.view.widgets.commons
 
 import net.apptronic.core.base.observable.Observable
 import net.apptronic.core.view.CoreContentView
@@ -6,7 +6,7 @@ import net.apptronic.core.view.CoreView
 import net.apptronic.core.view.ViewProperty
 import net.apptronic.core.view.properties.CoreColor
 
-interface CoreText : CoreView, CoreContentView {
+interface ICoreTextView : CoreView, CoreContentView {
 
     var text: ViewProperty<String>
 

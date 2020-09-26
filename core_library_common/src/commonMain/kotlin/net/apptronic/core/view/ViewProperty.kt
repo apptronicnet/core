@@ -6,6 +6,9 @@ import net.apptronic.core.base.observable.Subscription
 import net.apptronic.core.base.observable.subject.BehaviorSubject
 import net.apptronic.core.base.observable.subscribe
 
+/**
+ * Base class for some view property. Owned by [CoreView] and recycled when [CoreView] is recycled.
+ */
 class ViewProperty<T> internal constructor(initialValue: T) : Observable<T> {
 
     private var currentSubscription: Subscription? = null

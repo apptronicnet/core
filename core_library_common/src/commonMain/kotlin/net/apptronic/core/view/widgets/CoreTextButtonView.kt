@@ -7,8 +7,10 @@ import net.apptronic.core.view.properties.Black
 import net.apptronic.core.view.properties.DefaultAlignment
 import net.apptronic.core.view.properties.HorizontalAlignment
 import net.apptronic.core.view.properties.VerticalAlignment
+import net.apptronic.core.view.widgets.commons.ICoreButtonView
+import net.apptronic.core.view.widgets.commons.ICoreTextView
 
-class CoreTextButtonView(viewConfiguration: ViewConfiguration) : BaseCoreView(viewConfiguration), CoreButton, CoreText {
+class CoreTextButtonView(viewConfiguration: ViewConfiguration) : BaseCoreView(viewConfiguration), ICoreButtonView, ICoreTextView {
 
     override var text = viewProperty("")
 
@@ -29,5 +31,5 @@ class CoreTextButtonView(viewConfiguration: ViewConfiguration) : BaseCoreView(vi
 }
 
 fun CoreViewBuilder.buttonTextView(builder: CoreTextButtonView.() -> Unit) {
-    nextView(CoreTextButtonView(viewConfiguration).also(builder))
+    nextView(CoreTextButtonView(viewConfiguration), builder)
 }

@@ -7,5 +7,5 @@ import net.apptronic.core.view.base.ViewConfiguration
 open class CoreSpacerView internal constructor(viewConfiguration: ViewConfiguration) : BaseCoreView(viewConfiguration)
 
 fun CoreViewBuilder.spacerView(builder: CoreSpacerView.() -> Unit = {}) {
-    nextView(CoreSpacerView(viewConfiguration).also(builder))
+    nextView(CoreSpacerView(viewConfiguration), builder)
 }

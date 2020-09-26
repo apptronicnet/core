@@ -3,14 +3,23 @@ package net.apptronic.core.view
 import net.apptronic.core.base.observable.Observable
 import net.apptronic.core.view.base.CoreViewBase
 import net.apptronic.core.view.base.CoreViewBuilder
+import net.apptronic.core.view.container.commons.ICoreContainerView
 import net.apptronic.core.view.dimension.CoreLayoutDimension
 import net.apptronic.core.view.dimension.exactLayoutDimension
 import net.apptronic.core.view.layer.CoreViewLayer
 import net.apptronic.core.view.properties.*
 import net.apptronic.core.view.shape.CoreDrawable
 
+/**
+ * Specifies base properties for multiplatform view.
+ *
+ * Used by target platforms to generate native views and layouts and update according to it's properties.
+ */
 interface CoreView : CoreViewBase, PropertyAccess {
 
+    /**
+     * Creates mutable view property, which can be changed after view creation
+     */
     fun <T> viewProperty(initialValue: T): ViewProperty<T>
 
     override fun recycle() {
@@ -34,6 +43,26 @@ interface CoreView : CoreViewBase, PropertyAccess {
     val indentEnd: ViewProperty<Number>
     val shadow: ViewProperty<Number>
     val visibility: ViewProperty<Visibility>
+
+    /**
+     * Apple all [style]s to this [CoreView]
+     */
+    fun style(vararg style: CoreViewStyle) {
+        style.forEach {
+            it.applyTo(this)
+        }
+    }
+
+    /**
+     * Apple all [style]s to this [CoreView] and all children if it is [ICoreContainerView]
+     */
+    fun theme(vararg theme: CoreViewStyle) {
+        style(*theme)
+    }
+
+    fun theme(builder: CoreViewStyle.() -> Unit) {
+        theme(viewTheme(builder))
+    }
 
     fun layoutAlignment(vertical: VerticalAlignment) {
         layoutAlignmentVertical = vertical
@@ -65,6 +94,26 @@ interface CoreView : CoreViewBase, PropertyAccess {
 
     fun height(size: Number) {
         height = exactLayoutDimension(size)
+    }
+
+    fun size(width: CoreLayoutDimension, height: CoreLayoutDimension) {
+        width(width)
+        height(height)
+    }
+
+    fun size(width: CoreLayoutDimension, height: Number) {
+        width(width)
+        height(height)
+    }
+
+    fun size(width: Number, height: CoreLayoutDimension) {
+        width(width)
+        height(height)
+    }
+
+    fun size(width: Number, height: Number) {
+        width(width)
+        height(height)
     }
 
     fun background(color: CoreColor) {
@@ -99,7 +148,7 @@ interface CoreView : CoreViewBase, PropertyAccess {
         shadow.set(value)
     }
 
-    fun visiblity(value: Visibility) {
+    fun visibility(value: Visibility) {
         visibility.set(value)
     }
 
@@ -117,6 +166,178 @@ interface CoreView : CoreViewBase, PropertyAccess {
         visibility.set(source) {
             if (it) Visible else Gone
         }
+    }
+
+    fun indent(
+            all: Number? = null,
+            left: Number? = null,
+            right: Number? = null,
+            top: Number? = null,
+            bottom: Number? = null,
+            start: Number? = null,
+            end: Number? = null,
+            horizontal: Number? = null,
+            vertical: Number? = null,
+    ) {
+        all?.let { indentTop(it); indentBottom(it); indentStart(it); indentEnd(it) }
+        left?.let { indentLeft(it) }
+        right?.let { indentRight(it) }
+        top?.let { indentTop(it) }
+        bottom?.let { indentBottom(it) }
+        start?.let { indentStart(it) }
+        end?.let { indentEnd(it) }
+        horizontal?.let { indentStart(it); indentEnd(it) }
+        vertical?.let { indentTop(it); indentBottom(it) }
+    }
+
+    fun indentStart(value: Number) {
+        indentStart.set(value)
+    }
+
+    fun indentEnd(value: Number) {
+        indentEnd.set(value)
+    }
+
+    fun indentLeft(value: Number) {
+        if (isLTR) {
+            indentStart.set(value)
+        } else {
+            indentEnd.set(value)
+        }
+    }
+
+    fun indentRight(value: Number) {
+        if (isLTR) {
+            indentEnd.set(value)
+        } else {
+            indentStart.set(value)
+        }
+    }
+
+    fun indentTop(value: Number) {
+        indentTop.set(value)
+    }
+
+    fun indentBottom(value: Number) {
+        indentBottom.set(value)
+    }
+
+    fun indentStart(source: Observable<Number>) {
+        indentStart.set(source)
+    }
+
+    fun indentEnd(source: Observable<Number>) {
+        indentEnd.set(source)
+    }
+
+    fun indentLeft(source: Observable<Number>) {
+        if (isLTR) {
+            indentStart.set(source)
+        } else {
+            indentEnd.set(source)
+        }
+    }
+
+    fun indentRight(source: Observable<Number>) {
+        if (isLTR) {
+            indentEnd.set(source)
+        } else {
+            indentStart.set(source)
+        }
+    }
+
+    fun indentTop(source: Observable<Number>) {
+        indentTop.set(source)
+    }
+
+    fun indentBottom(source: Observable<Number>) {
+        indentBottom.set(source)
+    }
+
+    fun padding(
+            all: Number? = null,
+            left: Number? = null,
+            right: Number? = null,
+            top: Number? = null,
+            bottom: Number? = null,
+            start: Number? = null,
+            end: Number? = null,
+            horizontal: Number? = null,
+            vertical: Number? = null,
+    ) {
+        all?.let { paddingTop(it); paddingBottom(it); paddingStart(it); paddingEnd(it) }
+        left?.let { paddingLeft(it) }
+        right?.let { paddingRight(it) }
+        top?.let { paddingTop(it) }
+        bottom?.let { paddingBottom(it) }
+        start?.let { paddingStart(it) }
+        end?.let { paddingEnd(it) }
+        horizontal?.let { paddingStart(it); paddingEnd(it) }
+        vertical?.let { paddingTop(it); paddingBottom(it) }
+    }
+
+    fun paddingStart(value: Number) {
+        paddingStart.set(value)
+    }
+
+    fun paddingEnd(value: Number) {
+        paddingEnd.set(value)
+    }
+
+    fun paddingLeft(value: Number) {
+        if (isLTR) {
+            paddingStart.set(value)
+        } else {
+            paddingEnd.set(value)
+        }
+    }
+
+    fun paddingRight(value: Number) {
+        if (isLTR) {
+            paddingEnd.set(value)
+        } else {
+            paddingStart.set(value)
+        }
+    }
+
+    fun paddingTop(value: Number) {
+        paddingTop.set(value)
+    }
+
+    fun paddingBottom(value: Number) {
+        paddingBottom.set(value)
+    }
+
+    fun paddingStart(source: Observable<Number>) {
+        paddingStart.set(source)
+    }
+
+    fun paddingEnd(source: Observable<Number>) {
+        paddingEnd.set(source)
+    }
+
+    fun paddingLeft(source: Observable<Number>) {
+        if (isLTR) {
+            paddingStart.set(source)
+        } else {
+            paddingEnd.set(source)
+        }
+    }
+
+    fun paddingRight(source: Observable<Number>) {
+        if (isLTR) {
+            paddingEnd.set(source)
+        } else {
+            paddingStart.set(source)
+        }
+    }
+
+    fun paddingTop(source: Observable<Number>) {
+        paddingTop.set(source)
+    }
+
+    fun paddingBottom(source: Observable<Number>) {
+        paddingBottom.set(source)
     }
 
 }

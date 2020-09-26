@@ -1,11 +1,14 @@
-package net.apptronic.core.view.container
+package net.apptronic.core.view.container.commons
 
 import net.apptronic.core.view.base.CoreViewBuilder
 import net.apptronic.core.view.properties.LayoutOrientation
 import net.apptronic.core.view.widgets.CoreSpacerView
 import net.apptronic.core.view.widgets.spacerView
 
-interface OrientationContainerView : CoreViewBuilder {
+/**
+ * Base class for containers which supports orientation and adding spacers according to it's orientation
+ */
+interface ICoreOrientationContainerView : CoreViewBuilder {
 
     var orientation: LayoutOrientation
 

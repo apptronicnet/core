@@ -6,7 +6,12 @@ import net.apptronic.core.base.observable.subscribe
 import net.apptronic.core.view.base.CoreViewBuilder
 import net.apptronic.core.view.base.ViewConfiguration
 
+/**
+ * Creates container which wraps some dynamic view content
+ */
 class CoreWrapperView internal constructor(viewConfiguration: ViewConfiguration) : BaseCoreView(viewConfiguration) {
+
+    private var themes = mutableListOf<CoreViewStyle>()
 
     private val wrapperBuilder = CoreWrapperBuilder()
 
@@ -16,6 +21,14 @@ class CoreWrapperView internal constructor(viewConfiguration: ViewConfiguration)
 
     private var subscription: Subscription? = null
 
+    override fun theme(vararg theme: CoreViewStyle) {
+        super.theme(*theme)
+        themes.addAll(theme)
+        wrappedView.doWithValue {
+            it?.theme(*theme)
+        }
+    }
+
     private inner class CoreWrapperBuilder : CoreViewBuilder {
 
         override val viewConfiguration: ViewConfiguration
@@ -24,11 +37,13 @@ class CoreWrapperView internal constructor(viewConfiguration: ViewConfiguration)
         override val isRecycled: Boolean
             get() = this@CoreWrapperView.isRecycled
 
-        override fun nextView(child: CoreView) {
+        override fun <T : CoreView> nextView(child: T, builder: T.() -> Unit) {
             if (isRecycled) {
                 child.recycle()
                 return
             }
+            child.theme(*themes.toTypedArray())
+            child.builder()
             recycleCurrentView()
             wrappedView.set(child)
         }
@@ -76,5 +91,5 @@ class CoreWrapperView internal constructor(viewConfiguration: ViewConfiguration)
 }
 
 fun CoreViewBuilder.wrapperView(builder: CoreWrapperView.() -> Unit) {
-    nextView(CoreWrapperView(viewConfiguration).apply(builder))
+    nextView(CoreWrapperView(viewConfiguration), builder)
 }

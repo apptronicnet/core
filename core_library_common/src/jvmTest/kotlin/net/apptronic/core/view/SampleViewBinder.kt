@@ -5,12 +5,15 @@ import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 import net.apptronic.core.mvvm.viewmodel.adapter.BasicTransition
 import net.apptronic.core.view.binder.CoreViewBinder
-import net.apptronic.core.view.container.frameView
-import net.apptronic.core.view.container.stackView
+import net.apptronic.core.view.container.frameContainer
+import net.apptronic.core.view.container.stackContainer
 import net.apptronic.core.view.dimension.pixels
 import net.apptronic.core.view.properties.*
 import net.apptronic.core.view.shape.rectangleDrawable
+import net.apptronic.core.view.widgets.CoreTextButtonView
+import net.apptronic.core.view.widgets.CoreTextView
 import net.apptronic.core.view.widgets.buttonTextView
+import net.apptronic.core.view.widgets.commons.ICoreTextView
 import net.apptronic.core.view.widgets.textView
 
 class SampleViewModel(context: ViewModelContext) : ViewModel(context) {
@@ -25,19 +28,36 @@ class SampleViewModel(context: ViewModelContext) : ViewModel(context) {
 
 }
 
+val DefaultTextStyle = viewStyle<ICoreTextView> {
+    textSize(16)
+    textColor(CoreColor.rgbHex(0x8032ff))
+}
+
+val AppTheme = viewTheme {
+    common {
+        width(FitToContent)
+        height(FitToContent)
+    }
+    typed<CoreTextView>(DefaultTextStyle)
+    typed<CoreTextButtonView> {
+        textSize(32)
+        padding(horizontal = 24, vertical = 8)
+    }
+}
+
 class SampleViewBinder : CoreViewBinder<SampleViewModel>() {
 
     override fun onBind(viewModel: SampleViewModel) {
-        frameView {
+        frameContainer {
+            theme(AppTheme)
             background(White)
             padding(32)
             width(FitToParent)
             height(FitToParent)
             shadow(8)
-            stackView {
+            stackContainer {
                 orientation(Vertical)
-                width(FitToContent)
-                height(FitToContent)
+                size(width = FitToContent, height = FitToContent)
                 contentAlignment(ToStart, ToTop)
                 layoutAlignment(ToCenter, ToCenter)
                 textView {
@@ -47,6 +67,7 @@ class SampleViewBinder : CoreViewBinder<SampleViewModel>() {
                 }
                 spacerView(8)
                 buttonTextView {
+                    style(DefaultTextStyle)
                     text("Hello")
                     onClick(viewModel::onClick)
                     indent(16, end = 32)
@@ -57,8 +78,7 @@ class SampleViewBinder : CoreViewBinder<SampleViewModel>() {
                 }
                 spacerView(12)
                 wrapperView {
-                    width(64)
-                    height(64)
+                    size(64, 64)
                     transitionSpec(BasicTransition.Fade)
                     content(viewModel.timerValue) { timerTick ->
                         textView {

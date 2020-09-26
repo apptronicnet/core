@@ -1,10 +1,13 @@
-package net.apptronic.core.view.container
+package net.apptronic.core.view.container.commons
 
 import net.apptronic.core.base.observable.Observable
+import net.apptronic.core.view.CoreView
 import net.apptronic.core.view.ViewProperty
-import net.apptronic.core.view.base.CoreViewBase
 
-interface SpacingContainerView : CoreViewBase {
+/**
+ * Base interface for view which can divide content with standard spacing
+ */
+interface ISpacingContainerView : CoreView {
 
     var spacing: ViewProperty<Number>
 

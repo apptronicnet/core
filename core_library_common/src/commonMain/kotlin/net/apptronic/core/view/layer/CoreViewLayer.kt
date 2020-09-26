@@ -6,6 +6,7 @@ import net.apptronic.core.view.properties.CoreColor
 import net.apptronic.core.view.shape.CoreDrawable
 
 sealed class CoreViewLayer : CoreViewHolder {
+
     class Color(val color: CoreColor) : CoreViewLayer() {
         private var isRecycledState = false
 

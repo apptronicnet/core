@@ -5,6 +5,10 @@ import net.apptronic.core.view.CoreView
 import net.apptronic.core.view.base.CoreViewBuilder
 import net.apptronic.core.view.base.ViewConfiguration
 
+/**
+ * Multiplatform binding container. Allows to build [CoreView] to be used by platform for creating platform
+ * native layout.
+ */
 abstract class CoreViewBinder<T : ViewModel> : CoreViewBuilder {
 
     protected var config: ViewConfiguration? = null
@@ -21,11 +25,12 @@ abstract class CoreViewBinder<T : ViewModel> : CoreViewBuilder {
     override val isRecycled: Boolean
         get() = isRecycledState
 
-    override fun nextView(child: CoreView) {
+    override fun <T : CoreView> nextView(child: T, builder: T.() -> Unit) {
         if (isRecycledState) {
             child.recycle()
             return
         }
+        child.apply(builder)
         val view = this.view
         if (view != null) {
             this.view = child

@@ -1,17 +1,20 @@
-package net.apptronic.core.view.container
+package net.apptronic.core.view.container.commons
 
 import net.apptronic.core.base.observable.Observable
+import net.apptronic.core.view.CoreView
 import net.apptronic.core.view.CoreViewSet
 import net.apptronic.core.view.ViewProperty
-import net.apptronic.core.view.base.CoreViewBase
 import net.apptronic.core.view.base.CoreViewBuilder
 import net.apptronic.core.view.layer.CoreViewLayer
 import net.apptronic.core.view.properties.CoreColor
 import net.apptronic.core.view.shape.CoreDrawable
 
-interface DividerContainerView : CoreViewBase {
+/**
+ * Base interface for view which can divide content with dividers
+ */
+interface IDividerContainerView : CoreView {
 
-    var dividerHeight: ViewProperty<Number>
+    val dividerHeight: ViewProperty<Number>
 
     var divider: CoreViewLayer?
 

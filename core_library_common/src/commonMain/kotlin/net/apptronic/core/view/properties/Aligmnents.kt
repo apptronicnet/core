@@ -13,4 +13,7 @@ object ToTop : VerticalAlignment
 object ToBottom : VerticalAlignment
 object ToCenter : HorizontalAlignment, VerticalAlignment
 
+val ToCenterVertical: HorizontalAlignment = ToCenter
+val ToCenterHorizontal: VerticalAlignment = ToCenter
+
 val DefaultAlignment = ToCenter

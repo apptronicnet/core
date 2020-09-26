@@ -1,9 +1,9 @@
-package net.apptronic.core.view.widgets
+package net.apptronic.core.view.widgets.commons
 
 import net.apptronic.core.base.observable.subject.Subject
 import net.apptronic.core.view.CoreContentView
 
-interface CoreButton : CoreContentView, EnabledDisabledView {
+interface ICoreButtonView : CoreContentView, IEnabledDisabledView {
 
     var onClick: () -> Any
 

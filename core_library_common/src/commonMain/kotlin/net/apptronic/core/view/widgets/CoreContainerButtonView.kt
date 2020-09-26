@@ -6,8 +6,9 @@ import net.apptronic.core.view.container.BaseCoreContainerView
 import net.apptronic.core.view.properties.DefaultAlignment
 import net.apptronic.core.view.properties.HorizontalAlignment
 import net.apptronic.core.view.properties.VerticalAlignment
+import net.apptronic.core.view.widgets.commons.ICoreButtonView
 
-open class CoreContainerButtonView(viewConfiguration: ViewConfiguration) : BaseCoreContainerView(viewConfiguration), CoreButton {
+open class CoreContainerButtonView(viewConfiguration: ViewConfiguration) : BaseCoreContainerView(viewConfiguration), ICoreButtonView {
 
     override var onClick: () -> Any = {}
 
@@ -22,5 +23,5 @@ open class CoreContainerButtonView(viewConfiguration: ViewConfiguration) : BaseC
 }
 
 fun CoreViewBuilder.buttonContainerView(builder: CoreContainerButtonView.() -> Unit) {
-    nextView(CoreContainerButtonView(viewConfiguration).also(builder))
+    nextView(CoreContainerButtonView(viewConfiguration), builder)
 }

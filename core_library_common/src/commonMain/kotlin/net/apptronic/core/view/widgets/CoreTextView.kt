@@ -4,8 +4,9 @@ import net.apptronic.core.view.BaseCoreView
 import net.apptronic.core.view.base.CoreViewBuilder
 import net.apptronic.core.view.base.ViewConfiguration
 import net.apptronic.core.view.properties.*
+import net.apptronic.core.view.widgets.commons.ICoreTextView
 
-open class CoreTextView internal constructor(viewConfiguration: ViewConfiguration) : BaseCoreView(viewConfiguration), CoreText {
+open class CoreTextView internal constructor(viewConfiguration: ViewConfiguration) : BaseCoreView(viewConfiguration), ICoreTextView {
 
     override var text = viewProperty("")
 
@@ -20,5 +21,5 @@ open class CoreTextView internal constructor(viewConfiguration: ViewConfiguratio
 }
 
 fun CoreViewBuilder.textView(builder: CoreTextView.() -> Unit) {
-    nextView(CoreTextView(viewConfiguration).also(builder))
+    nextView(CoreTextView(viewConfiguration), builder)
 }
