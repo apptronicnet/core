@@ -23,6 +23,6 @@ open class CoreTextView internal constructor(viewConfiguration: ViewConfiguratio
 
 }
 
-fun CoreViewBuilder.textView(builder: CoreTextView.() -> Unit) {
-    nextView(CoreTextView(viewConfiguration), builder)
+fun CoreViewBuilder.textView(builder: CoreTextView.() -> Unit): CoreTextView {
+    return nextView(CoreTextView(viewConfiguration), builder)
 }

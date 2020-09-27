@@ -34,10 +34,15 @@ abstract class BaseCoreContainerView(viewConfiguration: ViewConfiguration) : Bas
         }
     }
 
-    override fun <T : CoreView> nextView(child: T, builder: T.() -> Unit) {
+    override fun <T : CoreView> nextView(child: T, builder: T.() -> Unit): T {
+        if (isRecycled) {
+            child.recycle()
+            return child
+        }
         child.theme(*themes.toTypedArray())
         child.apply(builder)
         children.add(child)
+        return child
     }
 
     override fun recycle() {

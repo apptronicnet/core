@@ -10,9 +10,9 @@ import net.apptronic.core.view.widgets.commons.ICoreButtonView
 
 open class CoreContainerButtonView(viewConfiguration: ViewConfiguration) : BaseCoreContainerView(viewConfiguration), ICoreButtonView {
 
-    override var onClick = viewProperty<() -> Any>({})
+    override var onClick = viewProperty<() -> Unit>({})
 
-    override var onLongClick = viewProperty<() -> Any>({})
+    override var onLongClick = viewProperty<() -> Unit>({})
 
     override var contentAlignmentHorizontal = viewProperty<HorizontalAlignment>(DefaultAlignment)
 

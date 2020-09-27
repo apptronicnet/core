@@ -7,6 +7,6 @@ import net.apptronic.core.view.CoreView
  */
 interface CoreViewBuilder : CoreViewBase {
 
-    fun <T : CoreView> nextView(child: T, builder: T.() -> Unit)
+    fun <T : CoreView> nextView(child: T, builder: T.() -> Unit): T
 
 }

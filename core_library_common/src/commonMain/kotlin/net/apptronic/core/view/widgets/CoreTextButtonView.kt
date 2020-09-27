@@ -12,24 +12,24 @@ import net.apptronic.core.view.widgets.commons.ICoreTextView
 
 class CoreTextButtonView(viewConfiguration: ViewConfiguration) : BaseCoreView(viewConfiguration), ICoreButtonView, ICoreTextView {
 
-    override var text = viewProperty("")
+    override val text = viewProperty("")
 
-    override var textColor = viewProperty(Black)
+    override val textColor = viewProperty(Black)
 
-    override var textSize = viewProperty<Number>(16)
+    override val textSize = viewProperty<Number>(16)
 
-    override var onClick = viewProperty<() -> Any>({})
+    override val onClick = viewProperty({})
 
-    override var onLongClick = viewProperty<() -> Any>({})
+    override val onLongClick = viewProperty({})
 
-    override var contentAlignmentHorizontal = viewProperty<HorizontalAlignment>(DefaultAlignment)
+    override val contentAlignmentHorizontal = viewProperty<HorizontalAlignment>(DefaultAlignment)
 
-    override var contentAlignmentVertical = viewProperty<VerticalAlignment>(DefaultAlignment)
+    override val contentAlignmentVertical = viewProperty<VerticalAlignment>(DefaultAlignment)
 
-    override var isEnabled = viewProperty(true)
+    override val isEnabled = viewProperty(true)
 
 }
 
-fun CoreViewBuilder.buttonTextView(builder: CoreTextButtonView.() -> Unit) {
-    nextView(CoreTextButtonView(viewConfiguration), builder)
+fun CoreViewBuilder.buttonTextView(builder: CoreTextButtonView.() -> Unit): CoreTextButtonView {
+    return nextView(CoreTextButtonView(viewConfiguration), builder)
 }

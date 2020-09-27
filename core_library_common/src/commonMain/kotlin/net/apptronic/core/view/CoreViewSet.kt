@@ -15,13 +15,14 @@ class CoreViewSet(override val viewConfiguration: ViewConfiguration) : CoreViewB
 
     private var views = mutableListOf<CoreView>()
 
-    override fun <T : CoreView> nextView(child: T, builder: T.() -> Unit) {
+    override fun <T : CoreView> nextView(child: T, builder: T.() -> Unit): T {
         if (!isRecycled) {
             child.recycle()
-            return
+            return child
         }
         child.builder()
         views.add(child)
+        return child
     }
 
     fun getViews(): List<CoreView> {

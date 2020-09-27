@@ -37,15 +37,16 @@ class CoreWrapperView internal constructor(viewConfiguration: ViewConfiguration)
         override val isRecycled: Boolean
             get() = this@CoreWrapperView.isRecycled
 
-        override fun <T : CoreView> nextView(child: T, builder: T.() -> Unit) {
+        override fun <T : CoreView> nextView(child: T, builder: T.() -> Unit): T {
             if (isRecycled) {
                 child.recycle()
-                return
+                return child
             }
             child.theme(*themes.toTypedArray())
             child.builder()
             recycleCurrentView()
             wrappedView.set(child)
+            return child
         }
 
         override fun recycle() {
