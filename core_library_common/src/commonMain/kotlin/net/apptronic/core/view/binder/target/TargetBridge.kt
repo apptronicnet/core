@@ -1,4 +1,4 @@
-package net.apptronic.core.view.binder
+package net.apptronic.core.view.binder.target
 
 interface TargetBridge<T> {
 

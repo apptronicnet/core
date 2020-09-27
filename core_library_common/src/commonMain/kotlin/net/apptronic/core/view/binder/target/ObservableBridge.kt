@@ -1,4 +1,4 @@
-package net.apptronic.core.view.binder
+package net.apptronic.core.view.binder.target
 
 import net.apptronic.core.base.observable.Observable
 import net.apptronic.core.base.observable.Observer
@@ -9,7 +9,7 @@ import net.apptronic.core.base.observable.subscribe
 /**
  * This class bridges data from [Target] which can be changed dynamically.
  */
-internal class ObservableBridge<Target, E, T>(
+class ObservableBridge<Target, E, T>(
         private val readMethod: Target.() -> Observable<E>,
         private val readValueFunction: (E) -> T
 ) : TargetBridge<Target>, Observable<T> {

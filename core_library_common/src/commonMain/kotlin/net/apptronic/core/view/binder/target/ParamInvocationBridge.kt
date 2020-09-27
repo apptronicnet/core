@@ -1,9 +1,9 @@
-package net.apptronic.core.view.binder
+package net.apptronic.core.view.binder.target
 
 /**
  * This class bridges method to [Target] to be invoked
  */
-internal class ParamInvocationBridge<Target, Param, E>(
+class ParamInvocationBridge<Target, Param, E>(
         private val invocation: Target.(Param) -> E,
 ) : TargetBridge<Target> {
 

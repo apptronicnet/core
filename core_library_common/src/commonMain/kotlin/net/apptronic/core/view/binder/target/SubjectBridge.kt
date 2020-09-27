@@ -1,4 +1,4 @@
-package net.apptronic.core.view.binder
+package net.apptronic.core.view.binder.target
 
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.base.observable.Subscription
@@ -8,7 +8,7 @@ import net.apptronic.core.base.observable.subject.Subject
 /**
  * This class bridges [Subject] from [Target] to publish values
  */
-internal class SubjectBridge<Target, E>(
+class SubjectBridge<Target, E>(
         private val readMethod: Target.() -> Subject<E>,
 ) : Subject<E>, TargetBridge<Target> {
 

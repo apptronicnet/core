@@ -2,6 +2,8 @@ package net.apptronic.core.view.binder
 
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.view.CoreView
+import net.apptronic.core.view.binder.target.SupportsTargetBridge
+import net.apptronic.core.view.binder.target.TargetBridge
 
 /**
  * Multiplatform binding container. Allows to build [CoreView] to be used by platform for creating platform

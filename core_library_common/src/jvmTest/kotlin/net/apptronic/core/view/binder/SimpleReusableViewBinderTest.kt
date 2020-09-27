@@ -7,6 +7,9 @@ import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 import net.apptronic.core.testutils.testContext
 import net.apptronic.core.view.base.ViewConfiguration
+import net.apptronic.core.view.binder.target.bindFrom
+import net.apptronic.core.view.binder.target.bindTo
+import net.apptronic.core.view.binder.target.bindValue
 import net.apptronic.core.view.container.stackContainer
 import net.apptronic.core.view.properties.LayoutDirection
 import net.apptronic.core.view.widgets.buttonTextView
@@ -15,6 +18,7 @@ import net.apptronic.core.view.widgets.commons.ICoreTextView
 import net.apptronic.core.view.widgets.textView
 import org.junit.Test
 import kotlin.test.assertEquals
+import kotlin.test.fail
 
 private class SomeViewModel(context: ViewModelContext, val staticText: String) : ViewModel(context) {
 
@@ -36,7 +40,7 @@ private class SomeViewModel(context: ViewModelContext, val staticText: String) :
 
 private class SampleReusableViewBinder : ReusableCoreViewBinder<SomeViewModel>() {
 
-    val upperCased = readObservable(SomeViewModel::text) {
+    val upperCased = this.bindFrom(SomeViewModel::text) {
         it.toUpperCase()
     }
 
@@ -50,19 +54,19 @@ private class SampleReusableViewBinder : ReusableCoreViewBinder<SomeViewModel>()
         stackContainer {
             orientation(Vertical)
             textView = textView {
-                textFrom(SomeViewModel::text)
+                text(bindFrom(SomeViewModel::text))
             }
             upperCasedTextView = textView {
                 text(upperCased)
             }
             staticTextView = textView {
-                text(SomeViewModel::staticText)
+                text(bindValue(SomeViewModel::staticText))
             }
             methodButton = buttonTextView {
-                onClick(SomeViewModel::onClick)
+                onClick(bindTo(SomeViewModel::onClick))
             }
             eventButton = buttonTextView {
-                onClickTo(SomeViewModel::onClickEvent)
+                onClick(bindTo(SomeViewModel::onClickEvent))
             }
         }
     }
@@ -87,6 +91,8 @@ class SimpleReusableViewBinderTest {
         model1.text.set("hello")
         assertEquals(binder.textView.text.get(), "hello")
         assertEquals(binder.upperCasedTextView.text.get(), "HELLO")
+
+        fail("Not completed")
     }
 
 }

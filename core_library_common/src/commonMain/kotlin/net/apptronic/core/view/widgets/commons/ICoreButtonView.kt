@@ -3,7 +3,6 @@ package net.apptronic.core.view.widgets.commons
 import net.apptronic.core.base.observable.subject.Subject
 import net.apptronic.core.view.CoreContentView
 import net.apptronic.core.view.ViewProperty
-import net.apptronic.core.view.binder.SupportsTargetBridge
 
 interface ICoreButtonView : CoreContentView, IEnabledDisabledView {
 
@@ -15,18 +14,10 @@ interface ICoreButtonView : CoreContentView, IEnabledDisabledView {
         onClick.set(action)
     }
 
-    fun <T> SupportsTargetBridge<T>.onClick(bridger: T.() -> Unit) {
-        onClick(writeInvocation(bridger))
-    }
-
     fun onClick(subject: Subject<Unit>) {
         onClick.set {
             subject.update(Unit)
         }
-    }
-
-    fun <T> SupportsTargetBridge<T>.onClickTo(bridger: T.() -> Subject<Unit>) {
-        onClick(writeSubject(bridger))
     }
 
     fun <T> onClick(subject: Subject<T>, value: T) {
@@ -39,10 +30,6 @@ interface ICoreButtonView : CoreContentView, IEnabledDisabledView {
         onLongClick.set(action)
     }
 
-    fun <T> SupportsTargetBridge<T>.onLongClick(bridger: T.() -> Unit) {
-        onLongClick(writeInvocation(bridger))
-    }
-
     fun onLongClick(subject: Subject<Unit>) {
         onLongClick.set {
             subject.update(Unit)
@@ -53,10 +40,6 @@ interface ICoreButtonView : CoreContentView, IEnabledDisabledView {
         onLongClick.set {
             subject.update(value)
         }
-    }
-
-    fun <T> SupportsTargetBridge<T>.onLongClickTo(bridger: T.() -> Subject<Unit>) {
-        onLongClick(writeSubject(bridger))
     }
 
 }
