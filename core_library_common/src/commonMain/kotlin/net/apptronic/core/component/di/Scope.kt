@@ -73,13 +73,13 @@ abstract class Scope internal constructor(
     private fun <ObjectType> performInjection(
             objectKey: ObjectKey
     ): ObjectType {
-        return parameters.get(objectKey) ?: dependencyDispatcher.inject(objectKey)
+        return parameters.get(objectKey) ?: dependencyDispatcher.inject(objectKey, emptyParameters())
     }
 
     private fun <ObjectType> optionalInjection(
             objectKey: ObjectKey
     ): ObjectType? {
-        return parameters.get(objectKey) ?: dependencyDispatcher.optional(objectKey)
+        return parameters.get(objectKey) ?: dependencyDispatcher.optional(objectKey, emptyParameters())
     }
 
     internal abstract val defaultBuilderContext: Context
@@ -197,7 +197,7 @@ class FactoryScope internal constructor(
     }
 
     override fun <ObjectType> performProvide(objectKey: ObjectKey): ObjectType {
-        return parameters.get(objectKey) ?: injectionDispatcher.inject(objectKey)
+        return parameters.get(objectKey) ?: injectionDispatcher.inject(objectKey, emptyParameters())
     }
 
     override val defaultBuilderContext: Context = injectionContext

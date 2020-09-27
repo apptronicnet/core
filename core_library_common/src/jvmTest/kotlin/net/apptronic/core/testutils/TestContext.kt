@@ -5,6 +5,7 @@ import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.coroutines.CoroutineDispatchers
 import net.apptronic.core.component.coroutines.testCoroutineDispatchers
 import net.apptronic.core.component.di.DependencyDispatcher
+import net.apptronic.core.component.di.dependencyDispatcher
 
 fun testContext(
         parent: Context? = null,
@@ -19,7 +20,7 @@ private class TestContext(
 ) : BaseContext() {
 
     override val lifecycle = TEST_LIFECYCLE.createLifecycle()
-    override val dependencyDispatcher = DependencyDispatcher(this, parent?.dependencyDispatcher)
+    override val dependencyDispatcher: DependencyDispatcher = dependencyDispatcher()
 
     init {
         parent?.lifecycle?.registerChildLifecycle(lifecycle)

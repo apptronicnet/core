@@ -225,7 +225,7 @@ private class BindProvider<TypeDeclaration>(
     override val typeName: String = "bind"
 
     override fun provide(definitionContext: Context, dispatcher: DependencyDispatcher, searchSpec: SearchSpec): TypeDeclaration {
-        return dispatcher.inject(objectKey) as TypeDeclaration
+        return dispatcher.inject(objectKey, emptyParameters()) as TypeDeclaration
     }
 
 }

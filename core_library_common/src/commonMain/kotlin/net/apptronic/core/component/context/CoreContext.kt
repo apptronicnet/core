@@ -2,7 +2,7 @@ package net.apptronic.core.component.context
 
 import net.apptronic.core.component.coroutines.CoroutineDispatchers
 import net.apptronic.core.component.coroutines.standardCoroutineDispatchers
-import net.apptronic.core.component.di.DependencyDispatcher
+import net.apptronic.core.component.di.dependencyDispatcher
 import net.apptronic.core.component.lifecycle.BASE_LIFECYCLE
 import net.apptronic.core.component.lifecycle.Lifecycle
 
@@ -15,7 +15,7 @@ private class CoreContext(
         override val coroutineDispatchers: CoroutineDispatchers
 ) : BaseContext() {
 
-    override val dependencyDispatcher = DependencyDispatcher(this, null)
+    override val dependencyDispatcher = dependencyDispatcher()
 
     override val parent: Context? = null
 

@@ -2,26 +2,32 @@ package net.apptronic.core.component.di
 
 import net.apptronic.core.base.observable.subject.ValueHolder
 import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.di.util.*
+import net.apptronic.core.component.di.util.DependencyTrace
+import net.apptronic.core.component.di.util.DependencyTraceElement
 import kotlin.reflect.KClass
+
+fun Context.dependencyDispatcher(): DependencyDispatcher {
+    return LazyDependencyDispatcher(this)
+}
 
 /**
  * Class for providing dependencies
  */
-class DependencyDispatcher(
-        internal val context: Context,
-        private val parent: DependencyDispatcher?
-) : DependencyProvider {
+abstract class DependencyDispatcher : DependencyProvider {
 
-    private val externalInstances = mutableMapOf<ObjectKey, ValueHolder<*>>()
-    private val modules = mutableListOf<Module>()
+    abstract val context: Context
+
+    val parent: DependencyDispatcher?
+        get() {
+            return context.parent?.dependencyDispatcher
+        }
 
     /**
      * Add external instance to this provider.
      * @param instance instance which can be injected using this [DependencyDispatcher]
      * @param name optional name for instance
      */
-    inline fun <reified TypeDeclaration : Any> addInstance(
+    inline fun <reified TypeDeclaration : Any> DependencyDispatcher.addInstance(
             instance: TypeDeclaration
     ) {
         addInstance(TypeDeclaration::class, instance)
@@ -33,19 +39,10 @@ class DependencyDispatcher(
      * @param clazz optional class for this instance
      * @param name optional name for instance
      */
-    fun <TypeDeclaration : Any> addInstance(
+    abstract fun <TypeDeclaration : Any> addInstance(
             clazz: KClass<TypeDeclaration>,
             instance: TypeDeclaration
-    ) {
-        if (instance is ModuleDefinition) {
-            throw IllegalArgumentException("ModuleDefinition should be added using addModule()")
-        }
-        val key = objectKey(clazz)
-        externalInstances[key] = ValueHolder(instance)
-        context.lifecycle.onExitFromActiveStage {
-            externalInstances.remove(key)
-        }
-    }
+    )
 
     /**
      * Add external instance to this provider.
@@ -53,16 +50,10 @@ class DependencyDispatcher(
      * @param clazz optional class for this instance
      * @param name optional name for instance
      */
-    fun <TypeDeclaration : Any> addInstance(
+    abstract fun <TypeDeclaration : Any> addInstance(
             descriptor: DependencyDescriptor<TypeDeclaration>,
             instance: TypeDeclaration
-    ) {
-        if (instance is ModuleDefinition) {
-            throw IllegalArgumentException("ModuleDefinition should be added using addModule()")
-        }
-        val key = objectKey(descriptor)
-        externalInstances[key] = ValueHolder(instance)
-    }
+    )
 
     /**
      * Add external instance to this provider.
@@ -70,19 +61,14 @@ class DependencyDispatcher(
      * @param clazz optional class for this instance
      * @param name optional name for instance
      */
-    fun <TypeDeclaration : Any> addNullableInstance(
+    abstract fun <TypeDeclaration : Any> addNullableInstance(
             descriptor: DependencyDescriptor<TypeDeclaration?>,
             instance: TypeDeclaration?
-    ) {
-        val key = objectKey(descriptor)
-        externalInstances[key] = ValueHolder(instance)
-    }
+    )
 
-    fun addModule(moduleDefinition: ModuleDefinition) {
-        modules.add(moduleDefinition.buildInstance(context))
-    }
+    abstract fun addModule(moduleDefinition: ModuleDefinition)
 
-    override fun <TypeDeclaration : Any> inject(
+    final override fun <TypeDeclaration : Any> inject(
             clazz: KClass<TypeDeclaration>,
             params: Parameters
     ): TypeDeclaration {
@@ -90,7 +76,7 @@ class DependencyDispatcher(
         return getInstanceInternal(key, params)
     }
 
-    override fun <TypeDeclaration : Any> optional(
+    final override fun <TypeDeclaration : Any> optional(
             clazz: KClass<TypeDeclaration>,
             params: Parameters
     ): TypeDeclaration? {
@@ -98,7 +84,7 @@ class DependencyDispatcher(
         return getOptionalInternal(key, params)
     }
 
-    override fun <TypeDeclaration : Any> injectLazy(
+    final override fun <TypeDeclaration : Any> injectLazy(
             clazz: KClass<TypeDeclaration>,
             params: Parameters
     ): Lazy<TypeDeclaration> {
@@ -106,7 +92,7 @@ class DependencyDispatcher(
         return getLazyInstanceInternal(key, params)
     }
 
-    override fun <TypeDeclaration : Any> optionalLazy(
+    final override fun <TypeDeclaration : Any> optionalLazy(
             clazz: KClass<TypeDeclaration>,
             params: Parameters
     ): Lazy<TypeDeclaration?> {
@@ -114,7 +100,7 @@ class DependencyDispatcher(
         return getLazyOptionalInternal(key, params)
     }
 
-    override fun <TypeDeclaration> inject(
+    final override fun <TypeDeclaration> inject(
             descriptor: DependencyDescriptor<TypeDeclaration>,
             params: Parameters
     ): TypeDeclaration {
@@ -122,7 +108,7 @@ class DependencyDispatcher(
         return getInstanceInternal(key, params)
     }
 
-    override fun <TypeDeclaration> optional(
+    final override fun <TypeDeclaration> optional(
             descriptor: DependencyDescriptor<TypeDeclaration>,
             params: Parameters
     ): TypeDeclaration? {
@@ -130,7 +116,7 @@ class DependencyDispatcher(
         return getOptionalInternal(key, params)
     }
 
-    override fun <TypeDeclaration> injectLazy(
+    final override fun <TypeDeclaration> injectLazy(
             descriptor: DependencyDescriptor<TypeDeclaration>,
             params: Parameters
     ): Lazy<TypeDeclaration> {
@@ -138,7 +124,7 @@ class DependencyDispatcher(
         return getLazyInstanceInternal(key, params)
     }
 
-    override fun <TypeDeclaration> optionalLazy(
+    final override fun <TypeDeclaration> optionalLazy(
             descriptor: DependencyDescriptor<TypeDeclaration>,
             params: Parameters
     ): Lazy<TypeDeclaration?> {
@@ -148,48 +134,30 @@ class DependencyDispatcher(
 
     internal fun <TypeDeclaration> inject(
             objectKey: ObjectKey,
-            params: Parameters = parameters { }
+            params: Parameters
     ): TypeDeclaration {
         return getInstanceInternal(objectKey, params)
     }
 
     internal fun <TypeDeclaration> optional(
             objectKey: ObjectKey,
-            params: Parameters = parameters { }
+            params: Parameters
     ): TypeDeclaration? {
         return getOptionalInternal(objectKey, params)
     }
 
     internal fun <TypeDeclaration> injectLazy(
             objectKey: ObjectKey,
-            params: Parameters = parameters { }
+            params: Parameters
     ): Lazy<TypeDeclaration> {
         return getLazyInstanceInternal(objectKey, params)
     }
 
     internal fun <TypeDeclaration> optionalLazy(
             objectKey: ObjectKey,
-            params: Parameters = parameters { }
+            params: Parameters
     ): Lazy<TypeDeclaration?> {
         return getLazyOptionalInternal(objectKey, params)
-    }
-
-    private fun <TypeDeclaration> getInstanceInternal(
-            key: ObjectKey,
-            params: Parameters
-    ): TypeDeclaration {
-        return performInject<TypeDeclaration>(SearchSpec(context, key, params)).value
-    }
-
-    private fun <TypeDeclaration> getOptionalInternal(
-            key: ObjectKey,
-            params: Parameters
-    ): TypeDeclaration? {
-        return try {
-            performInject<TypeDeclaration>(SearchSpec(context, key, params)).value
-        } catch (e: InjectionFailedException) {
-            null
-        }
     }
 
     private fun <TypeDeclaration> getLazyInstanceInternal(
@@ -214,88 +182,38 @@ class DependencyDispatcher(
         }
     }
 
-    internal fun getInstanceNames(): List<String> {
-        return externalInstances.entries.map {
-            "${it.key} = ${it.value}}"
+    internal abstract fun <TypeDeclaration> searchInstance(searchSpec: SearchSpec): ValueHolder<TypeDeclaration>?
+
+    private fun <TypeDeclaration> getInstanceInternal(
+            key: ObjectKey,
+            params: Parameters
+    ): TypeDeclaration {
+        return performInject<TypeDeclaration>(SearchSpec(context, key, params)).value
+    }
+
+    private fun <TypeDeclaration> getOptionalInternal(
+            key: ObjectKey,
+            params: Parameters
+    ): TypeDeclaration? {
+        return try {
+            performInject<TypeDeclaration>(SearchSpec(context, key, params)).value
+        } catch (e: InjectionFailedException) {
+            null
         }
     }
 
-    internal fun getModuleNames(): List<String> {
-        return modules.map { it.name }
-    }
-
     private fun <TypeDeclaration> performInject(searchSpec: SearchSpec): ValueHolder<TypeDeclaration> {
-        var result: ValueHolder<TypeDeclaration>? = searchInstance(searchSpec)
+        val result: ValueHolder<TypeDeclaration>? = searchInstance(searchSpec)
         return result
                 ?: throw InjectionFailedException("Object ${searchSpec.key} is not found:\n${searchSpec.getSearchPath()}")
     }
 
-    private fun <TypeDeclaration> searchInstance(
-            searchSpec: SearchSpec
-    ): ValueHolder<TypeDeclaration>? {
-        searchSpec.addContextToChain(context)
-        val local: ValueHolder<TypeDeclaration>? = obtainLocalInstance(searchSpec)
-        if (local != null) {
-            return local
-        }
-        val parental: ValueHolder<TypeDeclaration>? = parent?.searchInstance(searchSpec)
-        if (parental != null) {
-            return parental
-        }
-        return null
-    }
+    abstract fun traceDependencyTree(): DependencyTrace
 
-    @Suppress("UNCHECKED_CAST")
-    private fun <TypeDeclaration> obtainLocalInstance(
-            searchSpec: SearchSpec
-    ): ValueHolder<TypeDeclaration>? {
-        val obj = externalInstances[searchSpec.key]
-        if (obj != null) {
-            return obj as ValueHolder<TypeDeclaration>
-        }
-        modules.forEach { module ->
-            val providerSearch = module.getProvider(searchSpec.key)
-            if (providerSearch != null) {
-                val provider = providerSearch as ObjectProvider<TypeDeclaration>
-                val instance = provider.provide(context, this, searchSpec)
-                return@obtainLocalInstance ValueHolder(instance)
-            }
-        }
-        return null
-    }
+    internal abstract fun getInstanceNames(): List<String>
 
-    fun traceDependencyTree(): DependencyTrace {
-        val traces = mutableListOf<DependencyTraceElement>()
-        var dispatcher: DependencyDispatcher? = this
-        while (dispatcher != null) {
-            traces.add(dispatcher.traceCurrent())
-            dispatcher = dispatcher.parent
-        }
-        return DependencyTrace(traces)
-    }
+    internal abstract fun getModuleNames(): List<String>
 
-    private fun traceCurrent(): DependencyTraceElement {
-        val name = context.toString()
-        val instanceTraces = externalInstances.entries.map {
-            DependencyTraceInstance(
-                    it.key.toString(),
-                    it.value
-            )
-        }
-        val moduleTraces = this.modules.map { module ->
-            DependencyTraceModule(
-                    name = module.name,
-                    providers = module.providers.map { provider ->
-                        DependencyTraceProvider(
-                                type = provider.typeName,
-                                keys = provider.getMappings().map { objectKey ->
-                                    objectKey.toString()
-                                }
-                        )
-                    }
-            )
-        }
-        return DependencyTraceElement(name, instanceTraces, moduleTraces)
-    }
+    internal abstract fun traceCurrent(): DependencyTraceElement
 
 }
