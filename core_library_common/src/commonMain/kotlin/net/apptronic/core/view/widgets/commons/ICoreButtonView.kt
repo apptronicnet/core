@@ -1,14 +1,14 @@
 package net.apptronic.core.view.widgets.commons
 
 import net.apptronic.core.base.observable.subject.Subject
+import net.apptronic.core.component.entity.entities.Value
 import net.apptronic.core.view.CoreContentView
-import net.apptronic.core.view.ViewProperty
 
 interface ICoreButtonView : CoreContentView, IEnabledDisabledView {
 
-    val onClick: ViewProperty<() -> Unit>
+    val onClick: Value<() -> Unit>
 
-    val onLongClick: ViewProperty<() -> Unit>
+    val onLongClick: Value<() -> Unit>
 
     fun onClick(action: () -> Unit) {
         onClick.set(action)

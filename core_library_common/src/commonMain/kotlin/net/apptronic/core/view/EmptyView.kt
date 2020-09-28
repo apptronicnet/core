@@ -1,10 +1,10 @@
 package net.apptronic.core.view
 
 import net.apptronic.core.view.base.CoreViewBuilder
-import net.apptronic.core.view.base.ViewConfiguration
+import net.apptronic.core.view.context.CoreViewContext
 
-class EmptyView(viewConfiguration: ViewConfiguration) : BaseCoreView(viewConfiguration)
+class EmptyView(context: CoreViewContext) : CoreView(context)
 
-fun CoreViewBuilder.emptyView(builder: CoreView.() -> Unit = {}) {
-    nextView(EmptyView(viewConfiguration), builder)
+fun CoreViewBuilder.emptyView(builder: ICoreView.() -> Unit = {}) {
+    nextView(::EmptyView, builder)
 }

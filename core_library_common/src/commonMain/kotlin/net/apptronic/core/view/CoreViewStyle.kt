@@ -11,7 +11,7 @@ class CoreViewStyle internal constructor() {
     private val includes = mutableListOf<CoreViewStyle>()
     private val viewStyles = mutableListOf<ViewTypeStyle<*>>()
 
-    private data class ViewTypeStyle<T : Any>(
+    private data class ViewTypeStyle<T : ICoreView>(
             val type: KClass<T>,
             val styleFlow: T.() -> Unit
     ) {
@@ -23,19 +23,19 @@ class CoreViewStyle internal constructor() {
         }
     }
 
-    fun common(styleFlow: CoreView.() -> Unit) {
-        viewStyles.add(ViewTypeStyle(CoreView::class, styleFlow))
+    fun common(styleFlow: ICoreView.() -> Unit) {
+        viewStyles.add(ViewTypeStyle(ICoreView::class, styleFlow))
     }
 
-    fun <T : Any> typed(type: KClass<T>, styleFlow: T.() -> Unit) {
+    fun <T : ICoreView> typed(type: KClass<T>, styleFlow: T.() -> Unit) {
         viewStyles.add(ViewTypeStyle(type, styleFlow))
     }
 
-    inline fun <reified T : Any> typed(noinline styleFlow: T.() -> Unit) {
+    inline fun <reified T : ICoreView> typed(noinline styleFlow: T.() -> Unit) {
         typed(T::class, styleFlow)
     }
 
-    inline fun <reified T : Any> typed(style: CoreViewStyle) {
+    inline fun <reified T : ICoreView> typed(style: CoreViewStyle) {
         typed(T::class) {
             style.applyTo(this)
         }
@@ -61,7 +61,7 @@ fun viewTheme(builder: CoreViewStyle.() -> Unit): CoreViewStyle {
 }
 
 
-inline fun <reified T : Any> viewStyle(parent: CoreViewStyle? = null, noinline styleFlow: T.() -> Unit): CoreViewStyle {
+inline fun <reified T : ICoreView> viewStyle(parent: CoreViewStyle? = null, noinline styleFlow: T.() -> Unit): CoreViewStyle {
     return viewTheme {
         typed(T::class, styleFlow)
     }

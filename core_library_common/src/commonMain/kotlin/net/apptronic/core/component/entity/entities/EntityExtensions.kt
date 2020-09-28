@@ -10,7 +10,7 @@ import net.apptronic.core.component.entity.subscribe
 /**
  * Subscribe to updates of [source] and set all new values automatically
  */
-fun <E : UpdateEntity<T>, T> E.setAs(source: Entity<T>): E {
+fun <E : UpdateEntity<T>, T> E.setAs(source: Entity<out T>): E {
     source.subscribe(context) {
         update(it)
     }

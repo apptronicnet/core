@@ -1,8 +1,9 @@
 package net.apptronic.core.view.widgets
 
-import net.apptronic.core.view.BaseCoreView
+import net.apptronic.core.component.value
+import net.apptronic.core.view.CoreView
 import net.apptronic.core.view.base.CoreViewBuilder
-import net.apptronic.core.view.base.ViewConfiguration
+import net.apptronic.core.view.context.CoreViewContext
 import net.apptronic.core.view.properties.Black
 import net.apptronic.core.view.properties.DefaultAlignment
 import net.apptronic.core.view.properties.HorizontalAlignment
@@ -10,26 +11,26 @@ import net.apptronic.core.view.properties.VerticalAlignment
 import net.apptronic.core.view.widgets.commons.ICoreButtonView
 import net.apptronic.core.view.widgets.commons.ICoreTextView
 
-class CoreTextButtonView(viewConfiguration: ViewConfiguration) : BaseCoreView(viewConfiguration), ICoreButtonView, ICoreTextView {
+class CoreTextButtonView(context: CoreViewContext) : CoreView(context), ICoreButtonView, ICoreTextView {
 
-    override val text = viewProperty("")
+    override val text = value("")
 
-    override val textColor = viewProperty(Black)
+    override val textColor = value(Black)
 
-    override val textSize = viewProperty<Number>(16)
+    override val textSize = value<Number>(16)
 
-    override val onClick = viewProperty({})
+    override val onClick = value({})
 
-    override val onLongClick = viewProperty({})
+    override val onLongClick = value({})
 
-    override val contentAlignmentHorizontal = viewProperty<HorizontalAlignment>(DefaultAlignment)
+    override val contentAlignmentHorizontal = value<HorizontalAlignment>(DefaultAlignment)
 
-    override val contentAlignmentVertical = viewProperty<VerticalAlignment>(DefaultAlignment)
+    override val contentAlignmentVertical = value<VerticalAlignment>(DefaultAlignment)
 
-    override val isEnabled = viewProperty(true)
+    override val isEnabled = value(true)
 
 }
 
 fun CoreViewBuilder.buttonTextView(builder: CoreTextButtonView.() -> Unit): CoreTextButtonView {
-    return nextView(CoreTextButtonView(viewConfiguration), builder)
+    return nextView(::CoreTextButtonView, builder)
 }

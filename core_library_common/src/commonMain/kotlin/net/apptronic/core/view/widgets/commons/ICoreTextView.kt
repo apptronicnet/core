@@ -1,41 +1,42 @@
 package net.apptronic.core.view.widgets.commons
 
-import net.apptronic.core.base.observable.Observable
+import net.apptronic.core.component.entity.Entity
+import net.apptronic.core.component.entity.entities.Value
+import net.apptronic.core.component.entity.entities.setAs
 import net.apptronic.core.view.CoreContentView
-import net.apptronic.core.view.CoreView
-import net.apptronic.core.view.ViewProperty
+import net.apptronic.core.view.ICoreView
 import net.apptronic.core.view.properties.CoreColor
 
-interface ICoreTextView : CoreView, CoreContentView {
+interface ICoreTextView : ICoreView, CoreContentView {
 
-    val text: ViewProperty<String>
+    val text: Value<String>
 
-    val textColor: ViewProperty<CoreColor>
+    val textColor: Value<CoreColor>
 
-    val textSize: ViewProperty<Number>
+    val textSize: Value<Number>
 
     fun text(text: String) {
         this.text.set(text)
     }
 
-    fun text(source: Observable<String>) {
-        this.text.set(source)
+    fun text(source: Entity<String>) {
+        this.text.setAs(source)
     }
 
     fun textColor(color: CoreColor) {
         this.textColor.set(color)
     }
 
-    fun textColor(source: Observable<CoreColor>) {
-        this.textColor.set(source)
+    fun textColor(source: Entity<CoreColor>) {
+        this.textColor.setAs(source)
     }
 
     fun textSize(color: Number) {
         this.textSize.set(color)
     }
 
-    fun textSize(source: Observable<Number>) {
-        this.textSize.set(source)
+    fun textSize(source: Entity<Number>) {
+        this.textSize.setAs(source)
     }
 
 }

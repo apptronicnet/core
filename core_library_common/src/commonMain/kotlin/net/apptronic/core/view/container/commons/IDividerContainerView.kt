@@ -1,65 +1,48 @@
 package net.apptronic.core.view.container.commons
 
-import net.apptronic.core.base.observable.Observable
-import net.apptronic.core.view.CoreView
-import net.apptronic.core.view.CoreViewSet
-import net.apptronic.core.view.ViewProperty
+import net.apptronic.core.component.entity.Entity
+import net.apptronic.core.component.entity.entities.Value
+import net.apptronic.core.component.entity.entities.setAs
+import net.apptronic.core.view.ICoreView
 import net.apptronic.core.view.base.CoreViewBuilder
-import net.apptronic.core.view.dimension.CoreDimension
-import net.apptronic.core.view.dimension.setAsCoreDimension
-import net.apptronic.core.view.layer.CoreViewLayer
 import net.apptronic.core.view.properties.CoreColor
-import net.apptronic.core.view.shape.CoreDrawable
+import net.apptronic.core.view.shape.rectangleShape
 
 /**
  * Base interface for view which can divide content with dividers
  */
-interface IDividerContainerView : CoreView {
+interface IDividerContainerView : ICoreView {
 
-    val dividerSize: ViewProperty<CoreDimension>
+    val divider: Value<ICoreView?>
 
-    val divider: ViewProperty<CoreViewLayer?>
+    val dividerOnTop: Value<Boolean>
 
-    val dividerOnTop: ViewProperty<Boolean>
-
-    val dividerOnBottom: ViewProperty<Boolean>
-
-    fun dividerSize(value: Number) {
-        dividerSize.setAsCoreDimension(value)
-    }
-
-    fun dividerSize(source: Observable<Number>) {
-        dividerSize.setAsCoreDimension(source)
-    }
+    val dividerOnBottom: Value<Boolean>
 
     fun divider(color: CoreColor) {
-        divider.set(CoreViewLayer.Color(color))
-    }
+        divider.set(detachedViewBuilder.rectangleShape {
 
-    fun divider(drawable: CoreDrawable) {
-        divider.set(CoreViewLayer.Drawable(drawable))
+        })
     }
 
     fun dividerOnTop(value: Boolean) {
         dividerOnTop.set(value)
     }
 
-    fun dividerOnTop(source: Observable<Boolean>) {
-        dividerOnTop.set(source)
+    fun dividerOnTop(source: Entity<Boolean>) {
+        dividerOnTop.setAs(source)
     }
 
     fun dividerOnBottom(value: Boolean) {
         dividerOnBottom.set(value)
     }
 
-    fun dividerOnBottom(source: Observable<Boolean>) {
-        dividerOnBottom.set(source)
+    fun dividerOnBottom(source: Entity<Boolean>) {
+        dividerOnBottom.setAs(source)
     }
 
-    fun divider(backgroundBuilder: CoreViewBuilder.() -> Unit) {
-        val set = CoreViewSet(viewConfiguration)
-        set.backgroundBuilder()
-        divider.set(CoreViewLayer.ViewSet(set))
+    fun divider(builder: CoreViewBuilder.() -> ICoreView) {
+        divider.set(detachedViewBuilder.builder())
     }
 
 }

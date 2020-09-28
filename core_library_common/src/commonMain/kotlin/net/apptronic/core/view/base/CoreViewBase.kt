@@ -1,22 +1,25 @@
 package net.apptronic.core.view.base
 
-import net.apptronic.core.view.CoreView
-import net.apptronic.core.view.CoreViewHolder
+import net.apptronic.core.component.context.Contextual
+import net.apptronic.core.view.ICoreView
+import net.apptronic.core.view.context.CoreViewContext
 import net.apptronic.core.view.properties.LTR
 import net.apptronic.core.view.properties.RTL
 
-interface CoreViewBase : CoreViewHolder {
+interface CoreViewBase : Contextual {
 
-    val viewConfiguration: ViewConfiguration
+    override val context: CoreViewContext
 
-    val CoreView.isLTR: Boolean
+    val ICoreView.isLTR: Boolean
         get() {
-            return this.viewConfiguration.layoutDirection == LTR
+            return context.viewConfiguration.layoutDirection == LTR
         }
 
-    val CoreView.isRTL: Boolean
+    val ICoreView.isRTL: Boolean
         get() {
-            return this.viewConfiguration.layoutDirection == RTL
+            return context.viewConfiguration.layoutDirection == RTL
         }
+
+    fun createChildCoreViewContext(): CoreViewContext = context.createChild()
 
 }

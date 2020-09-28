@@ -1,12 +1,13 @@
 package net.apptronic.core.view
 
+import net.apptronic.core.component.entity.entities.Value
 import net.apptronic.core.view.properties.HorizontalAlignment
 import net.apptronic.core.view.properties.VerticalAlignment
 
-interface CoreContentView : CoreView {
+interface CoreContentView : ICoreView {
 
-    val contentAlignmentVertical: ViewProperty<VerticalAlignment>
-    val contentAlignmentHorizontal: ViewProperty<HorizontalAlignment>
+    val contentAlignmentVertical: Value<VerticalAlignment>
+    val contentAlignmentHorizontal: Value<HorizontalAlignment>
 
     fun contentAlignment(vertical: VerticalAlignment) {
         contentAlignmentVertical.set(vertical)

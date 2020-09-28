@@ -1,15 +1,17 @@
 package net.apptronic.core.view.shape
 
-import net.apptronic.core.view.properties.CoreColor
+import net.apptronic.core.component.value
+import net.apptronic.core.view.ICoreView
+import net.apptronic.core.view.base.CoreViewBuilder
+import net.apptronic.core.view.context.CoreViewContext
 
-class CoreRectangleShapeDrawable internal constructor() : CoreDrawable {
-    var fillColor: CoreColor? = null
-    var strokeColor: CoreColor? = null
-    var strokeWidth: Number? = null
-    var cornerTopLeft: Number = 0
-    var cornerTopRight: Number = 0
-    var cornerBottomLeft: Number = 0
-    var cornerBottomRight: Number = 0
+class CoreRectangleShapeDrawable internal constructor(context: CoreViewContext) : CoreShapeView(context) {
+
+    var cornerTopLeft = value<Number>(0)
+    var cornerTopRight = value<Number>(0)
+    var cornerBottomLeft = value<Number>(0)
+    var cornerBottomRight = value<Number>(0)
+
     fun corners(
             all: Number? = null,
             left: Number? = null,
@@ -21,18 +23,19 @@ class CoreRectangleShapeDrawable internal constructor() : CoreDrawable {
             bottomLeft: Number? = null,
             bottomRight: Number? = null
     ) {
-        all?.let { cornerTopLeft = it; cornerTopRight = it; cornerBottomLeft = it; cornerBottomRight = it }
-        left?.let { cornerTopLeft = it; cornerBottomLeft = it }
-        right?.let { cornerTopRight = it; cornerBottomRight = it }
-        top?.let { cornerTopLeft = it; cornerTopRight = it }
-        bottom?.let { cornerBottomLeft = it; cornerBottomRight = it }
-        topLeft?.let { cornerTopLeft = it }
-        topRight?.let { cornerTopRight = it }
-        bottomLeft?.let { cornerBottomLeft = it }
-        bottomRight?.let { cornerBottomRight = it }
+        all?.let { cornerTopLeft.set(it); cornerTopRight.set(it); cornerBottomLeft.set(it); cornerBottomRight.set(it) }
+        left?.let { cornerTopLeft.set(it); cornerBottomLeft.set(it) }
+        right?.let { cornerTopRight.set(it); cornerBottomRight.set(it) }
+        top?.let { cornerTopLeft.set(it); cornerTopRight.set(it) }
+        bottom?.let { cornerBottomLeft.set(it); cornerBottomRight.set(it) }
+        topLeft?.let { cornerTopLeft.set(it) }
+        topRight?.let { cornerTopRight.set(it) }
+        bottomLeft?.let { cornerBottomLeft.set(it) }
+        bottomRight?.let { cornerBottomRight.set(it) }
     }
+
 }
 
-fun rectangleDrawable(builder: CoreRectangleShapeDrawable.() -> Unit): CoreDrawable {
-    return CoreRectangleShapeDrawable().apply(builder)
+fun CoreViewBuilder.rectangleShape(builder: CoreRectangleShapeDrawable.() -> Unit): ICoreView {
+    return nextView(::CoreRectangleShapeDrawable, builder)
 }

@@ -1,7 +1,8 @@
 package net.apptronic.core.view.container.commons
 
-import net.apptronic.core.base.observable.Observable
-import net.apptronic.core.view.ViewProperty
+import net.apptronic.core.component.entity.Entity
+import net.apptronic.core.component.entity.entities.Value
+import net.apptronic.core.component.entity.entities.setAs
 import net.apptronic.core.view.base.CoreViewBuilder
 import net.apptronic.core.view.properties.LayoutOrientation
 import net.apptronic.core.view.widgets.CoreSpacerView
@@ -12,14 +13,14 @@ import net.apptronic.core.view.widgets.spacerView
  */
 interface ICoreOrientationContainerView : CoreViewBuilder {
 
-    val orientation: ViewProperty<LayoutOrientation>
+    val orientation: Value<LayoutOrientation>
 
     fun orientation(orientation: LayoutOrientation) {
         this.orientation.set(orientation)
     }
 
-    fun orientation(source: Observable<LayoutOrientation>) {
-        this.orientation.set(orientation)
+    fun orientation(source: Entity<LayoutOrientation>) {
+        this.orientation.setAs(orientation)
     }
 
     val Vertical: LayoutOrientation

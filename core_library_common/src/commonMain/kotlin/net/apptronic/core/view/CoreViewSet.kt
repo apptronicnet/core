@@ -1,40 +1,24 @@
 package net.apptronic.core.view
 
 import net.apptronic.core.view.base.CoreViewBuilder
-import net.apptronic.core.view.base.ViewConfiguration
+import net.apptronic.core.view.context.CoreViewContext
 
 /**
  * Class which can create and hold multiple views but not renders them, allowing them to be used by someone else
  */
-class CoreViewSet(override val viewConfiguration: ViewConfiguration) : CoreViewBuilder {
+class CoreViewSet(override val context: CoreViewContext) : CoreViewBuilder {
 
-    private var isRecycledState = false
+    private var views = mutableListOf<ICoreView>()
 
-    override val isRecycled: Boolean
-        get() = isRecycledState
-
-    private var views = mutableListOf<CoreView>()
-
-    override fun <T : CoreView> nextView(child: T, builder: T.() -> Unit): T {
-        if (!isRecycled) {
-            child.recycle()
-            return child
+    override fun <T : ICoreView> nextView(constructor: (CoreViewContext) -> T, builder: T.() -> Unit): T {
+        return super.nextView(constructor, builder).also {
+            views.add(it)
         }
-        child.builder()
-        views.add(child)
-        return child
     }
 
-    fun getViews(): List<CoreView> {
+
+    fun getViews(): List<ICoreView> {
         return views
-    }
-
-    override fun recycle() {
-        views.forEach {
-            it.recycle()
-        }
-        views.clear()
-        isRecycledState = true
     }
 
 }

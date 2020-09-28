@@ -1,7 +1,10 @@
 package net.apptronic.core.view.dimension
 
-import net.apptronic.core.base.observable.Observable
-import net.apptronic.core.view.ViewProperty
+import net.apptronic.core.component.entity.Entity
+import net.apptronic.core.component.entity.entities.Value
+import net.apptronic.core.component.entity.functions.map
+import net.apptronic.core.component.entity.subscribe
+import net.apptronic.core.component.entity.switchContext
 
 interface CoreDimension : CoreLayoutDimension
 
@@ -17,22 +20,22 @@ class PixelCoreDimension internal constructor(private val pixels: Float) : Abstr
 val Number.pixels: Number
     get() = PixelCoreDimension(this.toFloat())
 
-fun ViewProperty<CoreDimension>.setAsCoreDimension(value: Number) {
-    set(DiscreteCoreDimension(value.toFloat()))
-}
-
-fun ViewProperty<CoreDimension>.setAsCoreDimension(source: Observable<Number>) {
-    set(source) {
-        it.asCoreDimension()
-    }
-}
-
 val CoreDimensionZero = DiscreteCoreDimension(0f)
 
-fun Number.asCoreDimension(): CoreDimension {
+private fun Number.asCoreDimension(): CoreDimension {
     if (this is CoreDimension) {
         return this
     } else {
         return DiscreteCoreDimension(this.toFloat())
+    }
+}
+
+fun Value<in CoreDimension>.setDimension(number: Number) {
+    set(number.asCoreDimension())
+}
+
+fun Value<in CoreDimension>.setDimension(source: Entity<Number>) {
+    source.switchContext(context).map { it.asCoreDimension() }.subscribe {
+        set(it)
     }
 }
