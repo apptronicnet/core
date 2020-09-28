@@ -1,6 +1,7 @@
 package net.apptronic.core.component.plugin
 
 import net.apptronic.core.component.Component
+import net.apptronic.core.component.IComponent
 import net.apptronic.core.component.context.Context
 
 /**
@@ -17,7 +18,7 @@ abstract class Plugin {
 
     }
 
-    open fun onComponent(component: Component) {
+    open fun onComponent(component: IComponent) {
 
     }
 

@@ -1,12 +1,13 @@
 package net.apptronic.core.mvvm.viewmodel.dispatcher
 
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import kotlin.reflect.KClass
 
 /**
  * Class which managing root [ViewModel] state and provides it to [ViewContainer]
  */
-interface ViewModelDispatcher<T : ViewModel> {
+interface ViewModelDispatcher<T : IViewModel> {
 
     /**
      * Get type of view model for this dispatcher

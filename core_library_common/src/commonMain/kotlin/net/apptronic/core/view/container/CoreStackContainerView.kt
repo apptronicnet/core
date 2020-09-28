@@ -1,9 +1,8 @@
 package net.apptronic.core.view.container
 
-import net.apptronic.core.component.value
 import net.apptronic.core.view.ICoreView
 import net.apptronic.core.view.base.CoreViewBuilder
-import net.apptronic.core.view.container.commons.ICoreOrientationContainerView
+import net.apptronic.core.view.container.commons.ICoreOrientationView
 import net.apptronic.core.view.container.commons.IDividerContainerView
 import net.apptronic.core.view.container.commons.ISpacingContainerView
 import net.apptronic.core.view.context.CoreViewContext
@@ -16,17 +15,17 @@ import net.apptronic.core.view.properties.LayoutOrientation
  */
 open class CoreStackContainerView internal constructor(
         context: CoreViewContext
-) : CoreContainerView(context), ICoreOrientationContainerView, ISpacingContainerView, IDividerContainerView {
+) : CoreContainerView(context), ICoreOrientationView, ISpacingContainerView, IDividerContainerView {
 
-    override val orientation = value<LayoutOrientation>(LayoutOrientation.Horizontal)
+    override val orientation = viewProperty(LayoutOrientation.Horizontal)
 
-    override val divider = value<ICoreView?>(null)
+    override val divider = viewProperty<ICoreView?>(null)
 
-    override val spacing = value<CoreDimension>(CoreDimensionZero)
+    override val spacing = viewProperty<CoreDimension>(CoreDimensionZero)
 
-    override val dividerOnTop = value(false)
+    override val dividerOnTop = viewProperty(false)
 
-    override val dividerOnBottom = value(false)
+    override val dividerOnBottom = viewProperty(false)
 
 }
 

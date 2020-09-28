@@ -1,42 +1,67 @@
 package net.apptronic.core.view.widgets.commons
 
 import net.apptronic.core.component.entity.Entity
-import net.apptronic.core.component.entity.entities.Value
-import net.apptronic.core.component.entity.entities.setAs
 import net.apptronic.core.view.CoreContentView
 import net.apptronic.core.view.ICoreView
+import net.apptronic.core.view.ViewProperty
+import net.apptronic.core.view.binder.DynamicEntityReference
+import net.apptronic.core.view.binder.DynamicReference
 import net.apptronic.core.view.properties.CoreColor
 
 interface ICoreTextView : ICoreView, CoreContentView {
 
-    val text: Value<String>
+    val text: ViewProperty<String>
 
-    val textColor: Value<CoreColor>
+    val textColor: ViewProperty<CoreColor>
 
-    val textSize: Value<Number>
+    val textSize: ViewProperty<Number>
 
-    fun text(text: String) {
-        this.text.set(text)
+    fun text(value: String) {
+        text.set(value)
     }
 
     fun text(source: Entity<String>) {
-        this.text.setAs(source)
+        text.set(source)
     }
 
-    fun textColor(color: CoreColor) {
-        this.textColor.set(color)
+    fun text(reference: DynamicReference<String>) {
+        text.set(reference)
+    }
+
+    fun text(referenceSource: DynamicEntityReference<String, Entity<String>>) {
+        text.set(referenceSource)
+    }
+
+    fun textColor(value: CoreColor) {
+        textColor.set(value)
     }
 
     fun textColor(source: Entity<CoreColor>) {
-        this.textColor.setAs(source)
+        textColor.set(source)
     }
 
-    fun textSize(color: Number) {
-        this.textSize.set(color)
+    fun textColor(reference: DynamicReference<CoreColor>) {
+        textColor.set(reference)
+    }
+
+    fun textColor(referenceSource: DynamicEntityReference<CoreColor, Entity<CoreColor>>) {
+        textColor.set(referenceSource)
+    }
+
+    fun textSize(value: Number) {
+        textSize.set(value)
     }
 
     fun textSize(source: Entity<Number>) {
-        this.textSize.setAs(source)
+        textSize.set(source)
+    }
+
+    fun textSize(reference: DynamicReference<Number>) {
+        textSize.set(reference)
+    }
+
+    fun textSize(referenceSource: DynamicEntityReference<Number, Entity<Number>>) {
+        textSize.set(referenceSource)
     }
 
 }

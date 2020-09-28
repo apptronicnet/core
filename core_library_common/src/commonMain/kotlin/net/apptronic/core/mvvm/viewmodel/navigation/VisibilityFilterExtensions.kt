@@ -3,6 +3,7 @@ package net.apptronic.core.mvvm.viewmodel.navigation
 import net.apptronic.core.base.utils.isInstanceOf
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.functions.ofValue
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import kotlin.reflect.KClass
 
@@ -10,7 +11,7 @@ import kotlin.reflect.KClass
 /**
  * Class for combining multiple [VisibilityFilter]s for different [ViewModel] types
  */
-class VisibilityFilters<VM : ViewModel> : VisibilityFilter<VM> {
+class VisibilityFilters<VM : IViewModel> : VisibilityFilter<VM> {
 
     private val filters = mutableListOf<VisibilityFilterWrapper<VM, out VM>>()
 
@@ -33,7 +34,7 @@ class VisibilityFilters<VM : ViewModel> : VisibilityFilter<VM> {
     }
 
     @Suppress("UNCHECKED_CAST")
-    private class VisibilityFilterWrapper<VM : ViewModel, SubVM : VM>(
+    private class VisibilityFilterWrapper<VM : IViewModel, SubVM : VM>(
             private val type: KClass<SubVM>,
             private val wrapped: VisibilityFilter<SubVM>
     ) : VisibilityFilter<VM> {
@@ -66,11 +67,11 @@ interface ViewModelWithVisibility {
  * Create simple [VisibilityFilter] which tries to case [ViewModel] to [ViewModelWithVisibility] and returns
  * [ViewModelWithVisibility.isReadyToShow] or true if [ViewModel] is not is [ViewModelWithVisibility]
  */
-fun <VM : ViewModel> simpleVisibilityFilter(): VisibilityFilter<VM> {
+fun <VM : IViewModel> simpleVisibilityFilter(): VisibilityFilter<VM> {
     return SimpleVisibilityFilter()
 }
 
-private class SimpleVisibilityFilter<VM : ViewModel> : VisibilityFilter<VM> {
+private class SimpleVisibilityFilter<VM : IViewModel> : VisibilityFilter<VM> {
 
     override fun isReadyToShow(viewModel: VM): Entity<Boolean> {
         return (viewModel as? ViewModelWithVisibility)?.isReadyToShow() ?: viewModel.ofValue(true)

@@ -5,7 +5,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.base.observable.subject.ValueHolder
-import net.apptronic.core.component.Component
+import net.apptronic.core.component.IComponent
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.coroutines.lifecycleCoroutineScope
 import net.apptronic.core.component.entity.Entity
@@ -14,20 +14,20 @@ import net.apptronic.core.component.entity.functions.not
 import net.apptronic.core.component.entity.functions.or
 import net.apptronic.core.component.entity.subscribe
 
-fun <T> Component.genericLoadProperty(lazy: Boolean = false, delay: Long = 0L, loadFunction: suspend CoroutineScope.(Unit) -> T): LoadProperty<Unit, T> {
+fun <T> IComponent.genericLoadProperty(lazy: Boolean = false, delay: Long = 0L, loadFunction: suspend CoroutineScope.(Unit) -> T): LoadProperty<Unit, T> {
     return LoadProperty<Unit, T>(context, delay, loadFunction).also { property ->
         property.setLazy(lazy)
         property.reload(Unit)
     }
 }
 
-fun <R, T> Component.loadProperty(lazy: Boolean = false, delay: Long = 0L, loadFunction: suspend CoroutineScope.(R) -> T): LoadProperty<R, T> {
+fun <R, T> IComponent.loadProperty(lazy: Boolean = false, delay: Long = 0L, loadFunction: suspend CoroutineScope.(R) -> T): LoadProperty<R, T> {
     return LoadProperty<R, T>(context, delay, loadFunction).also { property ->
         property.setLazy(lazy)
     }
 }
 
-fun <R, T> Component.loadProperty(requestSource: Entity<R>, lazy: Boolean = false, delay: Long = 0L, loadFunction: suspend CoroutineScope.(R) -> T): LoadProperty<R, T> {
+fun <R, T> IComponent.loadProperty(requestSource: Entity<R>, lazy: Boolean = false, delay: Long = 0L, loadFunction: suspend CoroutineScope.(R) -> T): LoadProperty<R, T> {
     return LoadProperty<R, T>(context, delay, loadFunction).also { property ->
         property.setLazy(lazy)
         requestSource.subscribe {

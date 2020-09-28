@@ -6,6 +6,7 @@ import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.component.value
 import net.apptronic.core.mvvm.TestViewModel
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 import org.junit.Test
@@ -118,7 +119,7 @@ class DynamicListNavigatorTest : TestViewModel() {
         assert(attachedViewModels.size == status.attachedViewModels.size)
         attachedViewModels.forEach { keyOrValue ->
             when (keyOrValue) {
-                is ViewModel -> assert(status.attachedViewModels.contains(keyOrValue))
+                is IViewModel -> assert(status.attachedViewModels.contains(keyOrValue))
                 is String -> assert(status.attachedViewModels.any {
                     it is StaticItemViewModel && it.item == static(keyOrValue)
                 })

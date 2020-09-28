@@ -6,6 +6,7 @@ import net.apptronic.core.component.entity.behavior.onSubscribe
 import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.component.typedEvent
 import net.apptronic.core.component.value
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 
@@ -34,7 +35,7 @@ fun TextInputViewModel.withOnUpdate(callback: (String) -> Unit): TextInputViewMo
     return this
 }
 
-fun ViewModel.textInput(defaultValue: String = ""): TextInputViewModel {
+fun IViewModel.textInput(defaultValue: String = ""): TextInputViewModel {
     return TextInputViewModel(this).apply {
         setText(defaultValue)
     }
@@ -44,7 +45,7 @@ class TextInputViewModel : ViewModel {
 
     constructor(context: ViewModelContext) : super(context)
 
-    constructor(parent: ViewModel) : super(parent)
+    constructor(parent: IViewModel) : super(parent)
 
     internal val text = value<String>("")
     internal val textUpdates = typedEvent<String>()

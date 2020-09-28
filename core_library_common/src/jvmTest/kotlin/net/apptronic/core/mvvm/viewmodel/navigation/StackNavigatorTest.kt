@@ -2,6 +2,7 @@ package net.apptronic.core.mvvm.viewmodel.navigation
 
 import net.apptronic.core.component.context.viewModelContext
 import net.apptronic.core.component.terminate
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 import net.apptronic.core.testutils.testContext
@@ -17,7 +18,7 @@ class StackNavigatorTest {
 
     }
 
-    private fun createViewModel(): ViewModel {
+    private fun createViewModel(): IViewModel {
         return ViewModel(root.viewModelContext())
     }
 
@@ -25,7 +26,7 @@ class StackNavigatorTest {
     private val lifecycleController = ViewModelLifecycleController(root)
     private val adapter = TestStackAdapter()
 
-    private fun assertNavigatorStackState(vararg items: ViewModel) {
+    private fun assertNavigatorStackState(vararg items: IViewModel) {
         assert(root.navigator.getSize() == items.size)
         items.forEachIndexed { index, viewModel ->
             assert(root.navigator.getItemAt(index) == viewModel)

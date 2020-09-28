@@ -6,6 +6,7 @@ import net.apptronic.core.component.context.viewModelContext
 import net.apptronic.core.component.lifecycle.enterStage
 import net.apptronic.core.component.value
 import net.apptronic.core.mvvm.TestViewModel
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 import net.apptronic.core.mvvm.viewmodel.ViewModelLifecycle
@@ -57,9 +58,9 @@ class DynamicListNavigatorContextTest : TestViewModel() {
         rootModel.bind()
         val childModelContext = rootModel.viewModelContext()
         val childModel = ChildModel(childModelContext,
-                object : ViewModelBuilder<Int, Int, ViewModel> {
+                object : ViewModelBuilder<Int, Int, IViewModel> {
                     override fun getId(item: Int): Int = item
-                    override fun onCreateViewModel(parent: Context, item: Int): ViewModel {
+                    override fun onCreateViewModel(parent: Context, item: Int): IViewModel {
                         return ViewModel(rootModel.context.viewModelContext())
                     }
                 }.asFactory()
@@ -76,9 +77,9 @@ class DynamicListNavigatorContextTest : TestViewModel() {
         rootModel.bind()
         val childModelContext = rootModel.viewModelContext()
         val childModel = ChildModelNavigatorContext(childModelContext,
-                object : ViewModelBuilder<Int, Int, ViewModel> {
+                object : ViewModelBuilder<Int, Int, IViewModel> {
                     override fun getId(item: Int): Int = item
-                    override fun onCreateViewModel(parent: Context, item: Int): ViewModel {
+                    override fun onCreateViewModel(parent: Context, item: Int): IViewModel {
                         return ViewModel(rootModel.context.viewModelContext())
                     }
                 }.asFactory()
@@ -95,9 +96,9 @@ class DynamicListNavigatorContextTest : TestViewModel() {
         rootModel.bind()
         val childModelContext = rootModel.viewModelContext()
         val childModel = ChildModelNavigatorContext(childModelContext,
-                object : ViewModelBuilder<Int, Int, ViewModel> {
+                object : ViewModelBuilder<Int, Int, IViewModel> {
                     override fun getId(item: Int): Int = item
-                    override fun onCreateViewModel(parent: Context, item: Int): ViewModel {
+                    override fun onCreateViewModel(parent: Context, item: Int): IViewModel {
                         return ViewModel(childModelContext.viewModelContext())
                     }
                 }.asFactory()

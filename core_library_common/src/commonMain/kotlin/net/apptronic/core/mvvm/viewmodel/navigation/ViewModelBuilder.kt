@@ -1,6 +1,7 @@
 package net.apptronic.core.mvvm.viewmodel.navigation
 
 import net.apptronic.core.component.context.Context
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 
 /**
@@ -10,7 +11,7 @@ import net.apptronic.core.mvvm.viewmodel.ViewModel
  * for item in updated list already exists - it will not create new [ViewModel] but update
  * existing [ViewModel] and place it in updates list at required place.
  */
-interface ViewModelBuilder<T, Id, VM : ViewModel> {
+interface ViewModelBuilder<T, Id, VM : IViewModel> {
 
     /**
      * Get id for item. By this id [ViewModelBuilder] defines is item is same or not.

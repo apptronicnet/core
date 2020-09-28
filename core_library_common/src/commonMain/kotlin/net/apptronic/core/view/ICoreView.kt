@@ -1,8 +1,6 @@
 package net.apptronic.core.view
 
 import net.apptronic.core.component.entity.Entity
-import net.apptronic.core.component.entity.entities.Value
-import net.apptronic.core.component.entity.entities.setAs
 import net.apptronic.core.component.entity.functions.map
 import net.apptronic.core.component.entity.switchContext
 import net.apptronic.core.view.base.CoreViewBase
@@ -10,7 +8,6 @@ import net.apptronic.core.view.base.CoreViewBuilder
 import net.apptronic.core.view.container.ICoreContainerView
 import net.apptronic.core.view.dimension.CoreDimension
 import net.apptronic.core.view.dimension.CoreLayoutDimension
-import net.apptronic.core.view.dimension.setDimension
 import net.apptronic.core.view.properties.HorizontalAlignment
 import net.apptronic.core.view.properties.PropertyAccess
 import net.apptronic.core.view.properties.VerticalAlignment
@@ -21,30 +18,33 @@ import net.apptronic.core.view.properties.Visibility
  *
  * Used by target platforms to generate native views and layouts and update according to it's properties.
  */
-interface ICoreView : CoreViewBase, PropertyAccess {
+interface ICoreView : CoreViewBase, PropertyAccess, ViewPropertyOwner {
 
+    /**
+     * [CoreViewBuilder] instance which allows to manually manipulate with creates views and not adds them anywhere.
+     */
     val detachedViewBuilder: CoreViewBuilder
 
-    val layoutAlignmentHorizontal: Value<HorizontalAlignment>
-    val layoutAlignmentVertical: Value<VerticalAlignment>
+    val layoutAlignmentHorizontal: ViewProperty<HorizontalAlignment>
+    val layoutAlignmentVertical: ViewProperty<VerticalAlignment>
 
-    val width: Value<CoreLayoutDimension>
-    val height: Value<CoreLayoutDimension>
+    val width: ViewProperty<CoreLayoutDimension>
+    val height: ViewProperty<CoreLayoutDimension>
 
-    val paddingTop: Value<CoreDimension>
-    val paddingBottom: Value<CoreDimension>
-    val paddingStart: Value<CoreDimension>
-    val paddingEnd: Value<CoreDimension>
-    val indentTop: Value<CoreDimension>
-    val indentBottom: Value<CoreDimension>
-    val indentStart: Value<CoreDimension>
-    val indentEnd: Value<CoreDimension>
+    val paddingTop: ViewProperty<CoreDimension>
+    val paddingBottom: ViewProperty<CoreDimension>
+    val paddingStart: ViewProperty<CoreDimension>
+    val paddingEnd: ViewProperty<CoreDimension>
+    val indentTop: ViewProperty<CoreDimension>
+    val indentBottom: ViewProperty<CoreDimension>
+    val indentStart: ViewProperty<CoreDimension>
+    val indentEnd: ViewProperty<CoreDimension>
 
-    val shadow: Value<CoreDimension>
-    val visibility: Value<Visibility>
+    val shadow: ViewProperty<CoreDimension>
+    val visibility: ViewProperty<Visibility>
 
-    val background: Value<ICoreView?>
-    val foreground: Value<ICoreView?>
+    val background: ViewProperty<ICoreView?>
+    val foreground: ViewProperty<ICoreView?>
 
     /**
      * Apply all [style]s to this [ICoreView]
@@ -111,15 +111,15 @@ interface ICoreView : CoreViewBase, PropertyAccess {
     }
 
     fun visibility(source: Entity<Visibility>) {
-        visibility.setAs(source)
+        visibility.set(source)
     }
 
     fun visibleInvisible(source: Entity<Boolean>) {
-        visibility.setAs(source.switchContext(context).map { if (it) Visible else Invisible })
+        visibility.set(source.switchContext(context).map { if (it) Visible else Invisible })
     }
 
     fun visibleGone(source: Entity<Boolean>) {
-        visibility.setAs(source.switchContext(context).map { if (it) Visible else Gone })
+        visibility.set(source.switchContext(context).map { if (it) Visible else Gone })
     }
 
     fun indent(

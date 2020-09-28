@@ -1,6 +1,7 @@
 package net.apptronic.core.mvvm.viewmodel.navigation
 
 import net.apptronic.core.component.context.Context
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 
 class IncorrectContextHierarchyException(msg: String) : IllegalArgumentException(msg)
@@ -12,12 +13,12 @@ interface INavigator {
 
     val navigatorContext: Context
 
-    fun <T : ViewModel> childViewModel(builder: Context.() -> T): T {
+    fun <T : IViewModel> childViewModel(builder: Context.() -> T): T {
         return navigatorContext.builder()
     }
 
-    fun ViewModel.verifyContext() {
-        val viewModel: ViewModel = this
+    fun IViewModel.verifyContext() {
+        val viewModel: IViewModel = this
         if (context.parent != navigatorContext) {
             throw IncorrectContextHierarchyException("$viewModel context should be direct child of navigatorContext")
         }

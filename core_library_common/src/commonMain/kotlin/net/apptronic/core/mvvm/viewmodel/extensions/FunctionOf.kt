@@ -1,13 +1,13 @@
 package net.apptronic.core.mvvm.viewmodel.extensions
 
-import net.apptronic.core.component.Component
+import net.apptronic.core.component.context.Contextual
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.entities.Property
 import net.apptronic.core.component.entity.functions.entityArrayFunction
 import net.apptronic.core.component.entity.functions.entityFunction
 import net.apptronic.core.component.property
 
-fun <T, A> Component.functionOf(
+fun <T, A> Contextual.functionOf(
         a: Entity<A>,
         functionOf: (A) -> T
 ): Property<T> {
@@ -16,7 +16,7 @@ fun <T, A> Component.functionOf(
     )
 }
 
-fun <T, A, B> Component.functionOf(
+fun <T, A, B> Contextual.functionOf(
         a: Entity<A>,
         b: Entity<B>,
         functionOf: (A, B) -> T
@@ -26,7 +26,7 @@ fun <T, A, B> Component.functionOf(
     )
 }
 
-fun <T, A, B, C> Component.functionOf(
+fun <T, A, B, C> Contextual.functionOf(
         a: Entity<A>,
         b: Entity<B>,
         c: Entity<C>,
@@ -37,7 +37,7 @@ fun <T, A, B, C> Component.functionOf(
     )
 }
 
-fun <T, A, B, C, D> Component.functionOf(
+fun <T, A, B, C, D> Contextual.functionOf(
         a: Entity<A>,
         b: Entity<B>,
         c: Entity<C>,
@@ -49,7 +49,7 @@ fun <T, A, B, C, D> Component.functionOf(
     )
 }
 
-fun <T, A, B, C, D, E> Component.functionOf(
+fun <T, A, B, C, D, E> Contextual.functionOf(
         a: Entity<A>,
         b: Entity<B>,
         c: Entity<C>,
@@ -62,7 +62,7 @@ fun <T, A, B, C, D, E> Component.functionOf(
     )
 }
 
-fun <T> Component.functionOf(
+fun <T> Contextual.functionOf(
         array: Array<Entity<*>>,
         functionOf: (Array<Any?>) -> T
 ): Property<T> {

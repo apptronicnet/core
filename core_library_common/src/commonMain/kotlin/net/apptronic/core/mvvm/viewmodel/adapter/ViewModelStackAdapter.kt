@@ -1,6 +1,6 @@
 package net.apptronic.core.mvvm.viewmodel.adapter
 
-import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.navigation.TransitionInfo
 
 /**
@@ -16,6 +16,6 @@ abstract class ViewModelStackAdapter {
      * @param transitionInfo additional info to apply model change. It may contain info about
      * required animation etc.
      */
-    abstract fun onInvalidate(newModel: ViewModel?, transitionInfo: TransitionInfo)
+    abstract fun onInvalidate(newModel: IViewModel?, transitionInfo: TransitionInfo)
 
 }

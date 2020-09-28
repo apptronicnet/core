@@ -1,6 +1,5 @@
 package net.apptronic.core.view
 
-import net.apptronic.core.component.value
 import net.apptronic.core.view.base.CoreViewBuilder
 import net.apptronic.core.view.context.CoreViewContext
 import net.apptronic.core.view.dimension.CoreDimension
@@ -12,31 +11,35 @@ import net.apptronic.core.view.properties.HorizontalAlignment
 import net.apptronic.core.view.properties.VerticalAlignment
 import net.apptronic.core.view.properties.Visibility
 
-private class CoreDetachedViewBuilder(override val context: CoreViewContext) : CoreViewBuilder
-
 abstract class CoreView(final override val context: CoreViewContext) : ICoreView {
+
+    final override fun <T> viewProperty(initialValue: T): ViewProperty<T> {
+        return super.viewProperty(initialValue)
+    }
+
+    private class CoreDetachedViewBuilder(override val context: CoreViewContext) : CoreViewBuilder
 
     final override val detachedViewBuilder: CoreViewBuilder = CoreDetachedViewBuilder(context)
 
-    override val layoutAlignmentHorizontal = value<HorizontalAlignment>(DefaultAlignment)
-    override val layoutAlignmentVertical = value<VerticalAlignment>(DefaultAlignment)
+    override val layoutAlignmentHorizontal = viewProperty<HorizontalAlignment>(DefaultAlignment)
+    override val layoutAlignmentVertical = viewProperty<VerticalAlignment>(DefaultAlignment)
 
-    override val width = value<CoreLayoutDimension>(FitToContentDimension)
-    override val height = value<CoreLayoutDimension>(FitToContentDimension)
+    override val width = viewProperty<CoreLayoutDimension>(FitToContentDimension)
+    override val height = viewProperty<CoreLayoutDimension>(FitToContentDimension)
 
-    override val background = value<ICoreView?>(null)
-    override val foreground = value<ICoreView?>(null)
+    override val background = viewProperty<ICoreView?>(null)
+    override val foreground = viewProperty<ICoreView?>(null)
 
-    override val paddingTop = value<CoreDimension>(CoreDimensionZero)
-    override val paddingBottom = value<CoreDimension>(CoreDimensionZero)
-    override val paddingStart = value<CoreDimension>(CoreDimensionZero)
-    override val paddingEnd = value<CoreDimension>(CoreDimensionZero)
-    override val indentTop = value<CoreDimension>(CoreDimensionZero)
-    override val indentBottom = value<CoreDimension>(CoreDimensionZero)
-    override val indentStart = value<CoreDimension>(CoreDimensionZero)
-    override val indentEnd = value<CoreDimension>(CoreDimensionZero)
-    override val shadow = value<CoreDimension>(CoreDimensionZero)
-    override val visibility = value(Visibility.Visible)
+    override val paddingTop = viewProperty<CoreDimension>(CoreDimensionZero)
+    override val paddingBottom = viewProperty<CoreDimension>(CoreDimensionZero)
+    override val paddingStart = viewProperty<CoreDimension>(CoreDimensionZero)
+    override val paddingEnd = viewProperty<CoreDimension>(CoreDimensionZero)
+    override val indentTop = viewProperty<CoreDimension>(CoreDimensionZero)
+    override val indentBottom = viewProperty<CoreDimension>(CoreDimensionZero)
+    override val indentStart = viewProperty<CoreDimension>(CoreDimensionZero)
+    override val indentEnd = viewProperty<CoreDimension>(CoreDimensionZero)
+    override val shadow = viewProperty<CoreDimension>(CoreDimensionZero)
+    override val visibility = viewProperty(Visibility.Visible)
 
     final override fun style(vararg style: CoreViewStyle) {
         style.forEach {

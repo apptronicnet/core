@@ -1,14 +1,12 @@
 package net.apptronic.core.view.binder
 
 import net.apptronic.core.component.context.viewModelContext
-import net.apptronic.core.component.entity.entities.setAs
 import net.apptronic.core.component.entity.functions.map
 import net.apptronic.core.component.genericEvent
 import net.apptronic.core.component.value
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 import net.apptronic.core.testutils.testContext
-import net.apptronic.core.view.ICoreView
 import net.apptronic.core.view.base.ViewConfiguration
 import net.apptronic.core.view.container.stackContainer
 import net.apptronic.core.view.context.CoreViewContext
@@ -41,20 +39,16 @@ private class SomeViewModel(context: ViewModelContext, val staticText: String) :
 
 private class SampleDynamicBinderView(context: CoreViewContext) : CoreDynamicBinderView<SomeViewModel>(context) {
 
-    val upperCased = value<String>().withViewModel { setAs(it.text.map { it.toUpperCase() }) }
-
     lateinit var textView: ICoreTextView
     lateinit var upperCasedTextView: ICoreTextView
     lateinit var staticTextView: ICoreTextView
     lateinit var methodButton: ICoreButtonView
     lateinit var eventButton: ICoreButtonView
 
-    override fun view(): ICoreView = stackContainer {
+    override val view = stackContainer {
         orientation(Vertical)
         textView = textView {
-            withViewModel {
-                text(it.text)
-            }
+            text(entity(SomeViewModel::text))
         }
         upperCasedTextView = textView {
             withViewModel { viewModel ->
@@ -63,14 +57,10 @@ private class SampleDynamicBinderView(context: CoreViewContext) : CoreDynamicBin
             }
         }
         staticTextView = textView {
-            withViewModel {
-                text(it.staticText)
-            }
+            text(member(SomeViewModel::staticText))
         }
         methodButton = buttonTextView {
-            withViewModel {
-                onClick(it::onClick)
-            }
+            onClick(member { ::onClick })
         }
         eventButton = buttonTextView {
             withViewModel {
@@ -92,7 +82,6 @@ class SimpleReusableViewBinderTest {
 
         val model1 = SomeViewModel(context.viewModelContext(), "st1")
 
-        binder.view()
         binder.nextViewModel(model1)
 
         model1.text.set("hello")

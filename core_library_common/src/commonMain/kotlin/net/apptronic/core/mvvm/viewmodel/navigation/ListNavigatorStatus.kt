@@ -2,6 +2,7 @@ package net.apptronic.core.mvvm.viewmodel.navigation
 
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.functions.map
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 
 /**
@@ -11,11 +12,11 @@ class ListNavigatorStatus internal constructor(
         /**
          * All [ViewModel]s which now in [ListNavigator]
          */
-        val all: List<ViewModel>,
+        val all: List<IViewModel>,
         /**
          * Visible [ViewModel]s which now in [ListNavigator] and ready to be bound to view
          */
-        val visible: List<ViewModel>
+        val visible: List<IViewModel>
 ) {
 
     /**
@@ -37,11 +38,11 @@ class ListNavigatorStatus internal constructor(
 
 }
 
-fun Entity<ListNavigatorStatus>.all(): Entity<List<ViewModel>> {
+fun Entity<ListNavigatorStatus>.all(): Entity<List<IViewModel>> {
     return map { it.all }
 }
 
-fun Entity<ListNavigatorStatus>.visible(): Entity<List<ViewModel>> {
+fun Entity<ListNavigatorStatus>.visible(): Entity<List<IViewModel>> {
     return map { it.visible }
 }
 

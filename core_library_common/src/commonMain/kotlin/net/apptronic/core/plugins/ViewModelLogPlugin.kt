@@ -1,10 +1,11 @@
 package net.apptronic.core.plugins
 
-import net.apptronic.core.component.Component
+import net.apptronic.core.component.IComponent
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.lifecycle.LifecycleStageDefinition
 import net.apptronic.core.component.plugin.Plugin
 import net.apptronic.core.component.plugin.pluginDescriptor
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelLifecycle
 
@@ -21,9 +22,9 @@ private class ViewModelLogPlugin internal constructor(
         private val logMessage: (String) -> Unit
 ) : Plugin() {
 
-    override fun onComponent(component: Component) {
+    override fun onComponent(component: IComponent) {
         super.onComponent(component)
-        if (component is ViewModel) {
+        if (component is IViewModel) {
             component.context.lifecycle.rootStage.doOnce {
                 logMessage("ViewModelLifecycle: $component initialized")
             }
@@ -37,7 +38,7 @@ private class ViewModelLogPlugin internal constructor(
         }
     }
 
-    private fun stateOfStage(component: Component, definition: LifecycleStageDefinition) {
+    private fun stateOfStage(component: IComponent, definition: LifecycleStageDefinition) {
         component.onEnterStage(definition) {
             logMessage("ViewModelLifecycle: $component entered stage${definition.name}")
         }

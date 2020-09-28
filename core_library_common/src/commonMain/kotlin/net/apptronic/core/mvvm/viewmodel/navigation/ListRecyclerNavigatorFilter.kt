@@ -1,5 +1,6 @@
 package net.apptronic.core.mvvm.viewmodel.navigation
 
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 
 /**
@@ -13,7 +14,7 @@ class ListItem(
         /**
          * Currently assigned [ViewModel] if exists at this moment.
          */
-        val viewModel: ViewModel?,
+        val viewModel: IViewModel?,
         /**
          * Defines value returned by [VisibilityFilter] for [ViewModel]. Works only for static items. For dynamic items
          * always returns true.

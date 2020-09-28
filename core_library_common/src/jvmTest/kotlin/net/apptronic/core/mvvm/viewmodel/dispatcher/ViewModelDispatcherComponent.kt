@@ -4,16 +4,16 @@ import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.extensions.BaseComponent
 import net.apptronic.core.component.genericEvent
 import net.apptronic.core.component.typedEvent
-import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.navigation.ViewModelLifecycleController
 import net.apptronic.core.testutils.testContext
 import kotlin.reflect.KClass
 
-inline fun <reified T : ViewModel> viewModelDispathcerComponent(noinline builder: (Context) -> T): ViewModelDispathcerComponent<T> {
-    return ViewModelDispathcerComponent(T::class, builder)
+inline fun <reified T : IViewModel> viewModelDispathcerComponent(noinline builder: (Context) -> T): ViewModelDispatcherComponent<T> {
+    return ViewModelDispatcherComponent(T::class, builder)
 }
 
-class ViewModelDispathcerComponent<T : ViewModel>(
+class ViewModelDispatcherComponent<T : IViewModel>(
         private val viewModelClass: KClass<T>,
         private val builder: (Context) -> T
 ) : BaseComponent(testContext()) {
@@ -25,7 +25,6 @@ class ViewModelDispathcerComponent<T : ViewModel>(
     fun attachUi() {
         container = TestViewContainer()
         dispatcher.registerContainer(container!!)
-        setAttached(true)
     }
 
     fun detachUi() {
@@ -52,10 +51,6 @@ class ViewModelDispathcerComponent<T : ViewModel>(
     val closeSelfEvent = genericEvent()
 
     private var lifecycleController: ViewModelLifecycleController? = null
-
-    fun setAttached(isAttached: Boolean) {
-        lifecycleController!!.setAttached(isAttached)
-    }
 
     fun setBound(isBound: Boolean) {
         lifecycleController!!.setBound(isBound)

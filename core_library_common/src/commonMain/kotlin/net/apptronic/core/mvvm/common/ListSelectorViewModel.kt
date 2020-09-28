@@ -6,14 +6,15 @@ import net.apptronic.core.component.entity.entities.asEvent
 import net.apptronic.core.component.mutableValue
 import net.apptronic.core.component.typedEvent
 import net.apptronic.core.component.value
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 
-fun <T, Id> ViewModel.listSelector(getId: (T) -> Id): ListSelectorViewModel<T, Id> {
+fun <T, Id> IViewModel.listSelector(getId: (T) -> Id): ListSelectorViewModel<T, Id> {
     return ListSelectorViewModel(this, getId)
 }
 
-fun <T> ViewModel.listSelector(): ListSelectorViewModel<T, T> {
+fun <T> IViewModel.listSelector(): ListSelectorViewModel<T, T> {
     return ListSelectorViewModel(this) { it }
 }
 
@@ -25,7 +26,7 @@ open class ListSelectorViewModel<T, Id> : ViewModel {
         this.getId = getId
     }
 
-    constructor(parent: ViewModel, getId: (T) -> Id) : super(parent) {
+    constructor(parent: IViewModel, getId: (T) -> Id) : super(parent) {
         this.getId = getId
     }
 

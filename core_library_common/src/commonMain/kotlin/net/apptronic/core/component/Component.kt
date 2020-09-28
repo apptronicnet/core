@@ -1,6 +1,5 @@
 package net.apptronic.core.component
 
-import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.context.Contextual
 import net.apptronic.core.component.lifecycle.Lifecycle
 import net.apptronic.core.component.lifecycle.LifecycleStage
@@ -8,19 +7,15 @@ import net.apptronic.core.component.lifecycle.LifecycleStageDefinition
 import net.apptronic.core.component.plugin.Extendable
 import net.apptronic.core.component.plugin.Extensions
 
-fun Component.applyPlugins() {
+fun IComponent.applyPlugins() {
     context.plugins.plugins.forEach {
         it.onComponent(this)
     }
 }
 
-abstract class Component : Extendable, Contextual {
+interface IComponent : Extendable, Contextual {
 
-    override val extensions: Extensions = Extensions()
-
-    abstract override val context: Context
-
-    val componentId: Long = ComponentRegistry.nextId()
+    val componentId: Long
 
     fun onceStage(definition: LifecycleStageDefinition, key: String, action: () -> Unit) {
         context.lifecycle[definition]?.doOnce(key, action)
@@ -38,8 +33,17 @@ abstract class Component : Extendable, Contextual {
         onExitStage(Lifecycle.ROOT_STAGE, callback)
     }
 
+
 }
 
-fun Component.terminate() {
+abstract class Component : IComponent {
+
+    final override val extensions: Extensions = Extensions()
+
+    final override val componentId: Long = ComponentRegistry.nextId()
+
+}
+
+fun IComponent.terminate() {
     context.lifecycle.terminate()
 }

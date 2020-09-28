@@ -3,6 +3,7 @@ package net.apptronic.core.mvvm.viewmodel.navigation
 import net.apptronic.core.component.context.viewModelContext
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.value
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 import net.apptronic.core.testutils.testContext
@@ -60,7 +61,7 @@ class StackNavigatorFilterTest {
         assert(page1.isTerminated())
     }
 
-    private fun assertNavigatorStackState(vararg items: ViewModel) {
+    private fun assertNavigatorStackState(vararg items: IViewModel) {
         assert(root.navigator.getSize() == items.size)
         items.forEachIndexed { index, viewModel ->
             assert(root.navigator.getItemAt(index) == viewModel)

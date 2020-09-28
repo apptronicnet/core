@@ -6,6 +6,7 @@ import net.apptronic.core.component.lifecycle.enterStage
 import net.apptronic.core.component.lifecycle.exitStage
 import net.apptronic.core.component.terminate
 import net.apptronic.core.component.value
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelLifecycle
 import net.apptronic.core.testutils.testContext
@@ -19,13 +20,13 @@ class ListNavigatorTest {
 
     private val context = testContext { }
     private val rootViewModel = ViewModel(context.viewModelContext())
-    private val items = rootViewModel.value<List<ViewModel>>(emptyList())
+    private val items = rootViewModel.value<List<IViewModel>>(emptyList())
     private val navigator = rootViewModel.listNavigator(items)
 
     fun childModel() = ViewModel(rootViewModel.viewModelContext())
 
     private val adapter = TestListAdapter(navigator)
-    private var listItems: List<ViewModel> = emptyList()
+    private var listItems: List<IViewModel> = emptyList()
     private lateinit var status: ListNavigatorStatus
 
     fun addVerification() {
@@ -42,7 +43,7 @@ class ListNavigatorTest {
         verifyState(items.get())
     }
 
-    private fun verifyState(itemsList: List<ViewModel>) {
+    private fun verifyState(itemsList: List<IViewModel>) {
         assertEquals(itemsList.size, navigator.getStatus().all.size)
         assertEquals(itemsList.size, status.all.size)
         assertEquals(itemsList.size, adapter.items.size)
@@ -85,7 +86,7 @@ class ListNavigatorTest {
         verifyState(emptyList())
     }
 
-    private fun ViewModel.isDefaultStage() = context.lifecycle.getActiveStage() == context.lifecycle.rootStage
+    private fun IViewModel.isDefaultStage() = context.lifecycle.getActiveStage() == context.lifecycle.rootStage
 
     @Test
     fun shouldBeInDefaultStageWithParent() {
@@ -93,7 +94,7 @@ class ListNavigatorTest {
         assertTrue(child1.isDefaultStage())
 
         items.set(listOf(child1))
-        assertTrue(child1.isDefaultStage())
+        assertTrue(child1.isAttached())
 
         items.set(listOf())
         assertTrue(child1.isTerminated())

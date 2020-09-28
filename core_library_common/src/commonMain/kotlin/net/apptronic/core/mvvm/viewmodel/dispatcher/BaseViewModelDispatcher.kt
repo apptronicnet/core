@@ -3,6 +3,7 @@ package net.apptronic.core.mvvm.viewmodel.dispatcher
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.context.terminate
 import net.apptronic.core.component.extensions.BaseComponent
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelParent
 import kotlin.reflect.KClass
@@ -11,7 +12,7 @@ import kotlin.reflect.KClass
  * Component which handles root [ViewModel] for app UI. This [ViewModel] will be used as root for system UI container
  * can can be attached only to one container at same time. In case if app UI wants to destoroy
  */
-abstract class BaseViewModelDispatcher<T : ViewModel>(
+abstract class BaseViewModelDispatcher<T : IViewModel>(
         context: Context,
         private val type: KClass<T>
 ) : BaseComponent(context), ViewModelDispatcher<T>, ViewModelParent {
@@ -61,7 +62,7 @@ abstract class BaseViewModelDispatcher<T : ViewModel>(
         viewModel = null
     }
 
-    override fun requestCloseSelf(viewModel: ViewModel, transitionInfo: Any?) {
+    override fun requestCloseSelf(viewModel: IViewModel, transitionInfo: Any?) {
         viewContainer?.onViewModelRequestedCloseSelf()
     }
 

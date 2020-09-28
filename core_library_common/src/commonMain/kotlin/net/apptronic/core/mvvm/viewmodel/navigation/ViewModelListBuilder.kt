@@ -8,9 +8,10 @@ import net.apptronic.core.component.entity.onchange.Next
 import net.apptronic.core.component.entity.onchange.OnChangeProperty
 import net.apptronic.core.component.entity.onchange.OnChangeValue
 import net.apptronic.core.component.entity.onchange.onChangeValue
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 
-fun <T, Id, VM : ViewModel> Contextual.viewModelListBuilder(builder: ViewModelBuilder<T, Id, VM>): ViewModelListBuilder<T, Id, VM> {
+fun <T, Id, VM : IViewModel> Contextual.viewModelListBuilder(builder: ViewModelBuilder<T, Id, VM>): ViewModelListBuilder<T, Id, VM> {
     return ViewModelListBuilder(context, builder)
 }
 
@@ -21,11 +22,11 @@ fun <T, Id, VM : ViewModel> Contextual.viewModelListBuilder(builder: ViewModelBu
  * for item in updated list already exists - it will not create new [ViewModel] but update
  * existing [ViewModel] and place it in updates list at required place.
  */
-class ViewModelListBuilder<T, Id, VM : ViewModel> internal constructor(
+class ViewModelListBuilder<T, Id, VM : IViewModel> internal constructor(
         private val builderContext: Context,
         private val builder: ViewModelBuilder<T, Id, VM>,
-        private val onChangeValue: OnChangeValue<List<ViewModel>, Any> = builderContext.onChangeValue()
-) : ViewModelBuilder<T, Id, VM> by builder, OnChangeProperty<List<ViewModel>, Any> by onChangeValue {
+        private val onChangeValue: OnChangeValue<List<IViewModel>, Any> = builderContext.onChangeValue()
+) : ViewModelBuilder<T, Id, VM> by builder, OnChangeProperty<List<IViewModel>, Any> by onChangeValue {
 
     private inner class ViewModelHolder(
             val id: Id,
@@ -34,7 +35,7 @@ class ViewModelListBuilder<T, Id, VM : ViewModel> internal constructor(
 
     private val viewModelHolders = arrayListOf<ViewModelHolder>()
 
-    private val viewModels = builderContext.onChangeValue<List<ViewModel>, Any>()
+    private val viewModels = builderContext.onChangeValue<List<IViewModel>, Any>()
 
     /**
      * Update list of [ViewModel]s automatically from given [Entity]

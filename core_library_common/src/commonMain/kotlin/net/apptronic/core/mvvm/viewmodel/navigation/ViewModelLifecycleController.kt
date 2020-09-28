@@ -3,11 +3,11 @@ package net.apptronic.core.mvvm.viewmodel.navigation
 import net.apptronic.core.component.lifecycle.LifecycleStageDefinition
 import net.apptronic.core.component.lifecycle.enterStage
 import net.apptronic.core.component.lifecycle.exitStage
-import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelLifecycle
 
 class ViewModelLifecycleController(
-        private val viewModel: ViewModel
+        private val viewModel: IViewModel
 ) {
 
     private fun setStage(value: Boolean, definition: LifecycleStageDefinition) {

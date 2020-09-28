@@ -4,15 +4,16 @@ import net.apptronic.core.base.observable.subject.BehaviorSubject
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.subscribe
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelStackAdapter
 
-fun ViewModel.stackNavigator(navigatorContext: Context = this.context): StackNavigator {
+fun IViewModel.stackNavigator(navigatorContext: Context = this.context): StackNavigator {
     context.verifyNavigatorContext(navigatorContext)
     return StackNavigator(this, navigatorContext)
 }
 
-fun ViewModel.stackNavigator(source: Entity<ViewModel>, navigatorContext: Context = this.context): StackNavigator {
+fun IViewModel.stackNavigator(source: Entity<IViewModel>, navigatorContext: Context = this.context): StackNavigator {
     context.verifyNavigatorContext(navigatorContext)
     return StackNavigator(this, navigatorContext).apply {
         source.subscribe(navigatorContext) {
@@ -22,7 +23,7 @@ fun ViewModel.stackNavigator(source: Entity<ViewModel>, navigatorContext: Contex
 }
 
 class StackNavigator internal constructor(
-        parent: ViewModel,
+        parent: IViewModel,
         override val navigatorContext: Context
 ) : Navigator<StackNavigatorStatus>(
         parent
@@ -41,7 +42,7 @@ class StackNavigator internal constructor(
     private val stack = mutableListOf<ViewModelContainer>()
     private val removingItems = mutableListOf<ViewModelContainer>()
     private var currentAdapter: CurrentAdapter? = null
-    private val visibilityFilters: VisibilityFilters<ViewModel> = VisibilityFilters<ViewModel>()
+    private val visibilityFilters: VisibilityFilters<IViewModel> = VisibilityFilters<IViewModel>()
 
     private fun updateSubject() {
         val next = StackNavigatorStatus(
@@ -82,7 +83,7 @@ class StackNavigator internal constructor(
         }
     }
 
-    override fun getVisibilityFilters(): VisibilityFilters<ViewModel> {
+    override fun getVisibilityFilters(): VisibilityFilters<IViewModel> {
         return visibilityFilters
     }
 
@@ -90,7 +91,7 @@ class StackNavigator internal constructor(
         return subject.getValue()!!.value
     }
 
-    override fun getStack(): List<ViewModel> {
+    override fun getStack(): List<IViewModel> {
         return stack.map { it.getViewModel() }
     }
 
@@ -216,7 +217,7 @@ class StackNavigator internal constructor(
         }
     }
 
-    override fun getItemAt(index: Int): ViewModel {
+    override fun getItemAt(index: Int): IViewModel {
         return stack[index].getViewModel()
     }
 
@@ -233,13 +234,13 @@ class StackNavigator internal constructor(
         clearAndSet(null, transitionInfo, StackTransition.Auto)
     }
 
-    override fun replaceAll(viewModel: ViewModel, transitionInfo: Any?, stackTransition: StackTransition) {
+    override fun replaceAll(viewModel: IViewModel, transitionInfo: Any?, stackTransition: StackTransition) {
         // to make transition for new item as for front
         currentItemIndex = -1
         clearAndSet(viewModel, transitionInfo, stackTransition)
     }
 
-    private fun createStackItem(viewModel: ViewModel): ViewModelContainer {
+    private fun createStackItem(viewModel: IViewModel): ViewModelContainer {
         return ViewModelContainer(
                 viewModel,
                 parent,
@@ -247,7 +248,7 @@ class StackNavigator internal constructor(
         )
     }
 
-    private fun addStackItem(viewModel: ViewModel?) {
+    private fun addStackItem(viewModel: IViewModel?) {
         if (viewModel != null) {
             val item = createStackItem(viewModel)
             stack.add(item)
@@ -255,20 +256,20 @@ class StackNavigator internal constructor(
         }
     }
 
-    private fun clearAndSet(viewModel: ViewModel?, transitionInfo: Any? = null, stackTransition: StackTransition) {
+    private fun clearAndSet(viewModel: IViewModel?, transitionInfo: Any? = null, stackTransition: StackTransition) {
         viewModel?.verifyContext()
         removeFromStack(stack)
         addStackItem(viewModel)
         refreshState(transitionInfo, stackTransition)
     }
 
-    override fun add(viewModel: ViewModel, transitionInfo: Any?, stackTransition: StackTransition) {
+    override fun add(viewModel: IViewModel, transitionInfo: Any?, stackTransition: StackTransition) {
         viewModel.verifyContext()
         addStackItem(viewModel)
         refreshState(transitionInfo, stackTransition)
     }
 
-    override fun replace(viewModel: ViewModel, transitionInfo: Any?, stackTransition: StackTransition) {
+    override fun replace(viewModel: IViewModel, transitionInfo: Any?, stackTransition: StackTransition) {
         viewModel.verifyContext()
         val actualItem = currentState.actualItem
         if (actualItem != null) {
@@ -278,7 +279,7 @@ class StackNavigator internal constructor(
         refreshState(transitionInfo, stackTransition)
     }
 
-    override fun replaceStack(newStack: List<ViewModel>, transitionInfo: Any?, stackTransition: StackTransition) {
+    override fun replaceStack(newStack: List<IViewModel>, transitionInfo: Any?, stackTransition: StackTransition) {
         newStack.forEach {
             it.verifyContext()
         }
@@ -307,7 +308,7 @@ class StackNavigator internal constructor(
         refreshState(transitionInfo, stackTransition)
     }
 
-    override fun remove(viewModel: ViewModel, transitionInfo: Any?, stackTransition: StackTransition) {
+    override fun remove(viewModel: IViewModel, transitionInfo: Any?, stackTransition: StackTransition) {
         val currentItem = stack.lastOrNull {
             it.getViewModel() == viewModel
         }
@@ -321,7 +322,7 @@ class StackNavigator internal constructor(
         }
     }
 
-    override fun popBackStackTo(viewModel: ViewModel, transitionInfo: Any?, stackTransition: StackTransition): Boolean {
+    override fun popBackStackTo(viewModel: IViewModel, transitionInfo: Any?, stackTransition: StackTransition): Boolean {
         return if (stack.any { it.getViewModel() == viewModel } && stack.lastOrNull()?.getViewModel() != viewModel) {
             while (stack.isNotEmpty() && stack.lastOrNull()?.getViewModel() != viewModel) {
                 removeFromStack(stack.last())
@@ -352,7 +353,7 @@ class StackNavigator internal constructor(
         item.terminate()
     }
 
-    override fun requestCloseSelf(viewModel: ViewModel, transitionInfo: Any?) {
+    override fun requestCloseSelf(viewModel: IViewModel, transitionInfo: Any?) {
         remove(viewModel, transitionInfo)
     }
 

@@ -1,6 +1,5 @@
 package net.apptronic.core.view.widgets
 
-import net.apptronic.core.component.value
 import net.apptronic.core.view.CoreView
 import net.apptronic.core.view.base.CoreViewBuilder
 import net.apptronic.core.view.container.CoreContainerView
@@ -12,15 +11,15 @@ import net.apptronic.core.view.widgets.commons.ICoreButtonView
 
 open class CoreContainerButtonView(context: CoreViewContext) : CoreContainerView(context), ICoreButtonView {
 
-    override var onClick = value<() -> Unit>({})
+    override var onClick = viewProperty({})
 
-    override var onLongClick = value<() -> Unit>({})
+    override var onLongClick = viewProperty({})
 
-    override var contentAlignmentHorizontal = value<HorizontalAlignment>(DefaultAlignment)
+    override var contentAlignmentHorizontal = viewProperty<HorizontalAlignment>(DefaultAlignment)
 
-    override var contentAlignmentVertical = value<VerticalAlignment>(DefaultAlignment)
+    override var contentAlignmentVertical = viewProperty<VerticalAlignment>(DefaultAlignment)
 
-    override var isEnabled = value(true)
+    override var isEnabled = viewProperty(true)
 
 }
 

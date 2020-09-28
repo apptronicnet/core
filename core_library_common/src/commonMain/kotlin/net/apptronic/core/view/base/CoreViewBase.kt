@@ -1,14 +1,13 @@
 package net.apptronic.core.view.base
 
-import net.apptronic.core.component.context.Contextual
 import net.apptronic.core.view.ICoreView
 import net.apptronic.core.view.context.CoreViewContext
 import net.apptronic.core.view.properties.LTR
 import net.apptronic.core.view.properties.RTL
 
-interface CoreViewBase : Contextual {
+interface CoreViewBase {
 
-    override val context: CoreViewContext
+    val context: CoreViewContext
 
     val ICoreView.isLTR: Boolean
         get() {

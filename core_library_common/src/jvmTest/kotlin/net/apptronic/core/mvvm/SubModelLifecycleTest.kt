@@ -3,7 +3,7 @@ package net.apptronic.core.mvvm
 import net.apptronic.core.component.context.viewModelContext
 import net.apptronic.core.component.terminate
 import net.apptronic.core.mvvm.viewmodel.EmptyViewModelContext
-import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.navigation.ViewModelLifecycleController
 import net.apptronic.core.mvvm.viewmodel.navigation.stackNavigator
 import net.apptronic.core.testutils.testContext
@@ -23,13 +23,13 @@ class SubModelLifecycleTest {
             children.setAdapter(adapter)
         }
 
-        fun currentChild(): ViewModel? {
+        fun currentChild(): IViewModel? {
             return adapter.actualModel
         }
 
     }
 
-    private class ChildModel(root: ViewModel) : LifecycleTestViewModel(root.viewModelContext()) {
+    private class ChildModel(root: IViewModel) : LifecycleTestViewModel(root.viewModelContext()) {
 
         val children = stackNavigator()
 
@@ -39,7 +39,7 @@ class SubModelLifecycleTest {
             children.setAdapter(adapter)
         }
 
-        fun currentChild(): ViewModel? {
+        fun currentChild(): IViewModel? {
             return adapter.actualModel
         }
 
@@ -82,9 +82,8 @@ class SubModelLifecycleTest {
         val child = ChildModel(root)
         root.children.add(child)
         assert(root.currentChild() === child)
-        assert(child.isAttached().not())
+        assert(child.isAttached())
 
-        controller.setAttached(true)
         assert(child.isAttached())
 
         controller.setBound(true)

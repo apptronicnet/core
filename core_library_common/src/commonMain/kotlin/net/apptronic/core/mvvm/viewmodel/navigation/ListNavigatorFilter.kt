@@ -1,5 +1,6 @@
 package net.apptronic.core.mvvm.viewmodel.navigation
 
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 
 /**
@@ -7,7 +8,7 @@ import net.apptronic.core.mvvm.viewmodel.ViewModel
  * @param viewModel [ViewModel] item
  * @param isVisible current value of [VisibilityFilter.isReadyToShow]
  */
-class ItemVisibilityRequest(val viewModel: ViewModel, val isVisible: Boolean)
+class ItemVisibilityRequest(val viewModel: IViewModel, val isVisible: Boolean)
 
 /**
  * This class defines behavior usage of [VisibilityFilter]. After each change items in [ListNavigator] or
@@ -23,6 +24,6 @@ interface ListNavigatorFilter {
      * all not visible items should not be shown as not all data for displaying on view may be ready here, but based on
      * desired UI behavior filter can decide to hide some additional items to make UI look and feel better.
      */
-    fun filterList(source: List<ItemVisibilityRequest>): List<ViewModel>
+    fun filterList(source: List<ItemVisibilityRequest>): List<IViewModel>
 
 }

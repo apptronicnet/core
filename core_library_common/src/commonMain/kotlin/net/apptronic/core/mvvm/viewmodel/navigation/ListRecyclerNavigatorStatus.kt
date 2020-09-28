@@ -2,6 +2,7 @@ package net.apptronic.core.mvvm.viewmodel.navigation
 
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.functions.map
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 
 /**
@@ -35,7 +36,7 @@ class ListRecyclerNavigatorStatus(
         /**
          * Set of currently attached [ViewModel]s
          */
-        val attachedViewModels: Set<ViewModel>
+        val attachedViewModels: Set<IViewModel>
 )
 
 fun Entity<ListRecyclerNavigatorStatus>.allSize(): Entity<Int> {
@@ -62,7 +63,7 @@ fun Entity<ListRecyclerNavigatorStatus>.staticItems(): Entity<List<Any>> {
         return map { it.staticItems }
 }
 
-fun Entity<ListRecyclerNavigatorStatus>.attachedViewModels(): Entity<Set<ViewModel>> {
+fun Entity<ListRecyclerNavigatorStatus>.attachedViewModels(): Entity<Set<IViewModel>> {
         return map { it.attachedViewModels }
 }
 

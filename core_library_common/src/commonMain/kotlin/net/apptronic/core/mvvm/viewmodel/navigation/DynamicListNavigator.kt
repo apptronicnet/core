@@ -9,20 +9,21 @@ import net.apptronic.core.component.entity.base.UpdateEntity
 import net.apptronic.core.component.entity.onchange.Next
 import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.component.value
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelListAdapter
 import kotlin.reflect.KClass
 
 private const val DEFAULT_SAVED_ITEMS_SIZE = 10
 
-fun <T : Any, Id : Any, VM : ViewModel> ViewModel.listDynamicNavigator(
+fun <T : Any, Id : Any, VM : IViewModel> IViewModel.listDynamicNavigator(
         builder: ViewModelBuilder<in T, in Id, in VM>, navigatorContext: Context = this.context
 ): DynamicListNavigator<T, Id, VM> {
     context.verifyNavigatorContext(navigatorContext)
     return DynamicListNavigator(this, builder, navigatorContext)
 }
 
-fun <T : Any, Id : Any, VM : ViewModel> ViewModel.listDynamicNavigator(
+fun <T : Any, Id : Any, VM : IViewModel> IViewModel.listDynamicNavigator(
         source: Entity<List<T>>,
         builder: ViewModelBuilder<in T, in Id, in VM>,
         navigatorContext: Context = this.context
@@ -34,7 +35,7 @@ fun <T : Any, Id : Any, VM : ViewModel> ViewModel.listDynamicNavigator(
     return navigator
 }
 
-fun <T : Any, Id : Any, VM : ViewModel> ViewModel.listDynamicNavigatorOnChange(
+fun <T : Any, Id : Any, VM : IViewModel> IViewModel.listDynamicNavigatorOnChange(
         source: Entity<Next<List<T>, Any?>>,
         builder: ViewModelBuilder<in T, in Id, in VM>,
         navigatorContext: Context = this.context
@@ -47,8 +48,8 @@ fun <T : Any, Id : Any, VM : ViewModel> ViewModel.listDynamicNavigatorOnChange(
 }
 
 @Suppress("UNCHECKED_CAST")
-class DynamicListNavigator<T : Any, Id : Any, VM : ViewModel> internal constructor(
-        parent: ViewModel,
+class DynamicListNavigator<T : Any, Id : Any, VM : IViewModel> internal constructor(
+        parent: IViewModel,
         private val builder: ViewModelBuilder<in T, in Id, in VM>,
         override val navigatorContext: Context
 ) : BaseListNavigator<T>(parent), UpdateEntity<List<T>>, VisibilityFilterableNavigator {
@@ -63,7 +64,7 @@ class DynamicListNavigator<T : Any, Id : Any, VM : ViewModel> internal construct
     }
     private val status = parent.value<ListRecyclerNavigatorStatus>()
 
-    private var visibilityFilters = VisibilityFilters<ViewModel>()
+    private var visibilityFilters = VisibilityFilters<IViewModel>()
     private var listFilter: ListRecyclerNavigatorFilter = mappingFactoryFilter(::defaultMapping)
     private var indexMapping: DynamicListIndexMapping = listFilter.filter(emptyList(), null)
 
@@ -76,7 +77,7 @@ class DynamicListNavigator<T : Any, Id : Any, VM : ViewModel> internal construct
     private var savedItemsSize = DEFAULT_SAVED_ITEMS_SIZE
     private val savedItemIds = mutableListOf<RecyclerItemId>()
 
-    override fun getVisibilityFilters(): VisibilityFilters<ViewModel> {
+    override fun getVisibilityFilters(): VisibilityFilters<IViewModel> {
         return visibilityFilters
     }
 
@@ -213,7 +214,7 @@ class DynamicListNavigator<T : Any, Id : Any, VM : ViewModel> internal construct
         refreshVisibility(true)
     }
 
-    private fun shouldRetainInstance(key: T, viewModel: ViewModel): Boolean {
+    private fun shouldRetainInstance(key: T, viewModel: IViewModel): Boolean {
         return staticItems.contains(key) || builder.shouldRetainInstance(key, viewModel as VM)
     }
 
@@ -223,7 +224,7 @@ class DynamicListNavigator<T : Any, Id : Any, VM : ViewModel> internal construct
     }
 
     private fun onAdded(key: T): ViewModelContainer {
-        val viewModel: ViewModel = builder.onCreateViewModel(navigatorContext, key) as ViewModel
+        val viewModel: IViewModel = builder.onCreateViewModel(navigatorContext, key) as IViewModel
         viewModel.verifyContext()
         val container = ViewModelContainer(viewModel, parent, visibilityFilters.isReadyToShow(viewModel))
         containers.add(key.getId(), container, key)
@@ -288,7 +289,7 @@ class DynamicListNavigator<T : Any, Id : Any, VM : ViewModel> internal construct
     }
 
     override fun requestCloseSelf(
-            viewModel: ViewModel,
+            viewModel: IViewModel,
             transitionInfo: Any?
     ) {
         throw UnsupportedOperationException("ListRecyclerNavigator cannot close items")
@@ -303,14 +304,14 @@ class DynamicListNavigator<T : Any, Id : Any, VM : ViewModel> internal construct
         }
     }
 
-    private inner class LazyList : AbstractList<ViewModel>() {
+    private inner class LazyList : AbstractList<IViewModel>() {
 
         override val size: Int
             get() {
                 return indexMapping.getSize()
             }
 
-        override fun get(index: Int): ViewModel {
+        override fun get(index: Int): IViewModel {
             val mappedIndex = indexMapping.mapIndex(index)
             val key = items[mappedIndex]
             val existing = containers.findRecordForId(key.getId())
@@ -327,13 +328,13 @@ class DynamicListNavigator<T : Any, Id : Any, VM : ViewModel> internal construct
             }
         }
 
-        override fun indexOf(element: ViewModel): Int {
+        override fun indexOf(element: IViewModel): Int {
 
             // not applicable
             return -1
         }
 
-        override fun lastIndexOf(element: ViewModel): Int {
+        override fun lastIndexOf(element: IViewModel): Int {
             // not applicable
             return -1
         }
@@ -344,19 +345,19 @@ class DynamicListNavigator<T : Any, Id : Any, VM : ViewModel> internal construct
         return viewModels.size
     }
 
-    override fun getViewModelAt(index: Int): ViewModel {
+    override fun getViewModelAt(index: Int): IViewModel {
         return viewModels[index]
     }
 
-    override fun getViewModels(): List<ViewModel> {
+    override fun getViewModels(): List<IViewModel> {
         return viewModels
     }
 
-    override fun indexOfViewModel(viewModel: ViewModel): Int {
+    override fun indexOfViewModel(viewModel: IViewModel): Int {
         return viewModels.indexOf(viewModel)
     }
 
-    override fun setBound(viewModel: ViewModel, isBound: Boolean) {
+    override fun setBound(viewModel: IViewModel, isBound: Boolean) {
         if (isBound) {
             containers.findRecordForModel(viewModel)?.let { record ->
                 record.container.setBound(true)
@@ -371,11 +372,11 @@ class DynamicListNavigator<T : Any, Id : Any, VM : ViewModel> internal construct
         }
     }
 
-    override fun setVisible(viewModel: ViewModel, isVisible: Boolean) {
+    override fun setVisible(viewModel: IViewModel, isVisible: Boolean) {
         containers.findRecordForModel(viewModel)?.container?.setVisible(isVisible)
     }
 
-    override fun setFocused(viewModel: ViewModel, isFocused: Boolean) {
+    override fun setFocused(viewModel: IViewModel, isFocused: Boolean) {
         containers.findRecordForModel(viewModel)?.container?.setFocused(isFocused)
     }
 

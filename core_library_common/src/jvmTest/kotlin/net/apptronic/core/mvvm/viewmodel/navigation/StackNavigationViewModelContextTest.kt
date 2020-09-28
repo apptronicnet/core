@@ -4,6 +4,7 @@ import net.apptronic.core.component.context.childContext
 import net.apptronic.core.component.context.viewModelContext
 import net.apptronic.core.component.lifecycle.enterStage
 import net.apptronic.core.mvvm.TestViewModel
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 import net.apptronic.core.mvvm.viewmodel.ViewModelLifecycle
@@ -47,7 +48,7 @@ class StackNavigationViewModelContextTest : TestViewModel() {
         childModel.stackNavigationModel(rootModel.childContext())
     }
 
-    private fun shouldFailOnNonCorrectContext(onMethod: StackNavigationViewModel.(ViewModel) -> Unit) {
+    private fun shouldFailOnNonCorrectContext(onMethod: StackNavigationViewModel.(IViewModel) -> Unit) {
         rootModel.attach()
         rootModel.bind()
         val childModelContext = rootModel.viewModelContext()
@@ -73,7 +74,7 @@ class StackNavigationViewModelContextTest : TestViewModel() {
     fun shouldFailOnNonCorrectContextReplaceAll() =
             shouldFailOnNonCorrectContext { replaceAll(it) }
 
-    private fun shouldFailOnNonCorrectContextWithNavigatorContext(onMethod: StackNavigationViewModel.(ViewModel) -> Unit) {
+    private fun shouldFailOnNonCorrectContextWithNavigatorContext(onMethod: StackNavigationViewModel.(IViewModel) -> Unit) {
         rootModel.attach()
         rootModel.bind()
         val childModelContext = rootModel.viewModelContext()
@@ -99,7 +100,7 @@ class StackNavigationViewModelContextTest : TestViewModel() {
     fun shouldFailOnNonCorrectContextWithNavigatorContextReplaceAll() =
             shouldFailOnNonCorrectContextWithNavigatorContext { replaceAll(it) }
 
-    private fun shouldFailOnNonCorrectOnNonNavigatorContext(onMethod: StackNavigationViewModel.(ViewModel) -> Unit) {
+    private fun shouldFailOnNonCorrectOnNonNavigatorContext(onMethod: StackNavigationViewModel.(IViewModel) -> Unit) {
         rootModel.attach()
         rootModel.bind()
         val childModelContext = rootModel.viewModelContext()

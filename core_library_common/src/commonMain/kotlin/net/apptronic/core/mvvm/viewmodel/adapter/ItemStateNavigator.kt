@@ -1,13 +1,13 @@
 package net.apptronic.core.mvvm.viewmodel.adapter
 
-import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 
 interface ItemStateNavigator {
 
-    fun setBound(viewModel: ViewModel, isBound: Boolean)
+    fun setBound(viewModel: IViewModel, isBound: Boolean)
 
-    fun setVisible(viewModel: ViewModel, isVisible: Boolean)
+    fun setVisible(viewModel: IViewModel, isVisible: Boolean)
 
-    fun setFocused(viewModel: ViewModel, isFocused: Boolean)
+    fun setFocused(viewModel: IViewModel, isFocused: Boolean)
 
 }

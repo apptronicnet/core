@@ -13,12 +13,12 @@ import net.apptronic.core.component.lifecycle.enterStage
 import net.apptronic.core.component.lifecycle.exitStage
 import net.apptronic.core.component.value
 import net.apptronic.core.debugError
-import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelLifecycle
 
 internal class ViewModelContainer(
-        private val viewModel: ViewModel,
-        private val parent: ViewModel,
+        private val viewModel: IViewModel,
+        private val parent: IViewModel,
         private val shouldShow: Entity<Boolean>
 ) {
 
@@ -104,7 +104,7 @@ internal class ViewModelContainer(
         }
     }
 
-    private fun bindStage(viewModel: ViewModel, definition: LifecycleStageDefinition, entity: Entity<Boolean>) {
+    private fun bindStage(viewModel: IViewModel, definition: LifecycleStageDefinition, entity: Entity<Boolean>) {
         entity.distinctUntilChanged().subscribe {
             if (it) {
                 enterStage(viewModel.context, definition)
@@ -123,7 +123,7 @@ internal class ViewModelContainer(
         return shouldShowValue
     }
 
-    fun getViewModel(): ViewModel {
+    fun getViewModel(): IViewModel {
         return viewModel
     }
 

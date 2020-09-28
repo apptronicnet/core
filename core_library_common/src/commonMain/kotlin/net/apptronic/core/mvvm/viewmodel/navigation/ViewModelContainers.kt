@@ -1,6 +1,6 @@
 package net.apptronic.core.mvvm.viewmodel.navigation
 
-import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 
 internal class ViewModelContainers<T, Id> {
 
@@ -24,7 +24,7 @@ internal class ViewModelContainers<T, Id> {
         }
     }
 
-    fun findRecordForModel(viewModel: ViewModel): Record? {
+    fun findRecordForModel(viewModel: IViewModel): Record? {
         return containers.values.firstOrNull {
             it.container.getViewModel() == viewModel
         }

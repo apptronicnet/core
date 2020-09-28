@@ -3,6 +3,7 @@ package net.apptronic.core.mvvm.viewmodel
 import net.apptronic.core.base.observable.Observable
 import net.apptronic.core.base.observable.subject.BehaviorSubject
 import net.apptronic.core.component.Component
+import net.apptronic.core.component.IComponent
 import net.apptronic.core.component.applyPlugins
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.context.ContextDefinition
@@ -13,7 +14,168 @@ import net.apptronic.core.component.genericEvent
 import net.apptronic.core.component.lifecycle.LifecycleStage
 import net.apptronic.core.component.lifecycle.LifecycleStageDefinition
 
-open class ViewModel : Component {
+interface IViewModel : IComponent {
+
+    override val context: ViewModelContext
+
+    fun onAttachToParent(parent: ViewModelParent)
+
+    fun onDetachFromParent()
+
+    fun isAttached(): Boolean
+
+    fun observeAttached(): Observable<Boolean>
+
+    fun isBound(): Boolean
+
+    fun observeBound(): Observable<Boolean>
+
+    fun isVisible(): Boolean
+
+    fun observeVisible(): Observable<Boolean>
+
+    fun isFocused(): Boolean
+
+    fun observeFocused(): Observable<Boolean>
+
+    /**
+     * Create [Entity] which emits item when [ViewModel] entering attached stage
+     */
+    fun whenAttached(): Entity<Unit>
+
+    /**
+     * Create [Entity] which emits item when [ViewModel] entering bound stage
+     */
+    fun whenBound(): Entity<Unit>
+
+    /**
+     * Create [Entity] which emits item when [ViewModel] entering visible stage
+     */
+    fun whenVisible(): Entity<Unit>
+
+    /**
+     * Create [Entity] which emits item when [ViewModel] entering focused stage
+     */
+    fun whenFocused(): Entity<Unit>
+
+    /**
+     * Check is current state is exactly on state attached
+     */
+    fun isStateAttached(): Boolean
+
+    /**
+     * Check is current state is exactly on state bound
+     */
+    fun isStateBound(): Boolean
+
+    /**
+     * Check is current state is exactly on state visible
+     */
+    fun isStateVisible(): Boolean
+
+    /**
+     * Check is current state is exactly on state focused
+     */
+    fun isStateFocused(): Boolean
+
+    /**
+     * Check is current [ViewModel] and it's [ViewModelLifecycle] is terminated
+     */
+    fun isTerminated(): Boolean
+
+    /**
+     * Request [ViewModelParent] ti close this [ViewModel]
+     * @return true is parent exists and false otherwise
+     */
+    fun closeSelf(transitionInfo: Any? = null): Boolean
+
+    // ----- CREATED STAGE ACTIONS -----
+
+    /**
+     * Subscribe to enter to [ViewModelLifecycle.STAGE_ATTACHED]. Called each time when [ViewModel]
+     * enter specified stage until [ViewModel] exit from current stage (from which this method called)
+     */
+    fun doOnAttach(callback: LifecycleStage.OnEnterHandler.() -> Unit)
+
+    /**
+     * Subscribe to enter [ViewModelLifecycle.STAGE_ATTACHED]. Called one time.
+     * @param key unique key for action. If action with same key already subscribed it will be
+     * replaced by new action and previous registered action will not be called.
+     */
+    fun onceAttached(key: String = "", action: () -> Unit)
+
+    /**
+     * Subscribe to exit from [ViewModelLifecycle.STAGE_ATTACHED]. Called each time when [ViewModel]
+     * enter specified stage until [ViewModel] exit from current stage (from which this method called)
+     */
+    fun doOnDetach(callback: LifecycleStage.OnExitHandler.() -> Unit)
+
+    // ----- BOUND STAGE ACTIONS -----
+
+    /**
+     * Subscribe to enter to [ViewModelLifecycle.STAGE_BOUND]. Called each time when [ViewModel]
+     * enter specified stage until [ViewModel] exit from current stage (from which this method called)
+     */
+    fun doOnBind(callback: LifecycleStage.OnEnterHandler.() -> Unit)
+
+    /**
+     * Subscribe to enter [ViewModelLifecycle.STAGE_BOUND]. Called one time.
+     * @param key unique key for action. If action with same key already subscribed it will be
+     * replaced by new action and previous registered action will not be called.
+     */
+    fun onceBound(key: String = "", action: () -> Unit)
+
+    /**
+     * Subscribe to exit from [ViewModelLifecycle.STAGE_BOUND]. Called each time when [ViewModel]
+     * enter specified stage until [ViewModel] exit from current stage (from which this method called)
+     */
+    fun doOnUnbind(callback: LifecycleStage.OnExitHandler.() -> Unit)
+
+    // ----- VISIBLE STAGE ACTIONS -----
+
+    /**
+     * Subscribe to enter to [ViewModelLifecycle.STAGE_VISIBLE]. Called each time when [ViewModel]
+     * enter specified stage until [ViewModel] exit from current stage (from which this method called)
+     */
+    fun doOnVisible(callback: LifecycleStage.OnEnterHandler.() -> Unit)
+
+    /**
+     * Subscribe to enter [ViewModelLifecycle.STAGE_VISIBLE]. Called one time.
+     * @param key unique key for action. If action with same key already subscribed it will be
+     * replaced by new action and previous registered action will not be called.
+     */
+    fun onceVisible(key: String = "", action: () -> Unit)
+
+    /**
+     * Subscribe to exit from [ViewModelLifecycle.STAGE_VISIBLE]. Called each time when [ViewModel]
+     * enter specified stage until [ViewModel] exit from current stage (from which this method called)
+     */
+    fun doOnHidden(callback: LifecycleStage.OnExitHandler.() -> Unit)
+
+    // ----- FOCUSED STAGE ACTIONS -----
+
+    /**
+     * Subscribe to enter to [ViewModelLifecycle.STAGE_FOCUSED]. Called each time when [ViewModel]
+     * enter specified stage until [ViewModel] exit from current stage (from which this method called)
+     */
+    fun doOnFocused(callback: LifecycleStage.OnEnterHandler.() -> Unit)
+
+    /**
+     * Subscribe to enter [ViewModelLifecycle.STAGE_FOCUSED]. Called one time.
+     * @param key unique key for action. If action with same key already subscribed it will be
+     * replaced by new action and previous registered action will not be called.
+     */
+    fun onceFocused(key: String = "", action: () -> Unit)
+
+    /**
+     * Subscribe to exit from [ViewModelLifecycle.STAGE_FOCUSED]. Called each time when [ViewModel]
+     * enter specified stage until [ViewModel] exit from current stage (from which this method called)
+     */
+    fun doOnUnfocused(callback: LifecycleStage.OnExitHandler.() -> Unit)
+
+}
+
+open class ViewModel : Component, IViewModel {
 
     final override val context: ViewModelContext
 
@@ -22,12 +184,14 @@ open class ViewModel : Component {
     private val isVisible = BehaviorSubject<Boolean>()
     private val isFocused = BehaviorSubject<Boolean>()
 
+    private var parent: ViewModelParent? = null
+
     constructor(context: ViewModelContext) {
         this.context = context
         doInit()
     }
 
-    constructor(parent: ViewModel) {
+    constructor(parent: IViewModel) {
         context = parent.context
         doInit()
     }
@@ -55,41 +219,31 @@ open class ViewModel : Component {
         return target
     }
 
-    @Suppress("UNUSED_PARAMETER")
-    internal fun onAttachedToContainer(parent: ViewModelParent) {
+    final override fun onAttachToParent(parent: ViewModelParent) {
         context.lifecycle.enterStage(ViewModelLifecycle.STAGE_ATTACHED)
-    }
-
-    @Suppress("UNUSED_PARAMETER")
-    internal fun onDetachedFromContainer(parent: ViewModelParent) {
-        context.lifecycle.exitStage(ViewModelLifecycle.STAGE_ATTACHED)
-    }
-
-    private var parent: ViewModelParent? = null
-
-    fun onAttachToParent(parent: ViewModelParent) {
         this.parent = parent
     }
 
-    fun onDetachFromParent() {
+    final override fun onDetachFromParent() {
+        context.lifecycle.exitStage(ViewModelLifecycle.STAGE_ATTACHED)
         this.parent = null
     }
 
-    fun isAttached() = context.lifecycle.isStageEntered(ViewModelLifecycle.STAGE_ATTACHED)
+    final override fun isAttached() = context.lifecycle.isStageEntered(ViewModelLifecycle.STAGE_ATTACHED)
 
-    fun observeAttached(): Observable<Boolean> = isAttached
+    final override fun observeAttached(): Observable<Boolean> = isAttached
 
-    fun isBound() = context.lifecycle.isStageEntered(ViewModelLifecycle.STAGE_BOUND)
+    final override fun isBound() = context.lifecycle.isStageEntered(ViewModelLifecycle.STAGE_BOUND)
 
-    fun observeBound(): Observable<Boolean> = isBound
+    final override fun observeBound(): Observable<Boolean> = isBound
 
-    fun isVisible() = context.lifecycle.isStageEntered(ViewModelLifecycle.STAGE_VISIBLE)
+    final override fun isVisible() = context.lifecycle.isStageEntered(ViewModelLifecycle.STAGE_VISIBLE)
 
-    fun observeVisible(): Observable<Boolean> = isVisible
+    final override fun observeVisible(): Observable<Boolean> = isVisible
 
-    fun isFocused() = context.lifecycle.isStageEntered(ViewModelLifecycle.STAGE_FOCUSED)
+    final override fun isFocused() = context.lifecycle.isStageEntered(ViewModelLifecycle.STAGE_FOCUSED)
 
-    fun observeFocused(): Observable<Boolean> = isFocused
+    final override fun observeFocused(): Observable<Boolean> = isFocused
 
     private fun whenEntered(observable: Observable<Boolean>): Entity<Unit> {
         return genericEvent().also { event ->
@@ -99,185 +253,100 @@ open class ViewModel : Component {
         }
     }
 
-    /**
-     * Create [Entity] which emits item when [ViewModel] entering attached stage
-     */
-    fun whenAttached(): Entity<Unit> {
+    final override fun whenAttached(): Entity<Unit> {
         return whenEntered(isAttached)
     }
 
-    /**
-     * Create [Entity] which emits item when [ViewModel] entering bound stage
-     */
-    fun whenBound(): Entity<Unit> {
+    final override fun whenBound(): Entity<Unit> {
         return whenEntered(isBound)
     }
 
-    /**
-     * Create [Entity] which emits item when [ViewModel] entering visible stage
-     */
-    fun whenVisible(): Entity<Unit> {
+    final override fun whenVisible(): Entity<Unit> {
         return whenEntered(isVisible)
     }
 
-    /**
-     * Create [Entity] which emits item when [ViewModel] entering focused stage
-     */
-    fun whenFocused(): Entity<Unit> {
+    final override fun whenFocused(): Entity<Unit> {
         return whenEntered(isFocused)
     }
 
-    /**
-     * Check is current state is exactly on state attached
-     */
-    fun isStateAttached(): Boolean {
+    final override fun isStateAttached(): Boolean {
         return isAttached() && !isBound()
     }
 
-    /**
-     * Check is current state is exactly on state bound
-     */
-    fun isStateBound(): Boolean {
+    final override fun isStateBound(): Boolean {
         return isBound() && !isVisible()
     }
 
-    /**
-     * Check is current state is exactly on state visible
-     */
-    fun isStateVisible(): Boolean {
+    final override fun isStateVisible(): Boolean {
         return isVisible() && !isFocused()
     }
 
-    /**
-     * Check is current state is exactly on state focused
-     */
-    fun isStateFocused(): Boolean {
+    final override fun isStateFocused(): Boolean {
         return isFocused()
     }
 
-    /**
-     * Check is current [ViewModel] and it's [ViewModelLifecycle] is terminated
-     */
-    fun isTerminated(): Boolean {
+    final override fun isTerminated(): Boolean {
         return context.lifecycle.isTerminated()
     }
 
-    /**
-     * Request [ViewModelParent] ti close this [ViewModel]
-     * @return true is parent exists and false otherwise
-     */
-    fun closeSelf(transitionInfo: Any? = null): Boolean {
+    final override fun closeSelf(transitionInfo: Any?): Boolean {
         return parent?.let {
             it.requestCloseSelf(this, transitionInfo)
             true
         } ?: false
     }
 
-    // ----- CREATED STAGE ACTIONS -----
-
-    /**
-     * Subscribe to enter to [ViewModelLifecycle.STAGE_ATTACHED]. Called each time when [ViewModel]
-     * enter specified stage until [ViewModel] exit from current stage (from which this method called)
-     */
-    fun doOnAttach(callback: LifecycleStage.OnEnterHandler.() -> Unit) {
+    final override fun doOnAttach(callback: LifecycleStage.OnEnterHandler.() -> Unit) {
         onEnterStage(ViewModelLifecycle.STAGE_ATTACHED, callback)
     }
 
-    /**
-     * Subscribe to enter [ViewModelLifecycle.STAGE_ATTACHED]. Called one time.
-     * @param key unique key for action. If action with same key already subscribed it will be
-     * replaced by new action and previous registered action will not be called.
-     */
-    fun onceAttached(key: String = "", action: () -> Unit) {
+    final override fun onceAttached(key: String, action: () -> Unit) {
         onceStage(ViewModelLifecycle.STAGE_ATTACHED, key, action)
     }
 
-    /**
-     * Subscribe to exit from [ViewModelLifecycle.STAGE_ATTACHED]. Called each time when [ViewModel]
-     * enter specified stage until [ViewModel] exit from current stage (from which this method called)
-     */
-    fun doOnDetach(callback: LifecycleStage.OnExitHandler.() -> Unit) {
+    final override fun doOnDetach(callback: LifecycleStage.OnExitHandler.() -> Unit) {
         onExitStage(ViewModelLifecycle.STAGE_ATTACHED, callback)
     }
 
     // ----- BOUND STAGE ACTIONS -----
 
-    /**
-     * Subscribe to enter to [ViewModelLifecycle.STAGE_BOUND]. Called each time when [ViewModel]
-     * enter specified stage until [ViewModel] exit from current stage (from which this method called)
-     */
-    fun doOnBind(callback: LifecycleStage.OnEnterHandler.() -> Unit) {
+    final override fun doOnBind(callback: LifecycleStage.OnEnterHandler.() -> Unit) {
         onEnterStage(ViewModelLifecycle.STAGE_BOUND, callback)
     }
 
-    /**
-     * Subscribe to enter [ViewModelLifecycle.STAGE_BOUND]. Called one time.
-     * @param key unique key for action. If action with same key already subscribed it will be
-     * replaced by new action and previous registered action will not be called.
-     */
-    fun onceBound(key: String = "", action: () -> Unit) {
+    final override fun onceBound(key: String, action: () -> Unit) {
         onceStage(ViewModelLifecycle.STAGE_BOUND, key, action)
     }
 
-    /**
-     * Subscribe to exit from [ViewModelLifecycle.STAGE_BOUND]. Called each time when [ViewModel]
-     * enter specified stage until [ViewModel] exit from current stage (from which this method called)
-     */
-    fun doOnUnbind(callback: LifecycleStage.OnExitHandler.() -> Unit) {
+    final override fun doOnUnbind(callback: LifecycleStage.OnExitHandler.() -> Unit) {
         onExitStage(ViewModelLifecycle.STAGE_BOUND, callback)
     }
 
     // ----- VISIBLE STAGE ACTIONS -----
 
-    /**
-     * Subscribe to enter to [ViewModelLifecycle.STAGE_VISIBLE]. Called each time when [ViewModel]
-     * enter specified stage until [ViewModel] exit from current stage (from which this method called)
-     */
-    fun doOnVisible(callback: LifecycleStage.OnEnterHandler.() -> Unit) {
+    final override fun doOnVisible(callback: LifecycleStage.OnEnterHandler.() -> Unit) {
         onEnterStage(ViewModelLifecycle.STAGE_VISIBLE, callback)
     }
 
-    /**
-     * Subscribe to enter [ViewModelLifecycle.STAGE_VISIBLE]. Called one time.
-     * @param key unique key for action. If action with same key already subscribed it will be
-     * replaced by new action and previous registered action will not be called.
-     */
-    fun onceVisible(key: String = "", action: () -> Unit) {
+    final override fun onceVisible(key: String, action: () -> Unit) {
         onceStage(ViewModelLifecycle.STAGE_VISIBLE, key, action)
     }
 
-    /**
-     * Subscribe to exit from [ViewModelLifecycle.STAGE_VISIBLE]. Called each time when [ViewModel]
-     * enter specified stage until [ViewModel] exit from current stage (from which this method called)
-     */
-    fun doOnHidden(callback: LifecycleStage.OnExitHandler.() -> Unit) {
+    final override fun doOnHidden(callback: LifecycleStage.OnExitHandler.() -> Unit) {
         onExitStage(ViewModelLifecycle.STAGE_VISIBLE, callback)
     }
 
     // ----- FOCUSED STAGE ACTIONS -----
 
-    /**
-     * Subscribe to enter to [ViewModelLifecycle.STAGE_FOCUSED]. Called each time when [ViewModel]
-     * enter specified stage until [ViewModel] exit from current stage (from which this method called)
-     */
-    fun doOnFocused(callback: LifecycleStage.OnEnterHandler.() -> Unit) {
+    final override fun doOnFocused(callback: LifecycleStage.OnEnterHandler.() -> Unit) {
         onEnterStage(ViewModelLifecycle.STAGE_FOCUSED, callback)
     }
 
-    /**
-     * Subscribe to enter [ViewModelLifecycle.STAGE_FOCUSED]. Called one time.
-     * @param key unique key for action. If action with same key already subscribed it will be
-     * replaced by new action and previous registered action will not be called.
-     */
-    fun onceFocused(key: String = "", action: () -> Unit) {
+    final override fun onceFocused(key: String, action: () -> Unit) {
         onceStage(ViewModelLifecycle.STAGE_FOCUSED, key, action)
     }
 
-    /**
-     * Subscribe to exit from [ViewModelLifecycle.STAGE_FOCUSED]. Called each time when [ViewModel]
-     * enter specified stage until [ViewModel] exit from current stage (from which this method called)
-     */
-    fun doOnUnfocused(callback: LifecycleStage.OnExitHandler.() -> Unit) {
+    final override fun doOnUnfocused(callback: LifecycleStage.OnExitHandler.() -> Unit) {
         onExitStage(ViewModelLifecycle.STAGE_FOCUSED, callback)
     }
 

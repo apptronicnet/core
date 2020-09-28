@@ -2,6 +2,7 @@ package net.apptronic.core.mvvm.viewmodel.navigation
 
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.functions.map
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 
 /**
@@ -15,12 +16,12 @@ data class StackNavigatorStatus internal constructor(
         /**
          * Current actual [ViewModel] which represents end of navigation
          */
-        val actualModel: ViewModel?,
+        val actualModel: IViewModel?,
         /**
          * Current visible [ViewModel]. Same as [actualModel] when no progress but may be different pr null
          * if new [ViewModel] is loading's it's data inside [StackNavigator] and waiting to be shown
          */
-        val visibleModel: ViewModel?,
+        val visibleModel: IViewModel?,
         /**
          * Current size of stack
          */
@@ -28,7 +29,7 @@ data class StackNavigatorStatus internal constructor(
         /**
          * Current stack of [ViewModel]s
          */
-        val stack: List<ViewModel>
+        val stack: List<IViewModel>
 ) {
 
     internal fun deepEquals(other: StackNavigatorStatus): Boolean {
@@ -47,11 +48,11 @@ fun Entity<StackNavigatorStatus>.progress(): Entity<Boolean> {
 }
 
 
-fun Entity<StackNavigatorStatus>.actualModel(): Entity<ViewModel?> {
+fun Entity<StackNavigatorStatus>.actualModel(): Entity<IViewModel?> {
     return map { it.actualModel }
 }
 
-fun Entity<StackNavigatorStatus>.visibleModel(): Entity<ViewModel?> {
+fun Entity<StackNavigatorStatus>.visibleModel(): Entity<IViewModel?> {
     return map { it.visibleModel }
 }
 
@@ -61,6 +62,6 @@ fun Entity<StackNavigatorStatus>.size(): Entity<Int> {
 }
 
 
-fun Entity<StackNavigatorStatus>.stack(): Entity<List<ViewModel>?> {
+fun Entity<StackNavigatorStatus>.stack(): Entity<List<IViewModel>?> {
     return map { it.stack }
 }

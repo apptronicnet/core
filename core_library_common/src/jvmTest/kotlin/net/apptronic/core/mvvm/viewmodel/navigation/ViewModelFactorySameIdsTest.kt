@@ -2,43 +2,44 @@ package net.apptronic.core.mvvm.viewmodel.navigation
 
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.context.viewModelContext
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import org.junit.Test
 import kotlin.test.assertEquals
 
 class ViewModelFactorySameIdsTest {
 
-    object ShortBuilder : ViewModelBuilder<Short, String, ViewModel> {
+    object ShortBuilder : ViewModelBuilder<Short, String, IViewModel> {
 
         override fun getId(item: Short): String {
             return item.toString()
         }
 
-        override fun onCreateViewModel(parent: Context, item: Short): ViewModel {
+        override fun onCreateViewModel(parent: Context, item: Short): IViewModel {
             return ViewModel(parent.viewModelContext())
         }
 
     }
 
-    object IntBuilder : ViewModelBuilder<Int, String, ViewModel> {
+    object IntBuilder : ViewModelBuilder<Int, String, IViewModel> {
 
         override fun getId(item: Int): String {
             return item.toString()
         }
 
-        override fun onCreateViewModel(parent: Context, item: Int): ViewModel {
+        override fun onCreateViewModel(parent: Context, item: Int): IViewModel {
             return ViewModel(parent.viewModelContext())
         }
 
     }
 
-    object LongBuilder : ViewModelBuilder<Long, String, ViewModel> {
+    object LongBuilder : ViewModelBuilder<Long, String, IViewModel> {
 
         override fun getId(item: Long): String {
             return item.toString()
         }
 
-        override fun onCreateViewModel(parent: Context, item: Long): ViewModel {
+        override fun onCreateViewModel(parent: Context, item: Long): IViewModel {
             return ViewModel(parent.viewModelContext())
         }
 

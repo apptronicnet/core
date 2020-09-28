@@ -1,11 +1,11 @@
 package net.apptronic.core.mvvm.viewmodel.navigation
 
-import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.adapter.ItemStateNavigator
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelListAdapter
 
 abstract class BaseListNavigator<T>(
-        parent: ViewModel
+        parent: IViewModel
 ) : Navigator<List<T>>(parent), ItemStateNavigator {
 
     private var adapter: ViewModelListAdapter? = null
@@ -32,16 +32,16 @@ abstract class BaseListNavigator<T>(
 
     abstract fun getSize(): Int
 
-    abstract fun getViewModels(): List<ViewModel>
+    abstract fun getViewModels(): List<IViewModel>
 
-    abstract fun getViewModelAt(index: Int): ViewModel
+    abstract fun getViewModelAt(index: Int): IViewModel
 
-    abstract fun indexOfViewModel(viewModel: ViewModel): Int
+    abstract fun indexOfViewModel(viewModel: IViewModel): Int
 
-    abstract override fun setBound(viewModel: ViewModel, isBound: Boolean)
+    abstract override fun setBound(viewModel: IViewModel, isBound: Boolean)
 
-    abstract override fun setVisible(viewModel: ViewModel, isVisible: Boolean)
+    abstract override fun setVisible(viewModel: IViewModel, isVisible: Boolean)
 
-    abstract override fun setFocused(viewModel: ViewModel, isFocused: Boolean)
+    abstract override fun setFocused(viewModel: IViewModel, isFocused: Boolean)
 
 }

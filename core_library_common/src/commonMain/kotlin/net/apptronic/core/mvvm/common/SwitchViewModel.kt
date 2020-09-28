@@ -13,20 +13,21 @@ import net.apptronic.core.component.entity.functions.onNextSuspend
 import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.component.typedEvent
 import net.apptronic.core.component.value
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 
-fun ViewModel.switchModel(): SwitchViewModel {
+fun IViewModel.switchModel(): SwitchViewModel {
     return SwitchViewModel(context)
 }
 
-fun ViewModel.switchModel(defaultValue: Boolean): SwitchViewModel {
+fun IViewModel.switchModel(defaultValue: Boolean): SwitchViewModel {
     return switchModel().apply {
         setState(defaultValue)
     }
 }
 
-fun ViewModel.switchModel(sourceValue: Entity<Boolean>, defaultValue: Boolean = false): SwitchViewModel {
+fun IViewModel.switchModel(sourceValue: Entity<Boolean>, defaultValue: Boolean = false): SwitchViewModel {
     return switchModel(defaultValue).apply {
         sourceValue.subscribe(context) {
             setState(it)

@@ -1,6 +1,5 @@
 package net.apptronic.core.view.widgets
 
-import net.apptronic.core.component.value
 import net.apptronic.core.view.CoreView
 import net.apptronic.core.view.base.CoreViewBuilder
 import net.apptronic.core.view.context.CoreViewContext
@@ -13,21 +12,21 @@ import net.apptronic.core.view.widgets.commons.ICoreTextView
 
 class CoreTextButtonView(context: CoreViewContext) : CoreView(context), ICoreButtonView, ICoreTextView {
 
-    override val text = value("")
+    override val text = viewProperty("")
 
-    override val textColor = value(Black)
+    override val textColor = viewProperty(Black)
 
-    override val textSize = value<Number>(16)
+    override val textSize = viewProperty<Number>(16)
 
-    override val onClick = value({})
+    override val onClick = viewProperty({})
 
-    override val onLongClick = value({})
+    override val onLongClick = viewProperty({})
 
-    override val contentAlignmentHorizontal = value<HorizontalAlignment>(DefaultAlignment)
+    override val contentAlignmentHorizontal = viewProperty<HorizontalAlignment>(DefaultAlignment)
 
-    override val contentAlignmentVertical = value<VerticalAlignment>(DefaultAlignment)
+    override val contentAlignmentVertical = viewProperty<VerticalAlignment>(DefaultAlignment)
 
-    override val isEnabled = value(true)
+    override val isEnabled = viewProperty(true)
 
 }
 

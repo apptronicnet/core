@@ -1,9 +1,11 @@
 package net.apptronic.core.view.container.commons
 
 import net.apptronic.core.component.entity.Entity
-import net.apptronic.core.component.entity.entities.Value
-import net.apptronic.core.component.entity.entities.setAs
+import net.apptronic.core.view.ICoreView
+import net.apptronic.core.view.ViewProperty
 import net.apptronic.core.view.base.CoreViewBuilder
+import net.apptronic.core.view.binder.DynamicEntityReference
+import net.apptronic.core.view.binder.DynamicReference
 import net.apptronic.core.view.properties.LayoutOrientation
 import net.apptronic.core.view.widgets.CoreSpacerView
 import net.apptronic.core.view.widgets.spacerView
@@ -11,16 +13,24 @@ import net.apptronic.core.view.widgets.spacerView
 /**
  * Base class for containers which supports orientation and adding spacers according to it's orientation
  */
-interface ICoreOrientationContainerView : CoreViewBuilder {
+interface ICoreOrientationView : ICoreView, CoreViewBuilder {
 
-    val orientation: Value<LayoutOrientation>
+    val orientation: ViewProperty<LayoutOrientation>
 
-    fun orientation(orientation: LayoutOrientation) {
-        this.orientation.set(orientation)
+    fun orientation(value: LayoutOrientation) {
+        orientation.set(value)
     }
 
     fun orientation(source: Entity<LayoutOrientation>) {
-        this.orientation.setAs(orientation)
+        orientation.set(orientation)
+    }
+
+    fun orientation(value: DynamicReference<LayoutOrientation>) {
+        orientation.set(value)
+    }
+
+    fun orientation(source: DynamicEntityReference<LayoutOrientation, Entity<LayoutOrientation>>) {
+        orientation.set(orientation)
     }
 
     val Vertical: LayoutOrientation

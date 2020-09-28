@@ -2,10 +2,11 @@ package net.apptronic.core.mvvm.viewmodel.navigation
 
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.onchange.onChangeValue
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 
-fun ViewModel.stackNavigationModel(navigatorContext: Context = this.context): StackNavigationViewModel {
+fun IViewModel.stackNavigationModel(navigatorContext: Context = this.context): StackNavigationViewModel {
     context.verifyNavigatorContext(navigatorContext)
     return StackNavigationViewModel(context, navigatorContext)
 }
@@ -22,16 +23,16 @@ class StackNavigationViewModel internal constructor(
         override val navigatorContext: Context
 ) : ViewModel(context), StackNavigationModel {
 
-    private val viewModels = onChangeValue<List<ViewModel>, Any>(emptyList())
+    private val viewModels = onChangeValue<List<IViewModel>, Any>(emptyList())
 
-    private fun updateInternal(transitionInfo: Any?, stackTransition: StackTransition, action: (MutableList<ViewModel>) -> Unit) {
+    private fun updateInternal(transitionInfo: Any?, stackTransition: StackTransition, action: (MutableList<IViewModel>) -> Unit) {
         val current = viewModels.get().value
         val next = current.toTypedArray().toMutableList()
         action(next)
         updateInternal(transitionInfo, stackTransition, next)
     }
 
-    private fun updateInternal(transitionInfo: Any?, stackTransition: StackTransition, next: List<ViewModel>) {
+    private fun updateInternal(transitionInfo: Any?, stackTransition: StackTransition, next: List<IViewModel>) {
         val current = viewModels.get().value
         next.forEach {
             it.verifyContext()
@@ -54,23 +55,23 @@ class StackNavigationViewModel internal constructor(
         updateInternal(null, StackTransition.Auto, next)
     }
 
-    val listNavigator: BaseListNavigator<ViewModel> = listNavigatorOnChange(viewModels)
+    val listNavigator: BaseListNavigator<IViewModel> = listNavigatorOnChange(viewModels)
 
-    private fun currentViewModel(): ViewModel? {
+    private fun currentViewModel(): IViewModel? {
         return viewModels.get().value.getOrNull(getSize() - 1)
     }
 
-    override fun replaceStack(newStack: List<ViewModel>, transitionInfo: Any?, stackTransition: StackTransition) {
+    override fun replaceStack(newStack: List<IViewModel>, transitionInfo: Any?, stackTransition: StackTransition) {
         updateInternal(transitionInfo, stackTransition, newStack)
     }
 
-    override fun add(viewModel: ViewModel, transitionInfo: Any?, stackTransition: StackTransition) {
+    override fun add(viewModel: IViewModel, transitionInfo: Any?, stackTransition: StackTransition) {
         updateInternal(transitionInfo, stackTransition) {
             it.add(viewModel)
         }
     }
 
-    override fun remove(viewModel: ViewModel, transitionInfo: Any?, stackTransition: StackTransition) {
+    override fun remove(viewModel: IViewModel, transitionInfo: Any?, stackTransition: StackTransition) {
         updateInternal(transitionInfo, stackTransition) {
             it.remove(viewModel)
         }
@@ -80,7 +81,7 @@ class StackNavigationViewModel internal constructor(
         updateInternal(transitionInfo, StackTransition.Auto, emptyList())
     }
 
-    override fun getItemAt(index: Int): ViewModel {
+    override fun getItemAt(index: Int): IViewModel {
         return viewModels.get().value[index]
     }
 
@@ -88,13 +89,13 @@ class StackNavigationViewModel internal constructor(
         return viewModels.get().value.size
     }
 
-    override fun getStack(): List<ViewModel> {
-        return mutableListOf<ViewModel>().apply {
+    override fun getStack(): List<IViewModel> {
+        return mutableListOf<IViewModel>().apply {
             addAll(viewModels.get().value)
         }
     }
 
-    override fun popBackStackTo(viewModel: ViewModel, transitionInfo: Any?, stackTransition: StackTransition): Boolean {
+    override fun popBackStackTo(viewModel: IViewModel, transitionInfo: Any?, stackTransition: StackTransition): Boolean {
         val previous = getStack().toTypedArray().toMutableList()
         val index = previous.indexOf(viewModel)
         if (index < 0) {
@@ -105,7 +106,7 @@ class StackNavigationViewModel internal constructor(
         return previous.size != next.size
     }
 
-    override fun replace(viewModel: ViewModel, transitionInfo: Any?, stackTransition: StackTransition) {
+    override fun replace(viewModel: IViewModel, transitionInfo: Any?, stackTransition: StackTransition) {
         viewModel.verifyContext()
         updateInternal(transitionInfo, stackTransition) {
             if (it.size > 0) {
@@ -115,7 +116,7 @@ class StackNavigationViewModel internal constructor(
         }
     }
 
-    override fun replaceAll(viewModel: ViewModel, transitionInfo: Any?, stackTransition: StackTransition) {
+    override fun replaceAll(viewModel: IViewModel, transitionInfo: Any?, stackTransition: StackTransition) {
         updateInternal(transitionInfo, stackTransition, listOf(viewModel))
     }
 

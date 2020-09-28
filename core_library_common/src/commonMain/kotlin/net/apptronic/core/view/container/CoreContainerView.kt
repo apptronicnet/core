@@ -1,6 +1,5 @@
 package net.apptronic.core.view.container
 
-import net.apptronic.core.component.value
 import net.apptronic.core.view.CoreView
 import net.apptronic.core.view.ICoreView
 import net.apptronic.core.view.context.CoreViewContext
@@ -15,9 +14,9 @@ abstract class CoreContainerView(context: CoreViewContext) : CoreView(context), 
 
     private val children = mutableListOf<ICoreView>()
 
-    override var contentAlignmentHorizontal = value<HorizontalAlignment>(DefaultAlignment)
+    override var contentAlignmentHorizontal = viewProperty<HorizontalAlignment>(DefaultAlignment)
 
-    override var contentAlignmentVertical = value<VerticalAlignment>(DefaultAlignment)
+    override var contentAlignmentVertical = viewProperty<VerticalAlignment>(DefaultAlignment)
 
     override fun getChildren(): List<ICoreView> {
         return children

@@ -1,6 +1,7 @@
 package net.apptronic.core.mvvm.viewmodel.navigation
 
 import net.apptronic.core.component.context.Context
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 
 interface StackNavigationModel : INavigator {
@@ -10,7 +11,7 @@ interface StackNavigationModel : INavigator {
      *
      * This is designed for setting initial state of [StackNavigationModel]
      */
-    fun set(viewModel: ViewModel?) {
+    fun set(viewModel: IViewModel?) {
         if (viewModel != null) {
             replaceAll(viewModel)
         } else {
@@ -23,7 +24,7 @@ interface StackNavigationModel : INavigator {
      *
      * This is designed for setting initial state of [StackNavigationModel]
      */
-    fun set(builder: Context.() -> ViewModel) {
+    fun set(builder: Context.() -> IViewModel) {
         set(navigatorContext.builder())
     }
 
@@ -35,14 +36,14 @@ interface StackNavigationModel : INavigator {
     /**
      * Get list of [ViewModel] which now in stack
      */
-    fun getStack(): List<ViewModel>
+    fun getStack(): List<IViewModel>
 
     /**
      * Get [ViewModel] at specified [index].
      *
      * @throws [IndexOutOfBoundsException] in case when requested index is out of stack
      */
-    fun getItemAt(index: Int): ViewModel
+    fun getItemAt(index: Int): IViewModel
 
     /**
      * Remove all [ViewModel]s from stack and set it to empty state
@@ -52,42 +53,42 @@ interface StackNavigationModel : INavigator {
     /**
      * Replace current [ViewModel] and all [ViewModel]s from stack by new [viewModel]
      */
-    fun replaceAll(viewModel: ViewModel, transitionInfo: Any? = null, stackTransition: StackTransition = StackTransition.Auto)
+    fun replaceAll(viewModel: IViewModel, transitionInfo: Any? = null, stackTransition: StackTransition = StackTransition.Auto)
 
     /**
      * Build [ViewModel] replace all [ViewModel]s from stack by it
      */
-    fun replaceAll(transitionInfo: Any? = null, stackTransition: StackTransition = StackTransition.Auto, builder: Context.() -> ViewModel) {
+    fun replaceAll(transitionInfo: Any? = null, stackTransition: StackTransition = StackTransition.Auto, builder: Context.() -> IViewModel) {
         replaceAll(navigatorContext.builder(), transitionInfo, stackTransition)
     }
 
     /**
      * Add [ViewModel] to stack
      */
-    fun add(viewModel: ViewModel, transitionInfo: Any? = null, stackTransition: StackTransition = StackTransition.Auto)
+    fun add(viewModel: IViewModel, transitionInfo: Any? = null, stackTransition: StackTransition = StackTransition.Auto)
 
     /**
      * Build [ViewModel] and add it to stack
      */
-    fun add(transitionInfo: Any? = null, stackTransition: StackTransition = StackTransition.Auto, builder: Context.() -> ViewModel) {
+    fun add(transitionInfo: Any? = null, stackTransition: StackTransition = StackTransition.Auto, builder: Context.() -> IViewModel) {
         add(navigatorContext.builder(), transitionInfo, stackTransition)
     }
 
     /**
      * Replace last [ViewModel] in stack
      */
-    fun replace(viewModel: ViewModel, transitionInfo: Any? = null, stackTransition: StackTransition = StackTransition.Auto)
+    fun replace(viewModel: IViewModel, transitionInfo: Any? = null, stackTransition: StackTransition = StackTransition.Auto)
 
     /**
      * Replace whole stack with new stack. [newStack] can contain [ViewModel]s from current stack - that [ViewModel]s
      * will be retained inside navigator.
      */
-    fun replaceStack(newStack: List<ViewModel>, transitionInfo: Any? = null, stackTransition: StackTransition = StackTransition.Auto)
+    fun replaceStack(newStack: List<IViewModel>, transitionInfo: Any? = null, stackTransition: StackTransition = StackTransition.Auto)
 
     /**
      * Get current stack and update it by adding new [ViewModel]s or removing existing [ViewModel]s
      */
-    fun updateStack(transitionInfo: Any? = null, stackTransition: StackTransition = StackTransition.Auto, update: (List<ViewModel>) -> List<ViewModel>) {
+    fun updateStack(transitionInfo: Any? = null, stackTransition: StackTransition = StackTransition.Auto, update: (List<IViewModel>) -> List<IViewModel>) {
         val current = getStack()
         val next = update(current)
         replaceStack(next, transitionInfo, stackTransition)
@@ -96,7 +97,7 @@ interface StackNavigationModel : INavigator {
     /**
      * Build [ViewModel] replace last [ViewModel] in stack by it
      */
-    fun replace(transitionInfo: Any? = null, stackTransition: StackTransition = StackTransition.Auto, builder: Context.() -> ViewModel) {
+    fun replace(transitionInfo: Any? = null, stackTransition: StackTransition = StackTransition.Auto, builder: Context.() -> IViewModel) {
         replace(navigatorContext.builder(), transitionInfo, stackTransition)
     }
 
@@ -104,7 +105,7 @@ interface StackNavigationModel : INavigator {
      * Remove specific [ViewModel] for stack
      * @param transitionInfo will be used only if this [ViewModel] is now active
      */
-    fun remove(viewModel: ViewModel, transitionInfo: Any? = null, stackTransition: StackTransition = StackTransition.Auto)
+    fun remove(viewModel: IViewModel, transitionInfo: Any? = null, stackTransition: StackTransition = StackTransition.Auto)
 
     /**
      * Remove [ViewModel] at specific [index] of stack
@@ -167,7 +168,7 @@ interface StackNavigationModel : INavigator {
      * Will do nothing if stack is empty of [viewModel] is not present in stack
      * @return true if anything is removed from stack
      */
-    fun popBackStackTo(viewModel: ViewModel, transitionInfo: Any? = null, stackTransition: StackTransition = StackTransition.Auto): Boolean
+    fun popBackStackTo(viewModel: IViewModel, transitionInfo: Any? = null, stackTransition: StackTransition = StackTransition.Auto): Boolean
 
     /**
      * Remove all [ViewModel]s from stack which are placed after specified index.

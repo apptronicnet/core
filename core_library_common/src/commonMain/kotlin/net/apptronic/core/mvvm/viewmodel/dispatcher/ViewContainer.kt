@@ -1,11 +1,12 @@
 package net.apptronic.core.mvvm.viewmodel.dispatcher
 
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 
 /**
  * Base interface for view container which can hold [ViewModel] and it's platform view.
  */
-interface ViewContainer<T : ViewModel> {
+interface ViewContainer<T : IViewModel> {
 
     /**
      * Called when [ViewModelDispatcher] created/provided [ViewModel] for this [ViewContainer]

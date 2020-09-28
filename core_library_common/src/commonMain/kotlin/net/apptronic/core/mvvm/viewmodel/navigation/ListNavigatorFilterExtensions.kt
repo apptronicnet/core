@@ -1,5 +1,6 @@
 package net.apptronic.core.mvvm.viewmodel.navigation
 
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 
 /**
@@ -10,7 +11,7 @@ fun simpleFilter(): ListNavigatorFilter {
 }
 
 private class SimpleNavigatorFilter : ListNavigatorFilter {
-    override fun filterList(source: List<ItemVisibilityRequest>): List<ViewModel> {
+    override fun filterList(source: List<ItemVisibilityRequest>): List<IViewModel> {
         return source.filter { it.isVisible }.map { it.viewModel }
     }
 }
@@ -23,7 +24,7 @@ fun takeUntilVisibleFilter(): ListNavigatorFilter {
 }
 
 private class TakeUntilVisibleNavigatorFilter : ListNavigatorFilter {
-    override fun filterList(source: List<ItemVisibilityRequest>): List<ViewModel> {
+    override fun filterList(source: List<ItemVisibilityRequest>): List<IViewModel> {
         val index = source.indexOfFirst { it.isVisible.not() }
         return if (index >= 0) {
             source.take(index).map { it.viewModel }
@@ -60,7 +61,7 @@ private class NotifyNextNavigatorFilter(
         private val targetFilter: ListNavigatorFilter,
         private val countToNotify: Int
 ) : ListNavigatorFilter {
-    override fun filterList(source: List<ItemVisibilityRequest>): List<ViewModel> {
+    override fun filterList(source: List<ItemVisibilityRequest>): List<IViewModel> {
         source.filter { it.isVisible.not() && it.viewModel is OnReadyForLoad }
                 .take(countToNotify)
                 .forEach {

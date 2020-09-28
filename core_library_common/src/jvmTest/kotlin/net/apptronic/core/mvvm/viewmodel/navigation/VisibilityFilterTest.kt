@@ -5,7 +5,7 @@ import net.apptronic.core.component.assertTrue
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.functions.ofValue
 import net.apptronic.core.mvvm.TestViewModel
-import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 import org.junit.Test
 
 class VisibilityFilterTest {
@@ -35,7 +35,7 @@ class VisibilityFilterTest {
 
     @Test
     fun shouldReturnCorrectValues() {
-        val filters = VisibilityFilters<ViewModel>().also {
+        val filters = VisibilityFilters<IViewModel>().also {
             it.addFilter(Filter1())
             it.addFilter(Filter2())
         }

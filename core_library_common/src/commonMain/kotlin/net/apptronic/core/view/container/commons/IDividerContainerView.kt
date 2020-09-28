@@ -1,36 +1,37 @@
 package net.apptronic.core.view.container.commons
 
 import net.apptronic.core.component.entity.Entity
-import net.apptronic.core.component.entity.entities.Value
-import net.apptronic.core.component.entity.entities.setAs
 import net.apptronic.core.view.ICoreView
+import net.apptronic.core.view.ViewProperty
 import net.apptronic.core.view.base.CoreViewBuilder
-import net.apptronic.core.view.properties.CoreColor
-import net.apptronic.core.view.shape.rectangleShape
+import net.apptronic.core.view.binder.DynamicEntityReference
+import net.apptronic.core.view.binder.DynamicReference
 
 /**
  * Base interface for view which can divide content with dividers
  */
 interface IDividerContainerView : ICoreView {
 
-    val divider: Value<ICoreView?>
+    val divider: ViewProperty<ICoreView?>
 
-    val dividerOnTop: Value<Boolean>
+    val dividerOnTop: ViewProperty<Boolean>
 
-    val dividerOnBottom: Value<Boolean>
-
-    fun divider(color: CoreColor) {
-        divider.set(detachedViewBuilder.rectangleShape {
-
-        })
-    }
+    val dividerOnBottom: ViewProperty<Boolean>
 
     fun dividerOnTop(value: Boolean) {
         dividerOnTop.set(value)
     }
 
     fun dividerOnTop(source: Entity<Boolean>) {
-        dividerOnTop.setAs(source)
+        dividerOnTop.set(source)
+    }
+
+    fun dividerOnTop(value: DynamicReference<Boolean>) {
+        dividerOnTop.set(value)
+    }
+
+    fun dividerOnTop(source: DynamicEntityReference<Boolean, Entity<Boolean>>) {
+        dividerOnTop.set(source)
     }
 
     fun dividerOnBottom(value: Boolean) {
@@ -38,7 +39,15 @@ interface IDividerContainerView : ICoreView {
     }
 
     fun dividerOnBottom(source: Entity<Boolean>) {
-        dividerOnBottom.setAs(source)
+        dividerOnBottom.set(source)
+    }
+
+    fun dividerOnBottom(value: DynamicReference<Boolean>) {
+        dividerOnBottom.set(value)
+    }
+
+    fun dividerOnBottom(source: DynamicEntityReference<Boolean, Entity<Boolean>>) {
+        dividerOnBottom.set(source)
     }
 
     fun divider(builder: CoreViewBuilder.() -> ICoreView) {

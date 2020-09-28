@@ -4,7 +4,6 @@ import net.apptronic.core.component.value
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 import net.apptronic.core.mvvm.viewmodel.adapter.BasicTransition
-import net.apptronic.core.view.ICoreView
 import net.apptronic.core.view.container.frameContainer
 import net.apptronic.core.view.container.stackContainer
 import net.apptronic.core.view.context.CoreViewContext
@@ -51,7 +50,7 @@ val AppTheme = viewTheme {
 
 class SampleStaticBinderView(context: CoreViewContext, val viewModel: SampleViewModel) : CoreStaticBinderView<SampleViewModel>(context) {
 
-    override fun view(): ICoreView = frameContainer {
+    override val view = frameContainer {
         theme(AppTheme)
         background {
             rectangleShape {

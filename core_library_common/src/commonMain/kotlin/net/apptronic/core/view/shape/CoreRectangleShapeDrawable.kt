@@ -1,16 +1,15 @@
 package net.apptronic.core.view.shape
 
-import net.apptronic.core.component.value
 import net.apptronic.core.view.ICoreView
 import net.apptronic.core.view.base.CoreViewBuilder
 import net.apptronic.core.view.context.CoreViewContext
 
 class CoreRectangleShapeDrawable internal constructor(context: CoreViewContext) : CoreShapeView(context) {
 
-    var cornerTopLeft = value<Number>(0)
-    var cornerTopRight = value<Number>(0)
-    var cornerBottomLeft = value<Number>(0)
-    var cornerBottomRight = value<Number>(0)
+    var cornerTopLeft = viewProperty<Number>(0)
+    var cornerTopRight = viewProperty<Number>(0)
+    var cornerBottomLeft = viewProperty<Number>(0)
+    var cornerBottomRight = viewProperty<Number>(0)
 
     fun corners(
             all: Number? = null,
