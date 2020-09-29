@@ -1,23 +1,32 @@
 package net.apptronic.core.view.dimension
 
-interface CoreDimension : CoreLayoutDimension
+abstract class CoreDimension(private val rawNumber: Float) : Number(), CoreLayoutDimension {
 
-class DiscreteCoreDimension internal constructor(val size: Float) : AbstractDimensionNumber(size), CoreDimension {
+    override fun toByte(): Byte = rawNumber.toInt().toByte()
+
+    override fun toChar(): Char = rawNumber.toInt().toChar()
+
+    override fun toDouble(): Double = rawNumber.toDouble()
+
+    override fun toFloat(): Float = rawNumber
+
+    override fun toInt(): Int = rawNumber.toInt()
+
+    override fun toLong(): Long = rawNumber.toLong()
+
+    override fun toShort(): Short = rawNumber.toInt().toShort()
+
+
+}
+
+class DiscreteCoreDimension(val size: Float) : CoreDimension(size) {
     override fun toString(): String = "[$size]"
 }
 
-class PixelCoreDimension internal constructor(val pixels: Float) : AbstractDimensionNumber(pixels), CoreDimension {
+class PixelCoreDimension(val pixels: Float) : CoreDimension(pixels) {
     override fun toString(): String = "$pixels pixels"
 
 }
-
-val Number.pixels: AbstractDimensionNumber
-    get() = PixelCoreDimension(this.toFloat())
-
-val Number.dimension: AbstractDimensionNumber
-    get() = PixelCoreDimension(this.toFloat())
-
-val CoreDimensionZero = DiscreteCoreDimension(0f)
 
 fun Number.asCoreDimension(): CoreDimension {
     if (this is CoreDimension) {

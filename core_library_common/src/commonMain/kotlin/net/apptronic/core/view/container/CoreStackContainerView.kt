@@ -7,7 +7,6 @@ import net.apptronic.core.view.container.commons.IDividerContainerView
 import net.apptronic.core.view.container.commons.ISpacingContainerView
 import net.apptronic.core.view.context.CoreViewContext
 import net.apptronic.core.view.dimension.CoreDimension
-import net.apptronic.core.view.dimension.CoreDimensionZero
 import net.apptronic.core.view.properties.LayoutOrientation
 
 /**

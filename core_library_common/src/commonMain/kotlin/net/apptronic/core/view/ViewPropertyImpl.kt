@@ -6,6 +6,8 @@ import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.base.EntityValue
 import net.apptronic.core.component.entity.base.SubjectEntity
 import net.apptronic.core.component.entity.base.UpdateEntity
+import net.apptronic.core.component.entity.entities.distinctUntilChanged
+import net.apptronic.core.component.entity.switchContext
 
 interface ViewProperty<T> {
 
@@ -37,9 +39,9 @@ internal class ViewPropertyImpl<T>(override val context: Context, initialValue: 
 
     override fun subscribeWith(targetContext: Context, callback: (T) -> Unit) {
         if (targetContext == context) {
-            subscribe(callback)
+            distinctUntilChanged().subscribe(callback)
         } else {
-            subscribe(targetContext, callback)
+            switchContext(targetContext).distinctUntilChanged().subscribe(callback)
         }
     }
 

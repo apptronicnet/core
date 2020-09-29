@@ -7,8 +7,9 @@ import net.apptronic.core.mvvm.viewmodel.adapter.BasicTransition
 import net.apptronic.core.view.container.frameContainer
 import net.apptronic.core.view.container.stackContainer
 import net.apptronic.core.view.context.CoreViewContext
-import net.apptronic.core.view.dimension.pixels
-import net.apptronic.core.view.properties.*
+import net.apptronic.core.view.properties.CoreColor
+import net.apptronic.core.view.properties.Red
+import net.apptronic.core.view.properties.White
 import net.apptronic.core.view.shape.rectangleShape
 import net.apptronic.core.view.viewStyle
 import net.apptronic.core.view.viewTheme

@@ -6,7 +6,7 @@ import net.apptronic.core.view.ICoreView
 
 interface ViewTypeAdapter<CoreView : ICoreView, ContentView : View> {
 
-    fun createView(context: Context, source: CoreView): ContentView {
+    fun createView(context: Context, source: CoreView): ContentView? {
         throw UnsupportedOperationException("Cannot create view for abstract ICoreView $source")
     }
 

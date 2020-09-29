@@ -5,8 +5,7 @@ import android.view.ViewGroup
 import net.apptronic.core.view.ICoreView
 import net.apptronic.core.view.dimension.CoreDimension
 import net.apptronic.core.view.dimension.CoreLayoutDimension
-import net.apptronic.core.view.dimension.FitToContentDimension
-import net.apptronic.core.view.dimension.FitToParentDimension
+import net.apptronic.core.view.dimension.CoreLayoutSpec
 import net.apptronic.core.view.properties.Visibility
 
 internal class ViewFrameFactory {
@@ -14,8 +13,8 @@ internal class ViewFrameFactory {
     private fun IViewRenderingEngine.toLayoutParam(dimension: CoreLayoutDimension): Int {
         return when (dimension) {
             is CoreDimension -> dimensionEngine.getDimensionPixelSizeInt(dimension)
-            is FitToParentDimension -> android.view.ViewGroup.LayoutParams.MATCH_PARENT
-            is FitToContentDimension -> android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+            is CoreLayoutSpec.FitToParent -> ViewGroup.LayoutParams.MATCH_PARENT
+            is CoreLayoutSpec.FitToContent -> ViewGroup.LayoutParams.WRAP_CONTENT
             else -> 0
         }
     }
@@ -36,19 +35,23 @@ internal class ViewFrameFactory {
         viewFrame.setPaddingRelative(start, top, end, bottom)
     }
 
+    private fun View.updateLayoutParams(action: (ViewGroup.LayoutParams) -> Unit) {
+        val layoutParams = this.layoutParams
+        action(layoutParams)
+        this.layoutParams = layoutParams
+    }
+
     fun <T : View> createViewFrame(engine: IViewRenderingEngine, coreView: ICoreView, content: T): ViewFrame<T> {
         val viewFrame = ViewFrame(engine.androidContext, content)
         viewFrame.layoutParams = ViewGroup.LayoutParams(0, 0)
         with(engine) {
             coreView.width.subscribe {
-                viewFrame.layoutParams.width = toLayoutParam(it)
-                content.layoutParams.width = toLayoutParam(it)
-                content.requestLayout()
+                viewFrame.updateLayoutParams { params -> params.width = toLayoutParam(it) }
+                content.updateLayoutParams { params -> params.width = toLayoutParam(it) }
             }
             coreView.height.subscribe {
-                viewFrame.layoutParams.height = toLayoutParam(it)
-                content.layoutParams.height = toLayoutParam(it)
-                content.requestLayout()
+                viewFrame.updateLayoutParams { params -> params.height = toLayoutParam(it) }
+                content.updateLayoutParams { params -> params.height = toLayoutParam(it) }
             }
             coreView.indentTop.subscribe { setIndents(coreView, viewFrame) }
             coreView.indentBottom.subscribe { setIndents(coreView, viewFrame) }

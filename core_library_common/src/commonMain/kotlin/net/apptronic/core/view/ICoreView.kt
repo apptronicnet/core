@@ -8,10 +8,9 @@ import net.apptronic.core.view.base.CoreViewBuilder
 import net.apptronic.core.view.container.ICoreContainerView
 import net.apptronic.core.view.dimension.CoreDimension
 import net.apptronic.core.view.dimension.CoreLayoutDimension
-import net.apptronic.core.view.properties.HorizontalAlignment
-import net.apptronic.core.view.properties.PropertyAccess
-import net.apptronic.core.view.properties.VerticalAlignment
-import net.apptronic.core.view.properties.Visibility
+import net.apptronic.core.view.dimension.CoreLayoutSpec
+import net.apptronic.core.view.properties.*
+import net.apptronic.core.view.shape.rectangleShape
 
 /**
  * Specifies base properties for multiplatform view.
@@ -25,8 +24,8 @@ interface ICoreView : CoreViewBase, PropertyAccess, ViewPropertyOwner {
      */
     val detachedViewBuilder: CoreViewBuilder
 
-    val layoutAlignmentHorizontal: ViewProperty<HorizontalAlignment>
-    val layoutAlignmentVertical: ViewProperty<VerticalAlignment>
+    val layoutAlignmentHorizontal: ViewProperty<HorizontalAlignment?>
+    val layoutAlignmentVertical: ViewProperty<VerticalAlignment?>
 
     val width: ViewProperty<CoreLayoutDimension>
     val height: ViewProperty<CoreLayoutDimension>
@@ -60,15 +59,15 @@ interface ICoreView : CoreViewBase, PropertyAccess, ViewPropertyOwner {
         theme(viewTheme(builder))
     }
 
-    fun layoutAlignment(vertical: VerticalAlignment) {
+    fun layoutAlignment(vertical: VerticalAlignment?) {
         layoutAlignmentVertical.set(vertical)
     }
 
-    fun layoutAlignment(horizontal: HorizontalAlignment) {
+    fun layoutAlignment(horizontal: HorizontalAlignment?) {
         layoutAlignmentHorizontal.set(horizontal)
     }
 
-    fun layoutAlignment(horizontal: HorizontalAlignment, vertical: VerticalAlignment) {
+    fun layoutAlignment(horizontal: HorizontalAlignment?, vertical: VerticalAlignment?) {
         layoutAlignmentHorizontal.set(horizontal)
         layoutAlignmentVertical.set(vertical)
     }
@@ -81,6 +80,16 @@ interface ICoreView : CoreViewBase, PropertyAccess, ViewPropertyOwner {
         width.setDimension(source)
     }
 
+    fun width(size: CoreLayoutSpec) {
+        width.set(size)
+    }
+
+    fun widthSpec(source: Entity<CoreLayoutSpec>) {
+        source.subscribe(context) {
+            width(it)
+        }
+    }
+
     fun height(size: Number) {
         height.setDimension(size)
     }
@@ -89,17 +98,64 @@ interface ICoreView : CoreViewBase, PropertyAccess, ViewPropertyOwner {
         height.setDimension(source)
     }
 
+    fun height(size: CoreLayoutSpec) {
+        height.set(size)
+    }
+
+    fun heightSpec(source: Entity<CoreLayoutSpec>) {
+        source.subscribe(context) {
+            height(it)
+        }
+    }
+
     fun size(width: Number, height: Number) {
         width(width)
         height(height)
     }
 
+    fun size(width: CoreLayoutSpec, height: CoreLayoutSpec) {
+        width(width)
+        height(height)
+    }
+
+    fun size(width: CoreLayoutSpec, height: Number) {
+        width(width)
+        height(height)
+    }
+
+    fun size(width: Number, height: CoreLayoutSpec) {
+        width(width)
+        height(height)
+    }
+
     fun background(backgroundBuilder: CoreViewBuilder.() -> ICoreView) {
-        background.set(detachedViewBuilder.backgroundBuilder())
+        background.set(detachedViewBuilder.backgroundBuilder().apply {
+            width(FitToParent)
+            height(FitToParent)
+        })
     }
 
     fun foreground(backgroundBuilder: CoreViewBuilder.() -> ICoreView) {
-        foreground.set(detachedViewBuilder.backgroundBuilder())
+        foreground.set(detachedViewBuilder.backgroundBuilder().apply {
+            width(FitToParent)
+            height(FitToParent)
+        })
+    }
+
+    fun backgroundColor(value: CoreColor) {
+        background {
+            rectangleShape {
+                fillColor(value)
+            }
+        }
+    }
+
+    fun foregroundColor(value: CoreColor) {
+        foreground {
+            rectangleShape {
+                fillColor(value)
+            }
+        }
     }
 
     fun shadow(value: Number) {

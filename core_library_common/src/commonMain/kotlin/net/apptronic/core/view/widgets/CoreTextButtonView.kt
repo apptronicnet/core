@@ -3,8 +3,8 @@ package net.apptronic.core.view.widgets
 import net.apptronic.core.view.CoreView
 import net.apptronic.core.view.base.CoreViewBuilder
 import net.apptronic.core.view.context.CoreViewContext
+import net.apptronic.core.view.dimension.CoreDimension
 import net.apptronic.core.view.properties.Black
-import net.apptronic.core.view.properties.DefaultAlignment
 import net.apptronic.core.view.properties.HorizontalAlignment
 import net.apptronic.core.view.properties.VerticalAlignment
 import net.apptronic.core.view.widgets.commons.ICoreButtonView
@@ -16,7 +16,7 @@ class CoreTextButtonView(context: CoreViewContext) : CoreView(context), ICoreBut
 
     override val textColor = viewProperty(Black)
 
-    override val textSize = viewProperty<Number>(16)
+    override val textSize = viewProperty<CoreDimension>(16.dimension)
 
     override val onClick = viewProperty({})
 

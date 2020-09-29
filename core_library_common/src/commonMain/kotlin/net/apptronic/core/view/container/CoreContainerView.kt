@@ -3,7 +3,6 @@ package net.apptronic.core.view.container
 import net.apptronic.core.view.CoreView
 import net.apptronic.core.view.ICoreView
 import net.apptronic.core.view.context.CoreViewContext
-import net.apptronic.core.view.properties.DefaultAlignment
 import net.apptronic.core.view.properties.HorizontalAlignment
 import net.apptronic.core.view.properties.VerticalAlignment
 

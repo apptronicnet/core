@@ -24,14 +24,6 @@ object ContentViewAdapter : ViewTypeAdapter<ICoreContentView, View> {
 
     override fun applyViewAttributes(engine: IViewRenderingEngine, coreView: ICoreContentView, frame: View, content: View) {
         with(engine) {
-            if (content is RelativeLayout) {
-                coreView.contentAlignmentHorizontal.subscribe {
-                    content.setHorizontalGravity(it.getGravityInt())
-                }
-                coreView.contentAlignmentVertical.subscribe {
-                    content.setVerticalGravity(it.getGravityInt())
-                }
-            }
             if (content is TextView) {
                 withGravity(coreView) {
                     content.gravity = it

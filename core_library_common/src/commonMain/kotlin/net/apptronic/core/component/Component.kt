@@ -17,22 +17,13 @@ interface IComponent : Extendable, Contextual {
 
     val componentId: Long
 
-    fun onceStage(definition: LifecycleStageDefinition, key: String, action: () -> Unit) {
-        context.lifecycle[definition]?.doOnce(key, action)
-    }
+    fun onceStage(definition: LifecycleStageDefinition, key: String, action: () -> Unit)
 
-    fun onEnterStage(definition: LifecycleStageDefinition, callback: LifecycleStage.OnEnterHandler.() -> Unit) {
-        context.lifecycle[definition]?.doOnEnter(callback)
-    }
+    fun onEnterStage(definition: LifecycleStageDefinition, callback: LifecycleStage.OnEnterHandler.() -> Unit)
 
-    fun onExitStage(definition: LifecycleStageDefinition, callback: LifecycleStage.OnExitHandler.() -> Unit) {
-        context.lifecycle[definition]?.doOnExit(callback)
-    }
+    fun onExitStage(definition: LifecycleStageDefinition, callback: LifecycleStage.OnExitHandler.() -> Unit)
 
-    fun doOnTerminate(callback: LifecycleStage.OnExitHandler.() -> Unit) {
-        onExitStage(Lifecycle.ROOT_STAGE, callback)
-    }
-
+    fun doOnTerminate(callback: LifecycleStage.OnExitHandler.() -> Unit)
 
 }
 
@@ -41,6 +32,22 @@ abstract class Component : IComponent {
     final override val extensions: Extensions = Extensions()
 
     final override val componentId: Long = ComponentRegistry.nextId()
+
+    final override fun onceStage(definition: LifecycleStageDefinition, key: String, action: () -> Unit) {
+        context.lifecycle[definition]?.doOnce(key, action)
+    }
+
+    final override fun onEnterStage(definition: LifecycleStageDefinition, callback: LifecycleStage.OnEnterHandler.() -> Unit) {
+        context.lifecycle[definition]?.doOnEnter(callback)
+    }
+
+    final override fun onExitStage(definition: LifecycleStageDefinition, callback: LifecycleStage.OnExitHandler.() -> Unit) {
+        context.lifecycle[definition]?.doOnExit(callback)
+    }
+
+    final override fun doOnTerminate(callback: LifecycleStage.OnExitHandler.() -> Unit) {
+        onExitStage(Lifecycle.ROOT_STAGE, callback)
+    }
 
 }
 

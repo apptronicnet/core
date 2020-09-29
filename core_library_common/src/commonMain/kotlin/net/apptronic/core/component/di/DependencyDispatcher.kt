@@ -27,7 +27,7 @@ abstract class DependencyDispatcher : DependencyProvider {
      * @param instance instance which can be injected using this [DependencyDispatcher]
      * @param name optional name for instance
      */
-    inline fun <reified TypeDeclaration : Any> DependencyDispatcher.addInstance(
+    inline fun <reified TypeDeclaration : Any> addInstance(
             instance: TypeDeclaration
     ) {
         addInstance(TypeDeclaration::class, instance)

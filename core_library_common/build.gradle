@@ -2,7 +2,7 @@ buildscript {
     ext.kotlin_version = "1.4.10"
     ext.coroutines_version = "1.3.9"
     ext.junit_version = "4.12"
-    ext.library_core_version = "0.7.0"
+    ext.library_core_version = "0.8.mpp_view-0007"
     repositories {
         gradlePluginPortal()
         google()
@@ -19,8 +19,6 @@ buildscript {
 apply plugin: "kotlin-multiplatform"
 apply plugin: "kotlinx-serialization"
 apply plugin: "maven-publish"
-apply plugin: "com.android.library"
-apply plugin: "kotlin-android-extensions"
 
 repositories {
     gradlePluginPortal()
@@ -34,7 +32,6 @@ version = ext.library_core_version
 
 kotlin {
     jvm()
-    android()
     iosX64('ios') {
         binaries {
             framework {
@@ -60,18 +57,6 @@ kotlin {
                 implementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_version"
             }
         }
-        androidMain {
-            dependencies {
-                implementation "androidx.core:core:1.3.1"
-                implementation "androidx.core:core-ktx:1.2.0"
-                implementation "androidx.appcompat:appcompat:1.2.0"
-                implementation "com.google.android.material:material:1.2.1"
-                implementation "androidx.recyclerview:recyclerview:1.1.0"
-            }
-        }
-        androidTest {
-
-        }
         iosMain {
             dependencies {
                 implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-iosx64:$coroutines_version"
@@ -83,21 +68,6 @@ kotlin {
             tasks.getByName(compilations.main.compileKotlinTaskName).kotlinOptions {
                 jvmTarget = "1.8"
             }
-        }
-    }
-}
-
-android {
-    compileSdkVersion 30
-    defaultConfig {
-        minSdkVersion 23
-        targetSdkVersion 30
-        versionCode 1
-        versionName '1.0'
-    }
-    buildTypes {
-        debug {
-            minifyEnabled false
         }
     }
 }

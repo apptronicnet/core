@@ -1,24 +1,30 @@
 package net.apptronic.core.view.properties
 
-import net.apptronic.core.view.dimension.FitToContentDimension
-import net.apptronic.core.view.dimension.FitToParentDimension
+import net.apptronic.core.view.dimension.CoreDimension
+import net.apptronic.core.view.dimension.CoreLayoutSpec
 
 interface PropertyAccess {
 
-    val FitToParent: FitToParentDimension
-        get() = FitToParentDimension
-
-    val FitToContent: FitToContentDimension
-        get() = FitToContentDimension
+    val FitToParent: CoreLayoutSpec
+    val FitToContent: CoreLayoutSpec
 
     val Visible: Visibility
-        get() = Visibility.Visible
-
     val Invisible: Visibility
-        get() = Visibility.Invisible
-
     val Gone: Visibility
-        get() = Visibility.Gone
 
+    val Number.pixels: CoreDimension
+    val Number.dimension: CoreDimension
+    val CoreDimensionZero: CoreDimension
+
+    val ToLeft: HorizontalAlignment
+    val ToStart: HorizontalAlignment
+    val ToRight: HorizontalAlignment
+    val ToEnd: HorizontalAlignment
+    val ToTop: VerticalAlignment
+    val ToBottom: VerticalAlignment
+    val ToCenter: BidirectionalLayoutAlignment
+    val ToCenterVertical: VerticalAlignment
+    val ToCenterHorizontal: HorizontalAlignment
+    val DefaultAlignment: BidirectionalLayoutAlignment
 
 }

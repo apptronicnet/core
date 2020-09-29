@@ -4,9 +4,7 @@ import net.apptronic.core.view.CoreView
 import net.apptronic.core.view.base.CoreViewBuilder
 import net.apptronic.core.view.context.CoreViewContext
 import net.apptronic.core.view.dimension.CoreDimension
-import net.apptronic.core.view.dimension.dimension
 import net.apptronic.core.view.properties.Black
-import net.apptronic.core.view.properties.DefaultAlignment
 import net.apptronic.core.view.properties.HorizontalAlignment
 import net.apptronic.core.view.properties.VerticalAlignment
 import net.apptronic.core.view.widgets.commons.ICoreTextView

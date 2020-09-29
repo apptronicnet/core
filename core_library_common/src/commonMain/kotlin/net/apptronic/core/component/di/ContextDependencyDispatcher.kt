@@ -18,17 +18,6 @@ internal class ContextDependencyDispatcher(
     /**
      * Add external instance to this provider.
      * @param instance instance which can be injected using this [ContextDependencyDispatcher]
-     * @param name optional name for instance
-     */
-    inline fun <reified TypeDeclaration : Any> addInstance(
-            instance: TypeDeclaration
-    ) {
-        addInstance(TypeDeclaration::class, instance)
-    }
-
-    /**
-     * Add external instance to this provider.
-     * @param instance instance which can be injected using this [ContextDependencyDispatcher]
      * @param clazz optional class for this instance
      * @param name optional name for instance
      */

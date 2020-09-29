@@ -5,6 +5,6 @@ import net.apptronic.core.view.context.CoreViewContext
 
 class EmptyView(context: CoreViewContext) : CoreView(context)
 
-fun CoreViewBuilder.emptyView(builder: ICoreView.() -> Unit = {}) {
-    nextView(::EmptyView, builder)
+fun CoreViewBuilder.emptyView(builder: ICoreView.() -> Unit = {}): ICoreView {
+    return nextView(::EmptyView, builder)
 }
