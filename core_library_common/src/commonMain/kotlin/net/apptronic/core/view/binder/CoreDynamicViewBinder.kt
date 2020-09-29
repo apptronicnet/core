@@ -1,7 +1,6 @@
 package net.apptronic.core.view.binder
 
 import net.apptronic.core.component.entity.Entity
-import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.component.value
 import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.view.ICoreView
@@ -11,11 +10,11 @@ import net.apptronic.core.view.context.CoreViewContext
  * Multiplatform binding container. Allows to build [ICoreView] to be used by platform for creating platform
  * native layout.
  */
-abstract class CoreDynamicBinderView<T : IViewModel>(context: CoreViewContext) : CoreBinderView<T>(context) {
+abstract class CoreDynamicViewBinder<T : IViewModel>(context: CoreViewContext) : CoreViewBinder<T>(context) {
 
     private val viewModel = context.value<T>()
 
-    fun <E> member(referenceGetter: T.() -> E) : DynamicReference<E> {
+    fun <E> member(referenceGetter: T.() -> E): DynamicReference<E> {
         val reference = DynamicReferenceImpl(context, referenceGetter)
         viewModel.subscribe {
             reference.read(it)

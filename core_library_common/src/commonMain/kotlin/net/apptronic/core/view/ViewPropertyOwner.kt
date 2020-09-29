@@ -2,9 +2,9 @@ package net.apptronic.core.view
 
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.base.UpdateEntity
+import net.apptronic.core.component.entity.behavior.watch
 import net.apptronic.core.component.entity.entities.setAs
 import net.apptronic.core.component.entity.functions.map
-import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.component.entity.switchContext
 import net.apptronic.core.view.binder.DynamicEntityReference
 import net.apptronic.core.view.binder.DynamicReference
@@ -16,8 +16,12 @@ interface ViewPropertyOwner {
 
     val context: CoreViewContext
 
-    fun <T> viewProperty(initialValue: T): ViewProperty<T> {
-        return ViewPropertyImpl(context, initialValue)
+    fun <T> viewProperty(initialValue: T, onRecycle: ((T) -> Unit)? = null): ViewProperty<T> {
+        return ViewPropertyImpl(context, initialValue).also {
+            if (onRecycle != null) {
+                it.watch().forEachRecycledValue(onRecycle)
+            }
+        }
     }
 
     @Suppress("UNCHECKED_CAST")

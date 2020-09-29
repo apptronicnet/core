@@ -4,14 +4,6 @@ import net.apptronic.core.base.observable.extensions.DistinctUntilChangedObserve
 import net.apptronic.core.utils.EqComparator
 import net.apptronic.core.utils.SimpleEqComparator
 
-fun <T> Observable<T>.subscribe(callback: (T) -> Unit): Subscription {
-    return subscribe(object : Observer<T> {
-        override fun notify(value: T) {
-            callback.invoke(value)
-        }
-    })
-}
-
 fun <T> Observable<T>.distinctUntilChanged(eqComparator: EqComparator<T> = SimpleEqComparator()): Observable<T> {
     return DistinctUntilChangedObservable(this, eqComparator)
 }

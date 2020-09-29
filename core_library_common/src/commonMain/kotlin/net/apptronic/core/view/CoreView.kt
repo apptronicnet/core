@@ -13,8 +13,8 @@ import net.apptronic.core.view.properties.Visibility
 
 abstract class CoreView(final override val context: CoreViewContext) : ICoreView {
 
-    final override fun <T> viewProperty(initialValue: T): ViewProperty<T> {
-        return super.viewProperty(initialValue)
+    final override fun <T> viewProperty(initialValue: T, onRecycle: ((T) -> Unit)?): ViewProperty<T> {
+        return super.viewProperty(initialValue, onRecycle)
     }
 
     private class CoreDetachedViewBuilder(override val context: CoreViewContext) : CoreViewBuilder

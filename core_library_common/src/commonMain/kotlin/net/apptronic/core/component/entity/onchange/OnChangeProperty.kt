@@ -9,7 +9,6 @@ import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.base.EntityValue
 import net.apptronic.core.component.entity.base.ObservableEntity
 import net.apptronic.core.component.entity.entities.setAs
-import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.component.typedEvent
 import net.apptronic.core.component.value
 

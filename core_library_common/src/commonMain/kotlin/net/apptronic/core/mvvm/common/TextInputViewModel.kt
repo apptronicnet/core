@@ -3,7 +3,6 @@ package net.apptronic.core.mvvm.common
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.base.UpdateEntity
 import net.apptronic.core.component.entity.behavior.onSubscribe
-import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.component.typedEvent
 import net.apptronic.core.component.value
 import net.apptronic.core.mvvm.viewmodel.IViewModel

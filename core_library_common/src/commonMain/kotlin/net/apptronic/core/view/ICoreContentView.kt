@@ -6,7 +6,7 @@ import net.apptronic.core.view.binder.DynamicReference
 import net.apptronic.core.view.properties.HorizontalAlignment
 import net.apptronic.core.view.properties.VerticalAlignment
 
-interface CoreContentView : ICoreView {
+interface ICoreContentView : ICoreView {
 
     val contentAlignmentVertical: ViewProperty<VerticalAlignment>
     val contentAlignmentHorizontal: ViewProperty<HorizontalAlignment>

@@ -8,7 +8,6 @@ import net.apptronic.core.base.observable.subject.ValueHolder
 import net.apptronic.core.component.context.childContext
 import net.apptronic.core.component.context.terminate
 import net.apptronic.core.component.entity.Entity
-import net.apptronic.core.component.entity.subscribe
 
 fun <T> Entity<T>.createCondition(): Condition<T> {
     return Condition(this)

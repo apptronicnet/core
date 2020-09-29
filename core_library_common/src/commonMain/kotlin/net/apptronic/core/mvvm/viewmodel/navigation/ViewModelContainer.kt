@@ -3,11 +3,9 @@ package net.apptronic.core.mvvm.viewmodel.navigation
 import net.apptronic.core.base.SubscriptionHolders
 import net.apptronic.core.base.addTo
 import net.apptronic.core.base.observable.Observable
-import net.apptronic.core.base.observable.subscribe
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.entities.distinctUntilChanged
 import net.apptronic.core.component.entity.functions.and
-import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.component.lifecycle.LifecycleStageDefinition
 import net.apptronic.core.component.lifecycle.enterStage
 import net.apptronic.core.component.lifecycle.exitStage

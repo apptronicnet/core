@@ -5,7 +5,6 @@ import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.base.EntityValue
 import net.apptronic.core.component.entity.base.UpdateEntity
 import net.apptronic.core.component.entity.functions.toNullable
-import net.apptronic.core.component.entity.subscribe
 
 /**
  * Subscribe to updates of [source] and set all new values automatically

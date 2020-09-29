@@ -1,7 +1,6 @@
 package net.apptronic.core.component.entity.behavior
 
 import net.apptronic.core.assertListEquals
-import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.component.extensions.BaseComponent
 import net.apptronic.core.component.typedEvent
 import net.apptronic.core.testutils.testContext

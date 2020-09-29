@@ -5,7 +5,7 @@ import net.apptronic.core.view.ICoreView
 import net.apptronic.core.view.base.CoreViewBuilder
 import net.apptronic.core.view.context.CoreViewContext
 
-abstract class CoreBinderView<T : IViewModel>(final override val context: CoreViewContext) : CoreViewBuilder {
+abstract class CoreViewBinder<T : IViewModel>(final override val context: CoreViewContext) : CoreViewBuilder {
 
     abstract val view: ICoreView
 

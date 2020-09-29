@@ -5,7 +5,6 @@ import net.apptronic.core.base.observable.subject.ValueHolder
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.base.SubjectEntity
 import net.apptronic.core.component.entity.collectContext
-import net.apptronic.core.component.entity.subscribe
 
 /**
  * Use current entity as signal source and when it emits any value - send last value from [source]

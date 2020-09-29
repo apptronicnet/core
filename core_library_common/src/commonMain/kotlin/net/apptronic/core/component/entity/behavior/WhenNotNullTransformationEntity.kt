@@ -6,7 +6,6 @@ import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.base.SubjectEntity
 import net.apptronic.core.component.entity.base.subjectEntity
-import net.apptronic.core.component.entity.subscribe
 
 fun <Source, Result> Entity<Source?>.whenNotNull(
         transformation: (Entity<Source>) -> Entity<Result>

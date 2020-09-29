@@ -1,20 +1,21 @@
 package net.apptronic.core.view.widgets.commons
 
 import net.apptronic.core.component.entity.Entity
-import net.apptronic.core.view.CoreContentView
+import net.apptronic.core.view.ICoreContentView
 import net.apptronic.core.view.ICoreView
 import net.apptronic.core.view.ViewProperty
 import net.apptronic.core.view.binder.DynamicEntityReference
 import net.apptronic.core.view.binder.DynamicReference
+import net.apptronic.core.view.dimension.CoreDimension
 import net.apptronic.core.view.properties.CoreColor
 
-interface ICoreTextView : ICoreView, CoreContentView {
+interface ICoreTextView : ICoreView, ICoreContentView {
 
     val text: ViewProperty<String>
 
     val textColor: ViewProperty<CoreColor>
 
-    val textSize: ViewProperty<Number>
+    val textSize: ViewProperty<CoreDimension>
 
     fun text(value: String) {
         text.set(value)
@@ -49,19 +50,19 @@ interface ICoreTextView : ICoreView, CoreContentView {
     }
 
     fun textSize(value: Number) {
-        textSize.set(value)
+        textSize.setDimension(value)
     }
 
     fun textSize(source: Entity<Number>) {
-        textSize.set(source)
+        textSize.setDimension(source)
     }
 
     fun textSize(reference: DynamicReference<Number>) {
-        textSize.set(reference)
+        textSize.setDimension(reference)
     }
 
     fun textSize(referenceSource: DynamicEntityReference<Number, Entity<Number>>) {
-        textSize.set(referenceSource)
+        textSize.setDimension(referenceSource)
     }
 
 }

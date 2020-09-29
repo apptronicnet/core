@@ -5,7 +5,6 @@ import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.BaseEntity
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.EntitySubscription
-import net.apptronic.core.component.entity.subscribe
 
 internal class OnExceptionEntity<T>(
         val source: Entity<TryCatchResult<T>>,

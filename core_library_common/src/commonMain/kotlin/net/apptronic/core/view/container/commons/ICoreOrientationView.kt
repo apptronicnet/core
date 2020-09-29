@@ -22,7 +22,9 @@ interface ICoreOrientationView : ICoreView, CoreViewBuilder {
     }
 
     fun orientation(source: Entity<LayoutOrientation>) {
-        orientation.set(orientation)
+        source.subscribe(context) {
+            orientation(it)
+        }
     }
 
     fun orientation(value: DynamicReference<LayoutOrientation>) {
@@ -30,7 +32,9 @@ interface ICoreOrientationView : ICoreView, CoreViewBuilder {
     }
 
     fun orientation(source: DynamicEntityReference<LayoutOrientation, Entity<LayoutOrientation>>) {
-        orientation.set(orientation)
+        source.subscribeWith(context) {
+            orientation(it)
+        }
     }
 
     val Vertical: LayoutOrientation
@@ -45,8 +49,8 @@ interface ICoreOrientationView : ICoreView, CoreViewBuilder {
     fun spacerView(size: Number, builder: CoreSpacerView.() -> Unit = {}) {
         spacerView {
             when {
-                orientation.get() == Horizontal || orientation.get() == HorizontalReversed -> width(size)
-                orientation.get() == Vertical || orientation.get() == VerticalReversed -> height(size)
+                orientation.getValue() == Horizontal || orientation.getValue() == HorizontalReversed -> width(size)
+                orientation.getValue() == Vertical || orientation.getValue() == VerticalReversed -> height(size)
             }
             builder()
         }

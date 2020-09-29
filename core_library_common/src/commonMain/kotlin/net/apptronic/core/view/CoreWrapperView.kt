@@ -1,9 +1,7 @@
 package net.apptronic.core.view
 
-import net.apptronic.core.base.observable.subscribe
 import net.apptronic.core.component.context.terminate
 import net.apptronic.core.component.entity.Entity
-import net.apptronic.core.component.entity.behavior.watch
 import net.apptronic.core.view.base.CoreViewBuilder
 import net.apptronic.core.view.binder.DynamicEntityReference
 import net.apptronic.core.view.binder.DynamicReference
@@ -16,12 +14,8 @@ class CoreWrapperView internal constructor(context: CoreViewContext) : CoreView(
 
     private val wrapperBuilder = CoreWrapperBuilder(context)
 
-    val wrappedView = viewProperty<ICoreView?>(null)
-
-    init {
-        wrappedView.watch().forEachReplacedValue {
-            it?.context?.terminate()
-        }
+    val wrappedView = viewProperty<ICoreView?>(null) {
+        it?.context?.terminate()
     }
 
     val transitionSpec = viewProperty<Any?>(null)
@@ -37,7 +31,7 @@ class CoreWrapperView internal constructor(context: CoreViewContext) : CoreView(
     }
 
     fun <T> content(source: Entity<T>, builder: CoreViewBuilder.(T) -> Unit) {
-        source.subscribe {
+        source.subscribe(context) {
             wrapperBuilder.builder(it)
         }
     }
@@ -47,7 +41,7 @@ class CoreWrapperView internal constructor(context: CoreViewContext) : CoreView(
     }
 
     fun transitionSpec(source: Entity<Any?>) {
-        source.subscribe {
+        source.subscribe(context) {
             transitionSpec.set(it)
         }
     }

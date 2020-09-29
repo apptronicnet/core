@@ -3,7 +3,6 @@ package net.apptronic.core.component.entity.functions
 import kotlinx.coroutines.CoroutineScope
 import net.apptronic.core.base.observable.subject.BehaviorSubject
 import net.apptronic.core.base.observable.subject.ValueHolder
-import net.apptronic.core.base.observable.subscribe
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.coroutines.lifecycleCoroutineScope
 import net.apptronic.core.component.coroutines.serialThrottler

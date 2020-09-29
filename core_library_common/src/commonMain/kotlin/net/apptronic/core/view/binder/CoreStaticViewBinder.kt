@@ -8,6 +8,6 @@ import net.apptronic.core.view.context.CoreViewContext
  * Multiplatform binding container. Allows to build [ICoreView] to be used by platform for creating platform
  * native layout.
  */
-abstract class CoreStaticBinderView<T : IViewModel>(context: CoreViewContext) : CoreBinderView<T>(context) {
+abstract class CoreStaticViewBinder<T : IViewModel>(context: CoreViewContext) : CoreViewBinder<T>(context) {
 
 }

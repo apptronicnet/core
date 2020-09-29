@@ -5,7 +5,6 @@ import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.base.SubjectEntity
 import net.apptronic.core.component.entity.entities.asEvent
-import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.component.entity.switchContext
 
 /**

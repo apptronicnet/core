@@ -10,7 +10,6 @@ import net.apptronic.core.component.entity.entities.setAs
 import net.apptronic.core.component.entity.onchange.Next
 import net.apptronic.core.component.entity.onchange.OnChangeProperty
 import net.apptronic.core.component.entity.onchange.takeValue
-import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.component.entity.switchContext
 import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelListAdapter

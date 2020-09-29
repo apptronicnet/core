@@ -3,7 +3,6 @@ package net.apptronic.core.component.entity.behavior
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.base.RelayEntity
-import net.apptronic.core.component.entity.subscribe
 
 fun <T> Entity<T>.takeWhen(chooser: Entity<Boolean>, whileNotSet: Boolean = false): Entity<T> {
     return TakeWhenEntity(this, chooser, whileNotSet)

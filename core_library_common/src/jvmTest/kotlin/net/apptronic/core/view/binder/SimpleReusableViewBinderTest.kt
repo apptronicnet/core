@@ -37,7 +37,7 @@ private class SomeViewModel(context: ViewModelContext, val staticText: String) :
 }
 
 
-private class SampleDynamicBinderView(context: CoreViewContext) : CoreDynamicBinderView<SomeViewModel>(context) {
+private class SampleDynamicViewBinder(context: CoreViewContext) : CoreDynamicViewBinder<SomeViewModel>(context) {
 
     lateinit var textView: ICoreTextView
     lateinit var upperCasedTextView: ICoreTextView
@@ -75,7 +75,7 @@ class SimpleReusableViewBinderTest {
 
     private val context = testContext()
 
-    private val binder = SampleDynamicBinderView(CoreViewContext(ViewConfiguration(LayoutDirection.LeftToRight)))
+    private val binder = SampleDynamicViewBinder(CoreViewContext(ViewConfiguration(LayoutDirection.LeftToRight)))
 
     @Test
     fun verifyFlow() {
@@ -85,8 +85,8 @@ class SimpleReusableViewBinderTest {
         binder.nextViewModel(model1)
 
         model1.text.set("hello")
-        assertEquals(binder.textView.text.get(), "hello")
-        assertEquals(binder.upperCasedTextView.text.get(), "HELLO")
+        assertEquals(binder.textView.text.getValue(), "hello")
+        assertEquals(binder.upperCasedTextView.text.getValue(), "HELLO")
 
         fail("Not completed")
     }

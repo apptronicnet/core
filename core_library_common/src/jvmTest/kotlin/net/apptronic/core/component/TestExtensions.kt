@@ -1,7 +1,6 @@
 package net.apptronic.core.component
 
 import net.apptronic.core.base.observable.subject.ValueHolder
-import net.apptronic.core.base.observable.subscribe
 import net.apptronic.core.component.entity.Entity
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull

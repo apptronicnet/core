@@ -6,7 +6,6 @@ import net.apptronic.core.component.context.Contextual
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.entities.*
 import net.apptronic.core.component.entity.functions.onNextSuspend
-import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.component.timer.Timer
 import net.apptronic.core.component.timer.TimerTick
 

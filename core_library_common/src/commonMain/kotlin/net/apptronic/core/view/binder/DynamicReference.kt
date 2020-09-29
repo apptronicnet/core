@@ -5,7 +5,6 @@ import net.apptronic.core.base.observable.subject.BehaviorSubject
 import net.apptronic.core.base.observable.subject.Subject
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.base.SubjectEntity
-import net.apptronic.core.component.entity.subscribe
 
 /**
  * Specifies dynamically reading property from target type

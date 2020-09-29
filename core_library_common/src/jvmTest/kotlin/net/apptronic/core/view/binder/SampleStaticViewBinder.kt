@@ -48,7 +48,7 @@ val AppTheme = viewTheme {
     }
 }
 
-class SampleStaticBinderView(context: CoreViewContext, val viewModel: SampleViewModel) : CoreStaticBinderView<SampleViewModel>(context) {
+class SampleStaticViewBinder(context: CoreViewContext, val viewModel: SampleViewModel) : CoreStaticViewBinder<SampleViewModel>(context) {
 
     override val view = frameContainer {
         theme(AppTheme)

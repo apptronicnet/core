@@ -4,7 +4,6 @@ import kotlinx.coroutines.CoroutineScope
 import net.apptronic.core.base.observable.subject.asValueHolder
 import net.apptronic.core.base.observable.subject.unwrapValueHolder
 import net.apptronic.core.base.observable.subject.wrapValueHolder
-import net.apptronic.core.base.observable.subscribe
 import net.apptronic.core.component.context.Contextual
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.entities.Property

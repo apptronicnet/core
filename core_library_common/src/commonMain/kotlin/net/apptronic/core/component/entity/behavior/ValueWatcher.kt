@@ -5,7 +5,6 @@ import net.apptronic.core.base.observable.subject.ValueHolder
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.EntitySubscription
 import net.apptronic.core.component.entity.base.RelayEntity
-import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.component.entity.subscriptions.EntitySubscriptionListener
 import net.apptronic.core.component.lifecycle.LifecycleStage
 

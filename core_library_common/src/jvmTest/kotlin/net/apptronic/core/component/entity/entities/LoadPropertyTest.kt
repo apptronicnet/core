@@ -1,6 +1,5 @@
 package net.apptronic.core.component.entity.entities
 
-import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.component.extensions.BaseComponent
 import net.apptronic.core.testutils.testContext
 import org.junit.Test

@@ -4,8 +4,6 @@ import kotlinx.coroutines.CoroutineScope
 import net.apptronic.core.component.IComponent
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.base.ConstantEntity
-import net.apptronic.core.component.entity.subscribe
-import net.apptronic.core.component.entity.subscribeSuspend
 
 fun <T> Entity<T>.onNext(action: (T) -> Unit): Entity<T> {
     subscribe(action)

@@ -1,12 +1,12 @@
 package net.apptronic.core.view.widgets.commons
 
 import net.apptronic.core.component.entity.base.UpdateEntity
-import net.apptronic.core.view.CoreContentView
+import net.apptronic.core.view.ICoreContentView
 import net.apptronic.core.view.ViewProperty
 import net.apptronic.core.view.binder.DynamicEntityReference
 import net.apptronic.core.view.binder.DynamicReference
 
-interface ICoreButtonView : CoreContentView, IEnabledDisabledView {
+interface ICoreButtonView : ICoreContentView, IEnabledDisabledView {
 
     val onClick: ViewProperty<() -> Unit>
 

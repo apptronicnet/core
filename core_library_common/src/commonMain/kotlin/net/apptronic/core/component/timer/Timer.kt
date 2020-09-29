@@ -10,7 +10,6 @@ import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.coroutines.createContextCoroutineScope
 import net.apptronic.core.component.coroutines.createLifecycleCoroutineScope
 import net.apptronic.core.component.entity.Entity
-import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.component.typedEvent
 import net.apptronic.core.component.value
 

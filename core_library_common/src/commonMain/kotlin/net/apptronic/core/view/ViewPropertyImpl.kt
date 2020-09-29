@@ -3,14 +3,19 @@ package net.apptronic.core.view
 import net.apptronic.core.base.observable.subject.BehaviorSubject
 import net.apptronic.core.base.observable.subject.ValueHolder
 import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.base.EntityValue
 import net.apptronic.core.component.entity.base.SubjectEntity
 import net.apptronic.core.component.entity.base.UpdateEntity
 
-interface ViewProperty<T> : Entity<T>, EntityValue<T>
+interface ViewProperty<T> {
 
-internal class ViewPropertyImpl<T>(override val context: Context, initialValue: T) : SubjectEntity<T>(), ViewProperty<T>, UpdateEntity<T> {
+    fun getValue(): T
+
+    fun subscribeWith(targetContext: Context, callback: (T) -> Unit)
+
+}
+
+internal class ViewPropertyImpl<T>(override val context: Context, initialValue: T) : SubjectEntity<T>(), EntityValue<T>, ViewProperty<T>, UpdateEntity<T> {
 
     override val subject: BehaviorSubject<T> = BehaviorSubject<T>()
 
@@ -24,6 +29,18 @@ internal class ViewPropertyImpl<T>(override val context: Context, initialValue: 
 
     override fun update(value: T) {
         subject.update(value)
+    }
+
+    override fun getValue(): T {
+        return super.get()
+    }
+
+    override fun subscribeWith(targetContext: Context, callback: (T) -> Unit) {
+        if (targetContext == context) {
+            subscribe(callback)
+        } else {
+            subscribe(targetContext, callback)
+        }
     }
 
 }

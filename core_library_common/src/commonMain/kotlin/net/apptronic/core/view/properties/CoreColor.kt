@@ -1,6 +1,6 @@
 package net.apptronic.core.view.properties
 
-private fun Short.bounds(): Short {
+private fun Int.bounds(): Int {
     return when {
         this < 0 -> 0
         this > 255 -> 255
@@ -17,22 +17,25 @@ private fun Float.bounds(): Float {
 }
 
 data class CoreColor internal constructor(
-        val red: Short,
-        val green: Short,
-        val blue: Short,
+        val red: Int,
+        val green: Int,
+        val blue: Int,
         val alpha: Float,
 ) {
 
+    val alphaInt: Int
+        get() = (alpha * 255f).toInt()
+
     fun withRed(nextRed: Number): CoreColor {
-        return CoreColor(nextRed.toShort().bounds(), green, blue, alpha)
+        return CoreColor(nextRed.toInt().bounds(), green, blue, alpha)
     }
 
     fun withGreen(nextGreen: Number): CoreColor {
-        return CoreColor(red, nextGreen.toShort().bounds(), blue, alpha)
+        return CoreColor(red, nextGreen.toInt().bounds(), blue, alpha)
     }
 
     fun withBlue(nextBlue: Number): CoreColor {
-        return CoreColor(red, green, nextBlue.toShort().bounds(), alpha)
+        return CoreColor(red, green, nextBlue.toInt().bounds(), alpha)
     }
 
     fun withAlpha(nextAlpha: Number): CoreColor {
@@ -49,7 +52,7 @@ data class CoreColor internal constructor(
                 green: Number,
                 blue: Number
         ): CoreColor {
-            return CoreColor(red.toShort().bounds(), red.toShort().bounds(), red.toShort().bounds(), 1f)
+            return CoreColor(red.toInt().bounds(), red.toInt().bounds(), red.toInt().bounds(), 1f)
         }
 
         fun rgba(red: Number,
@@ -57,14 +60,14 @@ data class CoreColor internal constructor(
                  blue: Number,
                  alpha: Number
         ): CoreColor {
-            return CoreColor(red.toShort().bounds(), red.toShort().bounds(), red.toShort().bounds(), alpha.toFloat().bounds())
+            return CoreColor(red.toInt().bounds(), red.toInt().bounds(), red.toInt().bounds(), alpha.toFloat().bounds())
         }
 
         fun rgbHex(rgbHex: Int, alpha: Number = 1f): CoreColor {
             val redInt = rgbHex / 0x10000 % 0x100
             val greenInt = rgbHex / 0x100 % 0x100
             val blueInt = rgbHex % 0x100
-            return CoreColor(redInt.toShort(), greenInt.toShort(), blueInt.toShort(), alpha.toFloat().bounds())
+            return CoreColor(redInt.toInt(), greenInt.toInt(), blueInt.toInt(), alpha.toFloat().bounds())
         }
 
         fun argbHex(argbHex: Long): CoreColor {
@@ -72,15 +75,15 @@ data class CoreColor internal constructor(
             val redInt = argbHex / 0x10000 % 0x100
             val greenInt = argbHex / 0x100 % 0x100
             val blueInt = argbHex % 0x100
-            return CoreColor(redInt.toShort(), greenInt.toShort(), blueInt.toShort(), (alphaInt.toFloat() / 255f).bounds())
+            return CoreColor(redInt.toInt(), greenInt.toInt(), blueInt.toInt(), (alphaInt.toFloat() / 255f).bounds())
         }
 
     }
 
 }
 
-fun coreColor(red: Short, green: Short, blue: Short, alpha: Number = 1): CoreColor {
-    return CoreColor(red.bounds(), green.bounds(), blue.bounds(), alpha.toFloat().bounds())
+fun coreColor(red: Number, green: Number, blue: Number, alpha: Number = 1): CoreColor {
+    return CoreColor(red.toInt().bounds(), green.toInt().bounds(), blue.toInt().bounds(), alpha.toFloat().bounds())
 }
 
 val Transparent = coreColor(0, 0, 0, 0)

@@ -1,11 +1,11 @@
-package net.apptronic.core.component
+package net.apptronic.core.component.lifecycle
 
-import net.apptronic.core.base.observable.subscribe
+import net.apptronic.core.component.entity.ValueNotSetException
+import net.apptronic.core.component.value
+import net.apptronic.core.mvvm.viewmodel.extensions.copyValueFrom
+import net.apptronic.core.mvvm.viewmodel.extensions.functionOf
 import net.apptronic.core.testutils.BaseTestComponent
 import net.apptronic.core.testutils.TestLifecycle
-import net.apptronic.core.component.entity.ValueNotSetException
-import net.apptronic.core.mvvm.viewmodel.extensions.functionOf
-import net.apptronic.core.mvvm.viewmodel.extensions.copyValueFrom
 import org.junit.Test
 import kotlin.test.assertFailsWith
 

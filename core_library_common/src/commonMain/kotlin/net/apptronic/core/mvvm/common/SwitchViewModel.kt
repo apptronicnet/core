@@ -10,7 +10,6 @@ import net.apptronic.core.component.entity.entities.setTo
 import net.apptronic.core.component.entity.functions.and
 import net.apptronic.core.component.entity.functions.onNext
 import net.apptronic.core.component.entity.functions.onNextSuspend
-import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.component.typedEvent
 import net.apptronic.core.component.value
 import net.apptronic.core.mvvm.viewmodel.IViewModel

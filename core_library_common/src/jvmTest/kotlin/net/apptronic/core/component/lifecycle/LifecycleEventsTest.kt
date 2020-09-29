@@ -1,6 +1,7 @@
-package net.apptronic.core.component
+package net.apptronic.core.component.lifecycle
 
-import net.apptronic.core.base.observable.subscribe
+import net.apptronic.core.component.genericEvent
+import net.apptronic.core.component.typedEvent
 import net.apptronic.core.testutils.BaseTestComponent
 import net.apptronic.core.testutils.TestLifecycle
 import org.junit.Test

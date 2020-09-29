@@ -6,7 +6,6 @@ import net.apptronic.core.base.observable.subject.doIfSet
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.base.EntityValue
 import net.apptronic.core.component.entity.base.RelayEntity
-import net.apptronic.core.component.entity.subscribe
 
 fun <T> Entity<T>.asResendable(): ResendEntity<T> {
     return ResendOnSignalEntity(this)

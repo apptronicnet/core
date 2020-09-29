@@ -12,7 +12,6 @@ import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.behavior.delay
 import net.apptronic.core.component.entity.functions.not
 import net.apptronic.core.component.entity.functions.or
-import net.apptronic.core.component.entity.subscribe
 
 fun <T> IComponent.genericLoadProperty(lazy: Boolean = false, delay: Long = 0L, loadFunction: suspend CoroutineScope.(Unit) -> T): LoadProperty<Unit, T> {
     return LoadProperty<Unit, T>(context, delay, loadFunction).also { property ->

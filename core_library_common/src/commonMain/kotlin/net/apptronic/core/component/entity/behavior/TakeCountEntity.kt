@@ -5,7 +5,6 @@ import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.EntitySubscription
 import net.apptronic.core.component.entity.base.RelayEntity
-import net.apptronic.core.component.entity.subscribe
 
 fun <T> Entity<T>.withFirst(action: (T) -> Unit) {
     takeFirst().subscribe(action)

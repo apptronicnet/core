@@ -6,7 +6,6 @@ import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.context.dependencyModule
 import net.apptronic.core.component.coroutines.ManualDispatcher
 import net.apptronic.core.component.coroutines.contextCoroutineScope
-import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.component.extensions.BaseComponent
 import net.apptronic.core.component.inject
 import net.apptronic.core.component.value
