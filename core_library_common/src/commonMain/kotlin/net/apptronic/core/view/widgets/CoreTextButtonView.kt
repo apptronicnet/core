@@ -1,22 +1,22 @@
 package net.apptronic.core.view.widgets
 
 import net.apptronic.core.view.CoreView
-import net.apptronic.core.view.base.CoreViewBuilder
-import net.apptronic.core.view.context.CoreViewContext
-import net.apptronic.core.view.dimension.CoreDimension
-import net.apptronic.core.view.properties.Black
+import net.apptronic.core.view.CoreViewBuilder
+import net.apptronic.core.view.commons.ICoreButtonView
+import net.apptronic.core.view.commons.ICoreTextView
+import net.apptronic.core.view.properties.ColorBlack
 import net.apptronic.core.view.properties.HorizontalAlignment
 import net.apptronic.core.view.properties.VerticalAlignment
-import net.apptronic.core.view.widgets.commons.ICoreButtonView
-import net.apptronic.core.view.widgets.commons.ICoreTextView
 
-class CoreTextButtonView(context: CoreViewContext) : CoreView(context), ICoreButtonView, ICoreTextView {
+class CoreTextButtonView : CoreView(), ICoreButtonView, ICoreTextView {
 
     override val text = viewProperty("")
 
-    override val textColor = viewProperty(Black)
+    override val textColor = viewProperty(ColorBlack)
 
-    override val textSize = viewProperty<CoreDimension>(16.dimension)
+    override val textSize = viewProperty<Number>(16)
+
+    override val fontWeight = viewProperty(Medium)
 
     override val onClick = viewProperty({})
 
@@ -31,5 +31,5 @@ class CoreTextButtonView(context: CoreViewContext) : CoreView(context), ICoreBut
 }
 
 fun CoreViewBuilder.buttonTextView(builder: CoreTextButtonView.() -> Unit): CoreTextButtonView {
-    return nextView(::CoreTextButtonView, builder)
+    return onNextView(CoreTextButtonView(), builder)
 }

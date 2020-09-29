@@ -1,11 +1,9 @@
-package net.apptronic.core.view.container.commons
+package net.apptronic.core.view.containers.commons
 
 import net.apptronic.core.component.entity.Entity
+import net.apptronic.core.view.CoreViewBuilder
 import net.apptronic.core.view.ICoreView
 import net.apptronic.core.view.ViewProperty
-import net.apptronic.core.view.base.CoreViewBuilder
-import net.apptronic.core.view.binder.DynamicEntityReference
-import net.apptronic.core.view.binder.DynamicReference
 import net.apptronic.core.view.properties.LayoutOrientation
 import net.apptronic.core.view.widgets.CoreSpacerView
 import net.apptronic.core.view.widgets.spacerView
@@ -22,19 +20,7 @@ interface ICoreOrientationView : ICoreView, CoreViewBuilder {
     }
 
     fun orientation(source: Entity<LayoutOrientation>) {
-        source.subscribe(context) {
-            orientation(it)
-        }
-    }
-
-    fun orientation(value: DynamicReference<LayoutOrientation>) {
-        orientation.set(value)
-    }
-
-    fun orientation(source: DynamicEntityReference<LayoutOrientation, Entity<LayoutOrientation>>) {
-        source.subscribeWith(context) {
-            orientation(it)
-        }
+        orientation.set(source)
     }
 
     val Vertical: LayoutOrientation
@@ -49,8 +35,8 @@ interface ICoreOrientationView : ICoreView, CoreViewBuilder {
     fun spacerView(size: Number, builder: CoreSpacerView.() -> Unit = {}) {
         spacerView {
             when {
-                orientation.getValue() == Horizontal || orientation.getValue() == HorizontalReversed -> width(size)
-                orientation.getValue() == Vertical || orientation.getValue() == VerticalReversed -> height(size)
+                orientation.get() == Horizontal || orientation.get() == HorizontalReversed -> width(size)
+                orientation.get() == Vertical || orientation.get() == VerticalReversed -> height(size)
             }
             builder()
         }

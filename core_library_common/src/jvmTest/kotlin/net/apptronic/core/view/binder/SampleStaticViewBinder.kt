@@ -4,21 +4,18 @@ import net.apptronic.core.component.value
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 import net.apptronic.core.mvvm.viewmodel.adapter.BasicTransition
-import net.apptronic.core.view.container.frameContainer
-import net.apptronic.core.view.container.stackContainer
-import net.apptronic.core.view.context.CoreViewContext
+import net.apptronic.core.view.*
+import net.apptronic.core.view.commons.ICoreTextView
+import net.apptronic.core.view.containers.frameContainer
+import net.apptronic.core.view.containers.stackContainer
+import net.apptronic.core.view.properties.ColorRed
+import net.apptronic.core.view.properties.ColorWhite
 import net.apptronic.core.view.properties.CoreColor
-import net.apptronic.core.view.properties.Red
-import net.apptronic.core.view.properties.White
 import net.apptronic.core.view.shape.rectangleShape
-import net.apptronic.core.view.viewStyle
-import net.apptronic.core.view.viewTheme
 import net.apptronic.core.view.widgets.CoreTextButtonView
 import net.apptronic.core.view.widgets.CoreTextView
 import net.apptronic.core.view.widgets.buttonTextView
-import net.apptronic.core.view.widgets.commons.ICoreTextView
 import net.apptronic.core.view.widgets.textView
-import net.apptronic.core.view.wrapperView
 
 class SampleViewModel(context: ViewModelContext) : ViewModel(context) {
 
@@ -49,56 +46,57 @@ val AppTheme = viewTheme {
     }
 }
 
-class SampleStaticViewBinder(context: CoreViewContext, val viewModel: SampleViewModel) : CoreStaticViewBinder<SampleViewModel>(context) {
+class SampleStaticViewBinder(val viewModel: SampleViewModel) : CoreViewBinder<SampleViewModel> {
 
-    override val view = frameContainer {
-        theme(AppTheme)
-        background {
-            rectangleShape {
-                fillColor(White)
+    override val CoreViewBuilder.view: ICoreView
+        get() = frameContainer {
+            theme(AppTheme)
+            background {
+                rectangleShape {
+                    fillColor(ColorWhite)
+                }
             }
-        }
-        padding(32)
-        width(FitToParent)
-        height(FitToParent)
-        shadow(8)
-        stackContainer {
-            orientation(Vertical)
-            size(width = FitToContent, height = FitToContent)
-            contentAlignment(ToStart, ToTop)
-            layoutAlignment(ToCenter, ToCenter)
-            textView {
-                padding(horizontal = 30, vertical = 12.pixels)
-                text(viewModel.text)
-                textSize(16)
-            }
-            spacerView(8)
-            buttonTextView {
-                style(DefaultTextStyle)
-                text("Hello")
-                onClick(viewModel::onClick)
-                indent(16, end = 32)
-                background {
-                    rectangleShape {
-                        fillColor(Red)
-                        corners(all = 8)
+            padding(32)
+            width(FitToParent)
+            height(FitToParent)
+            shadow(8)
+            stackContainer {
+                orientation(Vertical)
+                size(width = FitToContent, height = FitToContent)
+                contentAlignment(ToStart, ToTop)
+                layoutAlignment(ToCenter, ToCenter)
+                textView {
+                    padding(horizontal = 30, vertical = 12.pixels)
+                    text(viewModel.text)
+                    textSize(16)
+                }
+                spacerView(8)
+                buttonTextView {
+                    style(DefaultTextStyle)
+                    text("Hello")
+                    onClick(viewModel::onClick)
+                    indent(16, end = 32)
+                    background {
+                        rectangleShape {
+                            fillColor(ColorRed)
+                            corners(all = 8)
+                        }
+                    }
+                }
+                spacerView(12)
+                dynamicContentView {
+                    size(64, 64)
+                    transitionSpec(BasicTransition.Fade)
+                    content(viewModel.timerValue) { timerTick ->
+                        textView {
+                            textSize(16)
+                            textColor(ColorRed)
+                            text(timerTick.toString())
+                        }
                     }
                 }
             }
-            spacerView(12)
-            wrapperView {
-                size(64, 64)
-                transitionSpec(BasicTransition.Fade)
-                content(viewModel.timerValue) { timerTick ->
-                    textView {
-                        textSize(16)
-                        textColor(Red)
-                        text(timerTick.toString())
-                    }
-                }
-            }
         }
-    }
 
 
 }

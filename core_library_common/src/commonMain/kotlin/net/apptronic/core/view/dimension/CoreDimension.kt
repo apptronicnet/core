@@ -1,6 +1,6 @@
 package net.apptronic.core.view.dimension
 
-abstract class CoreDimension(private val rawNumber: Float) : Number(), CoreLayoutDimension {
+abstract class CoreDimension(private val rawNumber: Float) : Number() {
 
     override fun toByte(): Byte = rawNumber.toInt().toByte()
 

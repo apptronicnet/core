@@ -1,48 +1,31 @@
 package net.apptronic.core.view
 
-import net.apptronic.core.base.observable.subject.BehaviorSubject
-import net.apptronic.core.base.observable.subject.ValueHolder
 import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.entity.base.EntityValue
-import net.apptronic.core.component.entity.base.SubjectEntity
-import net.apptronic.core.component.entity.base.UpdateEntity
-import net.apptronic.core.component.entity.entities.distinctUntilChanged
-import net.apptronic.core.component.entity.switchContext
+import net.apptronic.core.component.entity.behavior.watch
+import net.apptronic.core.component.value
 
-interface ViewProperty<T> {
+class ViewProperty<T> internal constructor(
+        private val context: Context, initialValue: T, private val onRecycle: ((T) -> Unit)?
+) {
 
-    fun getValue(): T
-
-    fun subscribeWith(targetContext: Context, callback: (T) -> Unit)
-
-}
-
-internal class ViewPropertyImpl<T>(override val context: Context, initialValue: T) : SubjectEntity<T>(), EntityValue<T>, ViewProperty<T>, UpdateEntity<T> {
-
-    override val subject: BehaviorSubject<T> = BehaviorSubject<T>()
+    private val entity = context.value(initialValue)
 
     init {
-        subject.update(initialValue)
-    }
-
-    override fun getValueHolder(): ValueHolder<T>? {
-        return subject.getValue()
-    }
-
-    override fun update(value: T) {
-        subject.update(value)
-    }
-
-    override fun getValue(): T {
-        return super.get()
-    }
-
-    override fun subscribeWith(targetContext: Context, callback: (T) -> Unit) {
-        if (targetContext == context) {
-            distinctUntilChanged().subscribe(callback)
-        } else {
-            switchContext(targetContext).distinctUntilChanged().subscribe(callback)
+        if (onRecycle != null) {
+            entity.watch().forEachRecycledValue(onRecycle)
         }
+    }
+
+    internal fun setValue(value: T) {
+        entity.set(value)
+    }
+
+    fun get(): T {
+        return entity.get()
+    }
+
+    internal fun subscribeWith(targetContext: Context, callback: (T) -> Unit) {
+        entity.subscribe(targetContext, callback)
     }
 
 }

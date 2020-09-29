@@ -3,26 +3,23 @@ package net.apptronic.core.view
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.functions.map
 import net.apptronic.core.component.entity.switchContext
-import net.apptronic.core.view.base.CoreViewBase
-import net.apptronic.core.view.base.CoreViewBuilder
-import net.apptronic.core.view.container.ICoreContainerView
-import net.apptronic.core.view.dimension.CoreDimension
+import net.apptronic.core.view.containers.ICoreContainerView
 import net.apptronic.core.view.dimension.CoreLayoutDimension
-import net.apptronic.core.view.dimension.CoreLayoutSpec
-import net.apptronic.core.view.properties.*
-import net.apptronic.core.view.shape.rectangleShape
+import net.apptronic.core.view.properties.HorizontalAlignment
+import net.apptronic.core.view.properties.PropertyAccess
+import net.apptronic.core.view.properties.VerticalAlignment
+import net.apptronic.core.view.properties.Visibility
 
 /**
  * Specifies base properties for multiplatform view.
  *
  * Used by target platforms to generate native views and layouts and update according to it's properties.
  */
-interface ICoreView : CoreViewBase, PropertyAccess, ViewPropertyOwner {
+interface ICoreView : PropertyAccess {
 
-    /**
-     * [CoreViewBuilder] instance which allows to manually manipulate with creates views and not adds them anywhere.
-     */
-    val detachedViewBuilder: CoreViewBuilder
+    val context: CoreViewContext
+
+    val themes: List<CoreViewStyle>
 
     val layoutAlignmentHorizontal: ViewProperty<HorizontalAlignment?>
     val layoutAlignmentVertical: ViewProperty<VerticalAlignment?>
@@ -30,20 +27,21 @@ interface ICoreView : CoreViewBase, PropertyAccess, ViewPropertyOwner {
     val width: ViewProperty<CoreLayoutDimension>
     val height: ViewProperty<CoreLayoutDimension>
 
-    val paddingTop: ViewProperty<CoreDimension>
-    val paddingBottom: ViewProperty<CoreDimension>
-    val paddingStart: ViewProperty<CoreDimension>
-    val paddingEnd: ViewProperty<CoreDimension>
-    val indentTop: ViewProperty<CoreDimension>
-    val indentBottom: ViewProperty<CoreDimension>
-    val indentStart: ViewProperty<CoreDimension>
-    val indentEnd: ViewProperty<CoreDimension>
+    val paddingTop: ViewProperty<Number>
+    val paddingBottom: ViewProperty<Number>
+    val paddingLeft: ViewProperty<Number>
+    val paddingRight: ViewProperty<Number>
+    val paddingStart: ViewProperty<Number>
+    val paddingEnd: ViewProperty<Number>
+    val indentTop: ViewProperty<Number>
+    val indentBottom: ViewProperty<Number>
+    val indentLeft: ViewProperty<Number>
+    val indentRight: ViewProperty<Number>
+    val indentStart: ViewProperty<Number>
+    val indentEnd: ViewProperty<Number>
 
-    val shadow: ViewProperty<CoreDimension>
+    val shadow: ViewProperty<Number>
     val visibility: ViewProperty<Visibility>
-
-    val background: ViewProperty<ICoreView?>
-    val foreground: ViewProperty<ICoreView?>
 
     /**
      * Apply all [style]s to this [ICoreView]
@@ -60,52 +58,32 @@ interface ICoreView : CoreViewBase, PropertyAccess, ViewPropertyOwner {
     }
 
     fun layoutAlignment(vertical: VerticalAlignment?) {
-        layoutAlignmentVertical.set(vertical)
+        layoutAlignmentVertical.setValue(vertical)
     }
 
     fun layoutAlignment(horizontal: HorizontalAlignment?) {
-        layoutAlignmentHorizontal.set(horizontal)
+        layoutAlignmentHorizontal.setValue(horizontal)
     }
 
     fun layoutAlignment(horizontal: HorizontalAlignment?, vertical: VerticalAlignment?) {
-        layoutAlignmentHorizontal.set(horizontal)
-        layoutAlignmentVertical.set(vertical)
+        layoutAlignmentHorizontal.setValue(horizontal)
+        layoutAlignmentVertical.setValue(vertical)
     }
 
-    fun width(size: Number) {
-        width.setDimension(size)
+    fun width(value: Number) {
+        width.setValue(CoreLayoutDimension(value))
     }
 
-    fun width(source: Entity<Number>) {
-        width.setDimension(source)
+    fun width(value: CoreLayoutDimension) {
+        width.setValue(value)
     }
 
-    fun width(size: CoreLayoutSpec) {
-        width.set(size)
+    fun height(value: Number) {
+        height.setValue(CoreLayoutDimension(value))
     }
 
-    fun widthSpec(source: Entity<CoreLayoutSpec>) {
-        source.subscribe(context) {
-            width(it)
-        }
-    }
-
-    fun height(size: Number) {
-        height.setDimension(size)
-    }
-
-    fun height(source: Entity<Number>) {
-        height.setDimension(source)
-    }
-
-    fun height(size: CoreLayoutSpec) {
-        height.set(size)
-    }
-
-    fun heightSpec(source: Entity<CoreLayoutSpec>) {
-        source.subscribe(context) {
-            height(it)
-        }
+    fun height(value: CoreLayoutDimension) {
+        height.setValue(value)
     }
 
     fun size(width: Number, height: Number) {
@@ -113,69 +91,39 @@ interface ICoreView : CoreViewBase, PropertyAccess, ViewPropertyOwner {
         height(height)
     }
 
-    fun size(width: CoreLayoutSpec, height: CoreLayoutSpec) {
+    fun size(width: CoreLayoutDimension, height: CoreLayoutDimension) {
         width(width)
         height(height)
     }
 
-    fun size(width: CoreLayoutSpec, height: Number) {
+    fun size(width: CoreLayoutDimension, height: Number) {
         width(width)
         height(height)
     }
 
-    fun size(width: Number, height: CoreLayoutSpec) {
+    fun size(width: Number, height: CoreLayoutDimension) {
         width(width)
         height(height)
-    }
-
-    fun background(backgroundBuilder: CoreViewBuilder.() -> ICoreView) {
-        background.set(detachedViewBuilder.backgroundBuilder().apply {
-            width(FitToParent)
-            height(FitToParent)
-        })
-    }
-
-    fun foreground(backgroundBuilder: CoreViewBuilder.() -> ICoreView) {
-        foreground.set(detachedViewBuilder.backgroundBuilder().apply {
-            width(FitToParent)
-            height(FitToParent)
-        })
-    }
-
-    fun backgroundColor(value: CoreColor) {
-        background {
-            rectangleShape {
-                fillColor(value)
-            }
-        }
-    }
-
-    fun foregroundColor(value: CoreColor) {
-        foreground {
-            rectangleShape {
-                fillColor(value)
-            }
-        }
     }
 
     fun shadow(value: Number) {
-        shadow.setDimension(value)
+        shadow.setValue(value)
     }
 
     fun visibility(value: Visibility) {
-        visibility.set(value)
+        visibility.setValue(value)
     }
 
     fun visibility(source: Entity<Visibility>) {
-        visibility.set(source)
+        visibility.setValue(source)
     }
 
     fun visibleInvisible(source: Entity<Boolean>) {
-        visibility.set(source.switchContext(context).map { if (it) Visible else Invisible })
+        visibility.setValue(source.switchContext(context).map { if (it) Visible else Invisible })
     }
 
     fun visibleGone(source: Entity<Boolean>) {
-        visibility.set(source.switchContext(context).map { if (it) Visible else Gone })
+        visibility.setValue(source.switchContext(context).map { if (it) Visible else Gone })
     }
 
     fun indent(
@@ -201,67 +149,51 @@ interface ICoreView : CoreViewBase, PropertyAccess, ViewPropertyOwner {
     }
 
     fun indentStart(value: Number) {
-        indentStart.setDimension(value)
+        indentStart.setValue(value)
     }
 
     fun indentEnd(value: Number) {
-        indentEnd.setDimension(value)
+        indentEnd.setValue(value)
     }
 
     fun indentLeft(value: Number) {
-        if (isLTR) {
-            indentStart.setDimension(value)
-        } else {
-            indentEnd.setDimension(value)
-        }
+        indentLeft.setValue(value)
     }
 
     fun indentRight(value: Number) {
-        if (isLTR) {
-            indentEnd.setDimension(value)
-        } else {
-            indentStart.setDimension(value)
-        }
+        indentRight.setValue(value)
     }
 
     fun indentTop(value: Number) {
-        indentTop.setDimension(value)
+        indentTop.setValue(value)
     }
 
     fun indentBottom(value: Number) {
-        indentBottom.setDimension(value)
+        indentBottom.setValue(value)
     }
 
     fun indentStart(source: Entity<Number>) {
-        indentStart.setDimension(source)
+        indentStart.setValue(source)
     }
 
     fun indentEnd(source: Entity<Number>) {
-        indentEnd.setDimension(source)
+        indentEnd.setValue(source)
     }
 
     fun indentLeft(source: Entity<Number>) {
-        if (isLTR) {
-            indentStart.setDimension(source)
-        } else {
-            indentEnd.setDimension(source)
-        }
+        indentLeft.setValue(source)
     }
 
     fun indentRight(source: Entity<Number>) {
-        if (isLTR) {
-            indentEnd.setDimension(source)
-        } else {
-            indentStart.setDimension(source)
-        }
+        indentRight.setValue(source)
     }
 
     fun indentTop(source: Entity<Number>) {
-        indentTop.setDimension(source)
+        indentTop.setValue(source)
     }
 
     fun indentBottom(source: Entity<Number>) {
-        indentBottom.setDimension(source)
+        indentBottom.setValue(source)
     }
 
     fun padding(
@@ -287,67 +219,51 @@ interface ICoreView : CoreViewBase, PropertyAccess, ViewPropertyOwner {
     }
 
     fun paddingStart(value: Number) {
-        paddingStart.setDimension(value)
+        paddingStart.setValue(value)
     }
 
     fun paddingEnd(value: Number) {
-        paddingEnd.setDimension(value)
+        paddingEnd.setValue(value)
     }
 
     fun paddingLeft(value: Number) {
-        if (isLTR) {
-            paddingStart.setDimension(value)
-        } else {
-            paddingEnd.setDimension(value)
-        }
+        paddingLeft.setValue(value)
     }
 
     fun paddingRight(value: Number) {
-        if (isLTR) {
-            paddingEnd.setDimension(value)
-        } else {
-            paddingStart.setDimension(value)
-        }
+        paddingRight.setValue(value)
     }
 
     fun paddingTop(value: Number) {
-        paddingTop.setDimension(value)
+        paddingTop.setValue(value)
     }
 
     fun paddingBottom(value: Number) {
-        paddingBottom.setDimension(value)
+        paddingBottom.setValue(value)
     }
 
     fun paddingStart(source: Entity<Number>) {
-        paddingStart.setDimension(source)
+        paddingStart.setValue(source)
     }
 
     fun paddingEnd(source: Entity<Number>) {
-        paddingEnd.setDimension(source)
+        paddingEnd.setValue(source)
     }
 
     fun paddingLeft(source: Entity<Number>) {
-        if (isLTR) {
-            paddingStart.setDimension(source)
-        } else {
-            paddingEnd.setDimension(source)
-        }
+        paddingLeft.setValue(source)
     }
 
     fun paddingRight(source: Entity<Number>) {
-        if (isLTR) {
-            paddingEnd.setDimension(source)
-        } else {
-            paddingStart.setDimension(source)
-        }
+        paddingRight.setValue(source)
     }
 
     fun paddingTop(source: Entity<Number>) {
-        paddingTop.setDimension(source)
+        paddingTop.setValue(source)
     }
 
     fun paddingBottom(source: Entity<Number>) {
-        paddingBottom.setDimension(source)
+        paddingBottom.setValue(source)
     }
 
 }

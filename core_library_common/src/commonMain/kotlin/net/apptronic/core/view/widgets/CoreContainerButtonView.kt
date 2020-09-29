@@ -1,14 +1,13 @@
 package net.apptronic.core.view.widgets
 
 import net.apptronic.core.view.CoreView
-import net.apptronic.core.view.base.CoreViewBuilder
-import net.apptronic.core.view.container.CoreContainerView
-import net.apptronic.core.view.context.CoreViewContext
+import net.apptronic.core.view.CoreViewBuilder
+import net.apptronic.core.view.commons.ICoreButtonView
+import net.apptronic.core.view.containers.CoreContainerView
 import net.apptronic.core.view.properties.HorizontalAlignment
 import net.apptronic.core.view.properties.VerticalAlignment
-import net.apptronic.core.view.widgets.commons.ICoreButtonView
 
-open class CoreContainerButtonView(context: CoreViewContext) : CoreContainerView(context), ICoreButtonView {
+open class CoreContainerButtonView internal constructor() : CoreContainerView(), ICoreButtonView {
 
     override var onClick = viewProperty({})
 
@@ -23,5 +22,5 @@ open class CoreContainerButtonView(context: CoreViewContext) : CoreContainerView
 }
 
 fun CoreViewBuilder.buttonContainerView(builder: CoreContainerButtonView.() -> Unit): CoreView {
-    return nextView(::CoreContainerButtonView, builder)
+    return onNextView(CoreContainerButtonView(), builder)
 }

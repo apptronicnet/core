@@ -1,18 +1,17 @@
 package net.apptronic.core.view.binder
 
-import net.apptronic.core.component.entity.functions.map
 import net.apptronic.core.component.genericEvent
 import net.apptronic.core.component.value
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 import net.apptronic.core.testutils.testContext
+import net.apptronic.core.view.CoreViewContext
 import net.apptronic.core.view.base.ViewConfiguration
-import net.apptronic.core.view.container.stackContainer
-import net.apptronic.core.view.context.CoreViewContext
+import net.apptronic.core.view.commons.ICoreButtonView
+import net.apptronic.core.view.commons.ICoreTextView
+import net.apptronic.core.view.containers.stackContainer
 import net.apptronic.core.view.properties.LayoutDirection
 import net.apptronic.core.view.widgets.buttonTextView
-import net.apptronic.core.view.widgets.commons.ICoreButtonView
-import net.apptronic.core.view.widgets.commons.ICoreTextView
 import net.apptronic.core.view.widgets.textView
 
 private class SomeViewModel(context: ViewModelContext, val staticText: String) : ViewModel(context) {

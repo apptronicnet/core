@@ -1,21 +1,21 @@
 package net.apptronic.core.view.widgets
 
 import net.apptronic.core.view.CoreView
-import net.apptronic.core.view.base.CoreViewBuilder
-import net.apptronic.core.view.context.CoreViewContext
-import net.apptronic.core.view.dimension.CoreDimension
-import net.apptronic.core.view.properties.Black
+import net.apptronic.core.view.CoreViewBuilder
+import net.apptronic.core.view.commons.ICoreTextView
+import net.apptronic.core.view.properties.ColorBlack
 import net.apptronic.core.view.properties.HorizontalAlignment
 import net.apptronic.core.view.properties.VerticalAlignment
-import net.apptronic.core.view.widgets.commons.ICoreTextView
 
-open class CoreTextView internal constructor(context: CoreViewContext) : CoreView(context), ICoreTextView {
+open class CoreTextView internal constructor() : CoreView(), ICoreTextView {
 
     override var text = viewProperty("")
 
-    override var textColor = viewProperty(Black)
+    override var textColor = viewProperty(ColorBlack)
 
-    override var textSize = viewProperty<CoreDimension>(16.dimension)
+    override var fontWeight = viewProperty(Regular)
+
+    override var textSize = viewProperty<Number>(16)
 
     override var contentAlignmentHorizontal = viewProperty<HorizontalAlignment>(DefaultAlignment)
 
@@ -24,5 +24,5 @@ open class CoreTextView internal constructor(context: CoreViewContext) : CoreVie
 }
 
 fun CoreViewBuilder.textView(builder: CoreTextView.() -> Unit): CoreTextView {
-    return nextView(::CoreTextView, builder)
+    return onNextView(CoreTextView(), builder)
 }
