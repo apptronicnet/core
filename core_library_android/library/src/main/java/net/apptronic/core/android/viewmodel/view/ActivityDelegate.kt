@@ -3,13 +3,13 @@ package net.apptronic.core.android.viewmodel.view
 import android.app.Activity
 import android.view.View
 import net.apptronic.core.android.viewmodel.ViewBinder
-import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 
-open class ActivityDelegate<T : ViewModel> {
+open class ActivityDelegate<T : IViewModel> {
 
     @Suppress("UNCHECKED_CAST")
     fun performCreateActivityView(
-        viewModel: ViewModel,
+        viewModel: IViewModel,
         viewBinder: ViewBinder<*>,
         activity: Activity
     ): View {
@@ -31,7 +31,7 @@ open class ActivityDelegate<T : ViewModel> {
 
     @Suppress("UNCHECKED_CAST")
     fun performAttachActivityView(
-        viewModel: ViewModel,
+        viewModel: IViewModel,
         viewBinder: ViewBinder<*>,
         activity: Activity,
         view: View

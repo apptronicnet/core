@@ -3,12 +3,12 @@ package net.apptronic.core.android.viewmodel
 import android.app.Activity
 import net.apptronic.core.android.plugins.getViewBinderFactoryFromExtension
 import net.apptronic.core.android.viewmodel.view.ActivityDelegate
-import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.dispatcher.ViewContainer
 import net.apptronic.core.mvvm.viewmodel.dispatcher.ViewModelDispatcher
 import net.apptronic.core.mvvm.viewmodel.navigation.ViewModelLifecycleController
 
-fun <T : ViewModel> Activity.activityContainer(
+fun <T : IViewModel> Activity.activityContainer(
     dispatcher: ViewModelDispatcher<T>,
     activityBinder: ViewBinder<T>
 ): ActivityViewContainer<T> {
@@ -22,7 +22,7 @@ fun <T : ViewModel> Activity.activityContainer(
     }
 }
 
-fun <T : ViewModel> Activity.activityContainer(
+fun <T : IViewModel> Activity.activityContainer(
     dispatcher: ViewModelDispatcher<T>,
     factory: ViewBinderFactory? = null
 ): ActivityViewContainer<T> {
@@ -40,7 +40,7 @@ fun <T : ViewModel> Activity.activityContainer(
     }
 }
 
-interface ActivityViewContainer<T : ViewModel> {
+interface ActivityViewContainer<T : IViewModel> {
 
     enum class DestroyBehavior {
         TerminateAlways,
@@ -64,7 +64,7 @@ interface ActivityViewContainer<T : ViewModel> {
 
 }
 
-private class ActivityViewContainerImpl<T : ViewModel>(
+private class ActivityViewContainerImpl<T : IViewModel>(
     private val activity: Activity,
     private val dispatcher: ViewModelDispatcher<T>,
     private val onBindAction: (T) -> Unit

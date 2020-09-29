@@ -1,10 +1,10 @@
 package net.apptronic.test.commons_sample_app.list
 
-import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 
 interface ListController {
 
-    fun onRemoveRequest(viewModel: ViewModel)
+    fun onRemoveRequest(viewModel: IViewModel)
 
     fun onVisible(name: String)
 

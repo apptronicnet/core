@@ -11,7 +11,7 @@ import net.apptronic.core.android.viewmodel.listadapters.RecyclerViewAdapter
 import net.apptronic.core.android.viewmodel.navigation.ViewBinderListAdapter
 import net.apptronic.core.android.viewmodel.style.list.ListItemStyleAdapter
 import net.apptronic.core.android.viewmodel.style.list.emptyStyleAdapter
-import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.navigation.BaseListNavigator
 
 fun BindingContainer.bindListNavigator(
@@ -35,7 +35,7 @@ class ListNavigatorBinding(
     private val bindingStrategy: BindingStrategy
 ) : Binding() {
 
-    override fun onBind(viewModel: ViewModel, viewBinder: ViewBinder<*>) {
+    override fun onBind(viewModel: IViewModel, viewBinder: ViewBinder<*>) {
         val viewModelAdapter =
             ViewBinderListAdapter(
                 factory,

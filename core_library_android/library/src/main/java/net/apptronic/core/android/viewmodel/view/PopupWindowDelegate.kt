@@ -5,13 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.PopupWindow
 import net.apptronic.core.android.viewmodel.ViewBinder
-import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 
-open class PopupWindowDelegate<T : ViewModel> {
+open class PopupWindowDelegate<T : IViewModel> {
 
     @Suppress("UNCHECKED_CAST")
     fun performCreatePopupWindow(
-        viewModel: ViewModel,
+        viewModel: IViewModel,
         viewBinder: ViewBinder<*>,
         context: Context
     ): PopupWindow {
@@ -28,7 +28,7 @@ open class PopupWindowDelegate<T : ViewModel> {
 
     @Suppress("UNCHECKED_CAST")
     fun performCreatePopupView(
-        viewModel: ViewModel,
+        viewModel: IViewModel,
         viewBinder: ViewBinder<*>,
         context: Context
     ): View {
@@ -47,7 +47,7 @@ open class PopupWindowDelegate<T : ViewModel> {
 
     @Suppress("UNCHECKED_CAST")
     fun performAttachPopupView(
-        viewModel: ViewModel,
+        viewModel: IViewModel,
         viewBinder: ViewBinder<*>,
         popup: PopupWindow,
         view: View
@@ -66,7 +66,7 @@ open class PopupWindowDelegate<T : ViewModel> {
 
     @Suppress("UNCHECKED_CAST")
     fun performShowPopupAsAnchor(
-        viewModel: ViewModel,
+        viewModel: IViewModel,
         viewBinder: ViewBinder<*>,
         popup: PopupWindow,
         anchor: View,
@@ -93,7 +93,7 @@ open class PopupWindowDelegate<T : ViewModel> {
 
     @Suppress("UNCHECKED_CAST")
     fun performShowPopupAtLocation(
-        viewModel: ViewModel,
+        viewModel: IViewModel,
         viewBinder: ViewBinder<*>,
         popup: PopupWindow,
         container: View,
@@ -119,7 +119,7 @@ open class PopupWindowDelegate<T : ViewModel> {
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun performPopupShown(viewModel: ViewModel, viewBinder: ViewBinder<*>, popup: PopupWindow) {
+    fun performPopupShown(viewModel: IViewModel, viewBinder: ViewBinder<*>, popup: PopupWindow) {
         onPopupShown(viewModel as T, viewBinder as ViewBinder<T>, popup)
     }
 
@@ -133,7 +133,7 @@ open class PopupWindowDelegate<T : ViewModel> {
 
     @Suppress("UNCHECKED_CAST")
     fun performDismissPopup(
-        viewModel: ViewModel,
+        viewModel: IViewModel,
         viewBinder: ViewBinder<*>,
         popup: PopupWindow,
         transitionSpec: Any?

@@ -4,7 +4,6 @@ import net.apptronic.core.commons.navigation.injectNavigationRouter
 import net.apptronic.core.component.context.Contextual
 import net.apptronic.core.component.context.viewModelContext
 import net.apptronic.core.component.entity.entities.setAs
-import net.apptronic.core.component.entity.entities.subscribe
 import net.apptronic.core.component.entity.functions.*
 import net.apptronic.core.component.genericEvent
 import net.apptronic.core.component.inject

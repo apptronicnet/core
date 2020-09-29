@@ -1,11 +1,11 @@
 package net.apptronic.core.android.viewmodel.style.list
 
 import android.view.View
-import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 
 interface BasicListItemStyleAdapter : ListItemStyleAdapter {
 
-    override fun applyViewStyle(view: View, position: Int, list: List<ViewModel>) {
+    override fun applyViewStyle(view: View, position: Int, list: List<IViewModel>) {
         val previous = list.getOrNull(position - 1)
         val current = list[position]
         val next = list.getOrNull(position + 1)
@@ -13,7 +13,7 @@ interface BasicListItemStyleAdapter : ListItemStyleAdapter {
     }
 
     fun applyViewStyle(
-        view: View, previous: ViewModel?, current: ViewModel, next: ViewModel?
+        view: View, previous: IViewModel?, current: IViewModel, next: IViewModel?
     )
 
 }

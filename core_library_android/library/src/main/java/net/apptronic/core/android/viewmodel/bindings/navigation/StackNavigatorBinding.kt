@@ -8,7 +8,7 @@ import net.apptronic.core.android.viewmodel.BindingContainer
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.ViewBinderFactory
 import net.apptronic.core.android.viewmodel.navigation.ViewBinderStackAdapter
-import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.navigation.StackNavigator
 
 fun BindingContainer.bindStackNavigator(
@@ -42,7 +42,7 @@ private class StackNavigatorBinding(
     private val defaultAnimationTime: Long
 ) : Binding() {
 
-    override fun onBind(viewModel: ViewModel, viewBinder: ViewBinder<*>) {
+    override fun onBind(viewModel: IViewModel, viewBinder: ViewBinder<*>) {
         navigator.setAdapter(
             ViewBinderStackAdapter(
                 viewGroup,

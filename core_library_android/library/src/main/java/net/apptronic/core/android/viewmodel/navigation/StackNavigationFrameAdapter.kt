@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.transitions.TransitionBuilder
 import net.apptronic.core.android.viewmodel.transitions.ViewSwitch
-import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.navigation.BackNavigationStatus
 import net.apptronic.core.mvvm.viewmodel.navigation.HasBackNavigation
 import net.apptronic.core.mvvm.viewmodel.navigation.StackNavigationViewModel
@@ -21,7 +21,7 @@ class StackNavigationFrameAdapter(
 ) : ViewBinderListAdapter.UpdateListener {
 
     private var isInTransition = false
-    private var items: List<ViewModel> = emptyList()
+    private var items: List<IViewModel> = emptyList()
 
     private val viewBinders = mutableListOf<AttachedBinder>()
 
@@ -34,7 +34,7 @@ class StackNavigationFrameAdapter(
         model.listNavigator.setAdapter(listAdapter)
     }
 
-    override fun onDataChanged(items: List<ViewModel>, changeInfo: Any?) {
+    override fun onDataChanged(items: List<IViewModel>, changeInfo: Any?) {
         this.items = items
         val transitionInfo = changeInfo as? TransitionInfo ?: TransitionInfo(true, null)
         invalidateState(transitionInfo)
@@ -145,13 +145,13 @@ class StackNavigationFrameAdapter(
         }
     }
 
-    private fun getOrCreateBinder(viewModel: ViewModel): AttachedBinder {
+    private fun getOrCreateBinder(viewModel: IViewModel): AttachedBinder {
         return viewBinders.firstOrNull {
             it.viewModel == viewModel
         } ?: attachBinder(viewModel)
     }
 
-    private fun attachBinder(viewModel: ViewModel): AttachedBinder {
+    private fun attachBinder(viewModel: IViewModel): AttachedBinder {
         val view = listAdapter.createView(viewModel, container)
         val viewBinder = listAdapter.bindView(viewModel, view)
         view.visibility = View.GONE
@@ -167,7 +167,7 @@ class StackNavigationFrameAdapter(
         var position = 0
         val view = binder.getView()
         val viewModel = binder.getViewModel()
-        fun refreshPosition(items: List<ViewModel>) {
+        fun refreshPosition(items: List<IViewModel>) {
             val index = items.indexOf(viewModel)
             if (index >= 0) {
                 position = index

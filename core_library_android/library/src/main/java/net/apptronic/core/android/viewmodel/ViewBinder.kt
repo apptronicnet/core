@@ -12,6 +12,7 @@ import net.apptronic.core.android.viewmodel.view.DialogDelegate
 import net.apptronic.core.android.viewmodel.view.ViewContainerDelegate
 import net.apptronic.core.component.plugin.extensionDescriptor
 import net.apptronic.core.debugError
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelLifecycle
 import kotlin.reflect.KClass
@@ -19,7 +20,7 @@ import kotlin.reflect.KClass
 private val SavedInstanceStateExtensionDescriptor = extensionDescriptor<SparseArray<Parcelable>>()
 private val ViewBinderExtensionsDescriptor = extensionDescriptor<ViewBinder<*>>()
 
-fun ViewModel.requireBoundView() {
+fun IViewModel.requireBoundView() {
 //    doOnVisible {
 //        if (extensions[ViewBinderExtensionsDescriptor] == null) {
 //            debugError(Error("$this have no ViewBinder"))
@@ -33,7 +34,7 @@ fun ViewModel.requireBoundView() {
  * There are several methods for usage with [Activity], [Dialog] or generic usage as [View] under
  * some [ViewGroup] container.
  */
-abstract class ViewBinder<T : ViewModel> : BindingContainer {
+abstract class ViewBinder<T : IViewModel> : BindingContainer {
 
     /**
      * Specify layout resource to be used for creation or [View] using default implementation.
@@ -43,7 +44,7 @@ abstract class ViewBinder<T : ViewModel> : BindingContainer {
     @LayoutRes
     open var layoutResId: Int? = null
 
-    private var viewModel: ViewModel? = null
+    private var viewModel: IViewModel? = null
     private var view: View? = null
     private var bindings: Bindings? = null
 
@@ -76,7 +77,7 @@ abstract class ViewBinder<T : ViewModel> : BindingContainer {
         }
     }
 
-    fun getViewModel(): ViewModel {
+    fun getViewModel(): IViewModel {
         return viewModel ?: throw IllegalStateException("No viewModel bound for $this")
     }
 
@@ -92,15 +93,17 @@ abstract class ViewBinder<T : ViewModel> : BindingContainer {
      * Bind [view] to [viewModel]
      */
     @Suppress("UNCHECKED_CAST")
-    fun performViewBinding(viewModel: ViewModel, view: View) {
+    fun performViewBinding(viewModel: IViewModel, view: View) {
         if (viewModel.extensions[ViewBinderExtensionsDescriptor] != null) {
             debugError(Error("$viewModel already have bound view!!!"))
         }
         if (!viewModel.isStateBound()) {
             debugError(
                 Error(
-                    "$viewModel in stage ${viewModel.context.lifecycle.getActiveStage()
-                        ?.getStageName()}"
+                    "$viewModel in stage ${
+                        viewModel.context.lifecycle.getActiveStage()
+                            ?.getStageName()
+                    }"
                 )
             )
         }

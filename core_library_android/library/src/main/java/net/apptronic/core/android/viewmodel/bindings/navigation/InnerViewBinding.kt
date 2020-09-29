@@ -8,7 +8,7 @@ import net.apptronic.core.android.viewmodel.BindingContainer
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.ViewBinderFactory
 import net.apptronic.core.android.viewmodel.view.ViewContainerDelegate
-import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 
 enum class BindingType(
     internal val detectAndCreate: Boolean,
@@ -38,7 +38,7 @@ enum class BindingType(
 
 fun BindingContainer.bindInnerViewModel(
     view: View,
-    viewModel: ViewModel,
+    viewModel: IViewModel,
     viewBinder: ViewBinder<*>,
     bindingType: BindingType = BindingType.AUTO
 ) {
@@ -47,7 +47,7 @@ fun BindingContainer.bindInnerViewModel(
 
 fun BindingContainer.bindInnerViewModel(
     view: View,
-    viewModel: ViewModel,
+    viewModel: IViewModel,
     factory: ViewBinderFactory? = null,
     bindingType: BindingType = BindingType.AUTO
 ) {
@@ -59,12 +59,12 @@ fun BindingContainer.bindInnerViewModel(
 
 private class InnerViewBinding(
     private val targetView: View,
-    private val targetViewModel: ViewModel,
-    private val factory: (ViewModel) -> ViewBinder<*>,
+    private val targetViewModel: IViewModel,
+    private val factory: (IViewModel) -> ViewBinder<*>,
     private val bindingType: BindingType
 ) : Binding() {
 
-    override fun onBind(viewModel: ViewModel, viewBinder: ViewBinder<*>) {
+    override fun onBind(viewModel: IViewModel, viewBinder: ViewBinder<*>) {
         val delegate = viewBinder.getViewDelegate<ViewContainerDelegate<*>>()
         val targetBinder = factory.invoke(targetViewModel)
         val contentView: View = if (bindingType.detectAndCreate) {

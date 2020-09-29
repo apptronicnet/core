@@ -5,9 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import net.apptronic.core.android.viewmodel.ViewBinder
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 
-open class ViewContainerDelegate<T : ViewModel> {
+open class ViewContainerDelegate<T : IViewModel> {
 
     /**
      * Invoke to create generic view for parameters without knowledge of concrete [ViewModel]
@@ -40,7 +41,7 @@ open class ViewContainerDelegate<T : ViewModel> {
 
     @Suppress("UNCHECKED_CAST")
     fun performCreateView(
-        viewModel: ViewModel,
+        viewModel: IViewModel,
         viewBinder: ViewBinder<*>,
         context: Context,
         inflater: LayoutInflater? = null,
@@ -73,7 +74,7 @@ open class ViewContainerDelegate<T : ViewModel> {
 
     @Suppress("UNCHECKED_CAST")
     fun performAttachView(
-        viewModel: ViewModel,
+        viewModel: IViewModel,
         view: View,
         container: ViewGroup,
         position: Int = container.childCount
@@ -92,7 +93,7 @@ open class ViewContainerDelegate<T : ViewModel> {
 
     @Suppress("UNCHECKED_CAST")
     fun performDetachView(
-        viewModel: ViewModel,
+        viewModel: IViewModel,
         viewBinder: ViewBinder<*>,
         view: View,
         container: ViewGroup

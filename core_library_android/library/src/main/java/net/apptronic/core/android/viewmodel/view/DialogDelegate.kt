@@ -6,13 +6,13 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import net.apptronic.core.android.viewmodel.ViewBinder
-import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 
-open class DialogDelegate<T : ViewModel> {
+open class DialogDelegate<T : IViewModel> {
 
     @Suppress("UNCHECKED_CAST")
     fun performCreateDialog(
-        viewModel: ViewModel,
+        viewModel: IViewModel,
         viewBinder: ViewBinder<*>,
         context: Context
     ): Dialog {
@@ -32,7 +32,7 @@ open class DialogDelegate<T : ViewModel> {
 
     @Suppress("UNCHECKED_CAST")
     fun performCreateDialogView(
-        viewModel: ViewModel,
+        viewModel: IViewModel,
         viewBinder: ViewBinder<*>,
         context: Context
     ): View {
@@ -54,7 +54,7 @@ open class DialogDelegate<T : ViewModel> {
 
     @Suppress("UNCHECKED_CAST")
     fun performAttachDialogView(
-        viewModel: ViewModel,
+        viewModel: IViewModel,
         viewBinder: ViewBinder<*>,
         dialog: Dialog,
         view: View
@@ -75,7 +75,7 @@ open class DialogDelegate<T : ViewModel> {
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun performShowDialog(viewModel: ViewModel, viewBinder: ViewBinder<*>, dialog: Dialog) {
+    fun performShowDialog(viewModel: IViewModel, viewBinder: ViewBinder<*>, dialog: Dialog) {
         onShowDialog(viewModel as T, viewBinder as ViewBinder<T>, dialog)
     }
 
@@ -84,7 +84,7 @@ open class DialogDelegate<T : ViewModel> {
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun performDismissDialog(viewModel: ViewModel, viewBinder: ViewBinder<*>, dialog: Dialog) {
+    fun performDismissDialog(viewModel: IViewModel, viewBinder: ViewBinder<*>, dialog: Dialog) {
         onDismissDialog(viewModel as T, viewBinder as ViewBinder<T>, dialog)
     }
 
@@ -93,7 +93,7 @@ open class DialogDelegate<T : ViewModel> {
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun performDialogShown(viewModel: ViewModel, viewBinder: ViewBinder<*>, dialog: Dialog) {
+    fun performDialogShown(viewModel: IViewModel, viewBinder: ViewBinder<*>, dialog: Dialog) {
         onDialogShown(viewModel as T, viewBinder as ViewBinder<T>, dialog)
     }
 

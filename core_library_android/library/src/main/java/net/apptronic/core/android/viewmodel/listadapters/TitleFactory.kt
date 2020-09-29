@@ -1,14 +1,14 @@
 package net.apptronic.core.android.viewmodel.listadapters
 
 import android.content.Context
-import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 
 class TitleProvider(
     private val context: Context,
     private val titleFactory: TitleFactory
 ) {
 
-    fun getItemTitle(viewModel: ViewModel, position: Int): String {
+    fun getItemTitle(viewModel: IViewModel, position: Int): String {
         return titleFactory.getItemTitle(context, viewModel, position) ?: ""
     }
 
@@ -16,6 +16,6 @@ class TitleProvider(
 
 interface TitleFactory {
 
-    fun getItemTitle(context: Context, viewModel: ViewModel, position: Int): String?
+    fun getItemTitle(context: Context, viewModel: IViewModel, position: Int): String?
 
 }

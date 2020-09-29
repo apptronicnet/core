@@ -6,11 +6,11 @@ import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcherOwner
 import net.apptronic.core.android.viewmodel.activityContainer
-import net.apptronic.core.component.Component
+import net.apptronic.core.component.IComponent
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.plugin.Plugin
 import net.apptronic.core.component.plugin.pluginDescriptor
-import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.dispatcher.ViewModelDispatcher
 import kotlin.reflect.KClass
 
@@ -20,16 +20,16 @@ class ActivityBindingPlugin(
         private val androidApplication: Application
 ) : Plugin(), Application.ActivityLifecycleCallbacks {
 
-    private class ActivityBinding<A : Activity, VM : ViewModel>(
-            val activity: KClass<A>,
-            val viewModel: KClass<VM>,
-            val onActivityBackPressed: ((VM) -> Boolean)?
+    private class ActivityBinding<A : Activity, VM : IViewModel>(
+        val activity: KClass<A>,
+        val viewModel: KClass<VM>,
+        val onActivityBackPressed: ((VM) -> Boolean)?
     ) {
 
         @Suppress("UNCHECKED_CAST")
         fun buildBackPressedCallback(
-                activity: Activity,
-                viewModel: ViewModel
+            activity: Activity,
+            viewModel: IViewModel
         ): OnBackPressedCallback? {
             if (onActivityBackPressed != null) {
                 val vm = viewModel as? VM
@@ -49,10 +49,10 @@ class ActivityBindingPlugin(
         val viewContainer = activity.activityContainer(dispatcher)
     }
 
-    private class ViewModelBackPressedCallback<T : ViewModel>(
-            private val activity: Activity,
-            private val viewModel: T,
-            private val handler: (T) -> Boolean
+    private class ViewModelBackPressedCallback<T : IViewModel>(
+        private val activity: Activity,
+        private val viewModel: T,
+        private val handler: (T) -> Boolean
     ) : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             val result = handler.invoke(viewModel)
@@ -65,8 +65,8 @@ class ActivityBindingPlugin(
     private val bindings = mutableListOf<ActivityBinding<*, *>>()
     private val dispatchers = mutableListOf<ViewModelDispatcher<*>>()
 
-    fun <A : Activity, VM : ViewModel> bindActivity(
-            activity: KClass<A>, viewModel: KClass<VM>, onBackPressed: ((VM) -> Boolean)? = null
+    fun <A : Activity, VM : IViewModel> bindActivity(
+        activity: KClass<A>, viewModel: KClass<VM>, onBackPressed: ((VM) -> Boolean)? = null
     ) {
         bindings.add(ActivityBinding(activity, viewModel, onBackPressed))
     }
@@ -82,7 +82,7 @@ class ActivityBindingPlugin(
         context.requireViewBinderFactoryPlugin()
     }
 
-    override fun onComponent(component: Component) {
+    override fun onComponent(component: IComponent) {
         super.onComponent(component)
         if (component is ViewModelDispatcher<*>) {
             dispatchers.add(component)

@@ -5,7 +5,6 @@ import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.behavior.delay
 import net.apptronic.core.component.entity.entities.setAs
 import net.apptronic.core.component.entity.functions.anyValue
-import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.component.genericEvent
 import net.apptronic.core.component.inject
 import net.apptronic.core.component.newChain

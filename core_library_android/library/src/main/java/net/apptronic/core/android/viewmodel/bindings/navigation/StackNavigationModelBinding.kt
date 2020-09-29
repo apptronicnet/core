@@ -15,7 +15,7 @@ import net.apptronic.core.android.viewmodel.transitions.GestureTarget
 import net.apptronic.core.android.viewmodel.transitions.NavigationGestureDetector
 import net.apptronic.core.android.viewmodel.transitions.TransitionBuilder
 import net.apptronic.core.android.viewmodel.transitions.gestures.BackwardTransitionGestureDetector
-import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.navigation.BackNavigationStatus
 import net.apptronic.core.mvvm.viewmodel.navigation.StackNavigationViewModel
 
@@ -53,7 +53,7 @@ private class StackNavigationModelBinding(
     private val gestureDetector: NavigationGestureDetector?
 ) : Binding() {
 
-    override fun onBind(viewModel: ViewModel, viewBinder: ViewBinder<*>) {
+    override fun onBind(viewModel: IViewModel, viewBinder: ViewBinder<*>) {
         val listAdapter =
             ViewBinderListAdapter(factory, itemStateNavigator = navigationModel.listNavigator)
         val adapter = StackNavigationFrameAdapter(
@@ -67,7 +67,7 @@ private class StackNavigationModelBinding(
                 )
             gestureDispatcher.attach(viewGroup, GestureTargetImpl(navigationModel, adapter))
             listAdapter.addListener(object : ViewBinderListAdapter.UpdateListener {
-                override fun onDataChanged(items: List<ViewModel>, changeInfo: Any?) {
+                override fun onDataChanged(items: List<IViewModel>, changeInfo: Any?) {
                     gestureDispatcher.reset()
                 }
             })

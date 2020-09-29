@@ -1,7 +1,7 @@
 package net.apptronic.core.android.viewmodel.style.list
 
 import android.view.View
-import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 
 internal fun emptyStyleAdapter(): ListItemStyleAdapter {
     return EmptyListItemStyleAdapter()
@@ -10,7 +10,7 @@ internal fun emptyStyleAdapter(): ListItemStyleAdapter {
 private class EmptyListItemStyleAdapter :
     ListItemStyleAdapter {
 
-    override fun applyViewStyle(view: View, position: Int, list: List<ViewModel>) {
+    override fun applyViewStyle(view: View, position: Int, list: List<IViewModel>) {
         // do nothing
     }
 

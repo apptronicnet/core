@@ -3,10 +3,10 @@ package net.apptronic.core.android.viewmodel
 import android.app.Activity
 import android.view.View
 import net.apptronic.core.android.viewmodel.view.ActivityDelegate
-import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.navigation.ViewModelLifecycleController
 
-fun <T : ViewModel> lifecycleController(
+fun <T : IViewModel> lifecycleController(
     viewModel: T,
     activityBinder: ViewBinder<T>,
     activity: Activity
@@ -20,7 +20,7 @@ fun <T : ViewModel> lifecycleController(
     return ViewModelLifecycleController(viewModel)
 }
 
-fun <T : ViewModel> lifecycleController(
+fun <T : IViewModel> lifecycleController(
     viewModel: T,
     factory: ViewBinderFactory,
     activity: Activity
@@ -29,7 +29,7 @@ fun <T : ViewModel> lifecycleController(
     return lifecycleController(viewModel, binder, activity)
 }
 
-fun <T : ViewModel> lifecycleController(
+fun <T : IViewModel> lifecycleController(
     viewModel: T,
     viewBinder: ViewBinder<T>,
     contentViewProvider: () -> View
@@ -40,7 +40,7 @@ fun <T : ViewModel> lifecycleController(
     return ViewModelLifecycleController(viewModel)
 }
 
-fun <T : ViewModel> lifecycleController(
+fun <T : IViewModel> lifecycleController(
     viewModel: T,
     factory: ViewBinderFactory,
     contentViewProvider: () -> View
@@ -50,7 +50,7 @@ fun <T : ViewModel> lifecycleController(
 }
 
 
-fun <T : ViewModel> lifecycleController(
+fun <T : IViewModel> lifecycleController(
     viewModel: T,
     viewBinder: ViewBinder<T>,
     contentView: View
@@ -61,7 +61,7 @@ fun <T : ViewModel> lifecycleController(
     return ViewModelLifecycleController(viewModel)
 }
 
-fun <T : ViewModel> lifecycleController(
+fun <T : IViewModel> lifecycleController(
     viewModel: T,
     factory: ViewBinderFactory,
     contentView: View

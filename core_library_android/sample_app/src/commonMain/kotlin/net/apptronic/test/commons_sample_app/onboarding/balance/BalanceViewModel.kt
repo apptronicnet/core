@@ -1,6 +1,5 @@
 package net.apptronic.test.commons_sample_app.onboarding.balance
 
-import net.apptronic.core.base.observable.subscribe
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.entities.setAs
 import net.apptronic.core.component.entity.functions.map

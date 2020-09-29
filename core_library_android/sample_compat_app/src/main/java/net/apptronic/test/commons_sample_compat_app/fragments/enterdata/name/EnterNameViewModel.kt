@@ -3,7 +3,6 @@ package net.apptronic.test.commons_sample_compat_app.fragments.enterdata.name
 import android.util.Log
 import net.apptronic.core.component.context.Contextual
 import net.apptronic.core.component.context.viewModelContext
-import net.apptronic.core.component.entity.entities.subscribe
 import net.apptronic.core.component.entity.functions.and
 import net.apptronic.core.component.entity.functions.isNotEmpty
 import net.apptronic.core.component.genericEvent

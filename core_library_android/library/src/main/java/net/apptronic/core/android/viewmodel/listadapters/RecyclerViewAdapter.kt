@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.navigation.ViewBinderListAdapter
-import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.navigation.*
 
 private const val NO_TYPE = -1
@@ -28,7 +28,7 @@ class RecyclerViewAdapter(
         listAdapter.addListener(this)
     }
 
-    override fun onDataChanged(items: List<ViewModel>, changeInfo: Any?) {
+    override fun onDataChanged(items: List<IViewModel>, changeInfo: Any?) {
         when (changeInfo) {
             is ItemAdded -> notifyItemInserted(changeInfo.index)
             is ItemRemoved -> notifyItemRemoved(changeInfo.index)
@@ -45,7 +45,7 @@ class RecyclerViewAdapter(
         }
     }
 
-    fun getItemAt(position: Int): ViewModel {
+    fun getItemAt(position: Int): IViewModel {
         return listAdapter.getViewModelAt(position)
     }
 
@@ -108,7 +108,7 @@ class RecyclerViewAdapter(
     }
 
     inner class ViewModelHolder(view: View) : RecyclerView.ViewHolder(view) {
-        var viewModel: ViewModel? = null
+        var viewModel: IViewModel? = null
         var viewBinder: ViewBinder<*>? = null
     }
 

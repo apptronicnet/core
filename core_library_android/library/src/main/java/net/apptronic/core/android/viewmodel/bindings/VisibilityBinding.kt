@@ -8,9 +8,8 @@ import net.apptronic.core.android.viewmodel.Binding
 import net.apptronic.core.android.viewmodel.BindingContainer
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.base.observable.distinctUntilChanged
-import net.apptronic.core.base.observable.subscribe
 import net.apptronic.core.component.entity.Entity
-import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 
 fun BindingContainer.bindVisibleInvisible(
     view: View, target: Entity<Boolean>, containerView: View? = null,
@@ -34,7 +33,7 @@ private class VisibilityBinding(
     private val animationBuilder: VisibilityAnimator.() -> Unit = {}
 ) : Binding() {
 
-    override fun onBind(viewModel: ViewModel, viewBinder: ViewBinder<*>) {
+    override fun onBind(viewModel: IViewModel, viewBinder: ViewBinder<*>) {
         val container = containerView ?: view.parent as? View ?: view
         val player = AnimationPlayer(container)
         val animator = VisibilityAnimator(view, container)

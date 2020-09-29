@@ -5,11 +5,11 @@ import android.view.View
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import net.apptronic.core.component.context.Context
-import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 import net.apptronic.core.mvvm.viewmodel.navigation.ViewModelLifecycleController
 
-abstract class CoreCompatDialogFragment<T : ViewModel> : DialogFragment(), ICoreCompatFragment<T> {
+abstract class CoreCompatDialogFragment<T : IViewModel> : DialogFragment(), ICoreCompatFragment<T> {
 
     lateinit var lifecycleController: ViewModelLifecycleController
 

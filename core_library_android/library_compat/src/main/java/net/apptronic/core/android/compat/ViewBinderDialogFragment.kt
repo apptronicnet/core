@@ -6,9 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.view.DialogDelegate
-import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 
-abstract class ViewBinderDialogFragment<T : ViewModel> : CoreCompatDialogFragment<T>() {
+abstract class ViewBinderDialogFragment<T : IViewModel> : CoreCompatDialogFragment<T>() {
 
     abstract fun buildViewBinder(): ViewBinder<T>
 

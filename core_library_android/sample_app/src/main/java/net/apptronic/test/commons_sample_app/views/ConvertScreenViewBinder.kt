@@ -7,11 +7,10 @@ import net.apptronic.core.android.viewmodel.Binding
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.bindings.bindText
 import net.apptronic.core.android.viewmodel.bindings.bindTextInput
-import net.apptronic.core.base.observable.subscribe
 import net.apptronic.core.component.entity.entities.Value
 import net.apptronic.core.component.entity.functions.map
 import net.apptronic.core.component.entity.functions.mapToString
-import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.test.commons_sample_app.R
 import net.apptronic.test.commons_sample_app.convert.ConvertScreenViewModel
 import net.apptronic.test.commons_sample_app.convert.Currency
@@ -44,7 +43,7 @@ class ConvertScreenViewBinder : ViewBinder<ConvertScreenViewModel>() {
         private val target: Value<T>
     ) : Binding() {
 
-        override fun onBind(viewModel: ViewModel, viewBinder: ViewBinder<*>) {
+        override fun onBind(viewModel: IViewModel, viewBinder: ViewBinder<*>) {
             target.map { it == value }.subscribe {
                 if (it) {
                     view.setBackgroundColor(ContextCompat.getColor(view.context, R.color.selection))

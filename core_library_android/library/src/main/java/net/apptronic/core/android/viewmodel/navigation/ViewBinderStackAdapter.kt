@@ -8,6 +8,7 @@ import net.apptronic.core.android.anim.transition.ViewTransitionDirection
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.ViewBinderFactory
 import net.apptronic.core.android.viewmodel.view.ViewContainerDelegate
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelStackAdapter
 import net.apptronic.core.mvvm.viewmodel.navigation.StackNavigator
@@ -36,7 +37,7 @@ open class ViewBinderStackAdapter(
 
     private var currentBinder: ViewBinder<*>? = null
 
-    override fun onInvalidate(newModel: ViewModel?, transitionInfo: TransitionInfo) {
+    override fun onInvalidate(newModel: IViewModel?, transitionInfo: TransitionInfo) {
         val newBinder =
             if (newModel != null) viewBinderFactory.getBinder(newModel) else null
         if (newBinder != null && newModel != null) {
@@ -75,7 +76,7 @@ open class ViewBinderStackAdapter(
     }
 
     open fun onAdd(
-        viewModel: ViewModel,
+        viewModel: IViewModel,
         viewBinder: ViewBinder<*>,
         container: ViewGroup,
         newView: View,
@@ -95,7 +96,7 @@ open class ViewBinderStackAdapter(
     }
 
     open fun onReplace(
-        viewModel: ViewModel,
+        viewModel: IViewModel,
         viewBinder: ViewBinder<*>,
         container: ViewGroup,
         oldView: View,
@@ -128,7 +129,7 @@ open class ViewBinderStackAdapter(
     }
 
     open fun onRemove(
-        viewModel: ViewModel,
+        viewModel: IViewModel,
         viewBinder: ViewBinder<*>,
         container: ViewGroup,
         oldView: View,
@@ -148,7 +149,7 @@ open class ViewBinderStackAdapter(
     }
 
     private fun addViewToContainer(
-        viewModel: ViewModel,
+        viewModel: IViewModel,
         viewBinder: ViewBinder<*>,
         container: ViewGroup,
         child: View,

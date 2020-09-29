@@ -7,8 +7,6 @@ import kotlinx.android.synthetic.main.navigation_item.view.*
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.bindings.bindSwitch
 import net.apptronic.core.android.viewmodel.bindings.bindText
-import net.apptronic.core.base.observable.subscribe
-import net.apptronic.core.component.entity.entities.subscribe
 import net.apptronic.test.commons_sample_app.R
 import net.apptronic.test.commons_sample_app.staknavigation.StackItemColor
 import net.apptronic.test.commons_sample_app.staknavigation.StackItemViewModel

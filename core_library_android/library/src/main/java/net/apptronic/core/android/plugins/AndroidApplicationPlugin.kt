@@ -6,11 +6,11 @@ import net.apptronic.core.android.anim.factory.ViewTransitionFactory
 import net.apptronic.core.android.viewmodel.ViewBinderFactory
 import net.apptronic.core.android.viewmodel.requireBoundView
 import net.apptronic.core.android.viewmodel.transitions.TransitionBuilder
-import net.apptronic.core.component.Component
+import net.apptronic.core.component.IComponent
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.plugin.Plugin
 import net.apptronic.core.component.plugin.pluginDescriptor
-import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 import kotlin.reflect.KClass
 
 val AndroidApplicationPluginDescriptor = pluginDescriptor<AndroidApplicationPlugin>()
@@ -49,7 +49,7 @@ class AndroidApplicationPlugin internal constructor(
             target.viewTransitionFactory = viewTransitionFactory
         }
 
-        fun <A : Activity, VM : ViewModel> bindActivity(
+        fun <A : Activity, VM : IViewModel> bindActivity(
             activity: KClass<A>, viewModel: KClass<VM>, onBackPressed: ((VM) -> Boolean)? = null
         ) {
             target.activityBindingPlugin.bindActivity(activity, viewModel, onBackPressed)
@@ -70,9 +70,9 @@ class AndroidApplicationPlugin internal constructor(
         context.installPlugin(ActivityBindingPluginDescriptor, activityBindingPlugin)
     }
 
-    override fun onComponent(component: Component) {
+    override fun onComponent(component: IComponent) {
         super.onComponent(component)
-        if (component is ViewModel) {
+        if (component is IViewModel) {
             component.requireBoundView()
         }
     }

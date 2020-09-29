@@ -6,9 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.view.ViewContainerDelegate
-import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 
-abstract class ViewBinderFragment<T : ViewModel> : CoreCompatFragment<T>() {
+abstract class ViewBinderFragment<T : IViewModel> : CoreCompatFragment<T>() {
 
     abstract fun buildViewBinder(): ViewBinder<T>
 

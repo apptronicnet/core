@@ -6,7 +6,6 @@ import net.apptronic.core.component.entity.behavior.whenTrue
 import net.apptronic.core.component.entity.entities.setAs
 import net.apptronic.core.component.entity.functions.anyValue
 import net.apptronic.core.component.entity.functions.not
-import net.apptronic.core.component.entity.subscribe
 import net.apptronic.core.component.value
 import net.apptronic.core.mvvm.viewmodel.EmptyViewModelContext
 import net.apptronic.core.mvvm.viewmodel.ViewModel

@@ -3,9 +3,9 @@ package net.apptronic.core.android.compat
 import android.os.Bundle
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.view.ActivityDelegate
-import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 
-abstract class ViewBinderActivity<T : ViewModel> : CoreCompatActivity<T>() {
+abstract class ViewBinderActivity<T : IViewModel> : CoreCompatActivity<T>() {
 
     abstract fun buildViewBinder(): ViewBinder<T>
 

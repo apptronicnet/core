@@ -6,9 +6,8 @@ import androidx.core.widget.ImageViewCompat
 import net.apptronic.core.android.viewmodel.Binding
 import net.apptronic.core.android.viewmodel.BindingContainer
 import net.apptronic.core.android.viewmodel.ViewBinder
-import net.apptronic.core.base.observable.subscribe
 import net.apptronic.core.component.entity.Entity
-import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 
 fun BindingContainer.bindImageTint(imageView: ImageView, target: Entity<Int>) {
     add(ImageTintColorBinding(imageView, target))
@@ -19,7 +18,7 @@ class ImageTintColorBinding(
     private val target: Entity<Int>
 ) : Binding() {
 
-    override fun onBind(viewModel: ViewModel, viewBinder: ViewBinder<*>) {
+    override fun onBind(viewModel: IViewModel, viewBinder: ViewBinder<*>) {
         target.subscribe { color ->
             ImageViewCompat.setImageTintList(view, ColorStateList.valueOf(color))
         }

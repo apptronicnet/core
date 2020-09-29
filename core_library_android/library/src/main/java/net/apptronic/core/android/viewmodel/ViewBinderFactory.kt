@@ -1,6 +1,7 @@
 package net.apptronic.core.android.viewmodel
 
 import androidx.annotation.LayoutRes
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import kotlin.reflect.KClass
 import kotlin.reflect.full.superclasses
@@ -9,7 +10,7 @@ fun viewBinderFactory(initializer: ViewBinderFactory.() -> Unit): ViewBinderFact
     return ViewBinderFactory().apply(initializer)
 }
 
-inline fun <reified ViewModelType : ViewModel> viewBinder(
+inline fun <reified ViewModelType : IViewModel> viewBinder(
     noinline builder: () -> ViewBinder<ViewModelType>
 ): ViewBinderFactory {
     return viewBinderFactory {
@@ -49,7 +50,7 @@ class ViewBinderFactory {
      * @param [builder] builder function of constructor reference for [ViewBinder]
      * @param [layoutResId] optional value for layout to be overridden instead of set in [ViewBinder]
      */
-    inline fun <reified ViewModelType : ViewModel> add(
+    inline fun <reified ViewModelType : IViewModel> add(
         noinline builder: () -> ViewBinder<ViewModelType>,
         @LayoutRes layoutResId: Int? = null
     ) {
@@ -66,7 +67,7 @@ class ViewBinderFactory {
      * @param [builder] builder function of constructor reference for [ViewBinder]
      * @param [layoutResId] optional value for layout to be overridden instead of set in [ViewBinder]
      */
-    fun <ViewModelType : ViewModel> add(
+    fun <ViewModelType : IViewModel> add(
         clazz: KClass<ViewModelType>,
         builder: () -> ViewBinder<ViewModelType>,
         @LayoutRes layoutResId: Int? = null
@@ -83,12 +84,12 @@ class ViewBinderFactory {
             ?: throw IllegalArgumentException("ViewBinder is not registered for typeId=$typeId")
     }
 
-    fun getBinder(viewModel: ViewModel): ViewBinder<*> {
+    fun getBinder(viewModel: IViewModel): ViewBinder<*> {
         return searchRecursive(viewModel::class)?.build()
             ?: throw IllegalArgumentException("ViewBinder is not registered for $viewModel")
     }
 
-    private fun searchRecursive(clazz: KClass<out ViewModel>): ViewSpec? {
+    private fun searchRecursive(clazz: KClass<out IViewModel>): ViewSpec? {
         var iterableValue: KClass<*>? = clazz
         do {
             val result = views[iterableValue]
@@ -96,7 +97,7 @@ class ViewBinderFactory {
                 return result
             }
             iterableValue = iterableValue?.superclasses?.get(0)
-        } while (iterableValue != null && iterableValue != ViewModel::class)
+        } while (iterableValue != null && iterableValue != IViewModel::class)
         val parent = this.parent
         if (parent != null) {
             return parent.searchRecursive(clazz)
@@ -104,7 +105,7 @@ class ViewBinderFactory {
         return null
     }
 
-    fun getType(viewModel: ViewModel): Int {
+    fun getType(viewModel: IViewModel): Int {
         return searchRecursive(viewModel::class)?.typeId
             ?: throw IllegalArgumentException("ViewBinder is not registered for $viewModel")
     }

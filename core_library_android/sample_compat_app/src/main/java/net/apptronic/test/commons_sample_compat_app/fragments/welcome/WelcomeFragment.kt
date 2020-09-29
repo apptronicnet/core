@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_welcome.*
 import net.apptronic.core.android.compat.CoreCompatFragment
 import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.entity.subscribe
 import net.apptronic.test.commons_sample_compat_app.R
 
 class WelcomeFragment : CoreCompatFragment<WelcomeViewModel>() {

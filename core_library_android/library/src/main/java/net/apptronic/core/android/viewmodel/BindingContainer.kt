@@ -1,6 +1,6 @@
 package net.apptronic.core.android.viewmodel
 
-import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 
 interface BindingContainer {
 
@@ -15,7 +15,7 @@ interface BindingContainer {
 }
 
 internal class Bindings(
-    val viewModel: ViewModel,
+    val viewModel: IViewModel,
     val viewBinder: ViewBinder<*>
 ) : BindingContainer {
 

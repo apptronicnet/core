@@ -2,7 +2,6 @@ package net.apptronic.test.commons_sample_compat_app
 
 import net.apptronic.core.component.context.Contextual
 import net.apptronic.core.component.context.viewModelContext
-import net.apptronic.core.component.entity.entities.subscribe
 import net.apptronic.core.component.genericEvent
 import net.apptronic.core.component.inject
 import net.apptronic.core.mvvm.viewmodel.ViewModel

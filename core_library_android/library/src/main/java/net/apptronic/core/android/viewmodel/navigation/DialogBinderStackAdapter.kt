@@ -5,7 +5,7 @@ import android.content.Context
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.ViewBinderFactory
 import net.apptronic.core.android.viewmodel.view.DialogDelegate
-import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelStackAdapter
 import net.apptronic.core.mvvm.viewmodel.navigation.TransitionInfo
 
@@ -25,7 +25,7 @@ open class DialogBinderStackAdapter(
 
     private var current: DialogAndBinder? = null
 
-    override fun onInvalidate(newModel: ViewModel?, transitionInfo: TransitionInfo) {
+    override fun onInvalidate(newModel: IViewModel?, transitionInfo: TransitionInfo) {
         val newBinder =
             if (newModel != null) viewBinderFactory.getBinder(newModel) else null
         val next = if (newBinder != null && newModel != null) {

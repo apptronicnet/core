@@ -1,6 +1,7 @@
 package net.apptronic.core.android.viewmodel
 
 import android.view.View
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 
 /**
@@ -11,12 +12,12 @@ abstract class Binding : BindingContainer {
 
     private var bindings: Bindings? = null
 
-    internal fun bind(viewModel: ViewModel, viewBinder: ViewBinder<*>) {
+    internal fun bind(viewModel: IViewModel, viewBinder: ViewBinder<*>) {
         bindings = Bindings(viewModel, viewBinder)
         onBind(viewModel, viewBinder)
     }
 
-    protected abstract fun onBind(viewModel: ViewModel, viewBinder: ViewBinder<*>)
+    protected abstract fun onBind(viewModel: IViewModel, viewBinder: ViewBinder<*>)
 
     internal fun unbind() {
         bindings!!.unbind()

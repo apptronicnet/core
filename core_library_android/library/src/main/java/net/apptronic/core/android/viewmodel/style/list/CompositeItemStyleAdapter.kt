@@ -1,7 +1,7 @@
 package net.apptronic.core.android.viewmodel.style.list
 
 import android.view.View
-import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 
 fun compositeItemStyleAdapter(
     vararg adapters: ListItemStyleAdapter
@@ -19,7 +19,7 @@ private class CompositeItemStyleAdapter(
     private val adapters: Array<out ListItemStyleAdapter>
 ) : ListItemStyleAdapter {
 
-    override fun applyViewStyle(view: View, position: Int, list: List<ViewModel>) {
+    override fun applyViewStyle(view: View, position: Int, list: List<IViewModel>) {
         adapters.forEach {
             it.applyViewStyle(view, position, list)
         }

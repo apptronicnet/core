@@ -1,6 +1,5 @@
 package net.apptronic.test.commons_sample_app.onboarding.currency
 
-import net.apptronic.core.base.observable.subscribe
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.genericEvent
 import net.apptronic.core.component.inject

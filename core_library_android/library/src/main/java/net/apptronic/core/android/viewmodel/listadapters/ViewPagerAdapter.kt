@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.viewpager.widget.PagerAdapter
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.navigation.ViewBinderListAdapter
-import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 
 class ViewPagerAdapter(
     private val binderAdapter: ViewBinderListAdapter
@@ -17,7 +17,7 @@ class ViewPagerAdapter(
         binderAdapter.addListener(this)
     }
 
-    override fun onDataChanged(items: List<ViewModel>, changeInfo: Any?) {
+    override fun onDataChanged(items: List<IViewModel>, changeInfo: Any?) {
         notifyDataSetChanged()
     }
 

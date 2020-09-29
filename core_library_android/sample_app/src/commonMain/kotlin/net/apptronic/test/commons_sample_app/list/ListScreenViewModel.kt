@@ -6,6 +6,7 @@ import net.apptronic.core.component.entity.functions.map
 import net.apptronic.core.component.entity.functions.merge
 import net.apptronic.core.component.inject
 import net.apptronic.core.component.mutableValue
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.navigation.listNavigator
 
@@ -30,7 +31,7 @@ class ListScreenViewModel internal constructor(parent: Context) : ViewModel(pare
         context.dependencyDispatcher.addInstance(ListControllerDescriptor, this)
     }
 
-    override fun onRemoveRequest(viewModel: ViewModel) {
+    override fun onRemoveRequest(viewModel: IViewModel) {
         listNavigator.update {
             it.remove(viewModel)
         }

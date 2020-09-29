@@ -4,7 +4,7 @@ import android.view.View
 import net.apptronic.core.android.viewmodel.Binding
 import net.apptronic.core.android.viewmodel.BindingContainer
 import net.apptronic.core.android.viewmodel.ViewBinder
-import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 
 fun BindingContainer.bindClickListener(view: View, target: () -> Unit) {
     add(ClickActionBinding(view, target))
@@ -15,7 +15,7 @@ class ClickActionBinding(
     private val target: () -> Unit
 ) : Binding() {
 
-    override fun onBind(viewModel: ViewModel, viewBinder: ViewBinder<*>) {
+    override fun onBind(viewModel: IViewModel, viewBinder: ViewBinder<*>) {
         view.setOnClickListener {
             target.invoke()
         }

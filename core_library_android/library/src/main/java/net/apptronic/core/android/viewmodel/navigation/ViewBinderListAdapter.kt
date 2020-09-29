@@ -7,7 +7,7 @@ import net.apptronic.core.android.viewmodel.ViewBinderFactory
 import net.apptronic.core.android.viewmodel.style.list.ListItemStyleAdapter
 import net.apptronic.core.android.viewmodel.style.list.emptyStyleAdapter
 import net.apptronic.core.android.viewmodel.view.ViewContainerDelegate
-import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.adapter.ItemStateNavigator
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelListAdapter
 
@@ -18,10 +18,10 @@ class ViewBinderListAdapter(
 ) : ViewModelListAdapter {
 
     private val listeners = mutableListOf<UpdateListener>()
-    private var items: List<ViewModel> = emptyList()
+    private var items: List<IViewModel> = emptyList()
 
     interface UpdateListener {
-        fun onDataChanged(items: List<ViewModel>, changeInfo: Any?)
+        fun onDataChanged(items: List<IViewModel>, changeInfo: Any?)
     }
 
     fun addListener(listener: UpdateListener) {
@@ -33,7 +33,7 @@ class ViewBinderListAdapter(
         return items.size
     }
 
-    fun getViewModelAt(index: Int): ViewModel {
+    fun getViewModelAt(index: Int): IViewModel {
         return items[index]
     }
 
@@ -41,11 +41,11 @@ class ViewBinderListAdapter(
         return items[index].componentId
     }
 
-    fun contains(viewModel: ViewModel): Boolean {
+    fun contains(viewModel: IViewModel): Boolean {
         return items.contains(viewModel)
     }
 
-    override fun onDataChanged(items: List<ViewModel>, changeInfo: Any?) {
+    override fun onDataChanged(items: List<IViewModel>, changeInfo: Any?) {
         this.items = items
         listeners.forEach {
             it.onDataChanged(items, changeInfo)
@@ -68,7 +68,7 @@ class ViewBinderListAdapter(
         return delegate.performCreateDetachedView(container.context, binder, null, container)
     }
 
-    fun createView(viewModel: ViewModel, container: ViewGroup): View {
+    fun createView(viewModel: IViewModel, container: ViewGroup): View {
         val binder = viewBinderFactory.getBinder(viewModel)
         val delegate = binder.getViewDelegate<ViewContainerDelegate<*>>()
         return delegate.performCreateDetachedView(container.context, binder, null, container)
@@ -78,7 +78,7 @@ class ViewBinderListAdapter(
         return viewBinderFactory.getType(items[position])
     }
 
-    fun getViewType(viewModel: ViewModel): Int {
+    fun getViewType(viewModel: IViewModel): Int {
         return viewBinderFactory.getType(viewModel)
     }
 
@@ -87,12 +87,12 @@ class ViewBinderListAdapter(
         return bindView(viewModel, position, view)
     }
 
-    fun bindView(viewModel: ViewModel, view: View): ViewBinder<*> {
+    fun bindView(viewModel: IViewModel, view: View): ViewBinder<*> {
         val position = items.indexOf(viewModel)
         return bindView(viewModel, position, view)
     }
 
-    private fun bindView(viewModel: ViewModel, position: Int, view: View): ViewBinder<*> {
+    private fun bindView(viewModel: IViewModel, position: Int, view: View): ViewBinder<*> {
         val oldBinder: ViewBinder<*>? = boundViews[viewModel.componentId]
         styleAdapter.applyViewStyle(view, position, items)
         return if (oldBinder != null) {
@@ -114,7 +114,7 @@ class ViewBinderListAdapter(
         }
     }
 
-    private fun performNewBinding(viewModel: ViewModel, view: View): ViewBinder<*> {
+    private fun performNewBinding(viewModel: IViewModel, view: View): ViewBinder<*> {
         val binder = viewBinderFactory.getBinder(viewModel)
         itemStateNavigator.setBound(viewModel, true)
         binder.performViewBinding(viewModel, view)
