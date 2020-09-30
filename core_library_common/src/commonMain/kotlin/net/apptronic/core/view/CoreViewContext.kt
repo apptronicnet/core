@@ -1,6 +1,7 @@
 package net.apptronic.core.view
 
 import net.apptronic.core.component.context.Context
+import net.apptronic.core.component.context.terminate
 import net.apptronic.core.component.coroutines.CoroutineDispatchers
 import net.apptronic.core.component.di.DependencyDispatcher
 import net.apptronic.core.component.lifecycle.BASE_LIFECYCLE
@@ -12,8 +13,19 @@ import net.apptronic.core.component.plugin.PluginDescriptor
 
 class CoreViewContext : Context {
 
-    override val parent: Context? = null
+    private var parentReference: Context? = null
+
+    override val parent: Context?
+        get() = parentReference
     override val lifecycle: Lifecycle = BASE_LIFECYCLE.createLifecycle()
+
+    internal fun setParentContext(parent: Context) {
+        if (parent.lifecycle.isTerminated()) {
+            terminate()
+        } else {
+            parent.lifecycle.registerChildLifecycle(lifecycle)
+        }
+    }
 
     override val coroutineDispatchers: CoroutineDispatchers
         get() {

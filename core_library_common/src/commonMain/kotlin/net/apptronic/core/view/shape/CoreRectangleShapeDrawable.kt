@@ -1,7 +1,7 @@
 package net.apptronic.core.view.shape
 
-import net.apptronic.core.view.CoreViewBuilder
 import net.apptronic.core.view.ICoreView
+import net.apptronic.core.view.ICoreViewBuilder
 
 class CoreRectangleShapeDrawable internal constructor() : CoreShapeView() {
 
@@ -34,6 +34,6 @@ class CoreRectangleShapeDrawable internal constructor() : CoreShapeView() {
 
 }
 
-fun CoreViewBuilder.rectangleShape(builder: CoreRectangleShapeDrawable.() -> Unit): ICoreView {
+fun ICoreViewBuilder.rectangleShape(builder: CoreRectangleShapeDrawable.() -> Unit): ICoreView {
     return onNextView(CoreRectangleShapeDrawable(), builder)
 }

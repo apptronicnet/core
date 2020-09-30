@@ -1,14 +1,11 @@
 package net.apptronic.core.view.containers
 
-import net.apptronic.core.view.CoreViewBuilder
-import net.apptronic.core.view.ICoreContentView
-import net.apptronic.core.view.ICoreView
-import net.apptronic.core.view.ViewProperty
+import net.apptronic.core.view.*
 
 /**
  * Base interface for view container which can hold other views.
  */
-interface ICoreContainerView : ICoreContentView, CoreViewBuilder {
+interface ICoreContainerView : ICoreContentView, ICoreViewBuilder, ICoreParentView {
 
     val children: ViewProperty<List<ICoreView>>
 

@@ -1,20 +1,26 @@
 package net.apptronic.core.view.binder
 
+import net.apptronic.core.component.context.viewModelContext
+import net.apptronic.core.component.entity.functions.map
 import net.apptronic.core.component.genericEvent
 import net.apptronic.core.component.value
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 import net.apptronic.core.testutils.testContext
-import net.apptronic.core.view.CoreViewContext
-import net.apptronic.core.view.base.ViewConfiguration
 import net.apptronic.core.view.commons.ICoreButtonView
 import net.apptronic.core.view.commons.ICoreTextView
 import net.apptronic.core.view.containers.stackContainer
-import net.apptronic.core.view.properties.LayoutDirection
+import net.apptronic.core.view.properties.CoreColor
+import net.apptronic.core.view.viewTheme
+import net.apptronic.core.view.widgets.CoreTextButtonView
+import net.apptronic.core.view.widgets.CoreTextView
 import net.apptronic.core.view.widgets.buttonTextView
 import net.apptronic.core.view.widgets.textView
+import org.junit.Test
+import kotlin.test.assertEquals
+import kotlin.test.fail
 
-private class SomeViewModel(context: ViewModelContext, val staticText: String) : ViewModel(context) {
+class SomeViewModel(context: ViewModelContext, val staticText: String) : ViewModel(context) {
 
     var onClickCount = 0
     var onClickEventCount = 0
@@ -32,7 +38,7 @@ private class SomeViewModel(context: ViewModelContext, val staticText: String) :
 }
 
 
-private class SampleDynamicViewBinder(context: CoreViewContext) : CoreDynamicViewBinder<SomeViewModel>(context) {
+class SampleDynamicViewBinder : ViewModelTypeBinder<SomeViewModel>() {
 
     lateinit var textView: ICoreTextView
     lateinit var upperCasedTextView: ICoreTextView
@@ -40,27 +46,56 @@ private class SampleDynamicViewBinder(context: CoreViewContext) : CoreDynamicVie
     lateinit var methodButton: ICoreButtonView
     lateinit var eventButton: ICoreButtonView
 
-    override val view = stackContainer {
+    override fun onBind(viewModel: SomeViewModel) {
+        textView.text(viewModel.text)
+        upperCasedTextView.text(viewModel.text.map { it.toUpperCase() })
+        staticTextView.text(viewModel.staticText)
+        methodButton.onClick(viewModel::onClick)
+        eventButton.onClick(viewModel.onClickEvent)
+    }
+
+    private val TextColorDefault = CoreColor.rgbHex(0x272727)
+
+    private val TextTheme = viewTheme {
+        typed<CoreTextView> {
+            textSize(16)
+            textColor(TextColorDefault)
+            fontWeight(Medium)
+        }
+        typed<CoreTextButtonView> {
+            textSize(15)
+            textColor(CoreColor.rgbHex(0x545454))
+            fontWeight(SemiBold)
+        }
+    }
+
+    override fun view() = stackContainer {
+        theme(TextTheme)
         orientation(Vertical)
         textView = textView {
-            text(entity(SomeViewModel::text))
+            textSize(16)
+            textColor(TextColorDefault)
+            fontWeight(Medium)
         }
         upperCasedTextView = textView {
-            withViewModel { viewModel ->
-                val text = viewModel.text.map { it.toUpperCase() }
-                text(text)
-            }
+            textSize(16)
+            textColor(TextColorDefault)
+            fontWeight(Light)
         }
         staticTextView = textView {
-            text(member(SomeViewModel::staticText))
+            textSize(16)
+            textColor(TextColorDefault)
+            fontWeight(Light)
         }
         methodButton = buttonTextView {
-            onClick(member { ::onClick })
+            textSize(16)
+            textColor(TextColorDefault)
+            fontWeight(Light)
         }
         eventButton = buttonTextView {
-            withViewModel {
-                onClick(it.onClickEvent)
-            }
+            textSize(16)
+            textColor(TextColorDefault)
+            fontWeight(Light)
         }
     }
 
@@ -70,20 +105,21 @@ class SimpleReusableViewBinderTest {
 
     private val context = testContext()
 
-    private val binder = SampleDynamicViewBinder(CoreViewContext(ViewConfiguration(LayoutDirection.LeftToRight)))
+    private val binder = SampleDynamicViewBinder()
 
-//    @Test
-//    fun verifyFlow() {
-//
-//        val model1 = SomeViewModel(context.viewModelContext(), "st1")
-//
-//        binder.nextViewModel(model1)
-//
-//        model1.text.set("hello")
-//        assertEquals(binder.textView.text.getValue(), "hello")
-//        assertEquals(binder.upperCasedTextView.text.getValue(), "HELLO")
-//
-//        fail("Not completed")
-//    }
+    @Test
+    fun verifyFlow() {
+
+        val model1 = SomeViewModel(context.viewModelContext(), "st1")
+
+        binder.view()
+        binder.onBind(model1)
+
+        model1.text.set("hello")
+        assertEquals(binder.textView.text.get(), "hello")
+        assertEquals(binder.upperCasedTextView.text.get(), "HELLO")
+
+        fail("Not completed")
+    }
 
 }

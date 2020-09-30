@@ -15,11 +15,9 @@ import net.apptronic.core.view.properties.Visibility
  *
  * Used by target platforms to generate native views and layouts and update according to it's properties.
  */
-interface ICoreView : PropertyAccess {
+interface ICoreView : ICoreViewRepresentable, ViewPropertyOwner, PropertyAccess {
 
-    val context: CoreViewContext
-
-    val themes: List<CoreViewStyle>
+    var parent: ICoreParentView?
 
     val layoutAlignmentHorizontal: ViewProperty<HorizontalAlignment?>
     val layoutAlignmentVertical: ViewProperty<VerticalAlignment?>

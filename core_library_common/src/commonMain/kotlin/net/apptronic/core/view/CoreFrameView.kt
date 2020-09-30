@@ -9,22 +9,22 @@ import net.apptronic.core.view.shape.rectangleShape
  *
  * Used by target platforms to generate native views and layouts and update according to it's properties.
  */
-class CoreFrameView internal constructor() : CoreView() {
+class CoreFrameView internal constructor() : CoreParentView() {
 
     val content: ViewProperty<ICoreView?> = viewProperty(null)
     val background: ViewProperty<ICoreView?> = viewProperty(null)
     val foreground: ViewProperty<ICoreView?> = viewProperty(null)
 
-    fun content(layerBuilder: CoreViewBuilder.() -> ICoreView) {
-        content.set(LayerCoreViewBuilder(this).layerBuilder())
+    fun content(layerBuilder: ICoreViewBuilder.() -> ICoreView) {
+        content.set(StandaloneCoreViewBuilder(this).layerBuilder())
     }
 
-    fun background(layerBuilder: CoreViewBuilder.() -> ICoreView) {
-        background.set(LayerCoreViewBuilder(this).layerBuilder())
+    fun background(layerBuilder: ICoreViewBuilder.() -> ICoreView) {
+        background.set(StandaloneCoreViewBuilder(this).layerBuilder())
     }
 
-    fun foreground(layerBuilder: CoreViewBuilder.() -> ICoreView) {
-        foreground.set(LayerCoreViewBuilder(this).layerBuilder())
+    fun foreground(layerBuilder: ICoreViewBuilder.() -> ICoreView) {
+        foreground.set(StandaloneCoreViewBuilder(this).layerBuilder())
     }
 
     fun backgroundColor(value: CoreColor) {
@@ -61,6 +61,6 @@ class CoreFrameView internal constructor() : CoreView() {
 
 }
 
-fun CoreViewBuilder.frameView(builder: CoreFrameView.() -> Unit = {}): CoreFrameView {
+fun ICoreViewBuilder.frameView(builder: CoreFrameView.() -> Unit = {}): CoreFrameView {
     return onNextView(CoreFrameView(), builder)
 }

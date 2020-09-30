@@ -6,19 +6,17 @@ import net.apptronic.core.component.entity.Entity
 /**
  * Creates container which wraps some dynamic view content
  */
-class CoreDynamicContentView internal constructor() : CoreView() {
+class CoreDynamicContentView internal constructor() : CoreParentView() {
 
     val content = viewProperty<ICoreView?>(null) {
         it?.context?.terminate()
     }
 
-    private val wrapperBuilder = TargetCoreViewBuilder(this, content)
-
     val transitionSpec = viewProperty<Any?>(null)
 
-    fun <T> content(source: Entity<T>, builder: CoreViewBuilder.(T) -> Unit) {
+    fun <T> content(source: Entity<T>, builder: ICoreViewBuilder.(T) -> Unit) {
         source.subscribe(context) {
-            wrapperBuilder.builder(it)
+            StandaloneCoreViewBuilder(this).builder(it)
         }
     }
 
@@ -34,6 +32,6 @@ class CoreDynamicContentView internal constructor() : CoreView() {
 
 }
 
-fun CoreViewBuilder.dynamicContentView(builder: CoreDynamicContentView.() -> Unit) {
-    onNextView(CoreDynamicContentView(), builder)
+fun ICoreViewBuilder.dynamicContentView(builder: CoreDynamicContentView.() -> Unit): CoreDynamicContentView {
+    return onNextView(CoreDynamicContentView(), builder)
 }

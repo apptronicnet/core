@@ -41,4 +41,12 @@ interface ICoreTextView : ICoreView, ICoreContentView {
         textSize.set(source)
     }
 
+    fun fontWeight(value: FontWeight) {
+        fontWeight.set(value)
+    }
+
+    fun fontWeight(source: Entity<FontWeight>) {
+        fontWeight.set(source)
+    }
+
 }

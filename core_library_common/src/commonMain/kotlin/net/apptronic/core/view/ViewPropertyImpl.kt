@@ -1,7 +1,9 @@
 package net.apptronic.core.view
 
 import net.apptronic.core.component.context.Context
+import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.behavior.watch
+import net.apptronic.core.component.entity.entities.setAs
 import net.apptronic.core.component.value
 
 class ViewProperty<T> internal constructor(
@@ -18,6 +20,10 @@ class ViewProperty<T> internal constructor(
 
     internal fun setValue(value: T) {
         entity.set(value)
+    }
+
+    internal fun setValue(source: Entity<T>) {
+        entity.setAs(source)
     }
 
     fun get(): T {

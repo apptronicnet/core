@@ -1,16 +1,16 @@
 package net.apptronic.core.view.containers
 
-import net.apptronic.core.view.CoreView
-import net.apptronic.core.view.CoreViewBuilder
-import net.apptronic.core.view.ICoreView
-import net.apptronic.core.view.ViewProperty
+import net.apptronic.core.view.*
 import net.apptronic.core.view.properties.HorizontalAlignment
 import net.apptronic.core.view.properties.VerticalAlignment
 
 /**
  * Base class for all containers which can hold mutiple views
  */
-abstract class CoreContainerView : CoreView(), ICoreContainerView, CoreViewBuilder {
+abstract class CoreContainerView : CoreParentView(), ICoreContainerView, ICoreViewBuilder {
+
+    final override val viewBuilderParent: ICoreParentView?
+        get() = this
 
     override val children: ViewProperty<List<ICoreView>> = viewProperty(emptyList())
 

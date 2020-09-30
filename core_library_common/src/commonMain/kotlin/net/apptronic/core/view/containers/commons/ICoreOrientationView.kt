@@ -1,8 +1,8 @@
 package net.apptronic.core.view.containers.commons
 
 import net.apptronic.core.component.entity.Entity
-import net.apptronic.core.view.CoreViewBuilder
 import net.apptronic.core.view.ICoreView
+import net.apptronic.core.view.ICoreViewBuilder
 import net.apptronic.core.view.ViewProperty
 import net.apptronic.core.view.properties.LayoutOrientation
 import net.apptronic.core.view.widgets.CoreSpacerView
@@ -11,7 +11,7 @@ import net.apptronic.core.view.widgets.spacerView
 /**
  * Base class for containers which supports orientation and adding spacers according to it's orientation
  */
-interface ICoreOrientationView : ICoreView, CoreViewBuilder {
+interface ICoreOrientationView : ICoreView, ICoreViewBuilder {
 
     val orientation: ViewProperty<LayoutOrientation>
 

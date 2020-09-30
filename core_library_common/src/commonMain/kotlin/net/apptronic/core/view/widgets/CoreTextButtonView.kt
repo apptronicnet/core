@@ -1,7 +1,7 @@
 package net.apptronic.core.view.widgets
 
 import net.apptronic.core.view.CoreView
-import net.apptronic.core.view.CoreViewBuilder
+import net.apptronic.core.view.ICoreViewBuilder
 import net.apptronic.core.view.commons.ICoreButtonView
 import net.apptronic.core.view.commons.ICoreTextView
 import net.apptronic.core.view.properties.ColorBlack
@@ -30,6 +30,6 @@ class CoreTextButtonView : CoreView(), ICoreButtonView, ICoreTextView {
 
 }
 
-fun CoreViewBuilder.buttonTextView(builder: CoreTextButtonView.() -> Unit): CoreTextButtonView {
+fun ICoreViewBuilder.buttonTextView(builder: CoreTextButtonView.() -> Unit): CoreTextButtonView {
     return onNextView(CoreTextButtonView(), builder)
 }

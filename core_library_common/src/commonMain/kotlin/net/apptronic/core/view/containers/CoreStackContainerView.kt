@@ -1,7 +1,7 @@
 package net.apptronic.core.view.containers
 
-import net.apptronic.core.view.CoreViewBuilder
 import net.apptronic.core.view.ICoreView
+import net.apptronic.core.view.ICoreViewBuilder
 import net.apptronic.core.view.containers.commons.ICoreOrientationView
 import net.apptronic.core.view.containers.commons.IDividerContainerView
 import net.apptronic.core.view.containers.commons.ISpacingContainerView
@@ -25,6 +25,6 @@ open class CoreStackContainerView internal constructor()
 
 }
 
-fun CoreViewBuilder.stackContainer(builder: CoreStackContainerView.() -> Unit): ICoreView {
+fun ICoreViewBuilder.stackContainer(builder: CoreStackContainerView.() -> Unit): ICoreView {
     return onNextView(CoreStackContainerView(), builder)
 }

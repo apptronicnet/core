@@ -1,7 +1,7 @@
 package net.apptronic.core.view.widgets
 
 import net.apptronic.core.view.CoreView
-import net.apptronic.core.view.CoreViewBuilder
+import net.apptronic.core.view.ICoreViewBuilder
 import net.apptronic.core.view.commons.ICoreButtonView
 import net.apptronic.core.view.containers.CoreContainerView
 import net.apptronic.core.view.properties.HorizontalAlignment
@@ -21,6 +21,6 @@ open class CoreContainerButtonView internal constructor() : CoreContainerView(),
 
 }
 
-fun CoreViewBuilder.buttonContainerView(builder: CoreContainerButtonView.() -> Unit): CoreView {
+fun ICoreViewBuilder.buttonContainerView(builder: CoreContainerButtonView.() -> Unit): CoreView {
     return onNextView(CoreContainerButtonView(), builder)
 }

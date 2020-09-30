@@ -1,15 +1,12 @@
 package net.apptronic.core.view.containers.commons
 
 import net.apptronic.core.component.entity.Entity
-import net.apptronic.core.view.CoreViewBuilder
-import net.apptronic.core.view.ICoreView
-import net.apptronic.core.view.LayerCoreViewBuilder
-import net.apptronic.core.view.ViewProperty
+import net.apptronic.core.view.*
 
 /**
  * Base interface for view which can divide content with dividers
  */
-interface IDividerContainerView : ICoreView {
+interface IDividerContainerView : ICoreParentView {
 
     val divider: ViewProperty<ICoreView?>
 
@@ -33,8 +30,10 @@ interface IDividerContainerView : ICoreView {
         dividerOnBottom.set(source)
     }
 
-    fun divider(builder: CoreViewBuilder.() -> ICoreView) {
-        divider.set(LayerCoreViewBuilder(this).builder())
+    fun divider(builder: ICoreViewBuilder.() -> ICoreView) {
+        StandaloneCoreViewBuilder(this).builder().also {
+            divider.set(it)
+        }
     }
 
 }

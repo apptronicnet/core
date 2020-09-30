@@ -9,10 +9,9 @@ import net.apptronic.core.view.properties.*
 
 abstract class CoreView : ICoreView {
 
-    private val themesList = mutableListOf<CoreViewStyle>()
+    override var parent: ICoreParentView? = null
 
-    override val themes: List<CoreViewStyle>
-        get() = themesList
+    override fun view(): ICoreView = this
 
     final override val FitToParent = CoreLayoutDimension.FitToParent
     final override val FitToContent = CoreLayoutDimension.FitToContent
@@ -47,18 +46,16 @@ abstract class CoreView : ICoreView {
     final override val Heavy: FontWeight = FontWeight(800)
     final override val UltraHeavy: FontWeight = FontWeight(900)
 
-    fun <T> viewProperty(initialValue: T, onRecycle: ((T) -> Unit)? = null): ViewProperty<T> {
+    final override fun <T> viewProperty(initialValue: T, onRecycle: ((T) -> Unit)?): ViewProperty<T> {
         return ViewProperty(context, initialValue, onRecycle)
     }
 
-    protected fun <T> ViewProperty<T>.set(value: T) {
+    final override fun <T> ViewProperty<T>.set(value: T) {
         this.setValue(value)
     }
 
-    protected fun <T> ViewProperty<T>.set(entity: Entity<T>) {
-        entity.subscribe(context) {
-            this.setValue(it)
-        }
+    final override fun <T> ViewProperty<T>.set(source: Entity<T>) {
+        this.setValue(source)
     }
 
     final override val context: CoreViewContext = CoreViewContext()
@@ -92,8 +89,7 @@ abstract class CoreView : ICoreView {
         }
     }
 
-    final override fun theme(vararg theme: CoreViewStyle) {
-        themesList.addAll(theme)
+    override fun theme(vararg theme: CoreViewStyle) {
         style(*theme)
     }
 

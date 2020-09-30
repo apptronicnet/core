@@ -1,9 +1,9 @@
 package net.apptronic.core.view.shape
 
-import net.apptronic.core.view.CoreViewBuilder
+import net.apptronic.core.view.ICoreViewBuilder
 
 class CoreOvalShapeDrawableView internal constructor() : CoreShapeView()
 
-fun CoreViewBuilder.ovalShape(builder: CoreOvalShapeDrawableView.() -> Unit): CoreOvalShapeDrawableView {
+fun ICoreViewBuilder.ovalShape(builder: CoreOvalShapeDrawableView.() -> Unit): CoreOvalShapeDrawableView {
     return onNextView(CoreOvalShapeDrawableView(), builder)
 }
