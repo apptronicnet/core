@@ -63,13 +63,6 @@ abstract class Scope internal constructor(
         return optionalInjection(objectKey(descriptor))
     }
 
-    /**
-     * Inject context in which this provider is defined.
-     */
-    fun definitionContext(): Context {
-        return definitionContext
-    }
-
     private fun <ObjectType> performInjection(
             objectKey: ObjectKey
     ): ObjectType {
@@ -82,7 +75,7 @@ abstract class Scope internal constructor(
         return parameters.get(objectKey) ?: dependencyDispatcher.optional(objectKey, emptyParameters())
     }
 
-    internal abstract val defaultBuilderContext: Context
+    internal abstract val defaultBuilderContext: ScopedContextParentDefinition
 
     private val contexts = mutableListOf<Context>()
 
@@ -92,18 +85,21 @@ abstract class Scope internal constructor(
      */
     @Suppress("UNUSED_PARAMETER")
     fun <T : Context> scopedContext(
-            contextDefinition: ContextDefinition<T>): T {
-        val scopedContext = defaultBuilderContext.childContext(contextDefinition)
+            parent: ScopedContextParentDefinition = defaultBuilderContext,
+            contextDefinition: ContextDefinition<T>
+    ): T {
+        val scopedContext = parent.context.childContext(contextDefinition)
         contexts.add(scopedContext)
         return scopedContext
     }
 
     @Suppress("UNUSED_PARAMETER")
     fun scopedContext(
+            parent: ScopedContextParentDefinition = defaultBuilderContext,
             lifecycleDefinition: LifecycleDefinition = BASE_LIFECYCLE,
             builder: Context.() -> Unit = {}
     ): Context {
-        val scopedContext = defaultBuilderContext.childContext(lifecycleDefinition, builder)
+        val scopedContext = parent.context.childContext(lifecycleDefinition, builder)
         contexts.add(scopedContext)
         return scopedContext
     }
@@ -130,6 +126,8 @@ abstract class Scope internal constructor(
         }
     }
 
+    val definition: ScopedContextParentDefinition = ScopedContextParentDefinition(definitionContext)
+
 }
 
 class SingleScope internal constructor(
@@ -137,7 +135,14 @@ class SingleScope internal constructor(
         dependencyDispatcher: DependencyDispatcher
 ) : Scope(definitionContext, dependencyDispatcher, emptyParameters()) {
 
-    override val defaultBuilderContext: Context = definitionContext
+    override val defaultBuilderContext = ScopedContextParentDefinition(definitionContext)
+
+    /**
+     * Inject context in which this provider is defined.
+     */
+    fun definitionContext(): Context {
+        return definitionContext
+    }
 
 }
 
@@ -178,6 +183,7 @@ abstract class ParametersScope(
     internal abstract fun <ObjectType> performProvide(
             objectKey: ObjectKey
     ): ObjectType
+
 }
 
 class FactoryScope internal constructor(
@@ -200,7 +206,9 @@ class FactoryScope internal constructor(
         return parameters.get(objectKey) ?: injectionDispatcher.inject(objectKey, emptyParameters())
     }
 
-    override val defaultBuilderContext: Context = injectionContext
+    override val defaultBuilderContext = ScopedContextParentDefinition(injectionContext)
+
+    val provided: ScopedContextParentDefinition = ScopedContextParentDefinition(definitionContext)
 
 }
 
@@ -215,6 +223,6 @@ class SharedScope internal constructor(
                 ?: throw InjectionFailedException("Cannot provide $objectKey: this is missing in provided parameters")
     }
 
-    override val defaultBuilderContext: Context = definitionContext
+    override val defaultBuilderContext = ScopedContextParentDefinition(definitionContext)
 
 }

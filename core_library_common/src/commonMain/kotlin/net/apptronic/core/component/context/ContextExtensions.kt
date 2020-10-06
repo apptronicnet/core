@@ -1,5 +1,7 @@
 package net.apptronic.core.component.context
 
+import net.apptronic.core.component.lifecycle.BASE_LIFECYCLE
+
 fun Context.getGlobalContext(): Context {
     var global = this
     var complete = false
@@ -11,4 +13,16 @@ fun Context.getGlobalContext(): Context {
         }
     } while (!complete)
     return global
+}
+
+/**
+ * Execute some [action] in isolated context which will be immediately recycled after action execution
+ */
+fun <T> Context.isolatedExecute(action: Context.() -> T): T {
+    val context = SubContext(this, BASE_LIFECYCLE)
+    return try {
+        action.invoke(context)
+    } finally {
+        context.lifecycle.terminate()
+    }
 }

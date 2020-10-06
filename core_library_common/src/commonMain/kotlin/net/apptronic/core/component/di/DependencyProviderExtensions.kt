@@ -1,6 +1,7 @@
 package net.apptronic.core.component.di
 
 import net.apptronic.core.component.context.Context
+import net.apptronic.core.component.context.isolatedExecute
 
 /**
  * Execute some [action] with instance provided by isolated [Context] with will be recycled immediately after execution

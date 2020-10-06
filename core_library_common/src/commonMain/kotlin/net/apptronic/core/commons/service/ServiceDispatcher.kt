@@ -24,7 +24,7 @@ fun <T : Any, R : Any> ModuleDefinition.service(
         builder: SharedScope.() -> Service<T, R>) {
     shared(descriptor.serviceInstanceDescriptor, builder = builder)
     single(descriptor.holderDescriptor) {
-        ServiceDispatcherImpl(scopedContext(ServiceDispatcherLifecycle), descriptor.serviceInstanceDescriptor)
+        ServiceDispatcherImpl(scopedContext(lifecycleDefinition = ServiceDispatcherLifecycle), descriptor.serviceInstanceDescriptor)
     }
 }
 
