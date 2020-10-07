@@ -1,5 +1,6 @@
 package net.apptronic.core.view.widgets
 
+import net.apptronic.core.UnderDevelopment
 import net.apptronic.core.view.CoreView
 import net.apptronic.core.view.ICoreViewBuilder
 import net.apptronic.core.view.commons.ICoreButtonView
@@ -8,6 +9,7 @@ import net.apptronic.core.view.properties.ColorBlack
 import net.apptronic.core.view.properties.HorizontalAlignment
 import net.apptronic.core.view.properties.VerticalAlignment
 
+@UnderDevelopment
 class CoreTextButtonView : CoreView(), ICoreButtonView, ICoreTextView {
 
     override val text = viewProperty("")
@@ -30,6 +32,7 @@ class CoreTextButtonView : CoreView(), ICoreButtonView, ICoreTextView {
 
 }
 
+@UnderDevelopment
 fun ICoreViewBuilder.buttonTextView(builder: CoreTextButtonView.() -> Unit): CoreTextButtonView {
     return onNextView(CoreTextButtonView(), builder)
 }

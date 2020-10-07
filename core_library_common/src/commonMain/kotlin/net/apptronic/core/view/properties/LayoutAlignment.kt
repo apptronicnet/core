@@ -1,11 +1,20 @@
 package net.apptronic.core.view.properties
 
+import net.apptronic.core.UnderDevelopment
+
+@UnderDevelopment
 interface ILayoutAlignment
 
+@UnderDevelopment
 interface HorizontalAlignment : ILayoutAlignment
+
+@UnderDevelopment
 interface VerticalAlignment : ILayoutAlignment
+
+@UnderDevelopment
 interface BidirectionalLayoutAlignment : HorizontalAlignment, VerticalAlignment
 
+@UnderDevelopment
 object LayoutAlignment {
     object ToLeft : HorizontalAlignment
     object ToStart : HorizontalAlignment

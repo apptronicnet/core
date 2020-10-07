@@ -1,9 +1,11 @@
 package net.apptronic.core.view.commons
 
+import net.apptronic.core.UnderDevelopment
 import net.apptronic.core.component.entity.base.UpdateEntity
 import net.apptronic.core.view.ICoreContentView
 import net.apptronic.core.view.ViewProperty
 
+@UnderDevelopment
 interface ICoreButtonView : ICoreContentView, IEnabledDisabledView {
 
     val onClick: ViewProperty<() -> Unit>

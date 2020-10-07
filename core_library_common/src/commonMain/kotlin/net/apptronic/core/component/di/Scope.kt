@@ -85,8 +85,8 @@ abstract class Scope internal constructor(
      */
     @Suppress("UNUSED_PARAMETER")
     fun <T : Context> scopedContext(
-            parent: ScopedContextParentDefinition = defaultBuilderContext,
-            contextDefinition: ContextDefinition<T>
+            contextDefinition: ContextDefinition<T>,
+            parent: ScopedContextParentDefinition = defaultBuilderContext
     ): T {
         val scopedContext = parent.context.childContext(contextDefinition)
         contexts.add(scopedContext)
@@ -95,8 +95,8 @@ abstract class Scope internal constructor(
 
     @Suppress("UNUSED_PARAMETER")
     fun scopedContext(
-            parent: ScopedContextParentDefinition = defaultBuilderContext,
             lifecycleDefinition: LifecycleDefinition = BASE_LIFECYCLE,
+            parent: ScopedContextParentDefinition = defaultBuilderContext,
             builder: Context.() -> Unit = {}
     ): Context {
         val scopedContext = parent.context.childContext(lifecycleDefinition, builder)

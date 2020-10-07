@@ -1,5 +1,8 @@
 package net.apptronic.core.view.dimension
 
+import net.apptronic.core.UnderDevelopment
+
+@UnderDevelopment
 abstract class CoreDimension(private val rawNumber: Float) : Number() {
 
     override fun toByte(): Byte = rawNumber.toInt().toByte()
@@ -19,15 +22,18 @@ abstract class CoreDimension(private val rawNumber: Float) : Number() {
 
 }
 
+@UnderDevelopment
 class DiscreteCoreDimension(val size: Float) : CoreDimension(size) {
     override fun toString(): String = "[$size]"
 }
 
+@UnderDevelopment
 class PixelCoreDimension(val pixels: Float) : CoreDimension(pixels) {
     override fun toString(): String = "$pixels pixels"
 
 }
 
+@UnderDevelopment
 fun Number.asCoreDimension(): CoreDimension {
     if (this is CoreDimension) {
         return this

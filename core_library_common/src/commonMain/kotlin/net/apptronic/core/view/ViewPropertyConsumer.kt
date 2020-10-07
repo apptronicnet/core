@@ -1,7 +1,9 @@
 package net.apptronic.core.view
 
+import net.apptronic.core.UnderDevelopment
 import net.apptronic.core.component.context.Context
 
+@UnderDevelopment
 interface ViewPropertyConsumer {
 
     val context: Context

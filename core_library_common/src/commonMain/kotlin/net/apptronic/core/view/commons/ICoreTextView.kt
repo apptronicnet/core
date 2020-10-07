@@ -1,5 +1,6 @@
 package net.apptronic.core.view.commons
 
+import net.apptronic.core.UnderDevelopment
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.view.ICoreContentView
 import net.apptronic.core.view.ICoreView
@@ -7,6 +8,7 @@ import net.apptronic.core.view.ViewProperty
 import net.apptronic.core.view.properties.CoreColor
 import net.apptronic.core.view.properties.FontWeight
 
+@UnderDevelopment
 interface ICoreTextView : ICoreView, ICoreContentView {
 
     val text: ViewProperty<String>

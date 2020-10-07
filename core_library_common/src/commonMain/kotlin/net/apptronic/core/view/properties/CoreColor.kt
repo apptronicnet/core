@@ -1,5 +1,8 @@
 package net.apptronic.core.view.properties
 
+import net.apptronic.core.UnderDevelopment
+
+@UnderDevelopment
 private fun Int.bounds(): Int {
     return when {
         this < 0 -> 0
@@ -8,6 +11,7 @@ private fun Int.bounds(): Int {
     }
 }
 
+@UnderDevelopment
 private fun Float.bounds(): Float {
     return when {
         this < 0f -> 0f
@@ -16,6 +20,7 @@ private fun Float.bounds(): Float {
     }
 }
 
+@UnderDevelopment
 data class CoreColor internal constructor(
         val red: Int,
         val green: Int,
@@ -82,17 +87,37 @@ data class CoreColor internal constructor(
 
 }
 
+@UnderDevelopment
 fun coreColor(red: Number, green: Number, blue: Number, alpha: Number = 1): CoreColor {
     return CoreColor(red.toInt().bounds(), green.toInt().bounds(), blue.toInt().bounds(), alpha.toFloat().bounds())
 }
 
+@UnderDevelopment
 val ColorTransparent = coreColor(0, 0, 0, 0)
+
+@UnderDevelopment
 val ColorWhite = coreColor(0, 0, 0)
+
+@UnderDevelopment
 val ColorGray = coreColor(128, 128, 128)
+
+@UnderDevelopment
 val ColorBlack = coreColor(0, 0, 0)
+
+@UnderDevelopment
 val ColorRed = coreColor(255, 0, 0)
+
+@UnderDevelopment
 val ColorGreen = coreColor(0, 255, 0)
+
+@UnderDevelopment
 val ColorBlue = coreColor(0, 0, 255)
+
+@UnderDevelopment
 val ColorYellow = coreColor(255, 255, 0)
+
+@UnderDevelopment
 val ColorCyan = coreColor(0, 255, 255)
+
+@UnderDevelopment
 val ColorMagenta = coreColor(255, 0, 255)

@@ -1,5 +1,8 @@
 package net.apptronic.core.view
 
+import net.apptronic.core.UnderDevelopment
+
+@UnderDevelopment
 abstract class CoreParentView : CoreView(), ICoreParentView {
 
     private val themesList = mutableListOf<CoreViewStyle>()

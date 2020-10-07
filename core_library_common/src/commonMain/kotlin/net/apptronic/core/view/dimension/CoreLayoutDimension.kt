@@ -1,5 +1,8 @@
 package net.apptronic.core.view.dimension
 
+import net.apptronic.core.UnderDevelopment
+
+@UnderDevelopment
 sealed class CoreLayoutDimension {
 
     class SpecificDimension(val coreDimension: CoreDimension) : CoreLayoutDimension()
@@ -14,6 +17,7 @@ sealed class CoreLayoutDimension {
 
 }
 
+@UnderDevelopment
 fun CoreLayoutDimension(number: Number): CoreLayoutDimension {
     return CoreLayoutDimension.SpecificDimension(number.asCoreDimension())
 }

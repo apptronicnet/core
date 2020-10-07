@@ -1,11 +1,13 @@
 package net.apptronic.core.view
 
+import net.apptronic.core.UnderDevelopment
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.behavior.watch
 import net.apptronic.core.component.entity.entities.setAs
 import net.apptronic.core.component.value
 
+@UnderDevelopment
 class ViewProperty<T> internal constructor(
         private val context: Context, initialValue: T, private val onRecycle: ((T) -> Unit)?
 ) {

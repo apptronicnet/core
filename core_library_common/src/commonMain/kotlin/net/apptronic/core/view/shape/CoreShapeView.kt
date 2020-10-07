@@ -1,5 +1,6 @@
 package net.apptronic.core.view.shape
 
+import net.apptronic.core.UnderDevelopment
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.functions.mapOrNull
 import net.apptronic.core.component.entity.switchContext
@@ -10,6 +11,7 @@ import net.apptronic.core.view.dimension.CoreLayoutDimension
 import net.apptronic.core.view.dimension.asCoreDimension
 import net.apptronic.core.view.properties.CoreColor
 
+@UnderDevelopment
 abstract class CoreShapeView : CoreView() {
 
     override val width: ViewProperty<CoreLayoutDimension> = viewProperty(FitToParent)

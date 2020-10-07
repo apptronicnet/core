@@ -1,5 +1,6 @@
 package net.apptronic.core.view
 
+import net.apptronic.core.UnderDevelopment
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.context.terminate
 import net.apptronic.core.component.coroutines.CoroutineDispatchers
@@ -11,6 +12,7 @@ import net.apptronic.core.component.plugin.Extensions
 import net.apptronic.core.component.plugin.Plugin
 import net.apptronic.core.component.plugin.PluginDescriptor
 
+@UnderDevelopment
 class CoreViewContext : Context {
 
     private var parentReference: Context? = null

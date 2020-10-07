@@ -1,5 +1,6 @@
 package net.apptronic.core.view
 
+import net.apptronic.core.UnderDevelopment
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.functions.map
 import net.apptronic.core.component.entity.switchContext
@@ -15,6 +16,7 @@ import net.apptronic.core.view.properties.Visibility
  *
  * Used by target platforms to generate native views and layouts and update according to it's properties.
  */
+@UnderDevelopment
 interface ICoreView : ICoreViewRepresentable, ViewPropertyOwner, PropertyAccess {
 
     var parent: ICoreParentView?
@@ -135,7 +137,7 @@ interface ICoreView : ICoreViewRepresentable, ViewPropertyOwner, PropertyAccess 
             horizontal: Number? = null,
             vertical: Number? = null,
     ) {
-        all?.let { indentTop(it); indentBottom(it); indentStart(it); indentEnd(it) }
+        all?.let { indentTop(it); indentBottom(it); indentLeft(it); indentStart(it); indentRight(it); indentEnd(it) }
         left?.let { indentLeft(it) }
         right?.let { indentRight(it) }
         top?.let { indentTop(it) }
@@ -205,7 +207,7 @@ interface ICoreView : ICoreViewRepresentable, ViewPropertyOwner, PropertyAccess 
             horizontal: Number? = null,
             vertical: Number? = null,
     ) {
-        all?.let { paddingTop(it); paddingBottom(it); paddingStart(it); paddingEnd(it) }
+        all?.let { paddingTop(it); paddingBottom(it); paddingLeft(it); paddingStart(it); paddingRight(it); paddingEnd(it) }
         left?.let { paddingLeft(it) }
         right?.let { paddingRight(it) }
         top?.let { paddingTop(it) }

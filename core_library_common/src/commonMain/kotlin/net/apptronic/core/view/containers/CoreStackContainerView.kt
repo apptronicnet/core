@@ -1,5 +1,6 @@
 package net.apptronic.core.view.containers
 
+import net.apptronic.core.UnderDevelopment
 import net.apptronic.core.view.ICoreView
 import net.apptronic.core.view.ICoreViewBuilder
 import net.apptronic.core.view.containers.commons.ICoreOrientationView
@@ -10,6 +11,7 @@ import net.apptronic.core.view.properties.LayoutOrientation
 /**
  * View container in which all views are placed one after another
  */
+@UnderDevelopment
 open class CoreStackContainerView internal constructor()
     : CoreContainerView(), ICoreOrientationView, ISpacingContainerView, IDividerContainerView {
 

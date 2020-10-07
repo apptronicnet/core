@@ -1,5 +1,6 @@
 package net.apptronic.core.view
 
+import net.apptronic.core.UnderDevelopment
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.view.dimension.CoreDimension
 import net.apptronic.core.view.dimension.CoreLayoutDimension
@@ -7,6 +8,7 @@ import net.apptronic.core.view.dimension.DiscreteCoreDimension
 import net.apptronic.core.view.dimension.PixelCoreDimension
 import net.apptronic.core.view.properties.*
 
+@UnderDevelopment
 abstract class CoreView : ICoreView {
 
     override var parent: ICoreParentView? = null

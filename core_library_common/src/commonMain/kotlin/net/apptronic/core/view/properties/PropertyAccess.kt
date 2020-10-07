@@ -1,8 +1,10 @@
 package net.apptronic.core.view.properties
 
+import net.apptronic.core.UnderDevelopment
 import net.apptronic.core.view.dimension.CoreDimension
 import net.apptronic.core.view.dimension.CoreLayoutDimension
 
+@UnderDevelopment
 interface PropertyAccess {
 
     val FitToParent: CoreLayoutDimension

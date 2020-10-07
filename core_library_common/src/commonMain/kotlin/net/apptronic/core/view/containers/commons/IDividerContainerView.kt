@@ -1,11 +1,13 @@
 package net.apptronic.core.view.containers.commons
 
+import net.apptronic.core.UnderDevelopment
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.view.*
 
 /**
  * Base interface for view which can divide content with dividers
  */
+@UnderDevelopment
 interface IDividerContainerView : ICoreParentView {
 
     val divider: ViewProperty<ICoreView?>

@@ -1,11 +1,13 @@
 package net.apptronic.core.view
 
+import net.apptronic.core.UnderDevelopment
 import net.apptronic.core.component.context.terminate
 import net.apptronic.core.component.entity.Entity
 
 /**
  * Creates container which wraps some dynamic view content
  */
+@UnderDevelopment
 class CoreDynamicContentView internal constructor() : CoreParentView() {
 
     val content = viewProperty<ICoreView?>(null) {

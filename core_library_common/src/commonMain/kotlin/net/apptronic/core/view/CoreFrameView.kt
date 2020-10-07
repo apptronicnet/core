@@ -1,5 +1,6 @@
 package net.apptronic.core.view
 
+import net.apptronic.core.UnderDevelopment
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.view.properties.CoreColor
 import net.apptronic.core.view.shape.rectangleShape
@@ -9,6 +10,7 @@ import net.apptronic.core.view.shape.rectangleShape
  *
  * Used by target platforms to generate native views and layouts and update according to it's properties.
  */
+@UnderDevelopment
 class CoreFrameView internal constructor() : CoreParentView() {
 
     val content: ViewProperty<ICoreView?> = viewProperty(null)

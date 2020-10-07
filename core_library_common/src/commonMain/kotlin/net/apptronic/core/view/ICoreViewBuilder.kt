@@ -1,8 +1,11 @@
 package net.apptronic.core.view
 
+import net.apptronic.core.UnderDevelopment
+
 /**
  * Base class for objects which can create views
  */
+@UnderDevelopment
 interface ICoreViewBuilder {
 
     val viewBuilderParent: ICoreParentView?

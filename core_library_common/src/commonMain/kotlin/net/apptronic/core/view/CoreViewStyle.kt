@@ -1,11 +1,13 @@
 package net.apptronic.core.view
 
+import net.apptronic.core.UnderDevelopment
 import net.apptronic.core.base.utils.isInstanceOf
 import kotlin.reflect.KClass
 
 /**
  * Class that defines style which is applied dynamically to any view
  */
+@UnderDevelopment
 class CoreViewStyle internal constructor() {
 
     private val includes = mutableListOf<CoreViewStyle>()
