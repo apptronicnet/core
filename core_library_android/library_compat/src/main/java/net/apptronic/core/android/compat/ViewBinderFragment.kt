@@ -15,9 +15,7 @@ abstract class ViewBinderFragment<T : IViewModel> : CoreCompatFragment<T>() {
     private var viewBinder: ViewBinder<T>? = null
 
     final override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         viewBinder = buildViewBinder()
         val delegate = viewBinder!!.getViewDelegate<ViewContainerDelegate<*>>()

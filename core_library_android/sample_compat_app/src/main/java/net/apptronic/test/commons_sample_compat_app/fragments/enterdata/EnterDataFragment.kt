@@ -7,8 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import net.apptronic.core.android.compat.CoreCompatContextHolder
 import net.apptronic.core.android.compat.componentContext
-import net.apptronic.core.android.compat.componentCreated
-import net.apptronic.core.android.compat.componentDestroyed
 import net.apptronic.core.component.context.dependencyModule
 import net.apptronic.core.component.inject
 import net.apptronic.test.commons_sample_compat_app.R
@@ -32,15 +30,9 @@ class EnterDataFragment : Fragment(), CoreCompatContextHolder {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        componentCreated()
         router = componentContext.inject()
         repository = componentContext.inject()
         componentContext.dependencyDispatcher.addInstance<EnterDataRouter>(dataRouter)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        componentDestroyed()
     }
 
     override fun onCreateView(
@@ -68,7 +60,7 @@ class EnterDataFragment : Fragment(), CoreCompatContextHolder {
 
         override fun submitLocation() {
             val data = repository.getData()
-            router.goToShowUerData(data)
+            router.goToShowUserData(data)
         }
 
     }

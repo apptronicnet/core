@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.context.terminate
 
-class CompatContextHolderViewModel(
+class CoreCompatContextHolderViewModel(
     val context: Context
 ) : ViewModel() {
 

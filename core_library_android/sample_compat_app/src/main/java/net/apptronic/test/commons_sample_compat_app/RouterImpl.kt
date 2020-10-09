@@ -25,7 +25,7 @@ class RouterImpl(private val mainActivity: MainActivity) : Router {
         mainActivity.replaceFragmentWithAddToBackStack(EnterDataFragment())
     }
 
-    override fun goToShowUerData(data: UserData) {
+    override fun goToShowUserData(data: UserData) {
         mainActivity.replaceFragmentWithAddToBackStack(ShowDataFragment().apply {
             arguments = Bundle().apply {
                 putSerializable(KEY_USER_DATA, data)

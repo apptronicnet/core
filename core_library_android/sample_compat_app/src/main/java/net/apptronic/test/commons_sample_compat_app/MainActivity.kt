@@ -22,14 +22,15 @@ class MainActivity : ViewBinderActivity<MainViewModel>() {
         }
     }
 
-    override fun onViewModelCreated(savedInstanceState: Bundle?) {
-        super.onViewModelCreated(savedInstanceState)
+    override fun onViewModelAttached(savedInstanceState: Bundle?) {
+        super.onViewModelAttached(savedInstanceState)
         componentContext.dependencyDispatcher.addInstance<Router>(RouterImpl(this))
     }
 
     fun replaceFragmentWithAddToBackStack(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
             .replace(R.id.container, fragment)
+            .addToBackStack(null)
             .commit()
     }
 

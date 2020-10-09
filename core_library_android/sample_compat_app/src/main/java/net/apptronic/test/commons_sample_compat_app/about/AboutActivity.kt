@@ -10,8 +10,8 @@ class AboutActivity : CoreCompatActivity<AboutViewModel>() {
 
     override fun buildViewModel(parent: Context): AboutViewModel = parent.aboutViewModel()
 
-    override fun onViewModelCreated(savedInstanceState: Bundle?) {
-        super.onViewModelCreated(savedInstanceState)
+    override fun onViewModelAttached(savedInstanceState: Bundle?) {
+        super.onViewModelAttached(savedInstanceState)
         setContentView(R.layout.activity_about)
     }
 

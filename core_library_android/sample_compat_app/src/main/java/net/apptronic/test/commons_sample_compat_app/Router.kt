@@ -10,6 +10,6 @@ interface Router {
 
     fun goToEnterData()
 
-    fun goToShowUerData(data: UserData)
+    fun goToShowUserData(data: UserData)
 
 }

@@ -9,7 +9,7 @@ class ContextHolderViewModelFactory(
 ) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return CompatContextHolderViewModel(builder()) as T
+        return CoreCompatContextHolderViewModel(builder()) as T
     }
 
 }

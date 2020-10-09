@@ -6,10 +6,9 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.context.childContext
-import net.apptronic.core.component.lifecycle.enterStage
-import net.apptronic.core.component.lifecycle.exitStage
+import net.apptronic.core.component.lifecycle.BASE_LIFECYCLE
 
-fun Activity.getParentContext(): Context {
+internal fun Activity.getParentContext(): Context {
     return (application as? CoreCompatContextHolder)?.componentContext
         ?: throw IllegalStateException(
             "Cannot find parent net.apptronic.core.component.context.Context. Application should implement ICoreCompatApplication"
@@ -31,22 +30,13 @@ fun Fragment.getParentContext(): Context {
 fun FragmentActivity.componentContext(builder: Context.() -> Unit) = lazy {
     ViewModelProvider(this, ContextHolderViewModelFactory {
         val parentContext = getParentContext()
-        parentContext.childContext(CompatComponentLifecycle, builder)
-    }).get(CompatContextHolderViewModel::class.java).context
+        parentContext.childContext(BASE_LIFECYCLE, builder)
+    }).get(CoreCompatContextHolderViewModel::class.java).context
 }
 
 fun Fragment.componentContext(builder: Context.() -> Unit) = lazy {
     ViewModelProvider(this, ContextHolderViewModelFactory {
         val parentContext = getParentContext()
-        parentContext.childContext(CompatComponentLifecycle, builder)
-    }).get(CompatContextHolderViewModel::class.java).context
+        parentContext.childContext(BASE_LIFECYCLE, builder)
+    }).get(CoreCompatContextHolderViewModel::class.java).context
 }
-
-fun CoreCompatContextHolder.componentCreated() {
-    componentContext.enterStage(COMPAT_STAGE_CREATED)
-}
-
-fun CoreCompatContextHolder.componentDestroyed() {
-    componentContext.exitStage(COMPAT_STAGE_CREATED)
-}
-

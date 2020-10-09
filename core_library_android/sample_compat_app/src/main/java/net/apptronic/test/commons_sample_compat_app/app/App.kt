@@ -7,8 +7,6 @@ import net.apptronic.core.component.context.coreContext
 
 class App : Application(), ICoreCompatApplication {
 
-    override val componentContext: Context = coreContext {
-
-    }
+    override val componentContext: Context = coreContext()
 
 }

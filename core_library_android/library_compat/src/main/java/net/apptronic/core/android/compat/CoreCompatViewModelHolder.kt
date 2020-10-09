@@ -9,5 +9,4 @@ interface CoreCompatViewModelHolder<T : IViewModel> : CoreCompatContextHolder {
 
     val viewModel: T
 
-
 }

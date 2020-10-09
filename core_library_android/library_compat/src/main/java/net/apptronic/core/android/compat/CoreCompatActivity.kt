@@ -13,30 +13,35 @@ abstract class CoreCompatActivity<T : IViewModel> : AppCompatActivity(),
 
     lateinit var lifecycleController: ViewModelLifecycleController
 
-    override val viewModel: T by lazy {
-        ViewModelProvider(
-            this,
-            ModelHolderViewModelFactory {
-                buildViewModel(getParentContext())
-            }
-        ).get(CompatModelHolderViewModel::class.java).coreViewModel as T
-    }
+    private lateinit var viewModelReference: T
+
+    override val viewModel: T
+        get() {
+            return viewModelReference
+        }
 
     override val componentContext: ViewModelContext
         get() = viewModel.context
 
     abstract fun buildViewModel(parent: Context): T
 
+    @Suppress("UNCHECKED_CAST")
     override fun onCreate(savedInstanceState: Bundle?) {
+        viewModelReference = ViewModelProvider(
+            this,
+            ModelHolderViewModelFactory {
+                buildViewModel(getParentContext())
+            }
+        ).get(CompatModelHolderViewModel::class.java).coreViewModel as T
         lifecycleController = ViewModelLifecycleController(viewModel)
         lifecycleController.setAttached(true)
-        onViewModelCreated(savedInstanceState)
+        onViewModelAttached(savedInstanceState)
         super.onCreate(savedInstanceState)
         lifecycleController.setBound(true)
         onBindViewModel(savedInstanceState)
     }
 
-    open fun onViewModelCreated(savedInstanceState: Bundle?) {
+    open fun onViewModelAttached(savedInstanceState: Bundle?) {
         // implement by subclasses before binding is performed
     }
 
@@ -68,7 +73,7 @@ abstract class CoreCompatActivity<T : IViewModel> : AppCompatActivity(),
         // implement by subclasses before binding is performed
     }
 
-    open fun onViewModeDestroyed() {
+    open fun onViewModeDetached() {
         // implement by subclasses before binding is performed
     }
 
@@ -77,7 +82,7 @@ abstract class CoreCompatActivity<T : IViewModel> : AppCompatActivity(),
         lifecycleController.setBound(false)
         onViewModelUnbound()
         lifecycleController.setAttached(false)
-        onViewModeDestroyed()
+        onViewModeDetached()
     }
 
 }

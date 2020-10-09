@@ -11,23 +11,28 @@ import net.apptronic.core.mvvm.viewmodel.navigation.ViewModelLifecycleController
 
 abstract class CoreCompatFragment<T : IViewModel> : Fragment(), ICoreCompatFragment<T> {
 
-    lateinit var lifecycleController: ViewModelLifecycleController
+    private lateinit var lifecycleController: ViewModelLifecycleController
 
-    override val viewModel: T by lazy {
-        ViewModelProvider(
-            this,
-            ModelHolderViewModelFactory {
-                buildViewModel(getParentContext())
-            }
-        ).get(CompatModelHolderViewModel::class.java).coreViewModel as T
-    }
+    private lateinit var viewModelReference: T
+
+    override val viewModel: T
+        get() {
+            return viewModelReference
+        }
 
     abstract fun buildViewModel(parent: Context): T
 
     override val componentContext: ViewModelContext
         get() = viewModel.context
 
+    @Suppress("UNCHECKED_CAST")
     override fun onCreate(savedInstanceState: Bundle?) {
+        viewModelReference = ViewModelProvider(
+            this,
+            ModelHolderViewModelFactory {
+                buildViewModel(getParentContext())
+            }
+        ).get(CompatModelHolderViewModel::class.java).coreViewModel as T
         lifecycleController = ViewModelLifecycleController(viewModel)
         lifecycleController.setAttached(true)
         super.onCreate(savedInstanceState)
