@@ -2,7 +2,63 @@ Read [Manual](manual.md) for complete guide to framework.
 
 ___
 
-### Create project
+### Get the template project
+
+The template project can be downloaded from [https://github.com/apptronicnet/mpp_app_template](https://github.com/apptronicnet/mpp_app_template).
+
+It contains fully set up Kotlin/Multiplatform project with:
+ - Android and iOS targets 
+ - dependencies
+ - basic stack navigation implementation with MVVM with Android UI
+ - sample unit tests
+
+##### Source structure
+
+```
+src
+|---commonMain    // common code reused for Android and iOS
+|   |---kotlin
+|        |---apptemplate.apptronicnetcore.common
+|            |---viewmodel    // ViewModels
+|            |   |---AppViewModel.kt
+|            |   |---MainViewModel.kt
+|            |---AppComponent.kt    // Component which responsible for whole app
+|            |---AppContext.kt    // definition for global application Context
+|---main
+|   |---kotlin
+|   |   |---apptemplate.apptronicnetcore
+|   |   |   |---binders
+|   |   |   |   |---AppViewBinder.kt    // View binder to dusplay AppViewModel.kt
+|   |   |   |   |---MainViewBinder.kt    // View binder to dusplay MainViewModel.kt
+|   |   |   |---AndroidAppModule.kt    // Dependency module for providing Android-related dependencies
+|   |   |   |---App.kt    // Application class
+|   |   |   |---AppActivity.kt    // Application Activity
+|   |   |   |---AppBinderFactory.kt    // ViewBinderFactory: creates ViewBinders for concrete ViewModel
+|   |---res
+|   |---AndroidManifest.xml
+|---test
+|   |---kotlin
+|       |---apptemplate.apptronicnetcore
+|           |---AppViewModelTest.kt    // Example of writing Unit test
+|           |---MainViewModelTest.kt    // Example of writing Unit test
+```
+
+##### Prepare project
+
+Go to ```app/build.gradle``` and change applicationId to your app application id. 
+```groovy
+android {
+    ...
+    defaultConfig {
+        ...
+        applicationId "apptemplate.apptronicnetcore" // Change this
+```
+
+Rename package ```apptemplate.apptronicnetcore``` to your app package name under source roots ```commonMain```, ```main``` and ```test```.
+
+Rename package ```apptemplate.apptronicnetcore``` in ```AndroidManifest.xml```.
+
+### Create project manually
 
 First open Intellij Idea / Android Studio and start Kotlin Multiplatform project
 
@@ -15,7 +71,7 @@ First open Intellij Idea / Android Studio and start Kotlin Multiplatform project
 | Kotlin                      | 1.4.10      |
 | Coroutines                  | 1.3.9       |
 
-Add maven repository:
+Add kotlin plugin and apptronic.net maven repository:
 
 ```groovy
 buildscript {
@@ -28,6 +84,7 @@ buildscript {
 
 allprojects {
     repositories {
+        ...
         maven {
             url "https://maven.apptronic.net"
         }
@@ -35,7 +92,19 @@ allprojects {
 }
 ```
 
-And library dependencies:
+Open ```app/build.gradle```.
+
+Add plugins:
+
+```groovy
+plugins {
+    id 'kotlin-multiplatform'
+    id "com.android.application"
+    id "kotlin-android-extensions"
+}
+```
+
+Library dependencies:
 
 ```groovy
 kotlin {
@@ -52,12 +121,16 @@ kotlin {
         androidMain {
             dependencies {
                 implementation kotlin('stdlib')
-                implementation "net.apptronic.core:core-android:0.7.0"
-                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9"
-                implementation "androidx.recyclerview:recyclerview:1.1.0" // for lists
-                implementation "androidx.viewpager:viewpager:1.0.0" // for pages
-                implementation 'androidx.core:core-ktx:1.3.1' // for easier view binding
-              }
+                // required by to apptronic.net/core
+                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
+                implementation "net.apptronic.core:core-android:$apptronic_net_core_version"
+
+                // generic android dependencies
+                implementation 'androidx.core:core-ktx:1.3.1'
+                implementation 'androidx.appcompat:appcompat:1.2.0'
+                implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
+                implementation "com.google.android.material:material:1.2.1"
+                implementation 'androidx.recyclerview:recyclerview:1.1.0'              }
         }
     }
 }
@@ -81,7 +154,7 @@ AppComponent.kt
 ```kotlin
 // this class is declaration of Core-level component, responsible for app behavior
 
-class AppComponent(context: Context) : BaseComponent(context) {
+class AppComponent(context: Context) : BaseComponent(AppContext) {
 
     // this item is managing core app UI model (AppViewModel for these case)
     // it is used by UI side to retrieve ViewModel and recycle it when UI closed
