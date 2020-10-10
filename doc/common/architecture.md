@@ -48,7 +48,7 @@ Base architecture brick is **Context**
 
  Any **Context** except **Core** can be created as child of any another **Context** <ins>at runtime</ins>. Dependency parent-child works in next way:
   - child **Context** **Lifecycle** generally independent of parent **Context** Lifecycle
-  - child **Context** **DependencyDispatcher** can inject anything from parent **Context** **DependencyDispatcher** recursively (up to **Core Context**)
+  - child **Context** **DependencyDispatcher** can inject anything from the parent **Context** **DependencyDispatcher** recursively (up to **Core Context**)
   - each **Context** **DependencyDispatcher** can override any declaration, in that case all injections done in this **Context** and it's children will use overridden declaration
   - child **Context** automatically terminates when parent **Context** is terminated
   - each **Content** holds **Component**s which can interact one with another inside one **Context**
@@ -60,7 +60,7 @@ Base architecture brick is **Context**
  
  Root **ViewModel** created when it needed to show app UI (Activity created on Android) and terminated when app UI is hidden (Activity destroyed on Android).
  
- It is not required to destroy **ViewModel** when Activity is destroyed (for example, when app rotates and Activity will be recreated soon). In that case recreated Activity will bind to same instance of **ViewModel** and all view state will be restored from **ViewModel**. Same mechanism can be used on any platform.
+ It is not required to destroy **ViewModel** when Activity destroyed (for example, when app rotates and Activity will be recreated soon). In that case recreated Activity will bind to same instance of **ViewModel** and all view state will be restored from **ViewModel**. Same mechanism can be used on any platform.
  
  Example of how in works for **Android** platform:
  
