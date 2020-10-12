@@ -42,7 +42,7 @@ fun ModuleDefinition.navigationRouter() {
 
 @UnderDevelopment
 fun <T> ModuleDefinition.navigationRouter(descriptor: NavigationRouterDescriptor<T>) {
-    navigationRouter(DefaultNavigationRouterDescriptor) {
+    navigationRouter(descriptor) {
         BasicNavigationRouter(scopedContext())
     }
 }
