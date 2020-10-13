@@ -1,6 +1,5 @@
 package net.apptronic.core.mvvm.viewmodel.navigation
 
-import net.apptronic.core.base.collections.wrapLists
 import net.apptronic.core.base.observable.subject.BehaviorSubject
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.Entity
@@ -74,8 +73,8 @@ class ListNavigator internal constructor(
     private val visibilityFilters: VisibilityFilters<IViewModel> = VisibilityFilters<IViewModel>()
     private var listFilter: ListNavigatorFilter = simpleFilter()
 
-    private var items: List<IViewModel> = emptyList()
-    private var visibleItems: List<IViewModel> = emptyList()
+    private var items: List<ViewModelContainer> = emptyList()
+    private var visibleItems: List<ViewModelContainer> = emptyList()
 
     override val subject = BehaviorSubject<List<IViewModel>>().apply {
         update(emptyList())
@@ -84,7 +83,7 @@ class ListNavigator internal constructor(
     private val viewModelListEntity = Value<ListNavigatorStatus>(context)
 
     private fun sendStatusUpdate() {
-        viewModelListEntity.set(ListNavigatorStatus(items, visibleItems))
+        viewModelListEntity.set(ListNavigatorStatus(items.map { it.getViewModel() }, visibleItems.map { it.getViewModel() }))
     }
 
     init {
@@ -92,7 +91,7 @@ class ListNavigator internal constructor(
     }
 
     private fun updateSubject() {
-        subject.update(items)
+        subject.update(items.map { it.getViewModel() })
         sendStatusUpdate()
     }
 
@@ -114,7 +113,7 @@ class ListNavigator internal constructor(
     }
 
     fun getStatus(): ListNavigatorStatus {
-        return ListNavigatorStatus(items, visibleItems)
+        return ListNavigatorStatus(items.map { it.getViewModel() }, visibleItems.map { it.getViewModel() })
     }
 
     fun setAs(source: OnChangeProperty<List<IViewModel>, out Any>): ListNavigator {
@@ -126,27 +125,30 @@ class ListNavigator internal constructor(
 
     private fun refreshVisibility(changeInfo: Any?) {
         val source = items.map {
-            ItemVisibilityRequest(it, it.getContainer()?.shouldShow() ?: true)
+            ItemVisibilityRequest(it.getViewModel(), it.shouldShow())
         }
-        visibleItems = listFilter.filterList(source)
+        val filterResult = listFilter.filterList(source)
+        visibleItems = items.filter {
+            filterResult.contains(it.getViewModel())
+        }
         sendStatusUpdate()
         notifyAdapter(changeInfo)
     }
 
     override fun onNotifyAdapter(adapter: ViewModelListAdapter, changeInfo: Any?) {
-        adapter.onDataChanged(visibleItems, changeInfo)
+        adapter.onDataChanged(visibleItems.map { ViewModelListItem(it, this) }, changeInfo)
     }
 
     override fun get(): List<IViewModel> {
-        return ArrayList(items)
+        return items.map { it.getViewModel() }
     }
 
     fun getVisible(): List<IViewModel> {
-        return ArrayList(visibleItems)
+        return visibleItems.map { it.getViewModel() }
     }
 
     override fun getOrNull(): List<IViewModel>? {
-        return ArrayList(items)
+        return items.map { it.getViewModel() }
     }
 
     private val containers = mutableMapOf<Long, ViewModelContainer>()
@@ -164,21 +166,22 @@ class ListNavigator internal constructor(
     }
 
     fun update(changeInfo: Any? = null, action: (MutableList<IViewModel>) -> Unit) {
-        val list = items.toTypedArray().toMutableList()
+        val list = items.map { it.getViewModel() }.toMutableList()
         action.invoke(list)
         set(list, changeInfo)
     }
 
     fun set(value: List<IViewModel>, changeInfo: Any? = null) {
-        val diff = getDiff(items, value)
+        val diff = getDiff(items.map { it.getViewModel() }, value)
         diff.removed.forEach {
             onRemoved(it)
         }
-        items = value.toTypedArray().toList()
+        val newVideModels = value.toTypedArray().toList()
         diff.added.forEach {
             it.verifyContext()
             onAdded(it)
         }
+        items = newVideModels.map { it.getContainer() }.filterNotNull()
         refreshVisibility(changeInfo)
         updateSubject()
     }
@@ -216,10 +219,10 @@ class ListNavigator internal constructor(
     override fun onSetAdapter(adapter: ViewModelListAdapter) {
         parent.context.lifecycle.onExitFromActiveStage {
             items.forEach {
-                if (boundIds.contains(it.componentId)) {
-                    setFocused(it, false)
-                    setVisible(it, false)
-                    setBound(it, false)
+                if (boundIds.contains(it.getViewModel().componentId)) {
+                    it.setFocused(false)
+                    it.setVisible(false)
+                    it.setBound(false)
                 }
             }
             boundIds.clear()
@@ -232,16 +235,16 @@ class ListNavigator internal constructor(
         return visibleItems.size
     }
 
-    override fun getViewModels(): List<IViewModel> {
-        return wrapLists(visibleItems)
+    override fun getViewModelItems(): List<ViewModelListItem> {
+        return visibleItems.map { ViewModelListItem(it, this) }
     }
 
     override fun indexOfViewModel(viewModel: IViewModel): Int {
-        return visibleItems.indexOf(viewModel)
+        return visibleItems.indexOfFirst { it.getViewModel() == viewModel }
     }
 
-    override fun getViewModelAt(index: Int): IViewModel {
-        return visibleItems[index]
+    override fun getViewModelItemAt(index: Int): ViewModelListItem {
+        return ViewModelListItem(visibleItems[index], this)
     }
 
     override fun setBound(viewModel: IViewModel, isBound: Boolean) {

@@ -5,7 +5,7 @@ import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModel
-import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelStackAdapter
+import net.apptronic.core.mvvm.viewmodel.adapter.SingleViewModelAdapter
 
 fun IViewModel.stackNavigator(navigatorContext: Context = this.context): StackNavigator {
     context.verifyNavigatorContext(navigatorContext)
@@ -26,7 +26,7 @@ class StackNavigator internal constructor(
         override val navigatorContext: Context
 ) : Navigator<StackNavigatorStatus>(
         parent
-), StackNavigationModel, VisibilityFilterableNavigator {
+), StackNavigationModel, SingleViewModelNavigationModel, VisibilityFilterableNavigator {
 
     private data class State(
             val isInProgress: Boolean,
@@ -58,7 +58,7 @@ class StackNavigator internal constructor(
     }
 
     private class CurrentAdapter(
-            val adapter: ViewModelStackAdapter
+            val adapter: SingleViewModelAdapter
     ) {
         var activeItem: ViewModelContainer? = null
     }
@@ -202,9 +202,9 @@ class StackNavigator internal constructor(
     }
 
     /**
-     * Set [ViewModelStackAdapter] to create view controllers for [ViewModel]s
+     * Set [SingleViewModelAdapter] to create view controllers for [ViewModel]s
      */
-    fun setAdapter(adapter: ViewModelStackAdapter) {
+    override fun setAdapter(adapter: SingleViewModelAdapter) {
         currentAdapter = CurrentAdapter(adapter)
         invalidateAdapter(newItem = currentState.visibleItem, transitionInfo = null, stackTransition = StackTransition.Auto)
         context.lifecycle.onExitFromActiveStage {

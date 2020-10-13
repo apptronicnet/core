@@ -303,19 +303,19 @@ class DynamicListNavigator<T : Any, Id : Any, VM : IViewModel> internal construc
         }
     }
 
-    private inner class LazyList : AbstractList<IViewModel>() {
+    private inner class LazyList : AbstractList<ViewModelListItem>() {
 
         override val size: Int
             get() {
                 return indexMapping.getSize()
             }
 
-        override fun get(index: Int): IViewModel {
+        override fun get(index: Int): ViewModelListItem {
             val mappedIndex = indexMapping.mapIndex(index)
             val key = items[mappedIndex]
             val existing = containers.findRecordForId(key.getId())
-            return if (existing == null) {
-                onAdded(key).getViewModel()
+            val container = if (existing == null) {
+                onAdded(key)
             } else {
                 savedItemIds.remove(key.getId())
                 if (existing.requiresUpdate) {
@@ -323,17 +323,17 @@ class DynamicListNavigator<T : Any, Id : Any, VM : IViewModel> internal construc
                     builder.onUpdateViewModel(existing.container.getViewModel() as VM, key)
                     existing.requiresUpdate = false
                 }
-                existing.container.getViewModel()
+                existing.container
             }
+            return ViewModelListItem(container, this@DynamicListNavigator)
         }
 
-        override fun indexOf(element: IViewModel): Int {
-
+        override fun indexOf(element: ViewModelListItem): Int {
             // not applicable
             return -1
         }
 
-        override fun lastIndexOf(element: IViewModel): Int {
+        override fun lastIndexOf(element: ViewModelListItem): Int {
             // not applicable
             return -1
         }
@@ -344,11 +344,11 @@ class DynamicListNavigator<T : Any, Id : Any, VM : IViewModel> internal construc
         return viewModels.size
     }
 
-    override fun getViewModelAt(index: Int): IViewModel {
+    override fun getViewModelItemAt(index: Int): ViewModelListItem {
         return viewModels[index]
     }
 
-    override fun getViewModels(): List<IViewModel> {
+    override fun getViewModelItems(): List<ViewModelListItem> {
         return viewModels
     }
 

@@ -1,8 +1,8 @@
-package net.apptronic.core.mvvm.viewmodel.adapter
+package net.apptronic.core.mvvm.viewmodel.navigation
 
 import net.apptronic.core.mvvm.viewmodel.IViewModel
 
-interface ItemStateNavigator {
+internal interface ItemStateNavigator {
 
     fun setBound(viewModel: IViewModel, isBound: Boolean)
 

@@ -1,7 +1,6 @@
 package net.apptronic.core.mvvm.viewmodel.navigation
 
 import net.apptronic.core.mvvm.viewmodel.IViewModel
-import net.apptronic.core.mvvm.viewmodel.adapter.ItemStateNavigator
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelListAdapter
 
 abstract class BaseListNavigator<T>(
@@ -32,9 +31,15 @@ abstract class BaseListNavigator<T>(
 
     abstract fun getSize(): Int
 
-    abstract fun getViewModels(): List<IViewModel>
+    abstract fun getViewModelItems(): List<ViewModelListItem>
 
-    abstract fun getViewModelAt(index: Int): IViewModel
+    abstract fun getViewModelItemAt(index: Int): ViewModelListItem
+
+    fun getViewModelItemAtOrNull(index: Int): ViewModelListItem? {
+        return if (index in 0 until getSize()) {
+            getViewModelItemAt(index)
+        } else null
+    }
 
     abstract fun indexOfViewModel(viewModel: IViewModel): Int
 

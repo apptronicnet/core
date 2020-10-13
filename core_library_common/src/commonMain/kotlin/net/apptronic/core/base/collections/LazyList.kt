@@ -18,6 +18,10 @@ fun <T, E> lazyListOf(source: T, sizeFunction: (T) -> Int, mapFunction: (T, Int)
     return LazyList(source, mapFunction, sizeFunction)
 }
 
+fun <T, E> dynamicLazyListOf(source: List<T>, mapFunction: (T) -> E): List<E> {
+    return DynamicLazyList(source, mapFunction)
+}
+
 private class LazyList<T, E>(
         private val source: T,
         private val mapFunction: (T, Int) -> E,
@@ -35,6 +39,20 @@ private class LazyList<T, E>(
             converted[index] = result
             result
         }
+    }
+
+}
+
+private class DynamicLazyList<T, E>(
+        private val source: List<T>,
+        private val mapFunction: (T) -> E,
+) : AbstractList<E>() {
+
+    override val size: Int
+        get() = source.size
+
+    override fun get(index: Int): E {
+        return mapFunction(source[index])
     }
 
 }
