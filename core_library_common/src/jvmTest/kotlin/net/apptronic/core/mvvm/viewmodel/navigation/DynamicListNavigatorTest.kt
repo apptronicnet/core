@@ -5,7 +5,6 @@ import net.apptronic.core.component.context.viewModelContext
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.value
 import net.apptronic.core.mvvm.TestViewModel
-import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 import org.junit.Test
@@ -38,7 +37,7 @@ class DynamicListNavigatorTest : TestViewModel() {
 
     private val navigator = listDynamicNavigator(sources, StaticBuilder() + DynamicBuilder())
 
-    val adapter = TestListAdapter(navigator)
+    val adapter = TestListAdapter()
 
     init {
         statics.subscribe {
@@ -118,7 +117,7 @@ class DynamicListNavigatorTest : TestViewModel() {
         assert(attachedViewModels.size == status.attachedViewModels.size)
         attachedViewModels.forEach { keyOrValue ->
             when (keyOrValue) {
-                is IViewModel -> assert(status.attachedViewModels.contains(keyOrValue))
+                is ViewModelListItem -> assert(status.attachedViewModels.contains(keyOrValue.viewModel))
                 is String -> assert(status.attachedViewModels.any {
                     it is StaticItemViewModel && it.item == static(keyOrValue)
                 })
@@ -143,38 +142,38 @@ class DynamicListNavigatorTest : TestViewModel() {
         enterAllStages()
         assert(navigator.getSize() == 6)
         assertStatus(attachedViewModels = emptySet())
-        val vm1 = adapter.items[1] as DynamicItemViewModel
-        assert(vm1.item == dynamic(1))
+        val vm1 = adapter.items[1]
+        assert((vm1.viewModel as DynamicItemViewModel).item == dynamic(1))
         adapter.setFullBound(vm1, true)
-        assert(vm1.isStateFocused())
+        assert(vm1.viewModel.isStateFocused())
         assertStatus(attachedViewModels = setOf(vm1))
 
-        val vm2 = adapter.items[2] as DynamicItemViewModel
-        assert(vm2.item == dynamic(2))
+        val vm2 = adapter.items[2]
+        assert((vm2.viewModel as DynamicItemViewModel).item == dynamic(2))
         adapter.setFullBound(vm2, true)
-        assert(vm2.isStateFocused())
+        assert(vm2.viewModel.isStateFocused())
         assertStatus(attachedViewModels = setOf(vm1, vm2))
 
-        val vm3 = adapter.items[3] as DynamicItemViewModel
-        assert(vm3.item == dynamic(3))
+        val vm3 = adapter.items[3]
+        assert((vm3.viewModel as DynamicItemViewModel).item == dynamic(3))
         adapter.setFullBound(vm3, true)
-        assert(vm3.isStateFocused())
+        assert(vm3.viewModel.isStateFocused())
         assertStatus(attachedViewModels = setOf(vm1, vm2, vm3))
 
         adapter.setFullBound(vm1, false)
-        assert(vm1.isStateAttached()) // retained 1 value
+        assert(vm1.viewModel.isStateAttached()) // retained 1 value
         assertStatus(attachedViewModels = setOf(vm1, vm2, vm3))
 
         adapter.setFullBound(vm2, false)
-        assert(vm2.isStateAttached()) // retained 1 value
-        assert(vm1.isTerminated()) // but destroyed old value
+        assert(vm2.viewModel.isStateAttached()) // retained 1 value
+        assert(vm1.viewModel.isTerminated()) // but destroyed old value
         assertStatus(attachedViewModels = setOf(vm2, vm3))
 
-        val vm1new = adapter.items[1] as DynamicItemViewModel
-        val vm2old = adapter.items[2] as DynamicItemViewModel
+        val vm1new = adapter.items[1]
+        val vm2old = adapter.items[2]
         assert(vm1new != vm1)
         assert(vm2old == vm2)
-        assert(vm2old.isStateAttached())
+        assert(vm2old.viewModel.isStateAttached())
         assertStatus(attachedViewModels = setOf(vm1new, vm2, vm3))
 
         sources.set(
@@ -199,28 +198,28 @@ class DynamicListNavigatorTest : TestViewModel() {
         assert(adapter.items.size == 9)
         assertStatus(attachedViewModels = setOf(vm1new, vm2, vm3, "one", "two"))
 
-        val vm4 = adapter.items[6] as DynamicItemViewModel
-        assert(vm4.item == dynamic(4))
+        val vm4 = adapter.items[6]
+        assert((vm4.viewModel as DynamicItemViewModel).item == dynamic(4))
         assertStatus(attachedViewModels = setOf(vm1new, vm2, vm3, vm4, "one", "two"))
 
-        val vm5 = adapter.items[7] as DynamicItemViewModel
-        assert(vm5.item == dynamic(5))
+        val vm5 = adapter.items[7]
+        assert((vm5.viewModel as DynamicItemViewModel).item == dynamic(5))
         assertStatus(attachedViewModels = setOf(vm1new, vm2, vm3, vm4, vm5, "one", "two"))
 
-        val vm6 = adapter.items[8] as DynamicItemViewModel
-        assert(vm6.item == dynamic(6))
+        val vm6 = adapter.items[8]
+        assert((vm6.viewModel as DynamicItemViewModel).item == dynamic(6))
         assertStatus(attachedViewModels = setOf(vm1new, vm2, vm3, vm4, vm5, vm6, "one", "two"))
 
-        val vmOne = adapter.items[0] as StaticItemViewModel
-        assert(vmOne.item == static("one"))
+        val vmOne = adapter.items[0]
+        assert((vmOne.viewModel as StaticItemViewModel).item == static("one"))
         adapter.setFullBound(vmOne, true)
-        assert(vmOne.isStateFocused())
+        assert(vmOne.viewModel.isStateFocused())
         adapter.setFullBound(vmOne, false)
-        assert(vmOne.isStateAttached())
+        assert(vmOne.viewModel.isStateAttached())
         assertStatus(attachedViewModels = setOf(vm1new, vm2, vm3, vm4, vm5, vm6, vmOne, "two"))
 
-        val vmTwo = adapter.items[1] as StaticItemViewModel
-        assert(vmTwo.item == static("two"))
+        val vmTwo = adapter.items[1]
+        assert((vmTwo.viewModel as StaticItemViewModel).item == static("two"))
         assertStatus(attachedViewModels = setOf(vm1new, vm2, vm3, vm4, vm5, vm6, vmOne, vmTwo))
 
         adapter.setFullBound(vmOne, false)
@@ -230,19 +229,19 @@ class DynamicListNavigatorTest : TestViewModel() {
         adapter.setFullBound(vm5, false)
         adapter.setFullBound(vm6, false)
 
-        assert(vm2.isTerminated())
-        assert(vm4.isTerminated())
-        assert(vm5.isTerminated())
-        assert(vm6.isStateAttached())  // retained 1 value
-        assert(vmOne.isStateAttached())  // retained as static item
-        assert(vmTwo.isStateAttached())  // retained as static item
+        assert(vm2.viewModel.isTerminated())
+        assert(vm4.viewModel.isTerminated())
+        assert(vm5.viewModel.isTerminated())
+        assert(vm6.viewModel.isStateAttached())  // retained 1 value
+        assert(vmOne.viewModel.isStateAttached())  // retained as static item
+        assert(vmTwo.viewModel.isStateAttached())  // retained as static item
         assertStatus(attachedViewModels = setOf(vm1new, vm3, vm6, vmOne, vmTwo))
 
-        val vm4new = adapter.items[6] as DynamicItemViewModel
+        val vm4new = adapter.items[6]
         assert(vm4new != vm4)
-        val vm5new = adapter.items[7] as DynamicItemViewModel
+        val vm5new = adapter.items[7]
         assert(vm5new != vm5)
-        val vm6old = adapter.items[8] as DynamicItemViewModel
+        val vm6old = adapter.items[8]
         assert(vm6old == vm6)
         assertStatus(attachedViewModels = setOf(vm1new, vm3, vm4new, vm5new, vm6, vmOne, vmTwo))
 
@@ -278,11 +277,11 @@ class DynamicListNavigatorTest : TestViewModel() {
         adapter.setFullBound(vm5new, false)
         adapter.setFullBound(vm6, false)
 
-        assert(vmOne.isStateAttached())
-        assert(vmTwo.isTerminated())
-        assert(vm4new.isTerminated())
-        assert(vm5new.isTerminated())
-        assert(vm6.isStateAttached())
+        assert(vmOne.viewModel.isStateAttached())
+        assert(vmTwo.viewModel.isTerminated())
+        assert(vm4new.viewModel.isTerminated())
+        assert(vm5new.viewModel.isTerminated())
+        assert(vm6.viewModel.isStateAttached())
         assertStatus(attachedViewModels = setOf(vm1new, vm3, vm6, vmOne, "three"))
     }
 
@@ -304,9 +303,9 @@ class DynamicListNavigatorTest : TestViewModel() {
         )
         enterAllStages()
         assertStatus(attachedViewModels = emptySet())
-        val vm1 = adapter.items[0] as DynamicItemViewModel
-        val vm2 = adapter.items[1] as DynamicItemViewModel
-        val vm3 = adapter.items[2] as DynamicItemViewModel
+        val vm1 = adapter.items[0]
+        val vm2 = adapter.items[1]
+        val vm3 = adapter.items[2]
         assertStatus(attachedViewModels = setOf(vm1, vm2, vm3))
         sources.set(
                 listOf(

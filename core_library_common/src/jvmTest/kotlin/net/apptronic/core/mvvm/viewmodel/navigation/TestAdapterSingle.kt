@@ -1,9 +1,9 @@
 package net.apptronic.core.mvvm.viewmodel.navigation
 
 import net.apptronic.core.mvvm.viewmodel.IViewModel
-import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelStackAdapter
+import net.apptronic.core.mvvm.viewmodel.adapter.SingleViewModelAdapter
 
-internal class TestStackAdapter : ViewModelStackAdapter() {
+internal class TestAdapterSingle : SingleViewModelAdapter {
 
     var activeModel: IViewModel? = null
     var lastTransition: Any? = null

@@ -17,7 +17,7 @@ class SubModelLifecycleTest {
 
         val children = stackNavigator()
 
-        private val adapter = SampleViewModelAdapter()
+        private val adapter = SampleSingleViewModelAdapter()
 
         init {
             children.setAdapter(adapter)
@@ -33,7 +33,7 @@ class SubModelLifecycleTest {
 
         val children = stackNavigator()
 
-        private val adapter = SampleViewModelAdapter()
+        private val adapter = SampleSingleViewModelAdapter()
 
         init {
             children.setAdapter(adapter)

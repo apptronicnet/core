@@ -68,7 +68,7 @@ class DynamicListNavigatorContextTest : TestViewModel() {
         childModel.enterStage(ViewModelLifecycle.STAGE_ATTACHED)
         childModel.enterStage(ViewModelLifecycle.STAGE_BOUND)
         childModel.items.set(listOf(1))
-        childModel.navigator.getViewModelAt(0)
+        childModel.navigator.getViewModelItemAt(0)
     }
 
     @Test(expected = IncorrectContextHierarchyException::class)
@@ -87,7 +87,7 @@ class DynamicListNavigatorContextTest : TestViewModel() {
         childModel.enterStage(ViewModelLifecycle.STAGE_ATTACHED)
         childModel.enterStage(ViewModelLifecycle.STAGE_BOUND)
         childModel.items.set(listOf(1))
-        childModel.navigator.getViewModelAt(0)
+        childModel.navigator.getViewModelItemAt(0)
     }
 
     @Test(expected = IncorrectContextHierarchyException::class)
@@ -106,7 +106,7 @@ class DynamicListNavigatorContextTest : TestViewModel() {
         childModel.enterStage(ViewModelLifecycle.STAGE_ATTACHED)
         childModel.enterStage(ViewModelLifecycle.STAGE_BOUND)
         childModel.items.set(listOf(1))
-        childModel.navigator.getViewModelAt(0)
+        childModel.navigator.getViewModelItemAt(0)
     }
 
 }

@@ -24,7 +24,7 @@ class ListNavigatorTest {
 
     fun childModel() = ViewModel(rootViewModel.viewModelContext())
 
-    private val adapter = TestListAdapter(navigator)
+    private val adapter = TestListAdapter()
     private var listItems: List<IViewModel> = emptyList()
     private lateinit var status: ListNavigatorStatus
 
@@ -50,7 +50,7 @@ class ListNavigatorTest {
         itemsList.forEachIndexed { index, viewModel ->
             assertSame(viewModel, navigator.getStatus().all[index])
             assertSame(viewModel, status.all[index])
-            assertSame(viewModel, adapter.items[index])
+            assertSame(viewModel, adapter.items[index].viewModel)
             assertSame(viewModel, listItems[index])
         }
     }

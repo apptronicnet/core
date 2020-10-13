@@ -5,7 +5,7 @@ import net.apptronic.core.component.lifecycle.enterStage
 import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelLifecycle
-import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelStackAdapter
+import net.apptronic.core.mvvm.viewmodel.adapter.SingleViewModelAdapter
 import net.apptronic.core.testutils.testContext
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -440,7 +440,7 @@ class StackNavigatorVerificationTest : StackNavigationModelTests() {
 
     lateinit var status: StackNavigatorStatus
     var actualModel: IViewModel? = null
-    val adapter = object : ViewModelStackAdapter() {
+    val adapter = object : SingleViewModelAdapter {
         override fun onInvalidate(newModel: IViewModel?, transitionInfo: TransitionInfo) {
             actualModel = newModel
         }
@@ -482,10 +482,10 @@ class StackNavigationModelVerificationTest : StackNavigationModelTests() {
             assert(item === viewModels[index])
             assert(stackNavigationModel.getItemAt(index) === viewModels[index])
         }
-        val adapterItems = stackNavigationModel.listNavigator.getViewModels()
+        val adapterItems = stackNavigationModel.listNavigator.getViewModelItems()
         assert(adapterItems.size == viewModels.size)
         adapterItems.forEachIndexed { index, item ->
-            assert(item === viewModels[index])
+            assert(item.viewModel === viewModels[index])
             assert(stackNavigationModel.getItemAt(index) === viewModels[index])
         }
     }

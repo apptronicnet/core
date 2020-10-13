@@ -24,7 +24,7 @@ class StackNavigatorTest {
 
     private val root = RootViewModel(context.viewModelContext())
     private val lifecycleController = ViewModelLifecycleController(root)
-    private val adapter = TestStackAdapter()
+    private val adapter = TestAdapterSingle()
 
     private fun assertNavigatorStackState(vararg items: IViewModel) {
         assert(root.navigator.getSize() == items.size)

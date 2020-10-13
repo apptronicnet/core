@@ -42,7 +42,7 @@ class StackNavigatorFilterTest {
 
     private val root = RootViewModel(context.viewModelContext())
     private val lifecycleController = ViewModelLifecycleController(root)
-    private val adapter = TestStackAdapter()
+    private val adapter = TestAdapterSingle()
 
     @Test
     fun shouldAddCorrectly() {
