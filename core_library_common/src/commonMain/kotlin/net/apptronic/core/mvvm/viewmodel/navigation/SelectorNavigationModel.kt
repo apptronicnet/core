@@ -135,15 +135,15 @@ interface SelectorNavigationModel : INavigator<IViewModel?> {
         }
     }
 
-    fun add(viewModel: IViewModel, transitionSpec: Any? = null, selectorIndex: Int = SELECTOR_SAME_POSITION) {
+    fun add(viewModel: IViewModel, position: Int, transitionSpec: Any? = null, selectorIndex: Int = SELECTOR_SAME_POSITION) {
         update(transitionSpec, selectorIndex) {
-            it.add(viewModel)
+            it.add(position, viewModel)
         }
     }
 
-    fun add(transitionSpec: Any? = null, selectorIndex: Int = SELECTOR_SAME_POSITION, builder: Context.() -> IViewModel) {
+    fun add(transitionSpec: Any? = null, position: Int, selectorIndex: Int = SELECTOR_SAME_POSITION, builder: Context.() -> IViewModel) {
         val viewModel = navigatorContext.builder()
-        add(viewModel, transitionSpec, selectorIndex)
+        add(viewModel, position, transitionSpec, selectorIndex)
     }
 
     fun replaceList(newList: List<IViewModel>, transitionSpec: Any? = null, selectorIndex: Int = SELECTOR_SAME_POSITION) {

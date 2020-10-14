@@ -160,7 +160,7 @@ class SelectorNavigationViewModel internal constructor(
             index == SELECTOR_LAST -> lastIndex
             else -> SELECTOR_NOTHING
         }
-        listNavigator.setState(index, transitionSpec)
+        listNavigator.setState(nextIndex, transitionSpec)
     }
 
     override fun update(transitionSpec: Any?, selectorIndex: Int, builder: Context.(MutableList<IViewModel>) -> Unit) {
