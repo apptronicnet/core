@@ -21,18 +21,18 @@ class StackLoadingViewModel internal constructor(context: ViewModelContext) : Vi
     private var index = 1
 
     val navigator = stackNavigator()
-    val isInProgress = navigator.progress()
+    val isInProgress = navigator.content.progress()
 
     val loadingIndicatorText = isInProgress.map { if (it) "Loading" else "-" }
     val actualIndicatorText =
-        navigator.actualModel().map { "Actual: " + (it as? StackItemViewModel)?.name }
+        navigator.content.actualModel().map { "Actual: " + (it as? StackItemViewModel)?.name }
     val visibleIndicatorText =
-        navigator.visibleModel().map { "Visible: " + (it as? StackItemViewModel)?.name }
+        navigator.content.visibleModel().map { "Visible: " + (it as? StackItemViewModel)?.name }
 
     val onClickBack = genericEvent {
         navigator.popBackStack(BasicTransition.Backward)
     }
-    val isBackButtonEnabled = navigator.size().map { it > 1 }
+    val isBackButtonEnabled = navigator.content.size().map { it > 1 }
 
     private fun newItem(name: String): ViewModel {
         return StackItemViewModel(context, "$name #${index++}")

@@ -83,14 +83,14 @@ class ApplicationScreenViewModel(parent: Context) : ViewModel(parent, Applicatio
             }
             is ShowBottomSheet -> {
                 overlayNavigator.add(
-                    overlayNavigator.context.bottomSheetViewModel(),
+                    overlayNavigator.navigatorContext.bottomSheetViewModel(),
                     AppTransition.BottomSheet
                 )
                 true
             }
             is ReplaceBottomSheet -> {
                 overlayNavigator.replace(
-                    overlayNavigator.context.bottomSheetViewModel(),
+                    overlayNavigator.navigatorContext.bottomSheetViewModel(),
                     AppTransition.BottomSheet
                 )
                 true
@@ -100,7 +100,7 @@ class ApplicationScreenViewModel(parent: Context) : ViewModel(parent, Applicatio
     }
 
     private fun navigateForward(builder: Contextual.() -> ViewModel): Boolean {
-        appNavigator.add(appNavigator.context.builder(), BasicTransition.Forward)
+        appNavigator.add(appNavigator.navigatorContext.builder(), BasicTransition.Forward)
         return true
     }
 

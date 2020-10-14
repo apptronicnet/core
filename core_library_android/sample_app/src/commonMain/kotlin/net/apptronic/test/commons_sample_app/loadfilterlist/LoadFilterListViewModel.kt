@@ -16,28 +16,34 @@ class LoadFilterListViewModel internal constructor(context: ViewModelContext) : 
 
     val list = listNavigator()
 
+    private fun List<Long>.items(initialReady: Boolean): List<LoadItemViewModel> {
+        return mapIndexed { index, time ->
+            LoadItemViewModel(context, index + 1, time, initialReady)
+        }
+    }
+
     init {
         list.addVisibilityFilter(LoadItemVisibilityFilter())
         loadFilterMode.map { mode ->
             when (mode) {
                 LoadFilterMode.Simple -> {
-                    val times = (1..40).map { it * 500L }
-                    list.set(times.map { LoadItemViewModel(context, it, true) })
+                    val times = (1..40).map { it * 300L }
+                    list.set(times.items(true))
                     list.setListFilter(simpleFilter())
                 }
                 LoadFilterMode.Random -> {
-                    val times = (1..40).map { it * 500L }.shuffled()
-                    list.set(times.map { LoadItemViewModel(context, it, true) })
+                    val times = (1..40).map { it * 150L }.shuffled()
+                    list.set(times.items(true))
                     list.setListFilter(simpleFilter())
                 }
                 LoadFilterMode.RandomTakeFirst -> {
-                    val times = (1..20).map { it * 200L }.shuffled()
-                    list.set(times.map { LoadItemViewModel(context, it, true) })
+                    val times = (1..20).map { it * 150L }.shuffled()
+                    list.set(times.items(true))
                     list.setListFilter(takeUntilVisibleFilter())
                 }
                 LoadFilterMode.RandomWithNotifyReady -> {
-                    val times = (1..40).map { 250L + it * 12L }.shuffled()
-                    list.set(times.map { LoadItemViewModel(context, it, false) })
+                    val times = (1..40).map { 150L + it * 8L }.shuffled()
+                    list.set(times.items(false))
                     list.setListFilter(notifyNextFilter(true, 3))
                 }
             }

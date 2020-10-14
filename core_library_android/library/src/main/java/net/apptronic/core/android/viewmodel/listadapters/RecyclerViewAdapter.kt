@@ -28,7 +28,7 @@ class RecyclerViewAdapter(
         listAdapter.addListener(this)
     }
 
-    override fun onDataChanged(items: List<IViewModel>, changeInfo: Any?) {
+    override fun onDataChanged(items: List<ViewModelItem>, changeInfo: Any?) {
         when (changeInfo) {
             is ItemAdded -> notifyItemInserted(changeInfo.index)
             is ItemRemoved -> notifyItemRemoved(changeInfo.index)
@@ -46,7 +46,7 @@ class RecyclerViewAdapter(
     }
 
     fun getItemAt(position: Int): IViewModel {
-        return listAdapter.getViewModelAt(position)
+        return listAdapter.getItemAt(position).viewModel
     }
 
     override fun getItemId(position: Int): Long {
@@ -73,8 +73,8 @@ class RecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: ViewModelHolder, position: Int) {
         if (isBound) {
-            val viewModel = listAdapter.getViewModelAt(position)
-            if (viewModel != holder.viewModel) {
+            val item = listAdapter.getItemAt(position)
+            if (item != holder.item) {
                 doUnbindViewHolder(holder)
                 doBindViewHolder(holder, position)
             }
@@ -89,26 +89,26 @@ class RecyclerViewAdapter(
     }
 
     private fun doBindViewHolder(holder: ViewModelHolder, position: Int) {
-        holder.viewModel = listAdapter.getViewModelAt(position)
+        holder.item = listAdapter.getItemAt(position)
         val binder = listAdapter.bindView(position, holder.itemView)
-        listAdapter.setVisible(binder, true)
-        listAdapter.setFocused(binder, true)
+        binder.getItem().setVisible(true)
+        binder.getItem().setFocused(true)
         holder.viewBinder = binder
     }
 
     private fun doUnbindViewHolder(holder: ViewModelHolder) {
         val binder = holder.viewBinder
         if (binder != null) {
-            listAdapter.setFocused(binder, false)
-            listAdapter.setVisible(binder, false)
+            binder.getItem().setFocused(false)
+            binder.getItem().setVisible(false)
             listAdapter.unbindView(binder)
-            holder.viewModel = null
+            holder.item = null
             holder.viewBinder = null
         }
     }
 
     inner class ViewModelHolder(view: View) : RecyclerView.ViewHolder(view) {
-        var viewModel: IViewModel? = null
+        var item: ViewModelItem? = null
         var viewBinder: ViewBinder<*>? = null
     }
 

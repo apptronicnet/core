@@ -24,10 +24,11 @@ class LazyListFilterViewModel internal constructor(context: ViewModelContext) : 
     private val allItems = merge(staticItems, dynamicItems).map {
         wrapLists(it.first, it.second)
     }
+
     val listNavigator = listDynamicNavigator(allItems, builder).also {
         it.setStaticItems(staticItems)
     }
-    val isInProgress = listNavigator.observerStatus().hasHidden()
+    val isInProgress = listNavigator.content.hasHidden()
 
     init {
         listNavigator.setSimpleVisibilityFilter()

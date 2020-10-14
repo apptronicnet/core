@@ -7,8 +7,9 @@ import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.ViewBinderFactory
 import net.apptronic.core.android.viewmodel.view.PopupWindowDelegate
 import net.apptronic.core.mvvm.viewmodel.IViewModel
-import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelStackAdapter
+import net.apptronic.core.mvvm.viewmodel.adapter.SingleViewModelAdapter
 import net.apptronic.core.mvvm.viewmodel.navigation.TransitionInfo
+import net.apptronic.core.mvvm.viewmodel.navigation.ViewModelItem
 
 interface PopupAnchorProvider {
 
@@ -21,7 +22,7 @@ open class PopupBinderStackAdapter(
     private val container: View,
     private val anchorProvider: PopupAnchorProvider,
     private val viewBinderFactory: ViewBinderFactory = ViewBinderFactory()
-) : ViewModelStackAdapter() {
+) : SingleViewModelAdapter {
 
     fun bindings(setup: ViewBinderFactory.() -> Unit) {
         setup.invoke(viewBinderFactory)
@@ -34,7 +35,8 @@ open class PopupBinderStackAdapter(
 
     private var current: PopupAndBinder? = null
 
-    override fun onInvalidate(newModel: IViewModel?, transitionInfo: TransitionInfo) {
+    override fun onInvalidate(item: ViewModelItem?, transitionInfo: TransitionInfo) {
+        val newModel = item?.viewModel
         val newBinder =
             if (newModel != null) viewBinderFactory.getBinder(newModel) else null
         val next = if (newBinder != null && newModel != null) {

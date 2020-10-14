@@ -6,17 +6,9 @@ import android.util.TypedValue
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import net.apptronic.core.android.view.adapters.ContentViewAdapter
-import net.apptronic.core.android.view.adapters.FrameContainerViewAdapter
-import net.apptronic.core.android.view.adapters.RectangleShapeAdapter
-import net.apptronic.core.android.view.adapters.TextViewAdapter
 import net.apptronic.core.android.view.platform.DimensionEngine
 import net.apptronic.core.base.utils.isInstanceOf
 import net.apptronic.core.view.ICoreView
-import net.apptronic.core.view.base.CoreViewBuilder
-import net.apptronic.core.view.base.ViewConfiguration
-import net.apptronic.core.view.context.CoreViewContext
-import net.apptronic.core.view.properties.LayoutDirection
 import kotlin.reflect.KClass
 
 open class ViewRenderingEngine(
@@ -25,25 +17,25 @@ open class ViewRenderingEngine(
 ) {
 
     private val androidContext: Context = activity
-    private val viewConfiguration: ViewConfiguration
+//    private val viewConfiguration: ViewConfiguration
 
     private val factory = ViewFrameFactory()
 
     private val holders = mutableListOf<ViewTypeAdapterHolder<*, *>>()
 
     init {
-        val layoutDirectionInt = activity.window.decorView.layoutDirection
-        viewConfiguration = ViewConfiguration(
-            layoutDirection = if (layoutDirectionInt == View.LAYOUT_DIRECTION_RTL) {
-                LayoutDirection.LeftToRight
-            } else {
-                LayoutDirection.RightToLeft
-            }
-        )
-        addAdapter(TextViewAdapter)
-        addAdapter(ContentViewAdapter)
-        addAdapter(FrameContainerViewAdapter)
-        addAdapter(RectangleShapeAdapter)
+//        val layoutDirectionInt = activity.window.decorView.layoutDirection
+//        viewConfiguration = ViewConfiguration(
+//            layoutDirection = if (layoutDirectionInt == View.LAYOUT_DIRECTION_RTL) {
+//                LayoutDirection.LeftToRight
+//            } else {
+//                LayoutDirection.RightToLeft
+//            }
+//        )
+//        addAdapter(TextViewAdapter)
+//        addAdapter(ContentViewAdapter)
+//        addAdapter(FrameContainerViewAdapter)
+//        addAdapter(RectangleShapeAdapter)
     }
 
     private inner class ViewTypeAdapterHolder<CoreView : ICoreView, ContentView : View>(
@@ -76,7 +68,7 @@ open class ViewRenderingEngine(
 
     }
 
-    private class RootBuilder(override val context: CoreViewContext) : CoreViewBuilder
+//    private class RootBuilder(override val context: CoreViewContext) : CoreViewBuilder
 
     fun <CoreView : ICoreView, ContentView : View> addAdapter(
         coreType: KClass<CoreView>,
@@ -92,10 +84,10 @@ open class ViewRenderingEngine(
         addAdapter(CoreView::class, ContentView::class, adapter)
     }
 
-    fun renderRoot(builder: CoreViewBuilder.() -> ICoreView): View {
-        val coreView = RootBuilder(CoreViewContext(viewConfiguration)).builder()
-        return render(coreView, false).frame
-    }
+//    fun renderRoot(builder: CoreViewBuilder.() -> ICoreView): View {
+//        val coreView = RootBuilder(CoreViewContext(viewConfiguration)).builder()
+//        return render(coreView, false).frame
+//    }
 
     private fun render(coreView: ICoreView, independentContext: Boolean): ViewHolder {
         val context =

@@ -2,10 +2,15 @@ package net.apptronic.core.android.viewmodel
 
 import android.app.Activity
 import android.app.Dialog
+import android.content.Context
+import android.graphics.Color
 import android.os.Parcelable
 import android.util.SparseArray
+import android.util.TypedValue
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.annotation.LayoutRes
 import net.apptronic.core.android.viewmodel.view.ActivityDelegate
 import net.apptronic.core.android.viewmodel.view.DialogDelegate
@@ -15,6 +20,7 @@ import net.apptronic.core.debugError
 import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelLifecycle
+import net.apptronic.core.mvvm.viewmodel.navigation.ViewModelItem
 import kotlin.reflect.KClass
 
 private val SavedInstanceStateExtensionDescriptor = extensionDescriptor<SparseArray<Parcelable>>()
@@ -38,17 +44,41 @@ abstract class ViewBinder<T : IViewModel> : BindingContainer {
 
     /**
      * Specify layout resource to be used for creation or [View] using default implementation.
-     * If null - should override each method [onCreateView], [onCreateActivityView],
-     * [onCreateDialogView] to be used for corresponding binding or navigator.
+     * If null - should override each method [onCreateView] to be used for corresponding binding
+     * or navigator.
      */
     @LayoutRes
     open var layoutResId: Int? = null
 
-    private var viewModel: IViewModel? = null
+    private var item: ViewModelItem? = null
+    private var viewModel: T? = null
     private var view: View? = null
     private var bindings: Bindings? = null
 
     private val delegates = mutableMapOf<KClass<*>, Any>()
+
+    open fun onCreateView(
+        context: Context, inflater: LayoutInflater, container: ViewGroup?
+    ): View {
+        val layoutResId = this.layoutResId
+        return if (layoutResId != null) {
+            inflater.inflate(layoutResId, container, false)
+        } else {
+            createFallbackView(context, this::class.simpleName ?: "ViewBinder")
+        }
+    }
+
+    fun createFallbackView(context: Context, fallbackText: String): View {
+        return TextView(context).apply {
+            layoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
+            )
+            setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16f)
+            setTextColor(Color.BLACK)
+            setBackgroundColor(Color.LTGRAY)
+            text = fallbackText
+        }
+    }
 
     inline fun <reified Delegate : Any> getViewDelegate(): Delegate {
         return getViewDelegate(Delegate::class)
@@ -77,7 +107,11 @@ abstract class ViewBinder<T : IViewModel> : BindingContainer {
         }
     }
 
-    fun getViewModel(): IViewModel {
+    fun getItem(): ViewModelItem {
+        return item ?: throw IllegalStateException("No ViewModelItem for $this")
+    }
+
+    fun getViewModel(): T {
         return viewModel ?: throw IllegalStateException("No viewModel bound for $this")
     }
 
@@ -89,11 +123,7 @@ abstract class ViewBinder<T : IViewModel> : BindingContainer {
         return bindings ?: throw IllegalStateException("No bindings for $this")
     }
 
-    /**
-     * Bind [view] to [viewModel]
-     */
-    @Suppress("UNCHECKED_CAST")
-    fun performViewBinding(viewModel: IViewModel, view: View) {
+    private fun preCheck(viewModel: IViewModel) {
         if (viewModel.extensions[ViewBinderExtensionsDescriptor] != null) {
             debugError(Error("$viewModel already have bound view!!!"))
         }
@@ -107,10 +137,30 @@ abstract class ViewBinder<T : IViewModel> : BindingContainer {
                 )
             )
         }
+
+    }
+
+    fun performViewBinding(viewModel: IViewModel, view: View) {
+        preCheck(viewModel)
+        performViewBindingInternal(viewModel, view)
+    }
+
+    /**
+     * Bind [view] to [viewModel]
+     */
+    @Suppress("UNCHECKED_CAST")
+    fun performViewBinding(item: ViewModelItem, view: View) {
+        preCheck(item.viewModel)
+        this.item = item
+        performViewBindingInternal(item.viewModel, view)
+
+    }
+
+    private fun performViewBindingInternal(viewModel: IViewModel, view: View) {
         this.view = view
-        this.viewModel = viewModel
+        this.viewModel = viewModel as T
         bindings = Bindings(viewModel, this)
-        onBindView(view, viewModel as T)
+        onBindView(view, viewModel)
 
         viewModel.extensions[SavedInstanceStateExtensionDescriptor]?.let {
             view.restoreHierarchyState(it)

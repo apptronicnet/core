@@ -12,7 +12,7 @@ import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.navigation.OnReadyForLoad
 
 class LoadItemViewModel(
-    parent: Context, time: Long, initialReady: Boolean
+    parent: Context, index: Int, time: Long, initialReady: Boolean
 ) : ViewModel(parent, EmptyViewModelContext), OnReadyForLoad {
 
     private val readyToLoad = value(initialReady)
@@ -23,7 +23,7 @@ class LoadItemViewModel(
 
     init {
         readyToLoad.whenTrue().delay(time).subscribe {
-            text.set("This is loaded in $time ms")
+            text.set("[$index] This is loaded in $time ms")
         }
     }
 

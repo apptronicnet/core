@@ -24,5 +24,4 @@ class ViewAnimationSet(
         player.playAnimationSet(this, intercept)
     }
 
-
 }

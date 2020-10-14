@@ -47,9 +47,7 @@ open class DialogDelegate<T : IViewModel> {
         viewBinder: ViewBinder<T>,
         context: Context
     ): View {
-        val layoutResId = viewBinder.layoutResId
-            ?: throw IllegalStateException("[layoutResId] is not specified for $viewBinder")
-        return LayoutInflater.from(context).inflate(layoutResId, null, false)
+        return viewBinder.onCreateView(context, LayoutInflater.from(context), null)
     }
 
     @Suppress("UNCHECKED_CAST")

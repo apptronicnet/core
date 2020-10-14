@@ -6,27 +6,30 @@ plugins {
 
 kotlin {
     android("android")
-    iosX64("ios") {
-        binaries {
-            framework()
-        }
-    }
-    jvm()
     sourceSets {
         commonMain {
             dependencies {
                 implementation kotlin('stdlib-common')
                 implementation kotlin('reflect')
-                implementation "net.apptronic.core:core-commons:${rootProject.ext.library_core_version}"
-                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:${rootProject.ext.coroutines_version}"
+                implementation "net.apptronic.core:core-commons:$library_core_version"
+                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
             }
         }
         androidMain {
             dependencies {
                 implementation kotlin('stdlib')
+                implementation "androidx.appcompat:appcompat:1.2.0"
+                implementation "com.google.android.material:material:1.2.1"
+                implementation "androidx.constraintlayout:constraintlayout:2.0.2"
+                implementation 'androidx.recyclerview:recyclerview:1.1.0'
+                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
             }
         }
-        iosMain {
+        androidTest {
+            dependencies {
+                implementation "junit:junit:$junit_version"
+                implementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
+            }
         }
     }
 }
@@ -53,20 +56,5 @@ android {
 }
 
 dependencies {
-    implementation "net.apptronic.core:core-commons:${rootProject.ext.library_core_version}"
     implementation project(path: ':library')
-
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-
-    implementation "androidx.appcompat:appcompat:1.2.0"
-    implementation "com.google.android.material:material:1.2.0"
-    implementation "androidx.constraintlayout:constraintlayout:2.0.0"
-    implementation 'androidx.recyclerview:recyclerview:1.1.0'
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
-
-    testImplementation "junit:junit:$junit_version"
-    testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
-
-    androidTestImplementation "com.android.support.test:runner:1.0.2"
-    androidTestImplementation "com.android.support.test.espresso:espresso-core:3.0.2"
 }

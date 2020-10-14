@@ -6,10 +6,7 @@ import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.transitions.TransitionBuilder
 import net.apptronic.core.android.viewmodel.transitions.ViewSwitch
 import net.apptronic.core.mvvm.viewmodel.IViewModel
-import net.apptronic.core.mvvm.viewmodel.navigation.BackNavigationStatus
-import net.apptronic.core.mvvm.viewmodel.navigation.HasBackNavigation
-import net.apptronic.core.mvvm.viewmodel.navigation.StackNavigationViewModel
-import net.apptronic.core.mvvm.viewmodel.navigation.TransitionInfo
+import net.apptronic.core.mvvm.viewmodel.navigation.*
 
 class StackNavigationFrameAdapter(
     private val container: ViewGroup,
@@ -21,7 +18,7 @@ class StackNavigationFrameAdapter(
 ) : ViewBinderListAdapter.UpdateListener {
 
     private var isInTransition = false
-    private var items: List<IViewModel> = emptyList()
+    private var items: List<ViewModelItem> = emptyList()
 
     private val viewBinders = mutableListOf<AttachedBinder>()
 
@@ -34,7 +31,7 @@ class StackNavigationFrameAdapter(
         model.listNavigator.setAdapter(listAdapter)
     }
 
-    override fun onDataChanged(items: List<IViewModel>, changeInfo: Any?) {
+    override fun onDataChanged(items: List<ViewModelItem>, changeInfo: Any?) {
         this.items = items
         val transitionInfo = changeInfo as? TransitionInfo ?: TransitionInfo(true, null)
         invalidateState(transitionInfo)
@@ -57,21 +54,21 @@ class StackNavigationFrameAdapter(
 
     private fun invalidateState(transitionInfo: TransitionInfo) {
         clearViews()
-        val currentViewModel = if (listAdapter.getSize() > 0) {
-            listAdapter.getViewModelAt(listAdapter.getSize() - 1)
+        val currentItem = if (listAdapter.getSize() > 0) {
+            listAdapter.getItemAt(listAdapter.getSize() - 1)
         } else {
             null
         }
         val previousBinder = currentBinder
-        if (currentViewModel != null) {
-            val viewBinder = getOrCreateBinder(currentViewModel)
+        if (currentItem != null) {
+            val viewBinder = getOrCreateBinder(currentItem)
             currentBinder = viewBinder
         } else {
             currentBinder = null
         }
         val currentBinder = this.currentBinder
         viewBinders.toTypedArray().forEach {
-            val actual = listAdapter.contains(it.viewModel)
+            val actual = listAdapter.contains(it.binder.getItem())
             if (!actual) {
                 detachBinder(it, it != previousBinder)
             }
@@ -136,7 +133,7 @@ class StackNavigationFrameAdapter(
     }
 
     fun getViewAt(position: Int): View {
-        return getOrCreateBinder(listAdapter.getViewModelAt(position)).view
+        return getOrCreateBinder(listAdapter.getItemAt(position)).view
     }
 
     fun unbind() {
@@ -145,15 +142,15 @@ class StackNavigationFrameAdapter(
         }
     }
 
-    private fun getOrCreateBinder(viewModel: IViewModel): AttachedBinder {
+    private fun getOrCreateBinder(item: ViewModelItem): AttachedBinder {
         return viewBinders.firstOrNull {
-            it.viewModel == viewModel
-        } ?: attachBinder(viewModel)
+            it.viewModel == item.viewModel
+        } ?: attachBinder(item)
     }
 
-    private fun attachBinder(viewModel: IViewModel): AttachedBinder {
-        val view = listAdapter.createView(viewModel, container)
-        val viewBinder = listAdapter.bindView(viewModel, view)
+    private fun attachBinder(item: ViewModelItem): AttachedBinder {
+        val view = listAdapter.createView(item.viewModel, container)
+        val viewBinder = listAdapter.bindView(item, view)
         view.visibility = View.GONE
         val attachedBinder = AttachedBinder(viewBinder)
         viewBinders.add(attachedBinder)
@@ -181,7 +178,7 @@ class StackNavigationFrameAdapter(
 
     private fun sortBinders() {
         viewBinders.forEach {
-            it.refreshPosition(items)
+            it.refreshPosition(items.map { it.viewModel })
             container.removeAllViews()
         }
         viewBinders.sort()

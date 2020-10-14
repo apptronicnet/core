@@ -11,11 +11,11 @@ import net.apptronic.core.android.viewmodel.listadapters.TitleProvider
 import net.apptronic.core.android.viewmodel.listadapters.ViewPagerAdapter
 import net.apptronic.core.android.viewmodel.navigation.ViewBinderListAdapter
 import net.apptronic.core.mvvm.viewmodel.IViewModel
-import net.apptronic.core.mvvm.viewmodel.navigation.ListNavigator
+import net.apptronic.core.mvvm.viewmodel.navigation.StaticListNavigator
 
 fun BindingContainer.bindPagerNavigator(
     viewPager: ViewPager,
-    navigator: ListNavigator,
+    navigator: StaticListNavigator<*>,
     factory: ViewBinderFactory? = null,
     titleFactory: TitleFactory? = null
 ) {
@@ -27,17 +27,14 @@ fun BindingContainer.bindPagerNavigator(
 
 private class PagerNavigatorBinding(
     private val viewPager: ViewPager,
-    private val navigator: ListNavigator,
+    private val navigator: StaticListNavigator<*>,
     private val factory: ViewBinderFactory,
     private val titleFactory: TitleFactory?
 ) : Binding() {
 
     override fun onBind(viewModel: IViewModel, viewBinder: ViewBinder<*>) {
         val viewModelAdapter =
-            ViewBinderListAdapter(
-                factory,
-                itemStateNavigator = navigator
-            )
+            ViewBinderListAdapter(factory)
         viewPager.adapter = ViewPagerAdapter(viewModelAdapter).apply {
             if (titleFactory != null) {
                 titleProvider = TitleProvider(viewPager.context, titleFactory)

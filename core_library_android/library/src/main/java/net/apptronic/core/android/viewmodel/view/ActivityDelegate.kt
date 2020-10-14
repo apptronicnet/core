@@ -24,9 +24,7 @@ open class ActivityDelegate<T : IViewModel> {
         viewBinder: ViewBinder<T>,
         activity: Activity
     ): View {
-        val layoutResId = viewBinder.layoutResId
-            ?: throw IllegalStateException("[layoutResId] is not specified for $viewBinder")
-        return activity.layoutInflater.inflate(layoutResId, null, false)
+        return viewBinder.onCreateView(activity, activity.layoutInflater, null)
     }
 
     @Suppress("UNCHECKED_CAST")

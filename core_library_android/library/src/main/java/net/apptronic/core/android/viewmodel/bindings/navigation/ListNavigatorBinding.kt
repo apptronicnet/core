@@ -16,7 +16,7 @@ import net.apptronic.core.mvvm.viewmodel.navigation.BaseListNavigator
 
 fun BindingContainer.bindListNavigator(
     recyclerView: RecyclerView,
-    navigator: BaseListNavigator<*>,
+    navigator: BaseListNavigator<*, *>,
     factory: ViewBinderFactory? = null,
     styleAdapter: ListItemStyleAdapter = emptyStyleAdapter(),
     bindingStrategy: BindingStrategy = BindingStrategy.MatchRecycle
@@ -29,7 +29,7 @@ fun BindingContainer.bindListNavigator(
 
 class ListNavigatorBinding(
     private val recyclerView: RecyclerView,
-    private val navigator: BaseListNavigator<*>,
+    private val navigator: BaseListNavigator<*, *>,
     private val factory: ViewBinderFactory,
     private val styleAdapter: ListItemStyleAdapter,
     private val bindingStrategy: BindingStrategy
@@ -39,8 +39,7 @@ class ListNavigatorBinding(
         val viewModelAdapter =
             ViewBinderListAdapter(
                 factory,
-                styleAdapter,
-                navigator
+                styleAdapter
             )
         val adapter = RecyclerViewAdapter(viewModelAdapter, bindingStrategy)
         recyclerView.adapter = adapter

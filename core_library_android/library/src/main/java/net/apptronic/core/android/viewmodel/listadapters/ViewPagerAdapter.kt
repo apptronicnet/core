@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.viewpager.widget.PagerAdapter
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.navigation.ViewBinderListAdapter
-import net.apptronic.core.mvvm.viewmodel.IViewModel
+import net.apptronic.core.mvvm.viewmodel.navigation.ViewModelItem
 
 class ViewPagerAdapter(
     private val binderAdapter: ViewBinderListAdapter
@@ -17,13 +17,13 @@ class ViewPagerAdapter(
         binderAdapter.addListener(this)
     }
 
-    override fun onDataChanged(items: List<IViewModel>, changeInfo: Any?) {
+    override fun onDataChanged(items: List<ViewModelItem>, changeInfo: Any?) {
         notifyDataSetChanged()
     }
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
-        val viewModel = binderAdapter.getViewModelAt(position)
-        val view = binderAdapter.createView(viewModel, container)
+        val item = binderAdapter.getItemAt(position)
+        val view = binderAdapter.createView(item.viewModel, container)
         val binder = binderAdapter.bindView(position, view)
         container.addView(view)
         return binder
@@ -45,8 +45,8 @@ class ViewPagerAdapter(
     }
 
     override fun getPageTitle(position: Int): CharSequence? {
-        val viewModel = binderAdapter.getViewModelAt(position)
-        return titleProvider?.getItemTitle(viewModel, position) ?: ""
+        val item = binderAdapter.getItemAt(position)
+        return titleProvider?.getItemTitle(item.viewModel, position) ?: ""
     }
 
     override fun getItemPosition(obj: Any): Int {

@@ -10,9 +10,10 @@ import net.apptronic.core.android.viewmodel.ViewBinderFactory
 import net.apptronic.core.android.viewmodel.view.ViewContainerDelegate
 import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModel
-import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelStackAdapter
+import net.apptronic.core.mvvm.viewmodel.adapter.SingleViewModelAdapter
 import net.apptronic.core.mvvm.viewmodel.navigation.StackNavigator
 import net.apptronic.core.mvvm.viewmodel.navigation.TransitionInfo
+import net.apptronic.core.mvvm.viewmodel.navigation.ViewModelItem
 
 /**
  * Adapter for [StackNavigator]
@@ -27,7 +28,7 @@ open class ViewBinderStackAdapter(
     private val viewTransitionFactory: ViewTransitionFactory = BasicViewTransitionFactory,
     private val defaultAnimationTime: Long =
         container.resources.getInteger(android.R.integer.config_mediumAnimTime).toLong(),
-) : ViewModelStackAdapter() {
+) : SingleViewModelAdapter {
 
     private val player = AnimationPlayer(container)
 
@@ -37,9 +38,9 @@ open class ViewBinderStackAdapter(
 
     private var currentBinder: ViewBinder<*>? = null
 
-    override fun onInvalidate(newModel: IViewModel?, transitionInfo: TransitionInfo) {
-        val newBinder =
-            if (newModel != null) viewBinderFactory.getBinder(newModel) else null
+    override fun onInvalidate(item: ViewModelItem?, transitionInfo: TransitionInfo) {
+        val newModel = item?.viewModel
+        val newBinder = if (newModel != null) viewBinderFactory.getBinder(newModel) else null
         if (newBinder != null && newModel != null) {
             val delegate = newBinder.getViewDelegate<ViewContainerDelegate<*>>()
             val view =

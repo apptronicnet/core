@@ -17,8 +17,8 @@ class ListScreenViewModel internal constructor(parent: Context) : ViewModel(pare
 
     val listNavigator = listNavigator()
     private val itemNames = mutableValue(mutableListOf<String>())
-    val title = merge(listNavigator, itemNames) { viewModels, names ->
-        viewModels.filter { viewModel ->
+    val title = merge(listNavigator.content, itemNames) { content, names ->
+        content.all.filter { viewModel ->
             viewModel is ListItemBaseViewModel && names.contains(viewModel.getName())
         }.map {
             (it as ListItemBaseViewModel).getName()

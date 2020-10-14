@@ -81,12 +81,11 @@ class ViewBinderFactory {
 
     fun getBinder(typeId: Int): ViewBinder<*> {
         return views.values.firstOrNull { it.typeId == typeId }?.builder?.invoke()
-            ?: throw IllegalArgumentException("ViewBinder is not registered for typeId=$typeId")
+            ?: GenericViewBinder()
     }
 
     fun getBinder(viewModel: IViewModel): ViewBinder<*> {
-        return searchRecursive(viewModel::class)?.build()
-            ?: throw IllegalArgumentException("ViewBinder is not registered for $viewModel")
+        return searchRecursive(viewModel::class)?.build() ?: GenericViewBinder()
     }
 
     private fun searchRecursive(clazz: KClass<out IViewModel>): ViewSpec? {
@@ -106,8 +105,7 @@ class ViewBinderFactory {
     }
 
     fun getType(viewModel: IViewModel): Int {
-        return searchRecursive(viewModel::class)?.typeId
-            ?: throw IllegalArgumentException("ViewBinder is not registered for $viewModel")
+        return searchRecursive(viewModel::class)?.typeId ?: 0
     }
 
     /**

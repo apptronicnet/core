@@ -18,6 +18,7 @@ import net.apptronic.core.android.viewmodel.transitions.gestures.BackwardTransit
 import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.navigation.BackNavigationStatus
 import net.apptronic.core.mvvm.viewmodel.navigation.StackNavigationViewModel
+import net.apptronic.core.mvvm.viewmodel.navigation.ViewModelItem
 
 fun BindingContainer.bindStackNavigator(
     viewGroup: ViewGroup,
@@ -29,10 +30,10 @@ fun BindingContainer.bindStackNavigator(
     gestureDetector: NavigationGestureDetector? = BackwardTransitionGestureDetector()
 ) {
     val resultFactory = factory
-        ?: navigationModel.getViewBinderFactoryFromExtension()
+        ?: navigationModel.parent.getViewBinderFactoryFromExtension()
         ?: throw IllegalArgumentException("ViewBinderFactory should be provided by parameters or Context.installViewFactoryPlugin()")
     val resultTransitionBuilder = transitionBuilder
-        ?: navigationModel.getTransitionBuilderFromExtension()
+        ?: navigationModel.parent.getTransitionBuilderFromExtension()
         ?: TransitionBuilder()
     +StackNavigationModelBinding(
         viewGroup,
@@ -54,8 +55,7 @@ private class StackNavigationModelBinding(
 ) : Binding() {
 
     override fun onBind(viewModel: IViewModel, viewBinder: ViewBinder<*>) {
-        val listAdapter =
-            ViewBinderListAdapter(factory, itemStateNavigator = navigationModel.listNavigator)
+        val listAdapter = ViewBinderListAdapter(factory)
         val adapter = StackNavigationFrameAdapter(
             viewGroup, transitionBuilder, defaultAnimationTime, listAdapter = listAdapter
         )
@@ -67,7 +67,7 @@ private class StackNavigationModelBinding(
                 )
             gestureDispatcher.attach(viewGroup, GestureTargetImpl(navigationModel, adapter))
             listAdapter.addListener(object : ViewBinderListAdapter.UpdateListener {
-                override fun onDataChanged(items: List<IViewModel>, changeInfo: Any?) {
+                override fun onDataChanged(items: List<ViewModelItem>, changeInfo: Any?) {
                     gestureDispatcher.reset()
                 }
             })

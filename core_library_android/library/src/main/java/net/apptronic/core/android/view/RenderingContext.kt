@@ -9,7 +9,7 @@ import net.apptronic.core.component.plugin.ContextPlugins
 import net.apptronic.core.component.plugin.Extensions
 import net.apptronic.core.component.plugin.Plugin
 import net.apptronic.core.component.plugin.PluginDescriptor
-import net.apptronic.core.view.context.CoreViewContext
+import net.apptronic.core.view.CoreViewContext
 
 private class RenderingContext(override val parent: CoreViewContext) : Context {
 

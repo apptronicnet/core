@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import net.apptronic.core.view.ICoreView
 import net.apptronic.core.view.dimension.CoreDimension
 import net.apptronic.core.view.dimension.CoreLayoutDimension
-import net.apptronic.core.view.dimension.CoreLayoutSpec
 import net.apptronic.core.view.properties.Visibility
 
 internal class ViewFrameFactory {
@@ -13,26 +12,26 @@ internal class ViewFrameFactory {
     private fun IViewRenderingEngine.toLayoutParam(dimension: CoreLayoutDimension): Int {
         return when (dimension) {
             is CoreDimension -> dimensionEngine.getDimensionPixelSizeInt(dimension)
-            is CoreLayoutSpec.FitToParent -> ViewGroup.LayoutParams.MATCH_PARENT
-            is CoreLayoutSpec.FitToContent -> ViewGroup.LayoutParams.WRAP_CONTENT
+            is CoreLayoutDimension.FitToParent -> ViewGroup.LayoutParams.MATCH_PARENT
+            is CoreLayoutDimension.FitToContent -> ViewGroup.LayoutParams.WRAP_CONTENT
             else -> 0
         }
     }
 
     private fun IViewRenderingEngine.setPaddings(coreView: ICoreView, content: View) {
-        val top = dimensionEngine.getDimensionPixelSizeInt(coreView.paddingTop.getValue())
-        val bottom = dimensionEngine.getDimensionPixelSizeInt(coreView.paddingBottom.getValue())
-        val start = dimensionEngine.getDimensionPixelSizeInt(coreView.paddingStart.getValue())
-        val end = dimensionEngine.getDimensionPixelSizeInt(coreView.paddingEnd.getValue())
-        content.setPaddingRelative(start, top, end, bottom)
+        val top = dimensionEngine.getDimensionPixelSizeInt(coreView.paddingTop.get())
+        val bottom = dimensionEngine.getDimensionPixelSizeInt(coreView.paddingBottom.get())
+        val start = dimensionEngine.getDimensionPixelSizeInt(coreView.paddingStart.get())
+        val end = dimensionEngine.getDimensionPixelSizeInt(coreView.paddingEnd.get())
+        content.setPadding(start, top, end, bottom)
     }
 
     private fun IViewRenderingEngine.setIndents(coreView: ICoreView, viewFrame: ViewFrame<*>) {
-        val top = dimensionEngine.getDimensionPixelSizeInt(coreView.indentTop.getValue())
-        val bottom = dimensionEngine.getDimensionPixelSizeInt(coreView.indentBottom.getValue())
-        val start = dimensionEngine.getDimensionPixelSizeInt(coreView.indentStart.getValue())
-        val end = dimensionEngine.getDimensionPixelSizeInt(coreView.indentEnd.getValue())
-        viewFrame.setPaddingRelative(start, top, end, bottom)
+        val top = dimensionEngine.getDimensionPixelSizeInt(coreView.indentTop.get())
+        val bottom = dimensionEngine.getDimensionPixelSizeInt(coreView.indentBottom.get())
+        val start = dimensionEngine.getDimensionPixelSizeInt(coreView.indentStart.get())
+        val end = dimensionEngine.getDimensionPixelSizeInt(coreView.indentEnd.get())
+        viewFrame.setPadding(start, top, end, bottom)
     }
 
     private fun View.updateLayoutParams(action: (ViewGroup.LayoutParams) -> Unit) {
@@ -63,7 +62,9 @@ internal class ViewFrameFactory {
             coreView.paddingTop.subscribe { setPaddings(coreView, content) }
             coreView.paddingBottom.subscribe { setPaddings(coreView, content) }
 
-            coreView.shadow.subscribe { content.elevation = dimensionEngine.getDimensionPixelSizeFloat(it) }
+            coreView.shadow.subscribe {
+                content.elevation = dimensionEngine.getDimensionPixelSizeFloat(it)
+            }
             coreView.visibility.subscribe {
                 content.visibility = when (it) {
                     Visibility.Visible -> View.VISIBLE
@@ -71,22 +72,22 @@ internal class ViewFrameFactory {
                     Visibility.Gone -> View.GONE
                 }
             }
-            coreView.background.subscribe {
-                if (it != null) {
-                    val holder = render(it, false)
-                    viewFrame.setBackgroundView(holder.frame)
-                } else {
-                    viewFrame.setBackgroundView(null)
-                }
-            }
-            coreView.foreground.subscribe {
-                if (it != null) {
-                    val holder = render(it, false)
-                    viewFrame.setForegroundView(holder.frame)
-                } else {
-                    viewFrame.setForegroundView(null)
-                }
-            }
+//            coreView.background.subscribe {
+//                if (it != null) {
+//                    val holder = render(it, false)
+//                    viewFrame.setBackgroundView(holder.frame)
+//                } else {
+//                    viewFrame.setBackgroundView(null)
+//                }
+//            }
+//            coreView.foreground.subscribe {
+//                if (it != null) {
+//                    val holder = render(it, false)
+//                    viewFrame.setForegroundView(holder.frame)
+//                } else {
+//                    viewFrame.setForegroundView(null)
+//                }
+//            }
         }
         return viewFrame
     }

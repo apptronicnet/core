@@ -5,14 +5,14 @@ import android.content.Context
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.ViewBinderFactory
 import net.apptronic.core.android.viewmodel.view.DialogDelegate
-import net.apptronic.core.mvvm.viewmodel.IViewModel
-import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelStackAdapter
+import net.apptronic.core.mvvm.viewmodel.adapter.SingleViewModelAdapter
 import net.apptronic.core.mvvm.viewmodel.navigation.TransitionInfo
+import net.apptronic.core.mvvm.viewmodel.navigation.ViewModelItem
 
 open class DialogBinderStackAdapter(
     private val context: Context,
     private val viewBinderFactory: ViewBinderFactory = ViewBinderFactory()
-) : ViewModelStackAdapter() {
+) : SingleViewModelAdapter {
 
     fun bindings(setup: ViewBinderFactory.() -> Unit) {
         setup.invoke(viewBinderFactory)
@@ -25,14 +25,15 @@ open class DialogBinderStackAdapter(
 
     private var current: DialogAndBinder? = null
 
-    override fun onInvalidate(newModel: IViewModel?, transitionInfo: TransitionInfo) {
+    override fun onInvalidate(item: ViewModelItem?, transitionInfo: TransitionInfo) {
+        val newModel = item?.viewModel
         val newBinder =
             if (newModel != null) viewBinderFactory.getBinder(newModel) else null
         val next = if (newBinder != null && newModel != null) {
             val delegate = newBinder.getViewDelegate<DialogDelegate<*>>()
             val dialog = delegate.performCreateDialog(newModel, newBinder, context)
             val view = delegate.performCreateDialogView(newModel, newBinder, context)
-            newBinder.performViewBinding(newModel, view)
+            newBinder.performViewBinding(item, view)
             delegate.performAttachDialogView(newModel, newBinder, dialog, view)
             DialogAndBinder(newBinder, dialog)
         } else null
