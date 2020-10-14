@@ -106,19 +106,19 @@ class DynamicListNavigatorTest : TestViewModel() {
             staticItems: List<Any> = statics.get(),
             attachedViewModels: Set<Any>
     ) {
-        val status = navigator.getStatus()
-        assert(allSize == status.allSize)
-        assert(visibleSize == status.visibleSize)
-        assert(hasHidden == status.hasHidden)
-        assert(allItems.toTypedArray().contentEquals(status.allItems.toTypedArray()))
-        assert(visibleItems.toTypedArray().contentEquals(status.visibleItems.toTypedArray()))
-        assert(staticItems.toTypedArray().contentEquals(status.staticItems.toTypedArray()))
-        assert(staticItems.toTypedArray().contentEquals(status.staticItems.toTypedArray()))
-        assert(attachedViewModels.size == status.attachedViewModels.size)
+        val content = navigator.content.get()
+        assert(allSize == content.allSize)
+        assert(visibleSize == content.visibleSize)
+        assert(hasHidden == content.hasHidden)
+        assert(allItems.toTypedArray().contentEquals(content.allItems.toTypedArray()))
+        assert(visibleItems.toTypedArray().contentEquals(content.visibleItems.toTypedArray()))
+        assert(staticItems.toTypedArray().contentEquals(content.staticItems.toTypedArray()))
+        assert(staticItems.toTypedArray().contentEquals(content.staticItems.toTypedArray()))
+        assert(attachedViewModels.size == content.attachedViewModels.size)
         attachedViewModels.forEach { keyOrValue ->
             when (keyOrValue) {
-                is ViewModelListItem -> assert(status.attachedViewModels.contains(keyOrValue.viewModel))
-                is String -> assert(status.attachedViewModels.any {
+                is ViewModelItem -> assert(content.attachedViewModels.contains(keyOrValue.viewModel))
+                is String -> assert(content.attachedViewModels.any {
                     it is StaticItemViewModel && it.item == static(keyOrValue)
                 })
                 else -> throw IllegalArgumentException(keyOrValue.toString())

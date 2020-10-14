@@ -2,15 +2,15 @@ package net.apptronic.core.mvvm.viewmodel.navigation
 
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelListAdapter
 
-class TestListAdapter : ViewModelListAdapter {
+class TestListAdapter : ViewModelListAdapter<Unit> {
 
-    var items: List<ViewModelListItem> = emptyList()
+    var items: List<ViewModelItem> = emptyList()
 
-    override fun onDataChanged(items: List<ViewModelListItem>, changeInfo: Any?) {
+    override fun onDataChanged(items: List<ViewModelItem>, state: Unit, changeInfo: Any?) {
         this.items = items
     }
 
-    fun setFullBound(viewModel: ViewModelListItem, state: Boolean) {
+    fun setFullBound(viewModel: ViewModelItem, state: Boolean) {
         if (state) {
             viewModel.setBound(true)
             viewModel.setVisible(true)

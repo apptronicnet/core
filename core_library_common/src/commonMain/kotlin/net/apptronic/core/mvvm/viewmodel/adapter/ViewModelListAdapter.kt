@@ -1,9 +1,9 @@
 package net.apptronic.core.mvvm.viewmodel.adapter
 
-import net.apptronic.core.mvvm.viewmodel.navigation.ViewModelListItem
+import net.apptronic.core.mvvm.viewmodel.navigation.ViewModelItem
 
-interface ViewModelListAdapter {
+interface ViewModelListAdapter<State> {
 
-    fun onDataChanged(items: List<ViewModelListItem>, changeInfo: Any?)
+    fun onDataChanged(items: List<ViewModelItem>, state: State, changeInfo: Any?)
 
 }

@@ -9,7 +9,7 @@ import net.apptronic.core.mvvm.viewmodel.ViewModel
  * Navigation model which manages list of [ViewModel]s and displays one single [ViewModel] at time from it
  */
 @UnderDevelopment
-interface SelectorNavigationModel : INavigator {
+interface SelectorNavigationModel : INavigator<IViewModel?> {
 
     companion object {
         /**
@@ -20,12 +20,17 @@ interface SelectorNavigationModel : INavigator {
         /**
          * Defines that selection index is not changed during any operation
          */
-        const val SELECTOR_NOT_CHANGED = -2
+        const val SELECTOR_SAME_POSITION = -2
+
+        /**
+         * Defines that selection index is not changed during any operation
+         */
+        const val SELECTOR_SAME_ITEM = -3
 
         /**
          * Defines that selection index should be taken as last
          */
-        const val SELECTOR_LAST = -3
+        const val SELECTOR_LAST = -4
     }
 
     val size: Int
@@ -39,56 +44,66 @@ interface SelectorNavigationModel : INavigator {
 
     val selectorIndex: Int
 
-    fun setSelectorIndex(index: Int, transitionInfo: Any? = null)
+    fun setSelectorIndex(index: Int, transitionSpec: Any? = null)
 
     /**
      * Set navigator to have single [ViewModel] without any animations.
      *
      * This is designed for setting initial state of [StackNavigationModel]
      */
-    fun set(viewModel: IViewModel?, selectorIndex: Int = 0) {
+    fun set(viewModel: IViewModel?, show: Boolean = true) {
         if (viewModel != null) {
-            replaceAll(viewModel, null)
+            val selectorIndex = if (show) 0 else SELECTOR_NOTHING
+            replaceAll(viewModel, null, selectorIndex = selectorIndex)
         } else {
             clear()
         }
     }
 
     /**
+     * Set navigator to have single [ViewModel] without any animations.
+     *
+     * This is designed for setting initial state of [StackNavigationModel]
+     */
+    fun set(list: List<IViewModel>, selectorIndex: Int = 0) {
+        replaceList(list, null, selectorIndex)
+    }
+
+    /**
      * Remove all [ViewModel]s and display nothing
      */
-    fun clear(transitionInfo: Any? = null) {
-        replaceList(emptyList(), transitionInfo, SELECTOR_NOTHING)
+    fun clear(transitionSpec: Any? = null) {
+        replaceList(emptyList(), transitionSpec, SELECTOR_NOTHING)
     }
 
     /**
      * Replace all [ViewModel]s single [ViewModel] and show it
      */
-    fun replaceAll(viewModel: IViewModel, transitionInfo: Any? = null, selectorIndex: Int = 0) {
-        replaceList(listOf(viewModel), transitionInfo, selectorIndex)
+    fun replaceAll(viewModel: IViewModel, transitionSpec: Any? = null, selectorIndex: Int = 0) {
+        replaceList(listOf(viewModel), transitionSpec, selectorIndex)
     }
 
-    fun replaceAll(transitionInfo: Any? = null, selectorIndex: Int = 0, builder: Context.() -> IViewModel) {
+    fun replaceAll(transitionSpec: Any? = null, selectorIndex: Int = 0, builder: Context.() -> IViewModel) {
         val viewModel = navigatorContext.builder()
-        replaceAll(viewModel, transitionInfo, selectorIndex)
+        replaceAll(viewModel, transitionSpec, selectorIndex)
     }
 
-    fun remove(viewModel: IViewModel, transitionInfo: Any? = null, selectorIndex: Int = SELECTOR_NOT_CHANGED) {
-        update(transitionInfo, selectorIndex) {
+    fun remove(viewModel: IViewModel, transitionSpec: Any? = null, selectorIndex: Int = SELECTOR_SAME_POSITION) {
+        update(transitionSpec, selectorIndex) {
             it.remove(viewModel)
         }
     }
 
-    fun removeAt(index: Int, transitionInfo: Any? = null, selectorIndex: Int = SELECTOR_NOT_CHANGED) {
+    fun removeAt(index: Int, transitionSpec: Any? = null, selectorIndex: Int = SELECTOR_SAME_POSITION) {
         if (index in 0 until size) {
-            update(transitionInfo, selectorIndex) {
+            update(transitionSpec, selectorIndex) {
                 it.removeAt(index)
             }
         }
     }
 
-    fun replace(oldInstance: IViewModel, newInstance: IViewModel, transitionInfo: Any? = null, selectorIndex: Int = SELECTOR_NOT_CHANGED) {
-        update(transitionInfo, selectorIndex) {
+    fun replace(oldInstance: IViewModel, newInstance: IViewModel, transitionSpec: Any? = null, selectorIndex: Int = SELECTOR_SAME_POSITION) {
+        update(transitionSpec, selectorIndex) {
             val index = it.indexOf(oldInstance)
             if (index >= 0) {
                 it.removeAt(index)
@@ -97,14 +112,14 @@ interface SelectorNavigationModel : INavigator {
         }
     }
 
-    fun replace(oldInstance: IViewModel, transitionInfo: Any? = null, selectorIndex: Int = SELECTOR_NOT_CHANGED, builder: Context.() -> IViewModel) {
+    fun replace(oldInstance: IViewModel, transitionSpec: Any? = null, selectorIndex: Int = SELECTOR_SAME_POSITION, builder: Context.() -> IViewModel) {
         val newInstance = navigatorContext.builder()
-        replace(oldInstance, newInstance, transitionInfo, selectorIndex)
+        replace(oldInstance, newInstance, transitionSpec, selectorIndex)
     }
 
-    fun replaceAt(index: Int, newInstance: IViewModel, transitionInfo: Any? = null, selectorIndex: Int = SELECTOR_NOT_CHANGED) {
+    fun replaceAt(index: Int, newInstance: IViewModel, transitionSpec: Any? = null, selectorIndex: Int = SELECTOR_SAME_POSITION) {
         if (index in 0 until size) {
-            update(transitionInfo, selectorIndex) {
+            update(transitionSpec, selectorIndex) {
                 if (index >= 0) {
                     it.removeAt(index)
                     it.add(index, newInstance)
@@ -113,36 +128,36 @@ interface SelectorNavigationModel : INavigator {
         }
     }
 
-    fun replaceAt(index: Int, transitionInfo: Any? = null, selectorIndex: Int = SELECTOR_NOT_CHANGED, builder: Context.() -> IViewModel) {
+    fun replaceAt(index: Int, transitionSpec: Any? = null, selectorIndex: Int = SELECTOR_SAME_POSITION, builder: Context.() -> IViewModel) {
         if (index in 0 until size) {
             val newInstance = navigatorContext.builder()
-            replaceAt(index, newInstance, transitionInfo, selectorIndex)
+            replaceAt(index, newInstance, transitionSpec, selectorIndex)
         }
     }
 
-    fun add(viewModel: IViewModel, transitionInfo: Any? = null, selectorIndex: Int = SELECTOR_NOT_CHANGED) {
-        update(transitionInfo, selectorIndex) {
+    fun add(viewModel: IViewModel, transitionSpec: Any? = null, selectorIndex: Int = SELECTOR_SAME_POSITION) {
+        update(transitionSpec, selectorIndex) {
             it.add(viewModel)
         }
     }
 
-    fun add(transitionInfo: Any? = null, selectorIndex: Int = SELECTOR_NOT_CHANGED, builder: Context.() -> IViewModel) {
+    fun add(transitionSpec: Any? = null, selectorIndex: Int = SELECTOR_SAME_POSITION, builder: Context.() -> IViewModel) {
         val viewModel = navigatorContext.builder()
-        add(viewModel, transitionInfo, selectorIndex)
+        add(viewModel, transitionSpec, selectorIndex)
     }
 
-    fun replaceList(newList: List<IViewModel>, transitionInfo: Any? = null, selectorIndex: Int = SELECTOR_NOT_CHANGED) {
-        update(transitionInfo, selectorIndex) {
+    fun replaceList(newList: List<IViewModel>, transitionSpec: Any? = null, selectorIndex: Int = SELECTOR_SAME_POSITION) {
+        update(transitionSpec, selectorIndex) {
             it.clear()
             it.addAll(newList)
         }
     }
 
-    fun replaceList(transitionInfo: Any? = null, selectorIndex: Int = SELECTOR_NOT_CHANGED, builder: Context.() -> List<ViewModel>) {
+    fun replaceList(transitionSpec: Any? = null, selectorIndex: Int = SELECTOR_SAME_POSITION, builder: Context.() -> List<ViewModel>) {
         val newList = navigatorContext.builder()
-        replaceList(newList, transitionInfo, selectorIndex)
+        replaceList(newList, transitionSpec, selectorIndex)
     }
 
-    fun update(transitionInfo: Any? = null, selectorIndex: Int = SELECTOR_NOT_CHANGED, builder: Context.(MutableList<IViewModel>) -> Unit)
+    fun update(transitionSpec: Any? = null, selectorIndex: Int = SELECTOR_SAME_ITEM, builder: Context.(MutableList<IViewModel>) -> Unit)
 
 }

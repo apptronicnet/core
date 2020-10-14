@@ -26,14 +26,14 @@ class ListNavigatorTest {
 
     private val adapter = TestListAdapter()
     private var listItems: List<IViewModel> = emptyList()
-    private lateinit var status: ListNavigatorStatus
+    private lateinit var status: ListNavigatorContent<Unit>
 
     fun addVerification() {
         navigator.setAdapter(adapter)
-        navigator.subscribe {
-            listItems = it
+        navigator.content.subscribe {
+            listItems = it.visible
         }
-        navigator.observeStatus().subscribe {
+        navigator.content.subscribe {
             status = it
         }
     }
@@ -43,12 +43,12 @@ class ListNavigatorTest {
     }
 
     private fun verifyState(itemsList: List<IViewModel>) {
-        assertEquals(itemsList.size, navigator.getStatus().all.size)
+        assertEquals(itemsList.size, navigator.content.get().all.size)
         assertEquals(itemsList.size, status.all.size)
         assertEquals(itemsList.size, adapter.items.size)
         assertEquals(itemsList.size, listItems.size)
         itemsList.forEachIndexed { index, viewModel ->
-            assertSame(viewModel, navigator.getStatus().all[index])
+            assertSame(viewModel, navigator.content.get().all[index])
             assertSame(viewModel, status.all[index])
             assertSame(viewModel, adapter.items[index].viewModel)
             assertSame(viewModel, listItems[index])

@@ -3,13 +3,13 @@ package net.apptronic.core.mvvm.viewmodel.navigation
 import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelListAdapter
 
-abstract class BaseListNavigator<T>(
+abstract class BaseListNavigator<Content, State>(
         parent: IViewModel
-) : Navigator<List<T>>(parent), ItemStateNavigator {
+) : Navigator<Content>(parent), ItemStateNavigator {
 
-    private var adapter: ViewModelListAdapter? = null
+    private var adapter: ViewModelListAdapter<State>? = null
 
-    fun setAdapter(adapter: ViewModelListAdapter) {
+    fun setAdapter(adapter: ViewModelListAdapter<State>) {
         this.adapter = adapter
         onSetAdapter(adapter)
         onNotifyAdapter(adapter, null)
@@ -18,7 +18,7 @@ abstract class BaseListNavigator<T>(
         }
     }
 
-    protected abstract fun onSetAdapter(adapter: ViewModelListAdapter)
+    protected abstract fun onSetAdapter(adapter: ViewModelListAdapter<State>)
 
     protected fun notifyAdapter(changeInfo: Any?) {
         val adapter = this@BaseListNavigator.adapter
@@ -27,15 +27,17 @@ abstract class BaseListNavigator<T>(
         }
     }
 
-    protected abstract fun onNotifyAdapter(adapter: ViewModelListAdapter, changeInfo: Any?)
+    protected abstract fun onNotifyAdapter(adapter: ViewModelListAdapter<State>, changeInfo: Any?)
 
     abstract fun getSize(): Int
 
-    abstract fun getViewModelItems(): List<ViewModelListItem>
+    abstract fun getState(): State
 
-    abstract fun getViewModelItemAt(index: Int): ViewModelListItem
+    abstract fun getViewModelItems(): List<ViewModelItem>
 
-    fun getViewModelItemAtOrNull(index: Int): ViewModelListItem? {
+    abstract fun getViewModelItemAt(index: Int): ViewModelItem
+
+    fun getViewModelItemAtOrNull(index: Int): ViewModelItem? {
         return if (index in 0 until getSize()) {
             getViewModelItemAt(index)
         } else null

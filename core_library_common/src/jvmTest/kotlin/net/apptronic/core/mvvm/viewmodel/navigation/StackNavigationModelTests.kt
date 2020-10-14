@@ -448,7 +448,7 @@ class StackNavigatorVerificationTest : StackNavigationModelTests() {
 
     override val stackNavigationModel = coreViewModel.stackNavigator().apply {
         setAdapter(adapter)
-        subscribe {
+        content.subscribe {
             status = it
         }
     }
@@ -470,8 +470,8 @@ class StackNavigationModelVerificationTest : StackNavigationModelTests() {
     lateinit var status: List<IViewModel>
 
     override val stackNavigationModel = coreViewModel.stackNavigationModel().apply {
-        this.listNavigator.subscribe {
-            status = it
+        this.listNavigator.content.subscribe {
+            status = it.all
         }
     }
 

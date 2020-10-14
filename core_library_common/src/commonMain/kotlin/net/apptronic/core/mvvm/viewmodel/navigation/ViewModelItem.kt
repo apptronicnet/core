@@ -6,7 +6,7 @@ import net.apptronic.core.mvvm.viewmodel.ViewModel
 /**
  * Defines [ViewModel] which is attached to any type of [BaseListNavigator].
  */
-class ViewModelListItem internal constructor(
+class ViewModelItem internal constructor(
         private val container: ViewModelContainer,
         private val itemStateNavigator: ItemStateNavigator
 ) {
@@ -41,7 +41,7 @@ class ViewModelListItem internal constructor(
     }
 
     override fun equals(other: Any?): Boolean {
-        return other is ViewModelListItem && other.viewModel == viewModel
+        return other is ViewModelItem && other.viewModel == viewModel
     }
 
     override fun hashCode(): Int {

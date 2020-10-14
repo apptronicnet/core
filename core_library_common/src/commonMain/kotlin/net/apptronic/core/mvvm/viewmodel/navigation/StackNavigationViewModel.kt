@@ -1,6 +1,9 @@
 package net.apptronic.core.mvvm.viewmodel.navigation
 
 import net.apptronic.core.component.context.Context
+import net.apptronic.core.component.entity.base.EntityValue
+import net.apptronic.core.component.entity.entities.asProperty
+import net.apptronic.core.component.entity.functions.map
 import net.apptronic.core.component.entity.onchange.onChangeValue
 import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModel
@@ -12,7 +15,7 @@ fun IViewModel.stackNavigationModel(navigatorContext: Context = this.context): S
 }
 
 /**
- * This model allows to implement stack navigation using [ListNavigator]. It allows to handle user gestures to perform
+ * This model allows to implement stack navigation using [StaticListNavigator]. It allows to handle user gestures to perform
  * back navigation and save views for items in back stack improving rendering performance by preventing destroying
  * and recreating views for back stack.
  *
@@ -55,7 +58,16 @@ class StackNavigationViewModel internal constructor(
         updateInternal(null, StackTransition.Auto, next)
     }
 
-    val listNavigator: BaseListNavigator<IViewModel> = listNavigatorOnChange(viewModels)
+    val listNavigator: StatelessStaticListNavigator = listNavigatorOnChange(viewModels)
+
+    override val content: EntityValue<StackNavigatorStatus> = listNavigator.content.map {
+        StackNavigatorStatus(
+                isInProgress = false,
+                actualModel = it.all.lastOrNull(),
+                visibleModel = it.visible.lastOrNull(),
+                size = it.countAll,
+                stack = it.all)
+    }.asProperty()
 
     private fun currentViewModel(): IViewModel? {
         return viewModels.get().value.getOrNull(getSize() - 1)

@@ -6,31 +6,35 @@ import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 
 /**
- * Class representing current status of [ListNavigator]
+ * Class representing current status of [StaticListNavigator]
  */
-class ListNavigatorStatus internal constructor(
+class ListNavigatorContent<State> internal constructor(
         /**
-         * All [ViewModel]s which now in [ListNavigator]
+         * All [ViewModel]s which now in [StaticListNavigator]
          */
         val all: List<IViewModel>,
         /**
-         * Visible [ViewModel]s which now in [ListNavigator] and ready to be bound to view
+         * Visible [ViewModel]s which now in [StaticListNavigator] and ready to be bound to view
          */
-        val visible: List<IViewModel>
+        val visible: List<IViewModel>,
+        val state: State
 ) {
 
     /**
      * Count of all items in list
      */
     val countAll: Int = all.size
+
     /**
      * Count if visible items in list
      */
     val countVisible: Int = visible.size
+
     /**
      * Count of hidden items in list
      */
     val countHidden: Int = countAll - countVisible
+
     /**
      * Is list has hidden items
      */
@@ -38,26 +42,30 @@ class ListNavigatorStatus internal constructor(
 
 }
 
-fun Entity<ListNavigatorStatus>.all(): Entity<List<IViewModel>> {
+fun Entity<ListNavigatorContent<*>>.all(): Entity<List<IViewModel>> {
     return map { it.all }
 }
 
-fun Entity<ListNavigatorStatus>.visible(): Entity<List<IViewModel>> {
+fun Entity<ListNavigatorContent<*>>.visible(): Entity<List<IViewModel>> {
     return map { it.visible }
 }
 
-fun Entity<ListNavigatorStatus>.countVisible(): Entity<Int> {
+fun Entity<ListNavigatorContent<*>>.countVisible(): Entity<Int> {
     return map { it.countVisible }
 }
 
-fun Entity<ListNavigatorStatus>.countAll(): Entity<Int> {
+fun Entity<ListNavigatorContent<*>>.countAll(): Entity<Int> {
     return map { it.countAll }
 }
 
-fun Entity<ListNavigatorStatus>.countHidden(): Entity<Int> {
+fun Entity<ListNavigatorContent<*>>.countHidden(): Entity<Int> {
     return map { it.countHidden }
 }
 
-fun Entity<ListNavigatorStatus>.hasHidden(): Entity<Boolean> {
+fun Entity<ListNavigatorContent<*>>.hasHidden(): Entity<Boolean> {
     return map { it.hasHidden }
+}
+
+fun <State> Entity<ListNavigatorContent<State>>.state(): Entity<State> {
+    return map { it.state }
 }

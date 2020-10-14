@@ -50,13 +50,13 @@ class StackNavigatorFilterTest {
         val page1 = createViewModel("Page1")
         root.navigator.add(page1)
         assert(page1.isStateAttached())
-        assert(root.navigator.get().isInProgress)
-        assert(root.navigator.get().actualModel == page1)
-        assert(root.navigator.get().visibleModel == null)
+        assert(root.navigator.content.get().isInProgress)
+        assert(root.navigator.content.get().actualModel == page1)
+        assert(root.navigator.content.get().visibleModel == null)
         page1.isReadyToShow.set(true)
-        assert(root.navigator.get().isInProgress.not())
-        assert(root.navigator.get().actualModel == page1)
-        assert(root.navigator.get().visibleModel == page1)
+        assert(root.navigator.content.get().isInProgress.not())
+        assert(root.navigator.content.get().actualModel == page1)
+        assert(root.navigator.content.get().visibleModel == page1)
         root.navigator.clear()
         assert(page1.isTerminated())
     }
@@ -79,9 +79,9 @@ class StackNavigatorFilterTest {
         assert(page1.isStateAttached())
         assertNavigatorStackState(page1)
 
-        assert(root.navigator.get().isInProgress)
-        assert(root.navigator.get().actualModel == page1)
-        assert(root.navigator.get().visibleModel == null)
+        assert(root.navigator.content.get().isInProgress)
+        assert(root.navigator.content.get().actualModel == page1)
+        assert(root.navigator.content.get().visibleModel == null)
 
         root.navigator.setAdapter(adapter)
         lifecycleController.setVisible(true)
@@ -92,9 +92,9 @@ class StackNavigatorFilterTest {
         assert(page1.isStateVisible())
         assertNavigatorStackState(page1)
 
-        assert(root.navigator.get().isInProgress.not())
-        assert(root.navigator.get().actualModel == page1)
-        assert(root.navigator.get().visibleModel == page1)
+        assert(root.navigator.content.get().isInProgress.not())
+        assert(root.navigator.content.get().actualModel == page1)
+        assert(root.navigator.content.get().visibleModel == page1)
 
         assert(adapter.activeModel == page1)
 
@@ -107,9 +107,9 @@ class StackNavigatorFilterTest {
         assert(page2.isStateAttached())
         assertNavigatorStackState(page1, page2)
 
-        assert(root.navigator.get().isInProgress)
-        assert(root.navigator.get().actualModel == page2)
-        assert(root.navigator.get().visibleModel == page1)
+        assert(root.navigator.content.get().isInProgress)
+        assert(root.navigator.content.get().actualModel == page2)
+        assert(root.navigator.content.get().visibleModel == page1)
         assert(adapter.activeModel == page1)
         assert(adapter.lastTransition == null)
 
@@ -119,9 +119,9 @@ class StackNavigatorFilterTest {
         assert(page2.isStateVisible())
         assertNavigatorStackState(page1, page2)
 
-        assert(root.navigator.get().isInProgress.not())
-        assert(root.navigator.get().actualModel == page2)
-        assert(root.navigator.get().visibleModel == page2)
+        assert(root.navigator.content.get().isInProgress.not())
+        assert(root.navigator.content.get().actualModel == page2)
+        assert(root.navigator.content.get().visibleModel == page2)
         assert(adapter.activeModel == page2)
         assert(adapter.lastTransition == "from_1to_2")
 
@@ -135,9 +135,9 @@ class StackNavigatorFilterTest {
         assert(page3.isStateAttached())
         assertNavigatorStackState(page1, page2, page3)
 
-        assert(root.navigator.get().isInProgress)
-        assert(root.navigator.get().actualModel == page3)
-        assert(root.navigator.get().visibleModel == page2)
+        assert(root.navigator.content.get().isInProgress)
+        assert(root.navigator.content.get().actualModel == page3)
+        assert(root.navigator.content.get().visibleModel == page2)
         assert(adapter.activeModel == page2)
         assert(adapter.lastTransition == "from_1to_2")
 
@@ -148,9 +148,9 @@ class StackNavigatorFilterTest {
         assert(page3.isStateVisible())
         assertNavigatorStackState(page1, page2, page3)
 
-        assert(root.navigator.get().isInProgress.not())
-        assert(root.navigator.get().actualModel == page3)
-        assert(root.navigator.get().visibleModel == page3)
+        assert(root.navigator.content.get().isInProgress.not())
+        assert(root.navigator.content.get().actualModel == page3)
+        assert(root.navigator.content.get().visibleModel == page3)
         assert(adapter.activeModel == page3)
         assert(adapter.lastTransition == "from_2to_3")
 
@@ -165,9 +165,9 @@ class StackNavigatorFilterTest {
         assert(page4.isStateAttached())
         assertNavigatorStackState(page1, page2, page4)
 
-        assert(root.navigator.get().isInProgress)
-        assert(root.navigator.get().actualModel == page4)
-        assert(root.navigator.get().visibleModel == page3)
+        assert(root.navigator.content.get().isInProgress)
+        assert(root.navigator.content.get().actualModel == page4)
+        assert(root.navigator.content.get().visibleModel == page3)
         assert(adapter.activeModel == page3)
         assert(adapter.lastTransition == "from_2to_3")
 
@@ -179,9 +179,9 @@ class StackNavigatorFilterTest {
         assert(page4.isStateVisible())
         assertNavigatorStackState(page1, page2, page4)
 
-        assert(root.navigator.get().isInProgress.not())
-        assert(root.navigator.get().actualModel == page4)
-        assert(root.navigator.get().visibleModel == page4)
+        assert(root.navigator.content.get().isInProgress.not())
+        assert(root.navigator.content.get().actualModel == page4)
+        assert(root.navigator.content.get().visibleModel == page4)
         assert(adapter.activeModel == page4)
         assert(adapter.lastTransition == "from_3to_4")
 
@@ -197,9 +197,9 @@ class StackNavigatorFilterTest {
         assert(page5.isStateAttached())
         assertNavigatorStackState(page5)
 
-        assert(root.navigator.get().isInProgress)
-        assert(root.navigator.get().actualModel == page5)
-        assert(root.navigator.get().visibleModel == page4)
+        assert(root.navigator.content.get().isInProgress)
+        assert(root.navigator.content.get().actualModel == page5)
+        assert(root.navigator.content.get().visibleModel == page4)
         assert(adapter.activeModel == page4)
         assert(adapter.lastTransition == "from_3to_4")
 
@@ -212,9 +212,9 @@ class StackNavigatorFilterTest {
         assert(page5.isStateVisible())
         assertNavigatorStackState(page5)
 
-        assert(root.navigator.get().isInProgress.not())
-        assert(root.navigator.get().actualModel == page5)
-        assert(root.navigator.get().visibleModel == page5)
+        assert(root.navigator.content.get().isInProgress.not())
+        assert(root.navigator.content.get().actualModel == page5)
+        assert(root.navigator.content.get().visibleModel == page5)
         assert(adapter.activeModel == page5)
         assert(adapter.lastTransition == "from_4to_5")
     }

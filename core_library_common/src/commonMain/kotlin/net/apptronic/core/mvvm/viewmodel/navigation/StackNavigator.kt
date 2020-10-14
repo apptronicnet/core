@@ -1,8 +1,9 @@
 package net.apptronic.core.mvvm.viewmodel.navigation
 
-import net.apptronic.core.base.observable.subject.BehaviorSubject
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.Entity
+import net.apptronic.core.component.entity.base.EntityValue
+import net.apptronic.core.component.value
 import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.adapter.SingleViewModelAdapter
@@ -35,13 +36,14 @@ class StackNavigator internal constructor(
     )
 
     private var currentState = State(false, null, null)
-    override val subject = BehaviorSubject<StackNavigatorStatus>().apply {
-        update(StackNavigatorStatus(false, null, null, 0, emptyList()))
-    }
+    private val contentData = parent.value(
+            StackNavigatorStatus(false, null, null, 0, emptyList())
+    )
     private val stack = mutableListOf<ViewModelContainer>()
     private val removingItems = mutableListOf<ViewModelContainer>()
     private var currentAdapter: CurrentAdapter? = null
     private val visibilityFilters: VisibilityFilters<IViewModel> = VisibilityFilters<IViewModel>()
+
 
     private fun updateSubject() {
         val next = StackNavigatorStatus(
@@ -51,9 +53,9 @@ class StackNavigator internal constructor(
                 size = getSize(),
                 stack = stack.map { it.getViewModel() }
         )
-        val current = subject.getValue()?.value
-        if (current == null || !current.deepEquals(next)) {
-            subject.update(next)
+        val current = contentData.get()
+        if (!current.deepEquals(next)) {
+            contentData.update(next)
         }
     }
 
@@ -82,20 +84,14 @@ class StackNavigator internal constructor(
         }
     }
 
+    override val content: EntityValue<StackNavigatorStatus> = contentData
+
     override fun getVisibilityFilters(): VisibilityFilters<IViewModel> {
         return visibilityFilters
     }
 
-    override fun get(): StackNavigatorStatus {
-        return subject.getValue()!!.value
-    }
-
     override fun getStack(): List<IViewModel> {
         return stack.map { it.getViewModel() }
-    }
-
-    override fun getOrNull(): StackNavigatorStatus {
-        return get()
     }
 
     private class PendingTransition(

@@ -4,7 +4,7 @@ import net.apptronic.core.component.context.Context
 import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 
-interface StackNavigationModel : INavigator {
+interface StackNavigationModel : INavigator<StackNavigatorStatus> {
 
     /**
      * Set stack to have single [ViewModel] without any animations.
