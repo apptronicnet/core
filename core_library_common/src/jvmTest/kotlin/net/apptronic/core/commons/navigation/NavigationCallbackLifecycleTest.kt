@@ -1,13 +1,65 @@
 package net.apptronic.core.commons.navigation
 
+import net.apptronic.core.component.context.*
+import net.apptronic.core.component.extensions.BaseComponent
 import org.junit.Test
-import kotlin.test.fail
+import kotlin.test.assertEquals
 
 class NavigationCallbackLifecycleTest {
 
+    val context = coreContext {
+        dependencyModule {
+            navigationRouter()
+        }
+    }
+
+    private class SimpleHandler(
+            context: Context,
+    ) : BaseComponent(context), DefaultNavigationHandler {
+
+        var count = 0
+
+        init {
+            registerNavigationHandler(this)
+        }
+
+        override fun onNavigationCommand(command: Any): Boolean {
+            count++
+            return true
+        }
+
+    }
+
+    private val router = context.injectNavigationRouter()
+
     @Test
-    fun notWrittenYet() {
-        fail("Not written yet!")
+    fun verifyLifecycle() {
+        val handler1 = SimpleHandler(context.childContext())
+
+        router.sendCommands(1, 2, 3)
+        assertEquals(handler1.count, 3)
+
+        val handler2 = SimpleHandler(context.childContext())
+        router.sendCommands(4, 5)
+
+        assertEquals(handler1.count, 3)
+        assertEquals(handler2.count, 2)
+
+        handler2.terminate()
+
+        router.sendCommands(6, 7)
+        assertEquals(handler1.count, 5)
+        assertEquals(handler2.count, 2)
+
+        router.sendCommandsBroadcast(8, 9)
+        assertEquals(handler1.count, 7)
+        assertEquals(handler2.count, 2)
+
+        handler1.terminate()
+
+        router.sendCommandsBroadcast(10, 11, 12)
+        assertEquals(handler1.count, 7)
+        assertEquals(handler2.count, 2)
     }
 
 }

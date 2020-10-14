@@ -1,13 +1,82 @@
 package net.apptronic.core.commons.navigation
 
+import net.apptronic.core.component.context.*
+import net.apptronic.core.component.extensions.BaseComponent
+import net.apptronic.core.component.typedEvent
+import net.apptronic.core.record
+import org.junit.After
 import org.junit.Test
-import kotlin.test.fail
 
 class NavigationRouterOrderTest {
 
+    val context = coreContext {
+        dependencyModule {
+            navigationRouter()
+        }
+    }
+
+    private class SimpleHandler(
+            context: Context,
+    ) : BaseComponent(context), DefaultNavigationHandler {
+
+        val events = typedEvent<Any>()
+
+        init {
+            registerNavigationHandler(this)
+        }
+
+        override fun onNavigationCommand(command: Any): Boolean {
+            events.sendEvent(command)
+            return true
+        }
+
+    }
+
+    private val router = context.injectNavigationRouter()
+
     @Test
-    fun notWrittenYet() {
-        fail("Not written yet!")
+    fun verifyOrder() {
+        val handler1 = SimpleHandler(context.childContext())
+        val events1 = handler1.events.record()
+
+        router.sendCommands(1)
+        events1.assertItems(1)
+
+        val handler2 = SimpleHandler(context.childContext())
+        val events2 = handler2.events.record()
+
+        router.sendCommands(2)
+        events1.assertItems(1)
+        events2.assertItems(2)
+
+        router.sendCommands(3)
+        events1.assertItems(1)
+        events2.assertItems(2, 3)
+
+        val handler3 = SimpleHandler(context.childContext())
+        val events3 = handler3.events.record()
+
+        router.sendCommands(4)
+        events1.assertItems(1)
+        events2.assertItems(2, 3)
+        events3.assertItems(4)
+
+        router.sendCommands(5)
+        events1.assertItems(1)
+        events2.assertItems(2, 3)
+        events3.assertItems(4, 5)
+
+        handler3.terminate()
+
+        router.sendCommands(6, 7)
+        events1.assertItems(1)
+        events2.assertItems(2, 3, 6, 7)
+        events3.assertItems(4, 5)
+    }
+
+    @After
+    fun after() {
+        context.terminate()
     }
 
 }

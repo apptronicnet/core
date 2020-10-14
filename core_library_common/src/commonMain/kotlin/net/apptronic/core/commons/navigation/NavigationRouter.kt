@@ -1,10 +1,8 @@
 package net.apptronic.core.commons.navigation
 
-import net.apptronic.core.UnderDevelopment
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.context.Contextual
 
-@UnderDevelopment
 interface NavigationRouter<T> {
 
     /**

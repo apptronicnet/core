@@ -1,8 +1,5 @@
 package net.apptronic.core.commons.navigation
 
-import net.apptronic.core.UnderDevelopment
-
-@UnderDevelopment
 interface NavigationHandler<T> {
 
     companion object {
