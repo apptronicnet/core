@@ -21,13 +21,28 @@ abstract class StackNavigationModelTests {
 
     fun childViewModel(): IViewModel = ViewModel(coreViewModel.viewModelContext())
 
-    open fun assertStack(vararg viewModels: IViewModel) {
+    lateinit var status: StackNavigatorContent
+
+    var actualModel: IViewModel? = null
+    val adapter = object : SingleViewModelAdapter {
+        override fun onInvalidate(item: ViewModelItem?, transitionInfo: TransitionInfo) {
+            actualModel = item?.viewModel
+        }
+    }
+
+    fun assertStack(vararg viewModels: IViewModel) {
         val stack = stackNavigationModel.getStack()
         assertEquals(viewModels.size, stack.size)
         stack.forEachIndexed { index, item ->
             assert(item === viewModels[index])
             assert(stackNavigationModel.getItemAt(index) === viewModels[index])
         }
+        assert(status.size == viewModels.size)
+        status.stack.forEachIndexed { index, item ->
+            assert(item === viewModels[index])
+            assert(stackNavigationModel.getItemAt(index) === viewModels[index])
+        }
+        assert(actualModel === viewModels.lastOrNull())
     }
 
     @Test
@@ -438,14 +453,6 @@ abstract class StackNavigationModelTests {
 
 class StackNavigatorVerificationTest : StackNavigationModelTests() {
 
-    lateinit var status: StackNavigatorContent
-    var actualModel: IViewModel? = null
-    val adapter = object : SingleViewModelAdapter {
-        override fun onInvalidate(item: ViewModelItem?, transitionInfo: TransitionInfo) {
-            actualModel = item?.viewModel
-        }
-    }
-
     override val stackNavigationModel = coreViewModel.stackNavigator().apply {
         setAdapter(adapter)
         content.subscribe {
@@ -453,40 +460,14 @@ class StackNavigatorVerificationTest : StackNavigationModelTests() {
         }
     }
 
-    override fun assertStack(vararg viewModels: IViewModel) {
-        super.assertStack(*viewModels)
-        assert(status.size == viewModels.size)
-        status.stack.forEachIndexed { index, item ->
-            assert(item === viewModels[index])
-            assert(stackNavigationModel.getItemAt(index) === viewModels[index])
-        }
-        assert(actualModel === viewModels.lastOrNull())
-    }
-
 }
 
 class StackNavigationModelVerificationTest : StackNavigationModelTests() {
 
-    lateinit var status: List<IViewModel>
-
     override val stackNavigationModel = coreViewModel.stackNavigationModel().apply {
-        this.listNavigator.content.subscribe {
-            status = it.all
-        }
-    }
-
-    override fun assertStack(vararg viewModels: IViewModel) {
-        super.assertStack(*viewModels)
-        assert(status.size == viewModels.size)
-        status.forEachIndexed { index, item ->
-            assert(item === viewModels[index])
-            assert(stackNavigationModel.getItemAt(index) === viewModels[index])
-        }
-        val adapterItems = stackNavigationModel.listNavigator.getViewModelItems()
-        assert(adapterItems.size == viewModels.size)
-        adapterItems.forEachIndexed { index, item ->
-            assert(item.viewModel === viewModels[index])
-            assert(stackNavigationModel.getItemAt(index) === viewModels[index])
+        setAdapter(adapter)
+        content.subscribe {
+            status = it
         }
     }
 

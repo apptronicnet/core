@@ -1,15 +1,20 @@
 package net.apptronic.core.mvvm.viewmodel.navigation
 
+import net.apptronic.core.UnderDevelopment
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.base.EntityValue
 import net.apptronic.core.component.entity.entities.asProperty
 import net.apptronic.core.component.entity.functions.map
-import net.apptronic.core.component.entity.onchange.onChangeValue
 import net.apptronic.core.mvvm.viewmodel.IViewModel
+import net.apptronic.core.mvvm.viewmodel.adapter.SingleViewModelAdapter
+import net.apptronic.core.mvvm.viewmodel.adapter.SingleViewModelListAdapter
+import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelListAdapter
+import net.apptronic.core.platformLogError
 
-fun IViewModel.stackNavigationModel(navigatorContext: Context = this.context): StackNavigationViewModel {
+@UnderDevelopment
+fun IViewModel.stackNavigationModel(navigatorContext: Context = this.context): StackNavigationModel {
     context.verifyNavigatorContext(navigatorContext)
-    return StackNavigationViewModel(this, navigatorContext)
+    return StackNavigationModel(this, navigatorContext)
 }
 
 /**
@@ -19,22 +24,23 @@ fun IViewModel.stackNavigationModel(navigatorContext: Context = this.context): S
  *
  * Based on adapter implementation there may be no possibility to have interpretation for transitionInfo events.
  */
-class StackNavigationViewModel internal constructor(
+@UnderDevelopment
+class StackNavigationModel internal constructor(
         parent: IViewModel,
         override val navigatorContext: Context
-) : Navigator<StackNavigatorContent>(parent), IStackNavigationModel {
+) : Navigator<StackNavigatorContent>(parent), IStackNavigationModel, SingleViewModelNavigationModel, SingleViewModelListNavigationModel {
 
-    private val viewModels = parent.onChangeValue<List<IViewModel>, Any>(emptyList())
+    private val listNavigator = StatelessStaticListNavigator(parent, navigatorContext)
 
     private fun updateInternal(transitionInfo: Any?, stackTransition: StackTransition, action: (MutableList<IViewModel>) -> Unit) {
-        val current = viewModels.get().value
+        val current = getStack()
         val next = current.toTypedArray().toMutableList()
         action(next)
         updateInternal(transitionInfo, stackTransition, next)
     }
 
     private fun updateInternal(transitionInfo: Any?, stackTransition: StackTransition, next: List<IViewModel>) {
-        val current = viewModels.get().value
+        val current = getStack()
         next.forEach {
             it.verifyContext()
         }
@@ -43,7 +49,7 @@ class StackNavigationViewModel internal constructor(
             StackTransition.NewOnFront -> true
             StackTransition.NewOnBack -> false
         }
-        viewModels.set(next, TransitionInfo(isNewOnFront, transitionInfo))
+        listNavigator.set(next, TransitionInfo(isNewOnFront, transitionInfo))
     }
 
     /**
@@ -52,11 +58,64 @@ class StackNavigationViewModel internal constructor(
      * This will clear stack after [index].
      */
     fun onNavigated(index: Int) {
-        val next = viewModels.get().value.take(index + 1)
+        val next = getStack().take(index + 1)
         updateInternal(null, StackTransition.Auto, next)
     }
 
-    val listNavigator: StatelessStaticListNavigator = parent.listNavigatorOnChange(viewModels, navigatorContext)
+    override fun setAdapter(adapter: SingleViewModelAdapter) {
+        listNavigator.setAdapter(SelectorAdapter(adapter))
+    }
+
+    private inner class SelectorAdapter(val target: SingleViewModelAdapter) : ViewModelListAdapter<Unit> {
+
+        var oldViewModel: ViewModelItem? = null
+        var targetInitialized: Boolean = false
+
+        override fun onDataChanged(items: List<ViewModelItem>, state: Unit, changeInfo: Any?) {
+            val oldViewModelItem: ViewModelItem? = this.oldViewModel
+            val newViewModelItem: ViewModelItem? = items.lastOrNull()
+            if (oldViewModelItem != newViewModelItem || !targetInitialized) {
+                targetInitialized = true
+                oldViewModelItem?.setFocused(false)
+                oldViewModelItem?.setVisible(false)
+                oldViewModelItem?.setBound(false)
+                newViewModelItem?.setBound(true)
+                val transitionInfo = if (changeInfo == null) {
+                    TransitionInfo(true, null)
+                } else {
+                    changeInfo as? TransitionInfo ?: kotlin.run {
+                        platformLogError(Error("StackNavigationModel.SelectorAdapter.onDataChanged: changeInfo is not instance of TransitionInfo!!!"))
+                        TransitionInfo(true, null)
+                    }
+                }
+                target.onInvalidate(newViewModelItem, transitionInfo)
+                newViewModelItem?.setVisible(true)
+                newViewModelItem?.setFocused(true)
+                this.oldViewModel = newViewModelItem
+            }
+        }
+
+    }
+
+    override fun setAdapter(adapter: SingleViewModelListAdapter) {
+        listNavigator.setAdapter(SelectorListAdapter(adapter))
+    }
+
+    private inner class SelectorListAdapter(val target: SingleViewModelListAdapter) : ViewModelListAdapter<Unit> {
+
+        override fun onDataChanged(items: List<ViewModelItem>, state: Unit, changeInfo: Any?) {
+            val transitionInfo = if (changeInfo == null) {
+                TransitionInfo(true, null)
+            } else {
+                changeInfo as? TransitionInfo ?: kotlin.run {
+                    platformLogError(Error("StackNavigationModel.SelectorListAdapter.onDataChanged: changeInfo is not instance of TransitionInfo!!!"))
+                    TransitionInfo(true, null)
+                }
+            }
+            target.onInvalidate(listNavigator.getViewModelItems(), items.lastIndex, transitionInfo)
+        }
+
+    }
 
     override fun requestCloseSelf(viewModel: IViewModel, transitionInfo: Any?) {
         listNavigator.requestCloseSelf(viewModel, transitionInfo)
@@ -71,8 +130,8 @@ class StackNavigationViewModel internal constructor(
                 stack = it.all)
     }.asProperty()
 
-    private fun currentViewModel(): IViewModel? {
-        return viewModels.get().value.getOrNull(getSize() - 1)
+    fun currentViewModel(): IViewModel? {
+        return getStack().lastOrNull()
     }
 
     override fun replaceStack(newStack: List<IViewModel>, transitionInfo: Any?, stackTransition: StackTransition) {
@@ -96,16 +155,16 @@ class StackNavigationViewModel internal constructor(
     }
 
     override fun getItemAt(index: Int): IViewModel {
-        return viewModels.get().value[index]
+        return getStack()[index]
     }
 
     override fun getSize(): Int {
-        return viewModels.get().value.size
+        return getStack().size
     }
 
     override fun getStack(): List<IViewModel> {
         return mutableListOf<IViewModel>().apply {
-            addAll(viewModels.get().value)
+            addAll(listNavigator.getAll())
         }
     }
 

@@ -12,7 +12,7 @@ interface SingleViewModelAdapter {
 
     /**
      * Called when active viewModel for specific [Navigator] is changed
-     * @param newModel viewModel which now active in stack. May be null if new model is not set
+     * @param item viewModel which now active in stack. May be null if new model is not set
      * @param transitionInfo additional info to apply model change. It may contain info about
      * required animation etc.
      */

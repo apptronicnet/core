@@ -48,7 +48,7 @@ class StackNavigationViewModelContextTest : TestViewModel() {
         childModel.stackNavigationModel(rootModel.childContext())
     }
 
-    private fun shouldFailOnNonCorrectContext(onMethod: StackNavigationViewModel.(IViewModel) -> Unit) {
+    private fun shouldFailOnNonCorrectContext(onMethod: StackNavigationModel.(IViewModel) -> Unit) {
         rootModel.attach()
         rootModel.bind()
         val childModelContext = rootModel.viewModelContext()
@@ -74,7 +74,7 @@ class StackNavigationViewModelContextTest : TestViewModel() {
     fun shouldFailOnNonCorrectContextReplaceAll() =
             shouldFailOnNonCorrectContext { replaceAll(it) }
 
-    private fun shouldFailOnNonCorrectContextWithNavigatorContext(onMethod: StackNavigationViewModel.(IViewModel) -> Unit) {
+    private fun shouldFailOnNonCorrectContextWithNavigatorContext(onMethod: StackNavigationModel.(IViewModel) -> Unit) {
         rootModel.attach()
         rootModel.bind()
         val childModelContext = rootModel.viewModelContext()
@@ -100,7 +100,7 @@ class StackNavigationViewModelContextTest : TestViewModel() {
     fun shouldFailOnNonCorrectContextWithNavigatorContextReplaceAll() =
             shouldFailOnNonCorrectContextWithNavigatorContext { replaceAll(it) }
 
-    private fun shouldFailOnNonCorrectOnNonNavigatorContext(onMethod: StackNavigationViewModel.(IViewModel) -> Unit) {
+    private fun shouldFailOnNonCorrectOnNonNavigatorContext(onMethod: StackNavigationModel.(IViewModel) -> Unit) {
         rootModel.attach()
         rootModel.bind()
         val childModelContext = rootModel.viewModelContext()
