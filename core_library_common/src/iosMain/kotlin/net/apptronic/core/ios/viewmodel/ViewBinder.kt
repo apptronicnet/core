@@ -12,6 +12,7 @@ abstract class ViewBinder<T : IViewModel, View : ViewHolder> : BindingContainer 
     private var view: View? = null
     private var bindings: Bindings? = null
 
+    @Suppress("UNCHECKED_CAST")
     fun performViewBinding(viewModel: IViewModel, view: ViewHolder) {
         if (viewModel.extensions[ViewBinderExtensionsDescriptor] != null) {
             debugError(Error("$viewModel already have bound view!!!"))

@@ -4,7 +4,7 @@ package net.apptronic.core.base.collections
  * Creates list which holds [sources] and unwraps items from it dynamically by request. Allows to combine very large
  * or lazy lists without immediate getting all items from all [sources]
  */
-fun <E> wrapLists(sources: List<List<out E>>): List<E> {
+fun <E> wrapLists(sources: List<List<E>>): List<E> {
     return CompositeList(sources)
 }
 
@@ -12,7 +12,7 @@ fun <E> wrapLists(sources: List<List<out E>>): List<E> {
  * Creates list which holds [sources] and unwraps items from it dynamically by request. Allows to combine very large
  * or lazy lists without immediate getting all items from all [sources]
  */
-fun <E> wrapLists(vararg sources: List<out E>): List<E> {
+fun <E> wrapLists(vararg sources: List<E>): List<E> {
     return CompositeList(sources.toList())
 }
 
@@ -34,7 +34,7 @@ class CompositeList<E>(
             throw IndexOutOfBoundsException()
         }
         var indexOfList = -1
-        var startOfList = 0
+        var startOfList: Int
         var untilOfList = 0
         do {
             indexOfList++

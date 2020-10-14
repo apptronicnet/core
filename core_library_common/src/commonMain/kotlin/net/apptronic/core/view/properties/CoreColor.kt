@@ -57,7 +57,7 @@ data class CoreColor internal constructor(
                 green: Number,
                 blue: Number
         ): CoreColor {
-            return CoreColor(red.toInt().bounds(), red.toInt().bounds(), red.toInt().bounds(), 1f)
+            return CoreColor(red.toInt().bounds(), green.toInt().bounds(), blue.toInt().bounds(), 1f)
         }
 
         fun rgba(red: Number,
@@ -65,7 +65,7 @@ data class CoreColor internal constructor(
                  blue: Number,
                  alpha: Number
         ): CoreColor {
-            return CoreColor(red.toInt().bounds(), red.toInt().bounds(), red.toInt().bounds(), alpha.toFloat().bounds())
+            return CoreColor(red.toInt().bounds(), green.toInt().bounds(), blue.toInt().bounds(), alpha.toFloat().bounds())
         }
 
         fun rgbHex(rgbHex: Int, alpha: Number = 1f): CoreColor {
