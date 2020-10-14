@@ -28,7 +28,7 @@ class SelectorNavigationSingleAdapterModelTest {
         }
     }
 
-    private fun someViewModel(identifier: String) = SomeViewModel(navigator.context.viewModelContext(), identifier)
+    private fun someViewModel(identifier: String) = SomeViewModel(navigator.navigatorContext.viewModelContext(), identifier)
 
     private val vm0 = someViewModel("vm0")
     private val vm1 = someViewModel("vm1")
@@ -52,8 +52,8 @@ class SelectorNavigationSingleAdapterModelTest {
         var lastTransition: Any? = null
         var invalidated: Boolean = false
 
-        override fun onInvalidate(newModel: IViewModel?, transitionInfo: TransitionInfo) {
-            currentItem = newModel
+        override fun onInvalidate(item: ViewModelItem?, transitionInfo: TransitionInfo) {
+            currentItem = item?.viewModel
             lastTransition = transitionInfo.spec
             invalidated = true
         }
@@ -105,7 +105,7 @@ class SelectorNavigationSingleAdapterModelTest {
         assertAdapterNotChanged()
         assertContent(arrayOf(vm0, vm1), vm0)
 
-        navigator.update(transition2, selectorIndex = SelectorNavigationModel.SELECTOR_LAST) {
+        navigator.update(transition2, selectorIndex = ISelectorNavigationModel.SELECTOR_LAST) {
             it.add(vm2)
             it.add(vm3)
             it.add(vm4)
@@ -118,7 +118,7 @@ class SelectorNavigationSingleAdapterModelTest {
         assertAdapterInvalidatedTo(vm3, transition3)
         assertContent(arrayOf(vm0, vm1, vm2, vm3, vm4, vm5), vm3)
 
-        navigator.removeAt(2, selectorIndex = SelectorNavigationModel.SELECTOR_SAME_ITEM)
+        navigator.removeAt(2, selectorIndex = ISelectorNavigationModel.SELECTOR_SAME_ITEM)
         assertAdapterNotChanged()
         assertContent(arrayOf(vm0, vm1, vm3, vm4, vm5), vm3)
         assertTrue(vm2.isTerminated())
@@ -136,7 +136,7 @@ class SelectorNavigationSingleAdapterModelTest {
         navigator.setAdapter(adapter)
         rootModel.enterStage(ViewModelLifecycle.STAGE_VISIBLE)
         rootModel.enterStage(ViewModelLifecycle.STAGE_FOCUSED)
-        navigator.set(listOf(vm0, vm1, vm2, vm3, vm4), SelectorNavigationModel.SELECTOR_NOTHING)
+        navigator.set(listOf(vm0, vm1, vm2, vm3, vm4), ISelectorNavigationModel.SELECTOR_NOTHING)
         assertAdapterInvalidatedTo(null, null)
         assertContent(arrayOf(vm0, vm1, vm2, vm3, vm4), null)
     }
@@ -236,7 +236,7 @@ class SelectorNavigationSingleAdapterModelTest {
         navigator.setSelectorIndex(4, transition1)
         assertAdapterInvalidatedTo(vm4, transition1)
 
-        navigator.set(listOf(vm2, vm1, vm5, vm6, vm7), SelectorNavigationModel.SELECTOR_NOTHING)
+        navigator.set(listOf(vm2, vm1, vm5, vm6, vm7), ISelectorNavigationModel.SELECTOR_NOTHING)
         assertAdapterInvalidatedTo(null, null)
         assertContent(arrayOf(vm2, vm1, vm5, vm6, vm7), null)
         assertTerminated(vm0, vm3, vm4)
@@ -248,7 +248,7 @@ class SelectorNavigationSingleAdapterModelTest {
         navigator.setSelectorIndex(4, transition1)
         assertAdapterInvalidatedTo(vm4, transition1)
 
-        navigator.set(listOf(vm2, vm1, vm5, vm6, vm7), selectorIndex = SelectorNavigationModel.SELECTOR_SAME_POSITION)
+        navigator.set(listOf(vm2, vm1, vm5, vm6, vm7), selectorIndex = ISelectorNavigationModel.SELECTOR_SAME_POSITION)
         assertAdapterInvalidatedTo(vm7, null)
         assertContent(arrayOf(vm2, vm1, vm5, vm6, vm7), vm7)
         assertTerminated(vm0, vm3, vm4)
@@ -260,7 +260,7 @@ class SelectorNavigationSingleAdapterModelTest {
         navigator.setSelectorIndex(1, transition1)
         assertAdapterInvalidatedTo(vm1, transition1)
 
-        navigator.set(listOf(vm5, vm6, vm2, vm1, vm7), selectorIndex = SelectorNavigationModel.SELECTOR_SAME_ITEM)
+        navigator.set(listOf(vm5, vm6, vm2, vm1, vm7), selectorIndex = ISelectorNavigationModel.SELECTOR_SAME_ITEM)
         assertAdapterNotChanged()
         assertContent(arrayOf(vm5, vm6, vm2, vm1, vm7), vm1)
         assertTerminated(vm0, vm3, vm4)
@@ -315,7 +315,7 @@ class SelectorNavigationSingleAdapterModelTest {
         navigator.setSelectorIndex(1, transition1)
         assertAdapterInvalidatedTo(vm1, transition1)
 
-        navigator.replaceAll(vm7, transition2, selectorIndex = SelectorNavigationModel.SELECTOR_NOTHING)
+        navigator.replaceAll(vm7, transition2, selectorIndex = ISelectorNavigationModel.SELECTOR_NOTHING)
         assertAdapterInvalidatedTo(null, transition2)
         assertContent(arrayOf(vm7), null)
         assertTerminated(vm0, vm1, vm2, vm3, vm4)
@@ -325,7 +325,7 @@ class SelectorNavigationSingleAdapterModelTest {
     fun verifyReplaceNotShowingAllToNewHide() {
         initDefaults()
 
-        navigator.replaceAll(vm7, transition2, selectorIndex = SelectorNavigationModel.SELECTOR_NOTHING)
+        navigator.replaceAll(vm7, transition2, selectorIndex = ISelectorNavigationModel.SELECTOR_NOTHING)
         assertAdapterNotChanged()
         assertContent(arrayOf(vm7), null)
         assertTerminated(vm0, vm1, vm2, vm3, vm4)
@@ -359,7 +359,7 @@ class SelectorNavigationSingleAdapterModelTest {
         navigator.setSelectorIndex(1, transition1)
         assertAdapterInvalidatedTo(vm1, transition1)
 
-        navigator.replaceAll(vm2, transition2, selectorIndex = SelectorNavigationModel.SELECTOR_NOTHING)
+        navigator.replaceAll(vm2, transition2, selectorIndex = ISelectorNavigationModel.SELECTOR_NOTHING)
         assertAdapterInvalidatedTo(null, transition2)
         assertContent(arrayOf(vm2), null)
         assertTerminated(vm0, vm1, vm3, vm4)
@@ -369,7 +369,7 @@ class SelectorNavigationSingleAdapterModelTest {
     fun verifyReplaceNotShowingAllToExistingHide() {
         initDefaults()
 
-        navigator.replaceAll(vm2, transition2, selectorIndex = SelectorNavigationModel.SELECTOR_NOTHING)
+        navigator.replaceAll(vm2, transition2, selectorIndex = ISelectorNavigationModel.SELECTOR_NOTHING)
         assertAdapterNotChanged()
         assertContent(arrayOf(vm2), null)
         assertTerminated(vm0, vm1, vm3, vm4)
@@ -381,7 +381,7 @@ class SelectorNavigationSingleAdapterModelTest {
         navigator.setSelectorIndex(2, transition3)
         assertAdapterInvalidatedTo(vm2, transition3)
 
-        navigator.replaceAll(vm2, transition2, selectorIndex = SelectorNavigationModel.SELECTOR_SAME_POSITION)
+        navigator.replaceAll(vm2, transition2, selectorIndex = ISelectorNavigationModel.SELECTOR_SAME_POSITION)
         assertAdapterNotChanged()
         assertContent(arrayOf(vm2), vm2)
         assertTerminated(vm0, vm1, vm3, vm4)
@@ -427,7 +427,7 @@ class SelectorNavigationSingleAdapterModelTest {
         navigator.setSelectorIndex(2, transition2)
         assertAdapterInvalidatedTo(vm2, transition2)
 
-        navigator.remove(vm2, transition4, selectorIndex = SelectorNavigationModel.SELECTOR_SAME_ITEM)
+        navigator.remove(vm2, transition4, selectorIndex = ISelectorNavigationModel.SELECTOR_SAME_ITEM)
         assertAdapterInvalidatedTo(null, transition4)
         assertContent(arrayOf(vm0, vm1, vm3, vm4), null)
         assertTerminated(vm2)
@@ -439,7 +439,7 @@ class SelectorNavigationSingleAdapterModelTest {
         navigator.setSelectorIndex(2, transition2)
         assertAdapterInvalidatedTo(vm2, transition2)
 
-        navigator.remove(vm0, transition4, selectorIndex = SelectorNavigationModel.SELECTOR_SAME_ITEM)
+        navigator.remove(vm0, transition4, selectorIndex = ISelectorNavigationModel.SELECTOR_SAME_ITEM)
         assertAdapterNotChanged()
         assertContent(arrayOf(vm1, vm2, vm3, vm4), vm2)
         assertTerminated(vm0)
@@ -449,7 +449,7 @@ class SelectorNavigationSingleAdapterModelTest {
     fun verifyRemoveNotAdded() {
         initDefaults()
 
-        navigator.remove(vm6, transition4, selectorIndex = SelectorNavigationModel.SELECTOR_SAME_ITEM)
+        navigator.remove(vm6, transition4, selectorIndex = ISelectorNavigationModel.SELECTOR_SAME_ITEM)
         assertAdapterNotChanged()
         assertContent(arrayOf(vm0, vm1, vm2, vm3, vm4), null)
     }
@@ -482,7 +482,7 @@ class SelectorNavigationSingleAdapterModelTest {
         navigator.setSelectorIndex(2, transition2)
         assertAdapterInvalidatedTo(vm2, transition2)
 
-        navigator.removeAt(0, transition4, selectorIndex = SelectorNavigationModel.SELECTOR_SAME_ITEM)
+        navigator.removeAt(0, transition4, selectorIndex = ISelectorNavigationModel.SELECTOR_SAME_ITEM)
         assertAdapterNotChanged()
         assertContent(arrayOf(vm1, vm2, vm3, vm4), vm2)
         assertTerminated(vm0)
@@ -494,7 +494,7 @@ class SelectorNavigationSingleAdapterModelTest {
         navigator.setSelectorIndex(2, transition2)
         assertAdapterInvalidatedTo(vm2, transition2)
 
-        navigator.removeAt(2, transition4, selectorIndex = SelectorNavigationModel.SELECTOR_SAME_ITEM)
+        navigator.removeAt(2, transition4, selectorIndex = ISelectorNavigationModel.SELECTOR_SAME_ITEM)
         assertAdapterInvalidatedTo(null, transition4)
         assertContent(arrayOf(vm0, vm1, vm3, vm4), null)
         assertTerminated(vm2)
@@ -506,7 +506,7 @@ class SelectorNavigationSingleAdapterModelTest {
         navigator.setSelectorIndex(2, transition2)
         assertAdapterInvalidatedTo(vm2, transition2)
 
-        navigator.replace(vm3, vm6, transition4, selectorIndex = SelectorNavigationModel.SELECTOR_SAME_ITEM)
+        navigator.replace(vm3, vm6, transition4, selectorIndex = ISelectorNavigationModel.SELECTOR_SAME_ITEM)
         assertAdapterNotChanged()
         assertContent(arrayOf(vm0, vm1, vm2, vm6, vm4), vm2)
         assertTerminated(vm3)
@@ -530,7 +530,7 @@ class SelectorNavigationSingleAdapterModelTest {
         navigator.setSelectorIndex(2, transition2)
         assertAdapterInvalidatedTo(vm2, transition2)
 
-        navigator.replace(vm2, vm6, transition4, selectorIndex = SelectorNavigationModel.SELECTOR_SAME_ITEM)
+        navigator.replace(vm2, vm6, transition4, selectorIndex = ISelectorNavigationModel.SELECTOR_SAME_ITEM)
         assertAdapterInvalidatedTo(null, transition4)
         assertContent(arrayOf(vm0, vm1, vm6, vm3, vm4), null)
         assertTerminated(vm2)
@@ -542,7 +542,7 @@ class SelectorNavigationSingleAdapterModelTest {
         navigator.setSelectorIndex(2, transition2)
         assertAdapterInvalidatedTo(vm2, transition2)
 
-        navigator.replaceAt(3, vm6, transition4, selectorIndex = SelectorNavigationModel.SELECTOR_SAME_ITEM)
+        navigator.replaceAt(3, vm6, transition4, selectorIndex = ISelectorNavigationModel.SELECTOR_SAME_ITEM)
         assertAdapterNotChanged()
         assertContent(arrayOf(vm0, vm1, vm2, vm6, vm4), vm2)
         assertTerminated(vm3)
@@ -577,7 +577,7 @@ class SelectorNavigationSingleAdapterModelTest {
         navigator.setSelectorIndex(2, transition2)
         assertAdapterInvalidatedTo(vm2, transition2)
 
-        navigator.add(vm6, 2, transition4, selectorIndex = SelectorNavigationModel.SELECTOR_SAME_ITEM)
+        navigator.add(vm6, 2, transition4, selectorIndex = ISelectorNavigationModel.SELECTOR_SAME_ITEM)
         assertAdapterNotChanged()
         assertContent(arrayOf(vm0, vm1, vm6, vm2, vm3, vm4), vm2)
     }
@@ -615,7 +615,7 @@ class SelectorNavigationSingleAdapterModelTest {
         navigator.setSelectorIndex(2, transition2)
         assertAdapterInvalidatedTo(vm2, transition2)
 
-        navigator.update(transition3, selectorIndex = SelectorNavigationModel.SELECTOR_SAME_POSITION) {
+        navigator.update(transition3, selectorIndex = ISelectorNavigationModel.SELECTOR_SAME_POSITION) {
             it.remove(vm1)
             it.add(vm6)
         }
@@ -630,7 +630,7 @@ class SelectorNavigationSingleAdapterModelTest {
         navigator.setSelectorIndex(2, transition2)
         assertAdapterInvalidatedTo(vm2, transition2)
 
-        navigator.update(transition3, selectorIndex = SelectorNavigationModel.SELECTOR_SAME_ITEM) {
+        navigator.update(transition3, selectorIndex = ISelectorNavigationModel.SELECTOR_SAME_ITEM) {
             it.remove(vm1)
             it.add(vm6)
         }
@@ -645,7 +645,7 @@ class SelectorNavigationSingleAdapterModelTest {
         navigator.setSelectorIndex(2, transition2)
         assertAdapterInvalidatedTo(vm2, transition2)
 
-        navigator.update(transition3, selectorIndex = SelectorNavigationModel.SELECTOR_SAME_ITEM) {
+        navigator.update(transition3, selectorIndex = ISelectorNavigationModel.SELECTOR_SAME_ITEM) {
             it.remove(vm2)
             it.add(vm6)
         }
@@ -660,7 +660,7 @@ class SelectorNavigationSingleAdapterModelTest {
         navigator.setSelectorIndex(2, transition2)
         assertAdapterInvalidatedTo(vm2, transition2)
 
-        navigator.update(transition3, selectorIndex = SelectorNavigationModel.SELECTOR_LAST) {
+        navigator.update(transition3, selectorIndex = ISelectorNavigationModel.SELECTOR_LAST) {
             it.remove(vm1)
             it.add(vm6)
         }
@@ -675,7 +675,7 @@ class SelectorNavigationSingleAdapterModelTest {
         navigator.setSelectorIndex(2, transition2)
         assertAdapterInvalidatedTo(vm2, transition2)
 
-        navigator.update(transition3, selectorIndex = SelectorNavigationModel.SELECTOR_NOTHING) {
+        navigator.update(transition3, selectorIndex = ISelectorNavigationModel.SELECTOR_NOTHING) {
             it.remove(vm1)
             it.add(vm6)
         }
@@ -700,33 +700,33 @@ class SelectorNavigationSingleAdapterModelTest {
         navigator.setSelectorIndex(3, transition2)
         assertAdapterInvalidatedTo(vm3, transition2)
 
-        navigator.setSelectorIndex(SelectorNavigationModel.SELECTOR_NOTHING, transition3)
+        navigator.setSelectorIndex(ISelectorNavigationModel.SELECTOR_NOTHING, transition3)
         assertAdapterInvalidatedTo(null, transition3)
     }
 
     @Test
     fun verifySetSelectorIndexSamePosition() {
         initDefaults()
-        navigator.setSelectorIndex(SelectorNavigationModel.SELECTOR_SAME_POSITION, transition1)
+        navigator.setSelectorIndex(ISelectorNavigationModel.SELECTOR_SAME_POSITION, transition1)
         assertAdapterNotChanged()
 
         navigator.setSelectorIndex(3, transition2)
         assertAdapterInvalidatedTo(vm3, transition2)
 
-        navigator.setSelectorIndex(SelectorNavigationModel.SELECTOR_SAME_POSITION, transition3)
+        navigator.setSelectorIndex(ISelectorNavigationModel.SELECTOR_SAME_POSITION, transition3)
         assertAdapterNotChanged()
     }
 
     @Test
     fun verifySetSelectorIndexSameItem() {
         initDefaults()
-        navigator.setSelectorIndex(SelectorNavigationModel.SELECTOR_SAME_ITEM, transition1)
+        navigator.setSelectorIndex(ISelectorNavigationModel.SELECTOR_SAME_ITEM, transition1)
         assertAdapterNotChanged()
 
         navigator.setSelectorIndex(3, transition2)
         assertAdapterInvalidatedTo(vm3, transition2)
 
-        navigator.setSelectorIndex(SelectorNavigationModel.SELECTOR_SAME_ITEM, transition3)
+        navigator.setSelectorIndex(ISelectorNavigationModel.SELECTOR_SAME_ITEM, transition3)
         assertAdapterNotChanged()
     }
 
@@ -737,7 +737,7 @@ class SelectorNavigationSingleAdapterModelTest {
         navigator.setSelectorIndex(3, transition2)
         assertAdapterInvalidatedTo(vm3, transition2)
 
-        navigator.setSelectorIndex(SelectorNavigationModel.SELECTOR_LAST, transition3)
+        navigator.setSelectorIndex(ISelectorNavigationModel.SELECTOR_LAST, transition3)
         assertAdapterInvalidatedTo(vm4, transition3)
     }
 

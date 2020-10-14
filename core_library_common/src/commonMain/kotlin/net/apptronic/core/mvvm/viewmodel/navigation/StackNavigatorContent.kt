@@ -8,7 +8,7 @@ import net.apptronic.core.mvvm.viewmodel.ViewModel
 /**
  * Class representing status of [StackNavigator]
  */
-data class StackNavigatorStatus internal constructor(
+data class StackNavigatorContent internal constructor(
         /**
          * Defines in some [ViewModel] are loading and pending to be shown
          */
@@ -32,7 +32,7 @@ data class StackNavigatorStatus internal constructor(
         val stack: List<IViewModel>
 ) {
 
-    internal fun deepEquals(other: StackNavigatorStatus): Boolean {
+    internal fun deepEquals(other: StackNavigatorContent): Boolean {
         return isInProgress == other.isInProgress
                 && actualModel == other.actualModel
                 && visibleModel == other.visibleModel
@@ -43,25 +43,25 @@ data class StackNavigatorStatus internal constructor(
 
 }
 
-fun Entity<StackNavigatorStatus>.progress(): Entity<Boolean> {
+fun Entity<StackNavigatorContent>.progress(): Entity<Boolean> {
     return map { it.isInProgress }
 }
 
 
-fun Entity<StackNavigatorStatus>.actualModel(): Entity<IViewModel?> {
+fun Entity<StackNavigatorContent>.actualModel(): Entity<IViewModel?> {
     return map { it.actualModel }
 }
 
-fun Entity<StackNavigatorStatus>.visibleModel(): Entity<IViewModel?> {
+fun Entity<StackNavigatorContent>.visibleModel(): Entity<IViewModel?> {
     return map { it.visibleModel }
 }
 
 
-fun Entity<StackNavigatorStatus>.size(): Entity<Int> {
+fun Entity<StackNavigatorContent>.size(): Entity<Int> {
     return map { it.size }
 }
 
 
-fun Entity<StackNavigatorStatus>.stack(): Entity<List<IViewModel>?> {
+fun Entity<StackNavigatorContent>.stack(): Entity<List<IViewModel>?> {
     return map { it.stack }
 }

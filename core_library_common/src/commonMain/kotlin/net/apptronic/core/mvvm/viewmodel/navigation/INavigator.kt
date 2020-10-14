@@ -12,6 +12,8 @@ class IncorrectContextHierarchyException(msg: String) : IllegalArgumentException
  */
 interface INavigator<Content> {
 
+    val parentContext: Context
+
     val navigatorContext: Context
 
     fun <VM : IViewModel> childViewModel(builder: Context.() -> VM): VM {

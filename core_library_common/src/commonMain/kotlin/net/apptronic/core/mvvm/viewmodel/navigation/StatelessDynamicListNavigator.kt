@@ -6,7 +6,8 @@ import net.apptronic.core.component.entity.onchange.Next
 import net.apptronic.core.mvvm.viewmodel.IViewModel
 
 fun <T : Any, Id : Any, VM : IViewModel> IViewModel.listDynamicNavigator(
-        builder: ViewModelBuilder<in T, in Id, in VM>, navigatorContext: Context = this.context
+        builder: ViewModelBuilder<in T, in Id, in VM>,
+        navigatorContext: Context = this.context
 ): StatelessDynamicListNavigator<T, Id, VM> {
     context.verifyNavigatorContext(navigatorContext)
     return StatelessDynamicListNavigator(this, builder, navigatorContext)

@@ -2,9 +2,9 @@ package net.apptronic.core.ios.viewmodel.navigation
 
 import net.apptronic.core.ios.viewmodel.ViewBinder
 import net.apptronic.core.ios.viewmodel.ViewBinderFactory
-import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.adapter.SingleViewModelAdapter
 import net.apptronic.core.mvvm.viewmodel.navigation.TransitionInfo
+import net.apptronic.core.mvvm.viewmodel.navigation.ViewModelItem
 import platform.UIKit.UIView
 import platform.UIKit.addSubview
 import platform.UIKit.removeFromSuperview
@@ -16,12 +16,13 @@ class SingleViewBinderAdapter(
 
     private var currentBinder: ViewBinder<*, *>? = null
 
-    override fun onInvalidate(newModel: IViewModel?, transitionInfo: TransitionInfo) {
+    override fun onInvalidate(item: ViewModelItem?, transitionInfo: TransitionInfo) {
+        val viewModel = item?.viewModel
         val newBinder =
-                if (newModel != null) viewBinderFactory.getBinder(newModel) else null
-        if (newBinder != null && newModel != null) {
+                if (viewModel != null) viewBinderFactory.getBinder(viewModel) else null
+        if (newBinder != null && viewModel != null) {
             val view = newBinder.onCreateView()
-            newBinder.performViewBinding(newModel, view)
+            newBinder.performViewBinding(viewModel, view)
         }
         setView(newBinder, transitionInfo.isNewOnFront, transitionInfo.spec)
     }

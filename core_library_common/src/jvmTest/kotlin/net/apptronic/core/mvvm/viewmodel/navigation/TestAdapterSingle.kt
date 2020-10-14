@@ -9,8 +9,8 @@ internal class TestAdapterSingle : SingleViewModelAdapter {
     var lastTransition: Any? = null
     var lastOnFront: Boolean? = null
 
-    override fun onInvalidate(newModel: IViewModel?, transitionInfo: TransitionInfo) {
-        activeModel = newModel
+    override fun onInvalidate(item: ViewModelItem?, transitionInfo: TransitionInfo) {
+        activeModel = item?.viewModel
         lastOnFront = transitionInfo.isNewOnFront
         lastTransition = transitionInfo.spec
     }

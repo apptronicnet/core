@@ -9,7 +9,7 @@ import net.apptronic.core.mvvm.viewmodel.ViewModel
  * Navigation model which manages list of [ViewModel]s and displays one single [ViewModel] at time from it
  */
 @UnderDevelopment
-interface SelectorNavigationModel : INavigator<IViewModel?> {
+interface ISelectorNavigationModel : INavigator<IViewModel?> {
 
     companion object {
         /**
@@ -49,7 +49,7 @@ interface SelectorNavigationModel : INavigator<IViewModel?> {
     /**
      * Set navigator to have single [ViewModel] without any animations.
      *
-     * This is designed for setting initial state of [StackNavigationModel]
+     * This is designed for setting initial state of [IStackNavigationModel]
      */
     fun set(viewModel: IViewModel?, show: Boolean = true) {
         if (viewModel != null) {
@@ -63,7 +63,7 @@ interface SelectorNavigationModel : INavigator<IViewModel?> {
     /**
      * Set navigator to have single [ViewModel] without any animations.
      *
-     * This is designed for setting initial state of [StackNavigationModel]
+     * This is designed for setting initial state of [IStackNavigationModel]
      */
     fun set(list: List<IViewModel>, selectorIndex: Int = 0) {
         replaceList(list, null, selectorIndex)

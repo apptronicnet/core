@@ -7,18 +7,18 @@ abstract class BaseListNavigator<Content, State>(
         parent: IViewModel
 ) : Navigator<Content>(parent), ItemStateNavigator {
 
-    private var adapter: ViewModelListAdapter<State>? = null
+    private var adapter: ViewModelListAdapter<in State>? = null
 
-    fun setAdapter(adapter: ViewModelListAdapter<State>) {
+    fun setAdapter(adapter: ViewModelListAdapter<in State>) {
         this.adapter = adapter
         onSetAdapter(adapter)
         onNotifyAdapter(adapter, null)
-        context.lifecycle.onExitFromActiveStage {
+        parentContext.lifecycle.onExitFromActiveStage {
             this.adapter = null
         }
     }
 
-    protected abstract fun onSetAdapter(adapter: ViewModelListAdapter<State>)
+    protected abstract fun onSetAdapter(adapter: ViewModelListAdapter<in State>)
 
     protected fun notifyAdapter(changeInfo: Any?) {
         val adapter = this@BaseListNavigator.adapter
@@ -27,7 +27,7 @@ abstract class BaseListNavigator<Content, State>(
         }
     }
 
-    protected abstract fun onNotifyAdapter(adapter: ViewModelListAdapter<State>, changeInfo: Any?)
+    protected abstract fun onNotifyAdapter(adapter: ViewModelListAdapter<in State>, changeInfo: Any?)
 
     abstract fun getSize(): Int
 

@@ -7,17 +7,17 @@ import net.apptronic.core.mvvm.viewmodel.ViewModel
  */
 enum class StackTransition {
     /**
-     * Defines order automatically based on indexes of old [ViewModel] and new [ViewModel] inside of [StackNavigationModel]
+     * Defines order automatically based on indexes of old [ViewModel] and new [ViewModel] inside of [IStackNavigationModel]
      */
     Auto,
 
     /**
-     * Force place new view on top, independently of [ViewModel]s order in [StackNavigationModel]
+     * Force place new view on top, independently of [ViewModel]s order in [IStackNavigationModel]
      */
     NewOnFront,
 
     /**
-     * Force place new view on back, independently of [ViewModel]s order in [StackNavigationModel]
+     * Force place new view on back, independently of [ViewModel]s order in [IStackNavigationModel]
      */
     NewOnBack
 }

@@ -1,8 +1,8 @@
 package net.apptronic.core.mvvm.viewmodel.adapter
 
-import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.navigation.Navigator
 import net.apptronic.core.mvvm.viewmodel.navigation.TransitionInfo
+import net.apptronic.core.mvvm.viewmodel.navigation.ViewModelItem
 
 /**
  * View model adapter is a class which creates view controller
@@ -16,6 +16,6 @@ interface SingleViewModelAdapter {
      * @param transitionInfo additional info to apply model change. It may contain info about
      * required animation etc.
      */
-    fun onInvalidate(newModel: IViewModel?, transitionInfo: TransitionInfo)
+    fun onInvalidate(item: ViewModelItem?, transitionInfo: TransitionInfo)
 
 }

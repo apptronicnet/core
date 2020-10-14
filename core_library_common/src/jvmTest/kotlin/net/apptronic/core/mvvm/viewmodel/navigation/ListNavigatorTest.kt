@@ -26,7 +26,7 @@ class ListNavigatorTest {
 
     private val adapter = TestListAdapter()
     private var listItems: List<IViewModel> = emptyList()
-    private lateinit var status: ListNavigatorContent<Unit>
+    private lateinit var status: StaticListNavigatorContent<Unit>
 
     fun addVerification() {
         navigator.setAdapter(adapter)

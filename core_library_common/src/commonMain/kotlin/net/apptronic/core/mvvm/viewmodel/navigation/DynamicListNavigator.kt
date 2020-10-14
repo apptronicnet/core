@@ -18,7 +18,7 @@ abstract class DynamicListNavigator<T : Any, Id : Any, VM : IViewModel, State>(
         private val builder: ViewModelBuilder<in T, in Id, in VM>,
         override val navigatorContext: Context,
         initialState: State
-) : BaseListNavigator<DynamicListNavigatorStatus<T, State>, State>(parent), VisibilityFilterableNavigator {
+) : BaseListNavigator<DynamicListNavigatorContent<T, State>, State>(parent), VisibilityFilterableNavigator {
 
     private data class RecyclerItemId(
             val clazz: KClass<*>,
@@ -38,7 +38,7 @@ abstract class DynamicListNavigator<T : Any, Id : Any, VM : IViewModel, State>(
     private var savedItemsSize = DEFAULT_SAVED_ITEMS_SIZE
     private val savedItemIds = mutableListOf<RecyclerItemId>()
 
-    private val contentData = parent.value<DynamicListNavigatorStatus<T, State>>()
+    private val contentData = parent.value<DynamicListNavigatorContent<T, State>>()
 
     override val content = contentData
 
@@ -62,12 +62,12 @@ abstract class DynamicListNavigator<T : Any, Id : Any, VM : IViewModel, State>(
         }
         val viewModels = containers.getAll().map { it.container.getViewModel() }
         contentData.set(
-                DynamicListNavigatorStatus(
-                        allSize = allSize,
-                        visibleSize = visibleSize,
+                DynamicListNavigatorContent(
+                        countAll = allSize,
+                        countVisible = visibleSize,
                         hasHidden = visibleSize < allSize,
-                        allItems = items,
-                        visibleItems = visibleItems,
+                        all = items,
+                        visible = visibleItems,
                         staticItems = this.staticItems,
                         attachedViewModels = viewModels.toSet(),
                         state = state
@@ -96,7 +96,7 @@ abstract class DynamicListNavigator<T : Any, Id : Any, VM : IViewModel, State>(
         notifyAdapter(changeInfo)
     }
 
-    override fun onNotifyAdapter(adapter: ViewModelListAdapter<State>, changeInfo: Any?) {
+    override fun onNotifyAdapter(adapter: ViewModelListAdapter<in State>, changeInfo: Any?) {
         adapter.onDataChanged(viewModels, contentData.get().state, changeInfo)
     }
 
@@ -123,7 +123,7 @@ abstract class DynamicListNavigator<T : Any, Id : Any, VM : IViewModel, State>(
     }
 
     fun setStaticItems(source: Entity<List<T>>) {
-        source.subscribe(context) {
+        source.subscribe(parentContext) {
             setStaticItems(it)
         }
     }
@@ -242,7 +242,7 @@ abstract class DynamicListNavigator<T : Any, Id : Any, VM : IViewModel, State>(
         throw UnsupportedOperationException("ListRecyclerNavigator cannot close items")
     }
 
-    override fun onSetAdapter(adapter: ViewModelListAdapter<State>) {
+    override fun onSetAdapter(adapter: ViewModelListAdapter<in State>) {
         parent.context.lifecycle.onExitFromActiveStage {
             containers.getAll().forEach {
                 onRemoved(it.item)

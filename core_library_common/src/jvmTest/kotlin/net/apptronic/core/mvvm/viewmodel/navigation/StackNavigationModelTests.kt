@@ -17,7 +17,7 @@ abstract class StackNavigationModelTests {
     val context = testContext()
     val coreViewModel = ViewModel(context.viewModelContext())
 
-    abstract val stackNavigationModel: StackNavigationModel
+    abstract val stackNavigationModel: IStackNavigationModel
 
     fun childViewModel(): IViewModel = ViewModel(coreViewModel.viewModelContext())
 
@@ -438,11 +438,11 @@ abstract class StackNavigationModelTests {
 
 class StackNavigatorVerificationTest : StackNavigationModelTests() {
 
-    lateinit var status: StackNavigatorStatus
+    lateinit var status: StackNavigatorContent
     var actualModel: IViewModel? = null
     val adapter = object : SingleViewModelAdapter {
-        override fun onInvalidate(newModel: IViewModel?, transitionInfo: TransitionInfo) {
-            actualModel = newModel
+        override fun onInvalidate(item: ViewModelItem?, transitionInfo: TransitionInfo) {
+            actualModel = item?.viewModel
         }
     }
 

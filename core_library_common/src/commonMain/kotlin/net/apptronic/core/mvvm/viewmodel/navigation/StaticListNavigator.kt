@@ -17,7 +17,7 @@ abstract class StaticListNavigator<State> internal constructor(
         parent: IViewModel,
         final override val navigatorContext: Context,
         state: State
-) : BaseListNavigator<ListNavigatorContent<State>, State>(parent), VisibilityFilterableNavigator {
+) : BaseListNavigator<StaticListNavigatorContent<State>, State>(parent), VisibilityFilterableNavigator {
 
     private val visibilityFilters: VisibilityFilters<IViewModel> = VisibilityFilters<IViewModel>()
     private var listFilter: ListNavigatorFilter = simpleFilter()
@@ -25,12 +25,12 @@ abstract class StaticListNavigator<State> internal constructor(
     private var items: List<ViewModelContainer> = emptyList()
     private var visibleItems: List<ViewModelContainer> = emptyList()
 
-    private val contentData = parent.value<ListNavigatorContent<State>>()
+    private val contentData = parent.value<StaticListNavigatorContent<State>>()
 
     override val content = contentData
 
     private fun sendStatusUpdate(state: State) {
-        contentData.set(ListNavigatorContent(items.map { it.getViewModel() }, visibleItems.map { it.getViewModel() }, state))
+        contentData.set(StaticListNavigatorContent(items.map { it.getViewModel() }, visibleItems.map { it.getViewModel() }, state))
     }
 
     init {
@@ -47,6 +47,10 @@ abstract class StaticListNavigator<State> internal constructor(
     }
 
     private fun refreshVisibility(state: State, changeInfo: Any?) {
+        refreshVisibilityWithChange(state, { changeInfo })
+    }
+
+    private fun refreshVisibilityWithChange(state: State, changeInfoProvider: () -> Any?) {
         val source = items.map {
             ItemVisibilityRequest(it.getViewModel(), it.shouldShow())
         }
@@ -56,12 +60,13 @@ abstract class StaticListNavigator<State> internal constructor(
         }
         val filteredState = calculateFilteredState(items.map { it.getViewModel() }, filterResult, state)
         sendStatusUpdate(filteredState)
+        val changeInfo = changeInfoProvider()
         notifyAdapter(changeInfo)
     }
 
     protected abstract fun calculateFilteredState(all: List<IViewModel>, visible: List<IViewModel>, state: State): State
 
-    override fun onNotifyAdapter(adapter: ViewModelListAdapter<State>, changeInfo: Any?) {
+    override fun onNotifyAdapter(adapter: ViewModelListAdapter<in State>, changeInfo: Any?) {
         adapter.onDataChanged(visibleItems.map { ViewModelItem(it, this) }, contentData.get().state, changeInfo)
     }
 
@@ -117,9 +122,14 @@ abstract class StaticListNavigator<State> internal constructor(
         container.getViewModel().onAttachToParent(this)
         container.observeVisibilityChanged {
             if (it) {
-                refreshVisibility(contentData.get().state, ItemAdded(indexOfViewModel(viewModel)))
+                refreshVisibilityWithChange(contentData.get().state) {
+                    val index = indexOfViewModel(viewModel)
+                    return@refreshVisibilityWithChange if (index >= 0) ItemAdded(indexOfViewModel(viewModel)) else null
+                }
             } else {
-                refreshVisibility(contentData.get().state, ItemRemoved(indexOfViewModel(viewModel)))
+                val index = indexOfViewModel(viewModel)
+                val changeInfo = if (index >= 0) ItemRemoved(index) else null
+                refreshVisibility(contentData.get().state, changeInfo)
             }
         }
         container.setAttached(true)
@@ -132,7 +142,7 @@ abstract class StaticListNavigator<State> internal constructor(
         }
     }
 
-    override fun onSetAdapter(adapter: ViewModelListAdapter<State>) {
+    override fun onSetAdapter(adapter: ViewModelListAdapter<in State>) {
         parent.context.lifecycle.onExitFromActiveStage {
             items.forEach {
                 if (boundIds.contains(it.getViewModel().componentId)) {

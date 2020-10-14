@@ -107,11 +107,11 @@ class DynamicListNavigatorTest : TestViewModel() {
             attachedViewModels: Set<Any>
     ) {
         val content = navigator.content.get()
-        assert(allSize == content.allSize)
-        assert(visibleSize == content.visibleSize)
+        assert(allSize == content.countAll)
+        assert(visibleSize == content.countVisible)
         assert(hasHidden == content.hasHidden)
-        assert(allItems.toTypedArray().contentEquals(content.allItems.toTypedArray()))
-        assert(visibleItems.toTypedArray().contentEquals(content.visibleItems.toTypedArray()))
+        assert(allItems.toTypedArray().contentEquals(content.all.toTypedArray()))
+        assert(visibleItems.toTypedArray().contentEquals(content.visible.toTypedArray()))
         assert(staticItems.toTypedArray().contentEquals(content.staticItems.toTypedArray()))
         assert(staticItems.toTypedArray().contentEquals(content.staticItems.toTypedArray()))
         assert(attachedViewModels.size == content.attachedViewModels.size)

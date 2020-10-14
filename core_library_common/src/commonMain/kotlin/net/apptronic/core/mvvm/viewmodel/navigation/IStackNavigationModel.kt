@@ -4,12 +4,12 @@ import net.apptronic.core.component.context.Context
 import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 
-interface StackNavigationModel : INavigator<StackNavigatorStatus> {
+interface IStackNavigationModel : INavigator<StackNavigatorContent> {
 
     /**
      * Set stack to have single [ViewModel] without any animations.
      *
-     * This is designed for setting initial state of [StackNavigationModel]
+     * This is designed for setting initial state of [IStackNavigationModel]
      */
     fun set(viewModel: IViewModel?) {
         if (viewModel != null) {
@@ -22,7 +22,7 @@ interface StackNavigationModel : INavigator<StackNavigatorStatus> {
     /**
      * Set stack to have single [ViewModel] build from [builder] without any animations.
      *
-     * This is designed for setting initial state of [StackNavigationModel]
+     * This is designed for setting initial state of [IStackNavigationModel]
      */
     fun set(builder: Context.() -> IViewModel) {
         set(navigatorContext.builder())

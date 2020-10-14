@@ -6,12 +6,10 @@ import net.apptronic.core.component.entity.entities.asProperty
 import net.apptronic.core.component.entity.functions.map
 import net.apptronic.core.component.entity.onchange.onChangeValue
 import net.apptronic.core.mvvm.viewmodel.IViewModel
-import net.apptronic.core.mvvm.viewmodel.ViewModel
-import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 
 fun IViewModel.stackNavigationModel(navigatorContext: Context = this.context): StackNavigationViewModel {
     context.verifyNavigatorContext(navigatorContext)
-    return StackNavigationViewModel(context, navigatorContext)
+    return StackNavigationViewModel(this, navigatorContext)
 }
 
 /**
@@ -22,11 +20,11 @@ fun IViewModel.stackNavigationModel(navigatorContext: Context = this.context): S
  * Based on adapter implementation there may be no possibility to have interpretation for transitionInfo events.
  */
 class StackNavigationViewModel internal constructor(
-        context: ViewModelContext,
+        parent: IViewModel,
         override val navigatorContext: Context
-) : ViewModel(context), StackNavigationModel {
+) : Navigator<StackNavigatorContent>(parent), IStackNavigationModel {
 
-    private val viewModels = onChangeValue<List<IViewModel>, Any>(emptyList())
+    private val viewModels = parent.onChangeValue<List<IViewModel>, Any>(emptyList())
 
     private fun updateInternal(transitionInfo: Any?, stackTransition: StackTransition, action: (MutableList<IViewModel>) -> Unit) {
         val current = viewModels.get().value
@@ -58,10 +56,14 @@ class StackNavigationViewModel internal constructor(
         updateInternal(null, StackTransition.Auto, next)
     }
 
-    val listNavigator: StatelessStaticListNavigator = listNavigatorOnChange(viewModels)
+    val listNavigator: StatelessStaticListNavigator = parent.listNavigatorOnChange(viewModels, navigatorContext)
 
-    override val content: EntityValue<StackNavigatorStatus> = listNavigator.content.map {
-        StackNavigatorStatus(
+    override fun requestCloseSelf(viewModel: IViewModel, transitionInfo: Any?) {
+        listNavigator.requestCloseSelf(viewModel, transitionInfo)
+    }
+
+    override val content: EntityValue<StackNavigatorContent> = listNavigator.content.map {
+        StackNavigatorContent(
                 isInProgress = false,
                 actualModel = it.all.lastOrNull(),
                 visibleModel = it.visible.lastOrNull(),

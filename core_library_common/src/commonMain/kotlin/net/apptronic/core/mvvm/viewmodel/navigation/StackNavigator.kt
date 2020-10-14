@@ -25,9 +25,9 @@ fun IViewModel.stackNavigator(source: Entity<IViewModel>, navigatorContext: Cont
 class StackNavigator internal constructor(
         parent: IViewModel,
         override val navigatorContext: Context
-) : Navigator<StackNavigatorStatus>(
+) : Navigator<StackNavigatorContent>(
         parent
-), StackNavigationModel, SingleViewModelNavigationModel, VisibilityFilterableNavigator {
+), IStackNavigationModel, SingleViewModelNavigationModel, VisibilityFilterableNavigator, ItemStateNavigator {
 
     private data class State(
             val isInProgress: Boolean,
@@ -37,7 +37,7 @@ class StackNavigator internal constructor(
 
     private var currentState = State(false, null, null)
     private val contentData = parent.value(
-            StackNavigatorStatus(false, null, null, 0, emptyList())
+            StackNavigatorContent(false, null, null, 0, emptyList())
     )
     private val stack = mutableListOf<ViewModelContainer>()
     private val removingItems = mutableListOf<ViewModelContainer>()
@@ -46,7 +46,7 @@ class StackNavigator internal constructor(
 
 
     private fun updateSubject() {
-        val next = StackNavigatorStatus(
+        val next = StackNavigatorContent(
                 isInProgress = currentState.isInProgress,
                 visibleModel = currentState.visibleItem?.getViewModel(),
                 actualModel = currentState.actualItem?.getViewModel(),
@@ -84,7 +84,7 @@ class StackNavigator internal constructor(
         }
     }
 
-    override val content: EntityValue<StackNavigatorStatus> = contentData
+    override val content: EntityValue<StackNavigatorContent> = contentData
 
     override fun getVisibilityFilters(): VisibilityFilters<IViewModel> {
         return visibilityFilters
@@ -179,7 +179,7 @@ class StackNavigator internal constructor(
             }
             newItem?.setBound(true)
             adapter.onInvalidate(
-                    newItem?.getViewModel(),
+                    newItem?.let { ViewModelItem(it, this@StackNavigator) },
                     TransitionInfo(isNewOnFront, transitionInfo)
             )
             if (newItem != null) {
@@ -203,7 +203,7 @@ class StackNavigator internal constructor(
     override fun setAdapter(adapter: SingleViewModelAdapter) {
         currentAdapter = CurrentAdapter(adapter)
         invalidateAdapter(newItem = currentState.visibleItem, transitionInfo = null, stackTransition = StackTransition.Auto)
-        context.lifecycle.onExitFromActiveStage {
+        parentContext.lifecycle.onExitFromActiveStage {
             val currentItem = currentState.visibleItem
             if (currentItem != null) {
                 onUnbind(currentItem)
@@ -350,6 +350,18 @@ class StackNavigator internal constructor(
 
     override fun requestCloseSelf(viewModel: IViewModel, transitionInfo: Any?) {
         remove(viewModel, transitionInfo)
+    }
+
+    override fun setBound(viewModel: IViewModel, isBound: Boolean) {
+        stack.firstOrNull { it.getViewModel() == viewModel }?.setBound(isBound)
+    }
+
+    override fun setVisible(viewModel: IViewModel, isVisible: Boolean) {
+        stack.firstOrNull { it.getViewModel() == viewModel }?.setVisible(isVisible)
+    }
+
+    override fun setFocused(viewModel: IViewModel, isFocused: Boolean) {
+        stack.firstOrNull { it.getViewModel() == viewModel }?.setFocused(isFocused)
     }
 
 }
