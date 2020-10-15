@@ -27,8 +27,8 @@ class StackNavigationFrameAdapter(
         listAdapter.addListener(this)
     }
 
-    fun bind(model: StackNavigationViewModel) {
-        model.listNavigator.setAdapter(listAdapter)
+    fun bind(model: StackNavigationModel) {
+        model.setAdapter(listAdapter)
     }
 
     override fun onDataChanged(items: List<ViewModelItem>, changeInfo: Any?) {

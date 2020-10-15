@@ -8,8 +8,8 @@ import net.apptronic.core.component.entity.functions.merge
 import net.apptronic.core.component.value
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
-import net.apptronic.core.mvvm.viewmodel.navigation.hasHidden
 import net.apptronic.core.mvvm.viewmodel.navigation.listDynamicNavigator
+import net.apptronic.core.mvvm.viewmodel.navigation.models.hasHidden
 import net.apptronic.core.mvvm.viewmodel.navigation.plus
 import net.apptronic.core.mvvm.viewmodel.navigation.takeWhileVisibleStaticsOnStartFilter
 

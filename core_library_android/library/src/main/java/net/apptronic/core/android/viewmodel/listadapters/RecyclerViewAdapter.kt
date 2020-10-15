@@ -6,7 +6,8 @@ import androidx.recyclerview.widget.RecyclerView
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.navigation.ViewBinderListAdapter
 import net.apptronic.core.mvvm.viewmodel.IViewModel
-import net.apptronic.core.mvvm.viewmodel.navigation.*
+import net.apptronic.core.mvvm.viewmodel.navigation.ListUpdateSpec
+import net.apptronic.core.mvvm.viewmodel.navigation.ViewModelItem
 
 private const val NO_TYPE = -1
 private const val NO_ID = -1L
@@ -30,16 +31,16 @@ class RecyclerViewAdapter(
 
     override fun onDataChanged(items: List<ViewModelItem>, changeInfo: Any?) {
         when (changeInfo) {
-            is ItemAdded -> notifyItemInserted(changeInfo.index)
-            is ItemRemoved -> notifyItemRemoved(changeInfo.index)
-            is ItemMoved -> notifyItemMoved(changeInfo.fromIndex, changeInfo.toIndex)
-            is RangeInserted -> notifyItemRangeInserted(
+            is ListUpdateSpec.ItemAdded -> notifyItemInserted(changeInfo.index)
+            is ListUpdateSpec.ItemRemoved -> notifyItemRemoved(changeInfo.index)
+            is ListUpdateSpec.ItemMoved -> notifyItemMoved(changeInfo.fromIndex, changeInfo.toIndex)
+            is ListUpdateSpec.RangeInserted -> notifyItemRangeInserted(
                 changeInfo.range.first,
-                changeInfo.range.endInclusive - changeInfo.range.first + 1
+                changeInfo.range.last - changeInfo.range.first + 1
             )
-            is RangeRemoved -> notifyItemRangeRemoved(
+            is ListUpdateSpec.RangeRemoved -> notifyItemRangeRemoved(
                 changeInfo.range.first,
-                changeInfo.range.endInclusive - changeInfo.range.first + 1
+                changeInfo.range.last - changeInfo.range.first + 1
             )
             else -> notifyDataSetChanged()
         }

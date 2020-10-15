@@ -7,8 +7,8 @@ import net.apptronic.core.component.toggle
 import net.apptronic.core.component.value
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
-import net.apptronic.core.mvvm.viewmodel.adapter.BasicTransition
-import net.apptronic.core.mvvm.viewmodel.navigation.stackNavigationModel
+import net.apptronic.core.mvvm.viewmodel.navigation.BasicTransition
+import net.apptronic.core.mvvm.viewmodel.navigation.stackNavigator
 
 fun Contextual.gestureNavigationViewModel() = GestureNavigationViewModel(viewModelContext())
 
@@ -19,7 +19,7 @@ class GestureNavigationViewModel internal constructor(
     private val index = value<Int>(1)
     private val nextColor = toggle(*StackItemColor.values())
 
-    val navigator = stackNavigationModel()
+    val navigator = stackNavigator()
 
     init {
         nextColor.toggleTo(StackItemColor.values()[0])

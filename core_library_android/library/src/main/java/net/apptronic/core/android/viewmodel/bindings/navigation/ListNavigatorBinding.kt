@@ -12,11 +12,11 @@ import net.apptronic.core.android.viewmodel.navigation.ViewBinderListAdapter
 import net.apptronic.core.android.viewmodel.style.list.ListItemStyleAdapter
 import net.apptronic.core.android.viewmodel.style.list.emptyStyleAdapter
 import net.apptronic.core.mvvm.viewmodel.IViewModel
-import net.apptronic.core.mvvm.viewmodel.navigation.BaseListNavigator
+import net.apptronic.core.mvvm.viewmodel.navigation.ListNavigator
 
 fun BindingContainer.bindListNavigator(
     recyclerView: RecyclerView,
-    navigator: BaseListNavigator<*, *>,
+    navigator: ListNavigator<*, *, *>,
     factory: ViewBinderFactory? = null,
     styleAdapter: ListItemStyleAdapter = emptyStyleAdapter(),
     bindingStrategy: BindingStrategy = BindingStrategy.MatchRecycle
@@ -29,7 +29,7 @@ fun BindingContainer.bindListNavigator(
 
 class ListNavigatorBinding(
     private val recyclerView: RecyclerView,
-    private val navigator: BaseListNavigator<*, *>,
+    private val navigator: ListNavigator<*, *, *>,
     private val factory: ViewBinderFactory,
     private val styleAdapter: ListItemStyleAdapter,
     private val bindingStrategy: BindingStrategy

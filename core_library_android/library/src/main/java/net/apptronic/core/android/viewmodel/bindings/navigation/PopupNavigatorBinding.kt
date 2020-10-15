@@ -10,7 +10,7 @@ import net.apptronic.core.android.viewmodel.ViewBinderFactory
 import net.apptronic.core.android.viewmodel.navigation.PopupAnchorProvider
 import net.apptronic.core.android.viewmodel.navigation.PopupBinderStackAdapter
 import net.apptronic.core.mvvm.viewmodel.IViewModel
-import net.apptronic.core.mvvm.viewmodel.navigation.StackNavigator
+import net.apptronic.core.mvvm.viewmodel.navigation.StackNavigationModel
 
 private class ConcreteAnchorProvider(val anchor: View) : PopupAnchorProvider {
 
@@ -19,7 +19,7 @@ private class ConcreteAnchorProvider(val anchor: View) : PopupAnchorProvider {
 }
 
 fun ViewBinder<*>.bindPopupNavigator(
-    navigator: StackNavigator,
+    navigator: StackNavigationModel,
     anchorProvider: PopupAnchorProvider,
     container: View = getView(),
     factory: ViewBinderFactory? = null
@@ -28,7 +28,7 @@ fun ViewBinder<*>.bindPopupNavigator(
 }
 
 fun ViewBinder<*>.bindPopupNavigator(
-    navigator: StackNavigator,
+    navigator: StackNavigationModel,
     anchor: View,
     container: View = getView(),
     factory: ViewBinderFactory? = null
@@ -38,7 +38,7 @@ fun ViewBinder<*>.bindPopupNavigator(
 
 fun BindingContainer.bindPopupNavigator(
     context: Context,
-    navigator: StackNavigator,
+    navigator: StackNavigationModel,
     container: View,
     anchor: View,
     factory: ViewBinderFactory? = null
@@ -46,7 +46,7 @@ fun BindingContainer.bindPopupNavigator(
 
 fun BindingContainer.bindPopupNavigator(
     context: Context,
-    navigator: StackNavigator,
+    navigator: StackNavigationModel,
     container: View,
     anchorProvider: PopupAnchorProvider,
     factory: ViewBinderFactory? = null
@@ -61,7 +61,7 @@ class PopupNavigatorBinding(
     private val context: Context,
     private val container: View,
     private val anchorProvider: PopupAnchorProvider,
-    private val navigator: StackNavigator,
+    private val navigator: StackNavigationModel,
     private val factory: ViewBinderFactory
 ) : Binding() {
 

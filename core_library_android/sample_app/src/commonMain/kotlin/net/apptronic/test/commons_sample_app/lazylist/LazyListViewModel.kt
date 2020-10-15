@@ -27,7 +27,7 @@ class LazyListViewModel internal constructor(context: ViewModelContext) : ViewMo
 
     private val throttler = contextCoroutineScope.serialThrottler()
 
-    val items = listDynamicNavigator(LazyListBuilder())
+    val navigator = listDynamicNavigator(LazyListBuilder())
 
     init {
         context.dependencyDispatcher.addInstance(LazyListItemClickListenerDescriptor, this)
@@ -43,13 +43,13 @@ class LazyListViewModel internal constructor(context: ViewModelContext) : ViewMo
                     add(StaticItem("end", "End", randomString()))
                 }
             }
-            items.set(result)
+            navigator.setItems(result)
         }
     }
 
     override fun onClick(id: Long) {
         throttler.launch {
-            val current = items.get()
+            val current = navigator.getItems()
             val next = withContext(Dispatchers.Default) {
                 current.map { item ->
                     (item as? LazyListItem)?.let {
@@ -68,7 +68,7 @@ class LazyListViewModel internal constructor(context: ViewModelContext) : ViewMo
 
                 }
             }
-            items.set(next)
+            navigator.setItems(next)
         }
     }
 

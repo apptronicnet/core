@@ -7,9 +7,9 @@ import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.ViewBinderFactory
 import net.apptronic.core.android.viewmodel.view.PopupWindowDelegate
 import net.apptronic.core.mvvm.viewmodel.IViewModel
-import net.apptronic.core.mvvm.viewmodel.adapter.SingleViewModelAdapter
 import net.apptronic.core.mvvm.viewmodel.navigation.TransitionInfo
 import net.apptronic.core.mvvm.viewmodel.navigation.ViewModelItem
+import net.apptronic.core.mvvm.viewmodel.navigation.adapters.SingleViewModelAdapter
 
 interface PopupAnchorProvider {
 

@@ -7,7 +7,7 @@ import net.apptronic.core.component.toggle
 import net.apptronic.core.component.value
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
-import net.apptronic.core.mvvm.viewmodel.adapter.BasicTransition
+import net.apptronic.core.mvvm.viewmodel.navigation.BasicTransition
 import net.apptronic.core.mvvm.viewmodel.navigation.stackNavigator
 
 fun Contextual.prevNextNavigationViewModel() = PrevNextNavigationViewModel(viewModelContext())

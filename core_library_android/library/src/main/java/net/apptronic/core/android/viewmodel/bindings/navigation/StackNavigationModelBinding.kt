@@ -17,12 +17,12 @@ import net.apptronic.core.android.viewmodel.transitions.TransitionBuilder
 import net.apptronic.core.android.viewmodel.transitions.gestures.BackwardTransitionGestureDetector
 import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.navigation.BackNavigationStatus
-import net.apptronic.core.mvvm.viewmodel.navigation.StackNavigationViewModel
+import net.apptronic.core.mvvm.viewmodel.navigation.StackNavigationModel
 import net.apptronic.core.mvvm.viewmodel.navigation.ViewModelItem
 
 fun BindingContainer.bindStackNavigator(
     viewGroup: ViewGroup,
-    navigationModel: StackNavigationViewModel,
+    navigationModel: StackNavigationModel,
     factory: ViewBinderFactory? = null,
     transitionBuilder: TransitionBuilder? = null,
     defaultAnimationTime: Long = viewGroup.resources.getInteger(android.R.integer.config_mediumAnimTime)
@@ -47,7 +47,7 @@ fun BindingContainer.bindStackNavigator(
 
 private class StackNavigationModelBinding(
     private val viewGroup: ViewGroup,
-    private val navigationModel: StackNavigationViewModel,
+    private val navigationModel: StackNavigationModel,
     private val factory: ViewBinderFactory,
     private val transitionBuilder: TransitionBuilder,
     private val defaultAnimationTime: Long,
@@ -79,12 +79,12 @@ private class StackNavigationModelBinding(
     }
 
     private class GestureTargetImpl(
-        private val navigationModel: StackNavigationViewModel,
+        private val navigationModel: StackNavigationModel,
         private val adapter: StackNavigationFrameAdapter
     ) : GestureTarget {
 
         override fun getBackNavigationStatus(): BackNavigationStatus {
-            if (navigationModel.listNavigator.getSize() <= 1) {
+            if (navigationModel.size <= 1) {
                 return BackNavigationStatus.Restricted
             }
             return adapter.getBackNavigationStatus()
@@ -95,14 +95,14 @@ private class StackNavigationModelBinding(
         }
 
         override fun getBackView(): View? {
-            val previousItem = navigationModel.getSize() - 2
+            val previousItem = navigationModel.size - 2
             return if (previousItem >= 0) {
                 adapter.getViewAt(previousItem)
             } else null
         }
 
         override fun getFrontView(): View? {
-            val currentItem = navigationModel.getSize() - 1
+            val currentItem = navigationModel.size - 1
             return if (currentItem >= 0) {
                 adapter.getViewAt(currentItem)
             } else null

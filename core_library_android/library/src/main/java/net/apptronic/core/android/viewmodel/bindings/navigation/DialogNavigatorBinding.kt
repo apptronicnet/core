@@ -8,10 +8,10 @@ import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.ViewBinderFactory
 import net.apptronic.core.android.viewmodel.navigation.DialogBinderStackAdapter
 import net.apptronic.core.mvvm.viewmodel.IViewModel
-import net.apptronic.core.mvvm.viewmodel.navigation.StackNavigator
+import net.apptronic.core.mvvm.viewmodel.navigation.StackNavigationModel
 
 fun ViewBinder<*>.bindDialogNavigator(
-    navigator: StackNavigator,
+    navigator: StackNavigationModel,
     factory: ViewBinderFactory? = null
 ) {
     bindDialogNavigator(getView().context, navigator, factory)
@@ -19,7 +19,7 @@ fun ViewBinder<*>.bindDialogNavigator(
 
 fun BindingContainer.bindDialogNavigator(
     context: Context,
-    navigator: StackNavigator,
+    navigator: StackNavigationModel,
     factory: ViewBinderFactory? = null
 ) {
     val resultFactory = factory
@@ -30,7 +30,7 @@ fun BindingContainer.bindDialogNavigator(
 
 class DialogNavigatorBinding(
     private val context: Context,
-    private val navigator: StackNavigator,
+    private val navigator: StackNavigationModel,
     private val factory: ViewBinderFactory
 ) : Binding() {
 

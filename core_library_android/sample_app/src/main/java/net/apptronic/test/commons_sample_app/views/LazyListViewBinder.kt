@@ -16,7 +16,7 @@ class LazyListViewBinder : ViewBinder<LazyListViewModel>() {
     override fun onBindView(view: View, viewModel: LazyListViewModel) {
         with(view) {
             bindListNavigator(
-                lazyList, viewModel.items,
+                lazyList, viewModel.navigator,
                 bindingStrategy = BindingStrategy.UntilReused
             )
             lazyList.layoutManager = LinearLayoutManager(context)

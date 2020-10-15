@@ -7,8 +7,8 @@ import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.context.Contextual
 import net.apptronic.core.component.context.dependencyModule
 import net.apptronic.core.mvvm.viewmodel.ViewModel
-import net.apptronic.core.mvvm.viewmodel.adapter.BasicTransition
 import net.apptronic.core.mvvm.viewmodel.defineViewModelContext
+import net.apptronic.core.mvvm.viewmodel.navigation.BasicTransition
 import net.apptronic.core.mvvm.viewmodel.navigation.stackNavigator
 import net.apptronic.test.commons_sample_app.animation.animationDemoViewModel
 import net.apptronic.test.commons_sample_app.animation.viewTransitionDemoViewModel

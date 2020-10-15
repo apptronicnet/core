@@ -10,10 +10,9 @@ import net.apptronic.core.android.viewmodel.ViewBinderFactory
 import net.apptronic.core.android.viewmodel.view.ViewContainerDelegate
 import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModel
-import net.apptronic.core.mvvm.viewmodel.adapter.SingleViewModelAdapter
-import net.apptronic.core.mvvm.viewmodel.navigation.StackNavigator
 import net.apptronic.core.mvvm.viewmodel.navigation.TransitionInfo
 import net.apptronic.core.mvvm.viewmodel.navigation.ViewModelItem
+import net.apptronic.core.mvvm.viewmodel.navigation.adapters.SingleViewModelAdapter
 
 /**
  * Adapter for [StackNavigator]
