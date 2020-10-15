@@ -53,7 +53,7 @@ class ViewModelListBuilder<T, Id, VM : IViewModel> internal constructor(
     /**
      * Update list of [ViewModel]s with new items.
      */
-    fun update(newList: List<T>, changeInfo: Any? = null) {
+    fun update(newList: List<T>, updateSpec: Any? = null) {
         val oldIds = viewModelHolders.map { it.id }
         val newIds = newList.map { getId(it) }
 
@@ -93,7 +93,7 @@ class ViewModelListBuilder<T, Id, VM : IViewModel> internal constructor(
         }
         viewModelHolders.sortWith(PostArrangeComparator(newList))
         val result = viewModelHolders.map { it.viewModel }
-        onChangeValue.set(result, changeInfo)
+        onChangeValue.set(result, updateSpec)
     }
 
     private inner class PostArrangeComparator(items: List<T>) :

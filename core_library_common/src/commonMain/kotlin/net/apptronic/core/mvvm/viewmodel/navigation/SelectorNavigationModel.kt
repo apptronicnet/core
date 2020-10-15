@@ -1,34 +1,34 @@
 package net.apptronic.core.mvvm.viewmodel.navigation
 
-import net.apptronic.core.UnderDevelopment
 import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.value
+import net.apptronic.core.component.entity.entities.asProperty
+import net.apptronic.core.component.entity.functions.map
 import net.apptronic.core.mvvm.viewmodel.IViewModel
-import net.apptronic.core.mvvm.viewmodel.adapter.SingleViewModelAdapter
-import net.apptronic.core.mvvm.viewmodel.adapter.SingleViewModelListAdapter
-import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelListAdapter
-import net.apptronic.core.mvvm.viewmodel.navigation.ISelectorNavigationModel.Companion.SELECTOR_LAST
-import net.apptronic.core.mvvm.viewmodel.navigation.ISelectorNavigationModel.Companion.SELECTOR_NOTHING
-import net.apptronic.core.mvvm.viewmodel.navigation.ISelectorNavigationModel.Companion.SELECTOR_SAME_ITEM
-import net.apptronic.core.mvvm.viewmodel.navigation.ISelectorNavigationModel.Companion.SELECTOR_SAME_POSITION
+import net.apptronic.core.mvvm.viewmodel.navigation.adapters.SingleViewModelAdapter
+import net.apptronic.core.mvvm.viewmodel.navigation.adapters.SingleViewModelListAdapter
+import net.apptronic.core.mvvm.viewmodel.navigation.adapters.ViewModelListAdapter
+import net.apptronic.core.mvvm.viewmodel.navigation.models.ISelectorNavigationModel
+import net.apptronic.core.mvvm.viewmodel.navigation.models.ISelectorNavigationModel.Companion.SELECTOR_LAST
+import net.apptronic.core.mvvm.viewmodel.navigation.models.ISelectorNavigationModel.Companion.SELECTOR_NOTHING
+import net.apptronic.core.mvvm.viewmodel.navigation.models.ISelectorNavigationModel.Companion.SELECTOR_SAME_ITEM
+import net.apptronic.core.mvvm.viewmodel.navigation.models.ISelectorNavigationModel.Companion.SELECTOR_SAME_POSITION
+import net.apptronic.core.mvvm.viewmodel.navigation.models.SingleItemNavigatorContent
 import kotlin.math.min
 
-@UnderDevelopment
 fun IViewModel.selectorNavigator(navigatorContext: Context = this.context): SelectorNavigationModel {
     context.verifyNavigatorContext(navigatorContext)
     return SelectorNavigationModel(this, navigatorContext)
 }
 
-@UnderDevelopment
 class SelectorNavigationModel internal constructor(
         parent: IViewModel, override val navigatorContext: Context
-) : Navigator<IViewModel?>(parent), ISelectorNavigationModel, SingleViewModelNavigationModel, SingleViewModelListNavigationModel {
-
-    private val contentData = parent.value<IViewModel?>(null)
-
-    override val content = contentData
+) : Navigator<SingleItemNavigatorContent>(parent), ISelectorNavigationModel {
 
     private val listNavigator = SingleViewModelTargetStaticListNavigator(parent, navigatorContext)
+
+    override val content = listNavigator.content.map {
+        SingleItemNavigatorContent(it.state, it.all)
+    }.asProperty()
 
     override fun requestCloseSelf(viewModel: IViewModel, transitionInfo: Any?) {
         listNavigator.requestCloseSelf(viewModel, transitionInfo)
@@ -40,27 +40,24 @@ class SelectorNavigationModel internal constructor(
 
     private inner class SelectorAdapter(val target: SingleViewModelAdapter) : ViewModelListAdapter<Int> {
 
-        var oldIndex = selectorIndex
-        var oldViewModel: ViewModelItem? = null
-        var targetInitialized: Boolean = false
+        private var oldViewModel: ViewModelItem? = null
+        private var targetInitialized: Boolean = false
+        private var lastIndex: Int = -1
 
-        override fun onDataChanged(items: List<ViewModelItem>, state: Int, changeInfo: Any?) {
+        override fun onDataChanged(items: List<ViewModelItem>, state: Int, updateSpec: Any?) {
             val oldViewModelItem: ViewModelItem? = this.oldViewModel
             val newViewModelItem: ViewModelItem? = items.getOrNull(state)
             if (oldViewModelItem != newViewModelItem || !targetInitialized) {
                 targetInitialized = true
-                val oldIndex = oldIndex
-                val newIndex = selectorIndex
                 oldViewModelItem?.setFocused(false)
                 oldViewModelItem?.setVisible(false)
                 oldViewModelItem?.setBound(false)
                 newViewModelItem?.setBound(true)
-                val transitionInfo = TransitionInfo(newIndex > oldIndex, changeInfo)
-                target.onInvalidate(newViewModelItem, transitionInfo)
+                target.onInvalidate(newViewModelItem, updateSpec.castAsTransitionInfo(state >= lastIndex))
                 newViewModelItem?.setVisible(true)
                 newViewModelItem?.setFocused(true)
-                this.oldIndex = newIndex
                 this.oldViewModel = newViewModelItem
+                lastIndex = state
             }
         }
 
@@ -72,30 +69,34 @@ class SelectorNavigationModel internal constructor(
 
     private inner class SelectorListAdapter(val target: SingleViewModelListAdapter) : ViewModelListAdapter<Int> {
 
-        var oldIndex = selectorIndex
+        private var lastIndex: Int = -1
 
-        override fun onDataChanged(items: List<ViewModelItem>, state: Int, changeInfo: Any?) {
-            val oldIndex = oldIndex
-            val newIndex = state
-            val transitionInfo = TransitionInfo(newIndex > oldIndex, changeInfo)
-            target.onInvalidate(listNavigator.getViewModelItems(), newIndex, transitionInfo)
-            this.oldIndex = newIndex
+        override fun onDataChanged(items: List<ViewModelItem>, state: Int, updateSpec: Any?) {
+            target.onInvalidate(items, state, updateSpec.castAsTransitionInfo(state >= lastIndex))
+            lastIndex = state
         }
 
     }
 
-    override val size: Int
-        get() = listNavigator.getSize()
+    override fun setAdapter(adapter: ViewModelListAdapter<in Int>) {
+        listNavigator.setAdapter(adapter)
+    }
 
-    override val list: List<IViewModel>
+    override val size: Int
+        get() = listNavigator.size
+
+    override val items: List<IViewModel>
         get() = listNavigator.content.get().all
 
     override val selectorIndex: Int
         get() {
-            return listNavigator.getState()
+            return listNavigator.state
         }
 
-    override fun setSelectorIndex(index: Int, transitionSpec: Any?) {
+    override fun setSelectorIndex(
+            index: Int, transitionSpec: Any?,
+            navigationTransition: NavigationTransition
+    ) {
         val nextIndex = when {
             index >= 0 -> min(lastIndex, index)
             index == SELECTOR_NOTHING -> SELECTOR_NOTHING
@@ -104,25 +105,44 @@ class SelectorNavigationModel internal constructor(
             index == SELECTOR_LAST -> lastIndex
             else -> SELECTOR_NOTHING
         }
-        listNavigator.setState(nextIndex, transitionSpec)
+        val currentIndex = listNavigator.content.get().state
+        val isNewOnFront = when (navigationTransition) {
+            NavigationTransition.Auto -> nextIndex >= currentIndex
+            NavigationTransition.NewOnFront -> true
+            NavigationTransition.NewOnBack -> false
+        }
+        val transitionInfo = TransitionInfo(isNewOnFront, transitionSpec)
+        listNavigator.updateState(nextIndex, transitionInfo)
     }
 
-    override fun update(transitionSpec: Any?, selectorIndex: Int, builder: Context.(MutableList<IViewModel>) -> Unit) {
+    override fun update(
+            transitionSpec: Any?,
+            selectorIndex: Int,
+            navigationTransition: NavigationTransition,
+            builder: Context.(MutableList<IViewModel>) -> Unit
+    ) {
         val newList = mutableListOf<IViewModel>()
-        newList.addAll(list)
+        newList.addAll(items)
         navigatorContext.builder(newList)
         val nextIndex = when {
             selectorIndex >= 0 -> min(newList.size - 1, selectorIndex)
             selectorIndex == SELECTOR_NOTHING -> SELECTOR_NOTHING
             selectorIndex == SELECTOR_SAME_POSITION -> min(newList.size - 1, this.selectorIndex)
             selectorIndex == SELECTOR_SAME_ITEM -> {
-                val current = list.getOrNull(this.selectorIndex)
+                val current = items.getOrNull(this.selectorIndex)
                 newList.indexOf(current)
             }
             selectorIndex == SELECTOR_LAST -> newList.size - 1
             else -> SELECTOR_NOTHING
         }
-        listNavigator.set(newList, nextIndex, transitionSpec)
+        val currentIndex = listNavigator.content.get().state
+        val isNewOnFront = when (navigationTransition) {
+            NavigationTransition.Auto -> nextIndex >= currentIndex
+            NavigationTransition.NewOnFront -> true
+            NavigationTransition.NewOnBack -> false
+        }
+        val transitionInfo = TransitionInfo(isNewOnFront, transitionSpec)
+        listNavigator.set(newList, nextIndex, transitionInfo)
     }
 
 }

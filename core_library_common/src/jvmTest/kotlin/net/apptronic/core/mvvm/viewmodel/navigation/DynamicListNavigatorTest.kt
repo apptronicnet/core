@@ -140,7 +140,7 @@ class DynamicListNavigatorTest : TestViewModel() {
                 )
         )
         enterAllStages()
-        assert(navigator.getSize() == 6)
+        assert(navigator.size == 6)
         assertStatus(attachedViewModels = emptySet())
         val vm1 = adapter.items[1]
         assert((vm1.viewModel as DynamicItemViewModel).item == dynamic(1))

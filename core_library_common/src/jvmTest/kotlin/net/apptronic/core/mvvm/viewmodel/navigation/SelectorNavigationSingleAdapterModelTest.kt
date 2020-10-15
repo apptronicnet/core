@@ -7,7 +7,8 @@ import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
 import net.apptronic.core.mvvm.viewmodel.ViewModelLifecycle
-import net.apptronic.core.mvvm.viewmodel.adapter.SingleViewModelAdapter
+import net.apptronic.core.mvvm.viewmodel.navigation.adapters.SingleViewModelAdapter
+import net.apptronic.core.mvvm.viewmodel.navigation.models.ISelectorNavigationModel
 import net.apptronic.core.testutils.testContext
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -77,7 +78,7 @@ class SelectorNavigationSingleAdapterModelTest {
     }
 
     private fun assertContent(items: Array<IViewModel>, focused: IViewModel?) {
-        assertListEquals(navigator.list, items.toList())
+        assertListEquals(navigator.items, items.toList())
         assertEquals(navigator.size, items.size)
         assertEquals(navigator.lastIndex, items.size - 1)
         items.forEach { viewModel ->

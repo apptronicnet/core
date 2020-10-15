@@ -8,6 +8,6 @@ abstract class Navigator<Content>(
         val parent: IViewModel
 ) : ViewModelParent, INavigator<Content> {
 
-     override val parentContext: Context = parent.context
+     final override val parentContext: Context = parent.context
 
 }

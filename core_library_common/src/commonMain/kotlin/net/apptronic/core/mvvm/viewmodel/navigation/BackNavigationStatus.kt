@@ -1,5 +1,8 @@
 package net.apptronic.core.mvvm.viewmodel.navigation
 
+import net.apptronic.core.UnderDevelopment
+
+@UnderDevelopment
 enum class BackNavigationStatus {
 
     /**

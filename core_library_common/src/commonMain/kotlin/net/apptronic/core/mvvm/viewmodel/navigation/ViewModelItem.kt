@@ -4,11 +4,11 @@ import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 
 /**
- * Defines [ViewModel] which is attached to any type of [BaseListNavigator].
+ * Defines [ViewModel] which is attached to any type of [ListNavigator].
  */
 class ViewModelItem internal constructor(
         private val container: ViewModelContainer,
-        private val itemStateNavigator: ItemStateNavigator
+        private val viewModelItemLifecycleController: ViewModelItemLifecycleController
 ) {
 
     /**
@@ -20,24 +20,24 @@ class ViewModelItem internal constructor(
         }
 
     /**
-     * Tell [ItemStateNavigator] to set bound state of [ViewModel] inside navigator
+     * Tell [ViewModelItemLifecycleController] to set bound state of [ViewModel] inside navigator
      */
     fun setBound(isBound: Boolean) {
-        itemStateNavigator.setBound(viewModel, isBound)
+        viewModelItemLifecycleController.setBound(viewModel, isBound)
     }
 
     /**
-     * Tell [ItemStateNavigator] to set visible state of [ViewModel] inside navigator
+     * Tell [ViewModelItemLifecycleController] to set visible state of [ViewModel] inside navigator
      */
     fun setVisible(isVisible: Boolean) {
-        itemStateNavigator.setVisible(viewModel, isVisible)
+        viewModelItemLifecycleController.setVisible(viewModel, isVisible)
     }
 
     /**
-     * Tell [ItemStateNavigator] to set focused state of [ViewModel] inside navigator
+     * Tell [ViewModelItemLifecycleController] to set focused state of [ViewModel] inside navigator
      */
     fun setFocused(isFocused: Boolean) {
-        itemStateNavigator.setFocused(viewModel, isFocused)
+        viewModelItemLifecycleController.setFocused(viewModel, isFocused)
     }
 
     override fun equals(other: Any?): Boolean {

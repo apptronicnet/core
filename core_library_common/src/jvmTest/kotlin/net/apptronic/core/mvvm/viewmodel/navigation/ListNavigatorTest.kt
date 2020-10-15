@@ -8,6 +8,7 @@ import net.apptronic.core.component.value
 import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelLifecycle
+import net.apptronic.core.mvvm.viewmodel.navigation.models.StaticListNavigatorContent
 import net.apptronic.core.testutils.testContext
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -188,13 +189,14 @@ class ListNavigatorTest {
         rootViewModel.enterStage(ViewModelLifecycle.STAGE_FOCUSED)
         assertTrue(child1.isStateAttached())
 
-        navigator.setBound(child1, true)
+        val child1item = adapter.items.first { it.viewModel == child1 }
+        child1item.setBound(true)
         assertTrue(child1.isStateBound())
 
-        navigator.setVisible(child1, true)
+        child1item.setVisible(true)
         assertTrue(child1.isStateVisible())
 
-        navigator.setFocused(child1, true)
+        child1item.setFocused(true)
         assertTrue(child1.isStateFocused())
 
         rootViewModel.exitStage(ViewModelLifecycle.STAGE_FOCUSED)

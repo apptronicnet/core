@@ -67,16 +67,14 @@ class StatelessStaticListNavigator(
         }
     }
 
-    override fun calculateFilteredState(all: List<IViewModel>, visible: List<IViewModel>, state: Unit) {
-        return Unit
+    override fun calculateFilteredState(all: List<IViewModel>, visible: List<IViewModel>, state: Unit) = Unit
+
+    fun update(updateSpec: Any? = null, action: (MutableList<IViewModel>) -> Unit) {
+        update(Unit, updateSpec, action)
     }
 
-    fun update(changeInfo: Any? = null, action: (MutableList<IViewModel>) -> Unit) {
-        update(changeInfo, Unit, action)
-    }
-
-    fun set(list: List<IViewModel>, changeInfo: Any? = null) {
-        set(list, Unit, changeInfo)
+    fun set(list: List<IViewModel>, updateSpec: Any? = null) {
+        set(list, Unit, updateSpec)
     }
 
 }

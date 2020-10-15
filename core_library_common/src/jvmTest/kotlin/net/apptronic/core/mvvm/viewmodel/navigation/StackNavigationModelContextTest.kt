@@ -13,39 +13,39 @@ import org.junit.Test
 /**
  * Adding [ViewModel] to navigator should not allow using of different parent context than navigator context.
  */
-class StackNavigationViewModelContextTest : TestViewModel() {
+class StackNavigationModelContextTest : TestViewModel() {
 
     val rootModel = TestViewModel()
 
     class ChildModel(context: ViewModelContext) : ViewModel(context) {
 
-        val navigator = stackNavigationModel()
+        val navigator = stackNavigator()
 
     }
 
     class ChildModelNavigatorContext(context: ViewModelContext) : ViewModel(context) {
 
         val navigatorContext = childContext()
-        val navigator = stackNavigationModel(navigatorContext)
+        val navigator = stackNavigator(navigatorContext)
 
     }
 
     @Test
     fun shouldCreateNavigatorWithNavigatorcontext() {
-        rootModel.stackNavigationModel()
-        rootModel.stackNavigationModel(rootModel.childContext())
+        rootModel.stackNavigator()
+        rootModel.stackNavigator(rootModel.childContext())
     }
 
     @Test(expected = IncorrectContextHierarchyException::class)
     fun shouldFailCreateNavigatorWithIncorrectContext1() {
         val childModel = ViewModel(rootModel.viewModelContext())
-        childModel.stackNavigationModel(rootModel.context)
+        childModel.stackNavigator(rootModel.context)
     }
 
     @Test(expected = IncorrectContextHierarchyException::class)
     fun shouldFailCreateNavigatorWithIncorrectContext2() {
         val childModel = ViewModel(rootModel.viewModelContext())
-        childModel.stackNavigationModel(rootModel.childContext())
+        childModel.stackNavigator(rootModel.childContext())
     }
 
     private fun shouldFailOnNonCorrectContext(onMethod: StackNavigationModel.(IViewModel) -> Unit) {

@@ -3,7 +3,7 @@ package net.apptronic.core.view.binder
 import net.apptronic.core.component.value
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
-import net.apptronic.core.mvvm.viewmodel.adapter.BasicTransition
+import net.apptronic.core.mvvm.viewmodel.navigation.BasicTransition
 import net.apptronic.core.view.*
 import net.apptronic.core.view.commons.ICoreTextView
 import net.apptronic.core.view.containers.frameContainer

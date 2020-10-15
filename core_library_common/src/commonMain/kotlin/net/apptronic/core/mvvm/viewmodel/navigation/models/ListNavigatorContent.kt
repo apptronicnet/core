@@ -1,4 +1,4 @@
-package net.apptronic.core.mvvm.viewmodel.navigation
+package net.apptronic.core.mvvm.viewmodel.navigation.models
 
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.functions.map

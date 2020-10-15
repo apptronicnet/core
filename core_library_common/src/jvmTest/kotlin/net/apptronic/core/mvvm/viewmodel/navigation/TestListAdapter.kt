@@ -1,6 +1,6 @@
 package net.apptronic.core.mvvm.viewmodel.navigation
 
-import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelListAdapter
+import net.apptronic.core.mvvm.viewmodel.navigation.adapters.ViewModelListAdapter
 
 class TestListAdapter : ViewModelListAdapter<Unit> {
 

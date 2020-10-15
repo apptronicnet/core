@@ -1,7 +1,7 @@
 package net.apptronic.core.ios.anim.factory
 
 import net.apptronic.core.ios.anim.animations.*
-import net.apptronic.core.mvvm.viewmodel.adapter.BasicTransition
+import net.apptronic.core.mvvm.viewmodel.navigation.BasicTransition
 
 val BasicViewTransitionFactory = viewTransitionFactory {
     bindTransition(BasicTransition.Fade, Transition_Fade)

@@ -1,7 +1,7 @@
 package net.apptronic.core.mvvm.viewmodel.navigation
 
 import net.apptronic.core.mvvm.viewmodel.IViewModel
-import net.apptronic.core.mvvm.viewmodel.adapter.SingleViewModelAdapter
+import net.apptronic.core.mvvm.viewmodel.navigation.adapters.SingleViewModelAdapter
 
 internal class TestAdapterSingle : SingleViewModelAdapter {
 

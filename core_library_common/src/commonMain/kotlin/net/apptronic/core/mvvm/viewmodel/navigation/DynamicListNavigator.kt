@@ -1,5 +1,6 @@
 package net.apptronic.core.mvvm.viewmodel.navigation
 
+import net.apptronic.core.base.collections.dynamicLazyListOf
 import net.apptronic.core.base.collections.lazyListOf
 import net.apptronic.core.base.collections.simpleLazyListOf
 import net.apptronic.core.component.context.Context
@@ -7,18 +8,18 @@ import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.value
 import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModel
-import net.apptronic.core.mvvm.viewmodel.adapter.ViewModelListAdapter
+import net.apptronic.core.mvvm.viewmodel.navigation.adapters.ViewModelListAdapter
+import net.apptronic.core.mvvm.viewmodel.navigation.models.DynamicListNavigatorContent
 import kotlin.reflect.KClass
 
 private const val DEFAULT_SAVED_ITEMS_SIZE = 10
 
-@Suppress("UNCHECKED_CAST")
 abstract class DynamicListNavigator<T : Any, Id : Any, VM : IViewModel, State>(
         parent: IViewModel,
         private val builder: ViewModelBuilder<in T, in Id, in VM>,
         override val navigatorContext: Context,
         initialState: State
-) : BaseListNavigator<DynamicListNavigatorContent<T, State>, State>(parent), VisibilityFilterableNavigator {
+) : ListNavigator<DynamicListNavigatorContent<T, State>, T, State>(parent), VisibilityFilterableNavigator {
 
     private data class RecyclerItemId(
             val clazz: KClass<*>,
@@ -32,7 +33,7 @@ abstract class DynamicListNavigator<T : Any, Id : Any, VM : IViewModel, State>(
     private var items: List<T> = emptyList()
     private var listDescription: Any? = null
     private var staticItems: List<T> = emptyList()
-    private val viewModels = LazyList()
+    private val viewModelItems = LazyList()
     private val containers = ViewModelContainers<T, RecyclerItemId>()
 
     private var savedItemsSize = DEFAULT_SAVED_ITEMS_SIZE
@@ -79,25 +80,52 @@ abstract class DynamicListNavigator<T : Any, Id : Any, VM : IViewModel, State>(
         refreshContentData(initialState)
     }
 
-    fun get(): List<T> {
+    override val size: Int
+        get() = items.size
+
+    override val state: State
+        get() = contentData.get().state
+
+    override fun getItemAt(index: Int): T {
+        return items[index]
+    }
+
+    override fun getItems(): List<T> {
         return items
+    }
+
+    override fun getViewModels(): List<IViewModel> {
+        return dynamicLazyListOf(viewModelItems) { it.viewModel }
+    }
+
+    override fun getViewModelAt(index: Int): IViewModel {
+        return viewModelItems[index].viewModel
+    }
+
+    override fun set(items: List<T>, state: State, updateSpec: Any?) {
+        set(items, state, updateSpec, null)
+    }
+
+    override fun updateState(state: State, updateSpec: Any?) {
+        refreshContentData(state)
+        notifyAdapter(updateSpec)
     }
 
     /**
      * Set source items list.
      */
-    fun set(value: List<T>, state: State, changeInfo: Any? = null, listDescription: Any? = null) {
+    fun set(value: List<T>, state: State, updateSpec: Any? = null, listDescription: Any? = null) {
         clearSaved()
         containers.markAllRequiresUpdate()
         items = value
         this.listDescription = listDescription
         refreshVisibility(false)
         refreshContentData(state)
-        notifyAdapter(changeInfo)
+        notifyAdapter(updateSpec)
     }
 
-    override fun onNotifyAdapter(adapter: ViewModelListAdapter<in State>, changeInfo: Any?) {
-        adapter.onDataChanged(viewModels, contentData.get().state, changeInfo)
+    override fun onNotifyAdapter(adapter: ViewModelListAdapter<in State>, updateSpec: Any?) {
+        adapter.onDataChanged(viewModelItems, contentData.get().state, updateSpec)
     }
 
     private fun refreshVisibility(notifyChanges: Boolean) {
@@ -162,6 +190,7 @@ abstract class DynamicListNavigator<T : Any, Id : Any, VM : IViewModel, State>(
     }
 
     private fun shouldRetainInstance(key: T, viewModel: IViewModel): Boolean {
+        @Suppress("UNCHECKED_CAST")
         return staticItems.contains(key) || builder.shouldRetainInstance(key, viewModel as VM)
     }
 
@@ -220,6 +249,7 @@ abstract class DynamicListNavigator<T : Any, Id : Any, VM : IViewModel, State>(
     }
 
     private fun getViewModelForId(id: RecyclerItemId): VM? {
+        @Suppress("UNCHECKED_CAST")
         return containers.findRecordForId(id)?.container?.getViewModel() as? VM
     }
 
@@ -268,12 +298,13 @@ abstract class DynamicListNavigator<T : Any, Id : Any, VM : IViewModel, State>(
                 savedItemIds.remove(key.getId())
                 if (existing.requiresUpdate) {
                     existing.item = key
+                    @Suppress("UNCHECKED_CAST")
                     builder.onUpdateViewModel(existing.container.getViewModel() as VM, key)
                     existing.requiresUpdate = false
                 }
                 existing.container
             }
-            return ViewModelItem(container, this@DynamicListNavigator)
+            return ViewModelItem(container, viewModelItemLifecycleController)
         }
 
         override fun indexOf(element: ViewModelItem): Int {
@@ -288,47 +319,31 @@ abstract class DynamicListNavigator<T : Any, Id : Any, VM : IViewModel, State>(
 
     }
 
-    override fun getSize(): Int {
-        return viewModels.size
-    }
+    private val viewModelItemLifecycleController: ViewModelItemLifecycleController = object : ViewModelItemLifecycleController {
 
-    override fun getState(): State {
-        return contentData.get().state
-    }
-
-    override fun getViewModelItemAt(index: Int): ViewModelItem {
-        return viewModels[index]
-    }
-
-    override fun getViewModelItems(): List<ViewModelItem> {
-        return viewModels
-    }
-
-    override fun indexOfViewModel(viewModel: IViewModel): Int {
-        return -1
-    }
-
-    override fun setBound(viewModel: IViewModel, isBound: Boolean) {
-        if (isBound) {
-            containers.findRecordForModel(viewModel)?.let { record ->
-                record.container.setBound(true)
-            }
-        } else {
-            containers.findRecordForModel(viewModel)?.let { record ->
-                record.container.setBound(false)
-                if (!shouldRetainInstance(record.item, viewModel as VM)) {
-                    onReadyToRemove(record.item)
+        override fun setBound(viewModel: IViewModel, isBound: Boolean) {
+            if (isBound) {
+                containers.findRecordForModel(viewModel)?.let { record ->
+                    record.container.setBound(true)
+                }
+            } else {
+                containers.findRecordForModel(viewModel)?.let { record ->
+                    record.container.setBound(false)
+                    if (!shouldRetainInstance(record.item, viewModel as VM)) {
+                        onReadyToRemove(record.item)
+                    }
                 }
             }
         }
-    }
 
-    override fun setVisible(viewModel: IViewModel, isVisible: Boolean) {
-        containers.findRecordForModel(viewModel)?.container?.setVisible(isVisible)
-    }
+        override fun setVisible(viewModel: IViewModel, isVisible: Boolean) {
+            containers.findRecordForModel(viewModel)?.container?.setVisible(isVisible)
+        }
 
-    override fun setFocused(viewModel: IViewModel, isFocused: Boolean) {
-        containers.findRecordForModel(viewModel)?.container?.setFocused(isFocused)
+        override fun setFocused(viewModel: IViewModel, isFocused: Boolean) {
+            containers.findRecordForModel(viewModel)?.container?.setFocused(isFocused)
+        }
+
     }
 
 }

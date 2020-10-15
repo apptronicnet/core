@@ -5,7 +5,7 @@ import net.apptronic.core.mvvm.viewmodel.ViewModel
 /**
  * Defines order of views when performing transition for change
  */
-enum class StackTransition {
+enum class NavigationTransition {
     /**
      * Defines order automatically based on indexes of old [ViewModel] and new [ViewModel] inside of [IStackNavigationModel]
      */

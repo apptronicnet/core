@@ -6,19 +6,19 @@ import kotlin.math.max
 
 internal class SingleViewModelTargetStaticListNavigator(
         parent: IViewModel, navigatorContext: Context
-) : StaticListNavigator<Int>(parent, navigatorContext, ISelectorNavigationModel.SELECTOR_NOTHING) {
+) : StaticListNavigator<Int>(parent, navigatorContext, -1) {
 
     override fun requestCloseSelf(viewModel: IViewModel, transitionInfo: Any?) {
         val list = getAll().toMutableList()
-        val selectedIndex = getState()
-        val visibleItem = getViewModelItemAtOrNull(selectedIndex)
+        val selectedIndex = state
+        val visibleViewModel = getItems().getOrNull(selectedIndex)
         list.remove(viewModel)
-        val next = if (visibleItem == null) {
+        val next = if (visibleViewModel == null) {
             -1
-        } else if (visibleItem.viewModel === viewModel) {
+        } else if (visibleViewModel === viewModel) {
             max(selectedIndex, list.size - 1)
         } else {
-            list.indexOf(visibleItem.viewModel)
+            list.indexOf(visibleViewModel)
         }
         set(list, next, transitionInfo)
     }

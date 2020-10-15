@@ -1,44 +1,58 @@
 package net.apptronic.core.mvvm.viewmodel.navigation
 
+import net.apptronic.core.component.context.terminate
 import net.apptronic.core.component.context.viewModelContext
 import net.apptronic.core.component.lifecycle.enterStage
 import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelLifecycle
-import net.apptronic.core.mvvm.viewmodel.adapter.SingleViewModelAdapter
+import net.apptronic.core.mvvm.viewmodel.navigation.adapters.SingleViewModelAdapter
+import net.apptronic.core.mvvm.viewmodel.navigation.models.SingleItemNavigatorContent
 import net.apptronic.core.testutils.testContext
+import org.junit.After
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-abstract class StackNavigationModelTests {
+class StackNavigationModelTest {
 
-    val context = testContext()
-    val coreViewModel = ViewModel(context.viewModelContext())
+    private val context = testContext()
 
-    abstract val stackNavigationModel: IStackNavigationModel
+    @After
+    fun after() {
+        context.terminate()
+    }
 
-    fun childViewModel(): IViewModel = ViewModel(coreViewModel.viewModelContext())
+    private val coreViewModel = ViewModel(context.viewModelContext())
 
-    lateinit var status: StackNavigatorContent
+    lateinit var status: SingleItemNavigatorContent
 
-    var actualModel: IViewModel? = null
-    val adapter = object : SingleViewModelAdapter {
+    private var actualModel: IViewModel? = null
+    private val adapter = object : SingleViewModelAdapter {
         override fun onInvalidate(item: ViewModelItem?, transitionInfo: TransitionInfo) {
             actualModel = item?.viewModel
         }
     }
 
+    private val stackNavigationModel = coreViewModel.stackNavigator().apply {
+        setAdapter(adapter)
+        content.subscribe {
+            status = it
+        }
+    }
+
+    private fun childViewModel(): IViewModel = ViewModel(coreViewModel.viewModelContext())
+
     fun assertStack(vararg viewModels: IViewModel) {
-        val stack = stackNavigationModel.getStack()
+        val stack = stackNavigationModel.stack
         assertEquals(viewModels.size, stack.size)
         stack.forEachIndexed { index, item ->
             assert(item === viewModels[index])
             assert(stackNavigationModel.getItemAt(index) === viewModels[index])
         }
         assert(status.size == viewModels.size)
-        status.stack.forEachIndexed { index, item ->
+        status.items.forEachIndexed { index, item ->
             assert(item === viewModels[index])
             assert(stackNavigationModel.getItemAt(index) === viewModels[index])
         }
@@ -451,24 +465,3 @@ abstract class StackNavigationModelTests {
 
 }
 
-class StackNavigatorVerificationTest : StackNavigationModelTests() {
-
-    override val stackNavigationModel = coreViewModel.stackNavigator().apply {
-        setAdapter(adapter)
-        content.subscribe {
-            status = it
-        }
-    }
-
-}
-
-class StackNavigationModelVerificationTest : StackNavigationModelTests() {
-
-    override val stackNavigationModel = coreViewModel.stackNavigationModel().apply {
-        setAdapter(adapter)
-        content.subscribe {
-            status = it
-        }
-    }
-
-}

@@ -27,7 +27,7 @@ class StackNavigatorTest {
     private val adapter = TestAdapterSingle()
 
     private fun assertNavigatorStackState(vararg items: IViewModel) {
-        assert(root.navigator.getSize() == items.size)
+        assert(root.navigator.size == items.size)
         items.forEachIndexed { index, viewModel ->
             assert(root.navigator.getItemAt(index) == viewModel)
         }

@@ -6,12 +6,12 @@ import net.apptronic.core.ios.viewmodel.ViewBinder
 import net.apptronic.core.ios.viewmodel.ViewBinderFactory
 import net.apptronic.core.ios.viewmodel.navigation.SingleViewBinderAdapter
 import net.apptronic.core.mvvm.viewmodel.IViewModel
-import net.apptronic.core.mvvm.viewmodel.navigation.StackNavigator
+import net.apptronic.core.mvvm.viewmodel.navigation.StackNavigationModel
 import platform.UIKit.UIView
 
 fun BindingContainer.bindStackNavigator(
         container: UIView,
-        navigator: StackNavigator,
+        navigator: StackNavigationModel,
         factory: ViewBinderFactory
 ) {
     +StackNavigatorBinding(
@@ -23,7 +23,7 @@ fun BindingContainer.bindStackNavigator(
 
 private class StackNavigatorBinding(
         private val container: UIView,
-        private val navigator: StackNavigator,
+        private val navigator: StackNavigationModel,
         private val factory: ViewBinderFactory
 ) : Binding() {
 

@@ -20,7 +20,7 @@ fun <T : Any, Id : Any, VM : IViewModel> IViewModel.listDynamicNavigator(
 ): StatelessDynamicListNavigator<T, Id, VM> {
     val navigator = listDynamicNavigator(builder, navigatorContext)
     source.subscribe(navigatorContext) {
-        navigator.set(it)
+        navigator.setItems(it)
     }
     return navigator
 }
@@ -32,7 +32,7 @@ fun <T : Any, Id : Any, VM : IViewModel> IViewModel.listDynamicNavigatorOnChange
 ): StatelessDynamicListNavigator<T, Id, VM> {
     val navigator = listDynamicNavigator(builder, navigatorContext)
     source.subscribe(navigatorContext) {
-        navigator.set(it.value, it.change)
+        navigator.setItems(it.value, it.change)
     }
     return navigator
 }
@@ -43,8 +43,8 @@ class StatelessDynamicListNavigator<T : Any, Id : Any, VM : IViewModel>(
         navigatorContext: Context
 ) : DynamicListNavigator<T, Id, VM, Unit>(parent, builder, navigatorContext, Unit) {
 
-    fun set(value: List<T>, changeInfo: Any? = null, listDescription: Any? = null) {
-        set(value, Unit, changeInfo, listDescription)
+    fun setItems(value: List<T>, updateSpec: Any? = null, listDescription: Any? = null) {
+        set(value, Unit, updateSpec, listDescription)
     }
 
 }

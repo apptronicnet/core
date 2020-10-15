@@ -1,4 +1,4 @@
-package net.apptronic.core.mvvm.viewmodel.adapter
+package net.apptronic.core.mvvm.viewmodel.navigation.adapters
 
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.navigation.TransitionInfo

@@ -1,4 +1,4 @@
-package net.apptronic.core.mvvm.viewmodel.adapter
+package net.apptronic.core.mvvm.viewmodel.navigation
 
 sealed class BasicTransition {
 
