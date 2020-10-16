@@ -66,12 +66,12 @@ class TranslateYRelativeToSelfTransformation(private val from: Float, private va
     private var endValue = 0f
 
     override fun onStart(target: View, container: View, intercepting: Boolean) {
-        startValue = if (intercepting) target.translationY / target.width else from
+        startValue = if (intercepting) target.translationY / target.height else from
         endValue = to
     }
 
     override fun onTransform(target: View, container: View, progress: Progress) {
-        target.translationY = progress.interpolate(startValue, endValue) * target.width
+        target.translationY = progress.interpolate(startValue, endValue) * target.height
     }
 
     override fun reversed(): ViewTransformation {
@@ -87,12 +87,12 @@ class TranslateYRelativeToParentTransformation(private val from: Float, private 
     private var endValue = 0f
 
     override fun onStart(target: View, container: View, intercepting: Boolean) {
-        startValue = if (intercepting) target.translationY / container.width else from
+        startValue = if (intercepting) target.translationY / container.height else from
         endValue = to
     }
 
     override fun onTransform(target: View, container: View, progress: Progress) {
-        target.translationY = progress.interpolate(startValue, endValue) * container.width
+        target.translationY = progress.interpolate(startValue, endValue) * container.height
     }
 
     override fun reversed(): ViewTransformation {

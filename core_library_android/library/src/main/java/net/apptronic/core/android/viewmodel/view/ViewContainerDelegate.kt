@@ -65,9 +65,7 @@ open class ViewContainerDelegate<T : IViewModel> {
         inflater: LayoutInflater,
         container: ViewGroup?
     ): View {
-        val layoutResId = viewBinder.layoutResId
-            ?: throw IllegalStateException("[layoutResId] is not specified for $viewBinder")
-        return inflater.inflate(layoutResId, container, false)
+        return viewBinder.onCreateView(context, inflater, container)
     }
 
     @Suppress("UNCHECKED_CAST")

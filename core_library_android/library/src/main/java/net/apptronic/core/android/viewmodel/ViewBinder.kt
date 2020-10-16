@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.os.Parcelable
 import android.util.SparseArray
 import android.util.TypedValue
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -76,6 +77,7 @@ abstract class ViewBinder<T : IViewModel> : BindingContainer {
             setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16f)
             setTextColor(Color.BLACK)
             setBackgroundColor(Color.LTGRAY)
+            gravity = Gravity.CENTER
             text = fallbackText
         }
     }

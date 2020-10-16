@@ -128,7 +128,7 @@ class ConcreteViewBinderFactory internal constructor() : ViewBinderFactory() {
             if (result != null) {
                 return result
             }
-            iterableValue = iterableValue?.superclasses?.get(0)
+            iterableValue = iterableValue?.superclasses?.getOrNull(0)
         } while (iterableValue != null && iterableValue != IViewModel::class)
         return null
     }
