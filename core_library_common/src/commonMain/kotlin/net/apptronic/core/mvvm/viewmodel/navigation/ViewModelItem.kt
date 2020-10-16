@@ -40,6 +40,10 @@ class ViewModelItem internal constructor(
         viewModelItemLifecycleController.setFocused(viewModel, isFocused)
     }
 
+    override fun toString(): String {
+        return "$viewModel bound=${viewModel.isBound()} visible=${viewModel.isVisible()} focused=${viewModel.isFocused()}"
+    }
+
     override fun equals(other: Any?): Boolean {
         return other is ViewModelItem && other.viewModel == viewModel
     }
