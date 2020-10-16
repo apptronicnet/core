@@ -33,7 +33,7 @@ data class SingleItemNavigatorContent internal constructor(
     val size: Int = items.size
 
     private fun deepEquals(other: SingleItemNavigatorContent): Boolean {
-        return size == other.size
+        return visibleIndex == other.visibleIndex
                 && items.size == other.items.size
                 && items.toTypedArray().contentEquals(other.items.toTypedArray())
     }
