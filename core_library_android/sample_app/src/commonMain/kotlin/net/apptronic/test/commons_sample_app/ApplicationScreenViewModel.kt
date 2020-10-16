@@ -25,6 +25,7 @@ import net.apptronic.test.commons_sample_app.registration.registrationViewModel
 import net.apptronic.test.commons_sample_app.stackloading.stackLoadingViewModel
 import net.apptronic.test.commons_sample_app.staknavigation.gestureNavigationViewModel
 import net.apptronic.test.commons_sample_app.staknavigation.prevNextNavigationViewModel
+import net.apptronic.test.commons_sample_app.tabs.tabsViewModel
 import net.apptronic.test.commons_sample_app.throttle.throttleSampleViewModel
 import net.apptronic.test.commons_sample_app.transition.AppTransition
 import net.apptronic.test.commons_sample_app.visibility.visibilityDemoViewModel
@@ -77,6 +78,7 @@ class ApplicationScreenViewModel(parent: Context) : ViewModel(parent, Applicatio
             is OpenAnimationDemo -> navigateForward { animationDemoViewModel() }
             is OpenViewTransitionDemo -> navigateForward { viewTransitionDemoViewModel() }
             is OpenRegistrationScreen -> navigateForward { registrationViewModel(command.registrationListener) }
+            is OpenTabsDemo -> navigateForward { tabsViewModel() }
             is BackToLogin -> {
                 appNavigator.popBackStack(BasicTransition.Backward)
                 true

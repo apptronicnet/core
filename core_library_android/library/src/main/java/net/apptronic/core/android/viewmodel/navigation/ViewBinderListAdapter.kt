@@ -4,8 +4,7 @@ import android.view.View
 import android.view.ViewGroup
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.ViewBinderFactory
-import net.apptronic.core.android.viewmodel.style.list.ListItemStyleAdapter
-import net.apptronic.core.android.viewmodel.style.list.emptyStyleAdapter
+import net.apptronic.core.android.viewmodel.style.list.ViewStyleAdapter
 import net.apptronic.core.android.viewmodel.view.ViewContainerDelegate
 import net.apptronic.core.base.collections.simpleLazyListOf
 import net.apptronic.core.mvvm.viewmodel.IViewModel
@@ -13,8 +12,8 @@ import net.apptronic.core.mvvm.viewmodel.navigation.ViewModelItem
 import net.apptronic.core.mvvm.viewmodel.navigation.adapters.ViewModelListAdapter
 
 class ViewBinderListAdapter(
-    private val viewBinderFactory: ViewBinderFactory = ViewBinderFactory(),
-    private val styleAdapter: ListItemStyleAdapter = emptyStyleAdapter()
+    private val viewBinderFactory: ViewBinderFactory,
+    private val styleAdapter: ViewStyleAdapter
 ) : ViewModelListAdapter<Any?> {
 
     private val listeners = mutableListOf<UpdateListener>()

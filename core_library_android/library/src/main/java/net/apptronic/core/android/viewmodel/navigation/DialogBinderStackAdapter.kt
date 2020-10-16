@@ -11,7 +11,7 @@ import net.apptronic.core.mvvm.viewmodel.navigation.adapters.SingleViewModelAdap
 
 open class DialogBinderStackAdapter(
     private val context: Context,
-    private val viewBinderFactory: ViewBinderFactory = ViewBinderFactory()
+    private val viewBinderFactory: ViewBinderFactory
 ) : SingleViewModelAdapter {
 
     fun bindings(setup: ViewBinderFactory.() -> Unit) {

@@ -73,4 +73,8 @@ class MainScreenViewModel internal constructor(context: ViewModelContext) : View
         router.sendCommands(OpenViewTransitionDemo())
     }
 
+    fun onClickTabsDemo() {
+        router.sendCommands(OpenTabsDemo())
+    }
+
 }

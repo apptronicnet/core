@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tabTitle"
+        android:elevation="8dp"
+        android:padding="24dp"
+        android:textColor="#000"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        tools:text="Tab 1" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/tabItemsList"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        tools:background="#f0f0f0"
+        tools:listitem="@layout/tab_list_item" />
+
+</TableLayout>

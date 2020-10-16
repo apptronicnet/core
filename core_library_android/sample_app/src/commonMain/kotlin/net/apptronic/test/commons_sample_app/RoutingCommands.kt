@@ -36,4 +36,6 @@ class OpenViewTransitionDemo()
 
 class OpenRegistrationScreen(val registrationListener: RegistrationListener)
 
+class OpenTabsDemo()
+
 class BackToLogin()

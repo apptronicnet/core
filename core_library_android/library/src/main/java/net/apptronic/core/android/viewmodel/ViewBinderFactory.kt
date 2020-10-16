@@ -1,13 +1,19 @@
 package net.apptronic.core.android.viewmodel
 
 import androidx.annotation.LayoutRes
+import net.apptronic.core.base.SerialIdGenerator
 import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import kotlin.reflect.KClass
 import kotlin.reflect.full.superclasses
 
-fun viewBinderFactory(initializer: ViewBinderFactory.() -> Unit): ViewBinderFactory {
-    return ViewBinderFactory().apply(initializer)
+fun composeViewBinderFactory(vararg factories: ViewBinderFactory?): ViewBinderFactory {
+    val list = factories.filterNotNull()
+    return ChainViewBinderFactory(list)
+}
+
+fun viewBinderFactory(initializer: ConcreteViewBinderFactory.() -> Unit): ViewBinderFactory {
+    return ConcreteViewBinderFactory().apply(initializer)
 }
 
 inline fun <reified ViewModelType : IViewModel> viewBinder(
@@ -18,14 +24,38 @@ inline fun <reified ViewModelType : IViewModel> viewBinder(
     }
 }
 
+abstract class ViewBinderFactory {
+
+    fun getBinder(typeId: Int): ViewBinder<*> {
+        return lookupBinder(typeId) ?: GenericViewBinder()
+    }
+
+    fun getBinder(viewModel: IViewModel): ViewBinder<*> {
+        return lookupBinder(viewModel) ?: GenericViewBinder()
+    }
+
+    fun getType(viewModel: IViewModel): Int {
+        return lookupType(viewModel) ?: -1
+    }
+
+    internal abstract fun lookupBinder(typeId: Int): ViewBinder<*>?
+
+    internal abstract fun lookupBinder(viewModel: IViewModel): ViewBinder<*>?
+
+    internal abstract fun lookupType(viewModel: IViewModel): Int?
+
+}
+
 /**
  * This class is [ViewBinder] registry, which allows to build [ViewBinder] to corresponding
  * [ViewModel] when needed by adapters.
  */
-class ViewBinderFactory {
+class ConcreteViewBinderFactory internal constructor() : ViewBinderFactory() {
 
-    private var parent: ViewBinderFactory? = null
-    private var indexGenerator = 1
+    companion object {
+        val typeIdGenerator = SerialIdGenerator()
+    }
+
     private val views = mutableMapOf<KClass<*>, ViewSpec>()
 
     private data class ViewSpec(
@@ -74,18 +104,21 @@ class ViewBinderFactory {
     ) {
         views[clazz] = ViewSpec(
             builder = builder,
-            typeId = indexGenerator++,
+            typeId = typeIdGenerator.nextId().toInt(),
             layoutResId = layoutResId
         )
     }
 
-    fun getBinder(typeId: Int): ViewBinder<*> {
+    override fun lookupBinder(typeId: Int): ViewBinder<*>? {
         return views.values.firstOrNull { it.typeId == typeId }?.builder?.invoke()
-            ?: GenericViewBinder()
     }
 
-    fun getBinder(viewModel: IViewModel): ViewBinder<*> {
-        return searchRecursive(viewModel::class)?.build() ?: GenericViewBinder()
+    override fun lookupBinder(viewModel: IViewModel): ViewBinder<*>? {
+        return searchRecursive(viewModel::class)?.build()
+    }
+
+    override fun lookupType(viewModel: IViewModel): Int? {
+        return searchRecursive(viewModel::class)?.typeId
     }
 
     private fun searchRecursive(clazz: KClass<out IViewModel>): ViewSpec? {
@@ -97,15 +130,7 @@ class ViewBinderFactory {
             }
             iterableValue = iterableValue?.superclasses?.get(0)
         } while (iterableValue != null && iterableValue != IViewModel::class)
-        val parent = this.parent
-        if (parent != null) {
-            return parent.searchRecursive(clazz)
-        }
         return null
-    }
-
-    fun getType(viewModel: IViewModel): Int {
-        return searchRecursive(viewModel::class)?.typeId ?: 0
     }
 
     /**
@@ -113,9 +138,42 @@ class ViewBinderFactory {
      * to add new bindings which have no affecting for initial [ViewBinderFactory]
      */
     fun override(initializer: ViewBinderFactory.() -> Unit): ViewBinderFactory {
-        return viewBinderFactory(initializer).also {
-            it.parent = this
+        return composeViewBinderFactory(viewBinderFactory(initializer), this)
+    }
+
+}
+
+private class ChainViewBinderFactory(private val targets: List<ViewBinderFactory>) :
+    ViewBinderFactory() {
+
+    override fun lookupBinder(typeId: Int): ViewBinder<*>? {
+        for (target in targets) {
+            val binder = target.getBinder(typeId)
+            if (binder != null) {
+                return binder
+            }
         }
+        return null
+    }
+
+    override fun lookupBinder(viewModel: IViewModel): ViewBinder<*>? {
+        for (target in targets) {
+            val binder = target.getBinder(viewModel)
+            if (binder != null) {
+                return binder
+            }
+        }
+        return null
+    }
+
+    override fun lookupType(viewModel: IViewModel): Int {
+        for (target in targets) {
+            val typeId = target.getType(viewModel)
+            if (typeId > 0) {
+                return typeId
+            }
+        }
+        return -1
     }
 
 }

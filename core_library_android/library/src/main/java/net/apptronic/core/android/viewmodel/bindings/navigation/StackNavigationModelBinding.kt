@@ -10,6 +10,7 @@ import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.ViewBinderFactory
 import net.apptronic.core.android.viewmodel.navigation.StackNavigationFrameAdapter
 import net.apptronic.core.android.viewmodel.navigation.ViewBinderListAdapter
+import net.apptronic.core.android.viewmodel.style.list.emptyViewStyleAdapter
 import net.apptronic.core.android.viewmodel.transitions.GestureDispatcher
 import net.apptronic.core.android.viewmodel.transitions.GestureTarget
 import net.apptronic.core.android.viewmodel.transitions.NavigationGestureDetector
@@ -20,6 +21,7 @@ import net.apptronic.core.mvvm.viewmodel.navigation.BackNavigationStatus
 import net.apptronic.core.mvvm.viewmodel.navigation.StackNavigationModel
 import net.apptronic.core.mvvm.viewmodel.navigation.ViewModelItem
 
+@Deprecated("Will be replaced")
 fun BindingContainer.bindStackNavigator(
     viewGroup: ViewGroup,
     navigationModel: StackNavigationModel,
@@ -45,6 +47,7 @@ fun BindingContainer.bindStackNavigator(
     )
 }
 
+@Deprecated("Will be replaced")
 private class StackNavigationModelBinding(
     private val viewGroup: ViewGroup,
     private val navigationModel: StackNavigationModel,
@@ -55,7 +58,7 @@ private class StackNavigationModelBinding(
 ) : Binding() {
 
     override fun onBind(viewModel: IViewModel, viewBinder: ViewBinder<*>) {
-        val listAdapter = ViewBinderListAdapter(factory)
+        val listAdapter = ViewBinderListAdapter(factory, emptyViewStyleAdapter())
         val adapter = StackNavigationFrameAdapter(
             viewGroup, transitionBuilder, defaultAnimationTime, listAdapter = listAdapter
         )

@@ -21,7 +21,7 @@ open class PopupBinderStackAdapter(
     private val context: Context,
     private val container: View,
     private val anchorProvider: PopupAnchorProvider,
-    private val viewBinderFactory: ViewBinderFactory = ViewBinderFactory()
+    private val viewBinderFactory: ViewBinderFactory
 ) : SingleViewModelAdapter {
 
     fun bindings(setup: ViewBinderFactory.() -> Unit) {
