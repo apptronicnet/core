@@ -13,7 +13,6 @@ import net.apptronic.core.component.entity.entities.withDefaultNull
 import net.apptronic.core.component.entity.functions.anyValue
 import net.apptronic.core.component.entity.functions.entityFunction
 import net.apptronic.core.component.entity.functions.map
-import net.apptronic.core.component.entity.switchContext
 
 
 fun Entity<Boolean>.whenTrue(): Entity<Unit> {

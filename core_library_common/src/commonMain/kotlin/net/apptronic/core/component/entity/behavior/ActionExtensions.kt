@@ -5,7 +5,6 @@ import net.apptronic.core.component.context.Contextual
 import net.apptronic.core.component.coroutines.lifecycleCoroutineScope
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.functions.not
-import net.apptronic.core.component.entity.switchContext
 
 class OrElseSubscription {
 

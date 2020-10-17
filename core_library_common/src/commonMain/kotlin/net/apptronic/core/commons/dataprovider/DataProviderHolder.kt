@@ -6,7 +6,6 @@ import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.commons.cache.CacheComponent
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.Entity
-import net.apptronic.core.component.entity.switchContext
 import net.apptronic.core.component.extensions.BaseComponent
 import net.apptronic.core.component.value
 

@@ -59,5 +59,13 @@ interface Entity<T> : Observable<T> {
         })
     }
 
+    fun switchContext(targetContext: Context): Entity<T> {
+        return if (this.context != targetContext) {
+            ContextSwitchEntity(this, targetContext)
+        } else {
+            this
+        }
+    }
+
 }
 

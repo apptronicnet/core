@@ -3,7 +3,6 @@ package net.apptronic.core.mvvm.viewmodel.navigation
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.onchange.Next
-import net.apptronic.core.component.entity.switchContext
 import net.apptronic.core.mvvm.viewmodel.IViewModel
 
 fun IViewModel.listNavigator(navigatorContext: Context = this.context): StatelessStaticListNavigator {

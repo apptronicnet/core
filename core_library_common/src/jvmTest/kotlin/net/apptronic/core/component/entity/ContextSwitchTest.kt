@@ -99,7 +99,6 @@ abstract class ContextSwitchTest {
 
 class ContextSwitchEntityTest : ContextSwitchTest() {
 
-
     override fun createResult(): Property<String> {
         return source.switchContext(targetContext).asProperty()
     }

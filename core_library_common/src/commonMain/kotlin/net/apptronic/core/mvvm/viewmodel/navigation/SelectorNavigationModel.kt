@@ -78,6 +78,10 @@ class SelectorNavigationModel internal constructor(
 
     }
 
+    override fun onNavigated(index: Int) {
+        set(items, index)
+    }
+
     override fun setAdapter(adapter: ViewModelListAdapter<in Int>) {
         listNavigator.setAdapter(adapter)
     }

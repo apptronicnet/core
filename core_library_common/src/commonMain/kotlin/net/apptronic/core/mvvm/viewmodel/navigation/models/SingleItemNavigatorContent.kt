@@ -10,17 +10,17 @@ import net.apptronic.core.mvvm.viewmodel.ViewModel
  */
 data class SingleItemNavigatorContent internal constructor(
         /**
-         * Index of [iViewModel] in stack
+         * Index of current actual [ViewModel] which should be visible ti user
          */
         val visibleIndex: Int,
         /**
-         * Current stack of [ViewModel]s
+         * Current list of [ViewModel]s
          */
         val items: List<IViewModel>
 ) {
 
     /**
-     * Current actual [ViewModel] which represents end of navigation
+     * Current actual [ViewModel] which should be visible ti user
      */
     val viewModel: IViewModel?
         get() {
@@ -28,7 +28,7 @@ data class SingleItemNavigatorContent internal constructor(
         }
 
     /**
-     * Current size of stack
+     * Current count of [ViewModel]s inside
      */
     val size: Int = items.size
 

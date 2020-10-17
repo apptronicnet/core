@@ -45,16 +45,16 @@ class StackNavigationModelTest {
     private fun childViewModel(): IViewModel = ViewModel(coreViewModel.viewModelContext())
 
     fun assertStack(vararg viewModels: IViewModel) {
-        val stack = stackNavigationModel.stack
+        val stack = stackNavigationModel.items
         assertEquals(viewModels.size, stack.size)
         stack.forEachIndexed { index, item ->
             assert(item === viewModels[index])
-            assert(stackNavigationModel.getItemAt(index) === viewModels[index])
+            assert(stackNavigationModel.items.getOrNull(index) === viewModels[index])
         }
         assert(status.size == viewModels.size)
         status.items.forEachIndexed { index, item ->
             assert(item === viewModels[index])
-            assert(stackNavigationModel.getItemAt(index) === viewModels[index])
+            assert(stackNavigationModel.items.getOrNull(index) === viewModels[index])
         }
         assert(actualModel === viewModels.lastOrNull())
     }

@@ -29,7 +29,7 @@ class StackNavigatorTest {
     private fun assertNavigatorStackState(vararg items: IViewModel) {
         assert(root.navigator.size == items.size)
         items.forEachIndexed { index, viewModel ->
-            assert(root.navigator.getItemAt(index) == viewModel)
+            assert(root.navigator.items.getOrNull(index) == viewModel)
         }
     }
 

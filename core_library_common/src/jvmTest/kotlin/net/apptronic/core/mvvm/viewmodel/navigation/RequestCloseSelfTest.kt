@@ -41,7 +41,7 @@ class RequestCloseSelfTest {
             }
         })
         verifyCloseSelf()
-        assert(navigator.stack.isEmpty())
+        assert(navigator.size == 0)
     }
 
     @Test
@@ -54,7 +54,7 @@ class RequestCloseSelfTest {
             }
         })
         verifyCloseSelf()
-        assert(navigator.stack.isEmpty())
+        assert(navigator.size == 0)
     }
 
     @Test
@@ -67,7 +67,7 @@ class RequestCloseSelfTest {
             }
         })
         verifyCloseSelf()
-        assert(navigator.stack.isEmpty())
+        assert(navigator.size == 0)
     }
 
     @Test

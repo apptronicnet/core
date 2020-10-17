@@ -3,14 +3,12 @@ package net.apptronic.core.mvvm.viewmodel.navigation.models
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModel
-import net.apptronic.core.mvvm.viewmodel.navigation.INavigator
 import net.apptronic.core.mvvm.viewmodel.navigation.NavigationTransition
 
 /**
  * Navigation model which manages list of [ViewModel]s and displays one single [ViewModel] at time from it
  */
-interface ISelectorNavigationModel : INavigator<SingleItemNavigatorContent>,
-        SupportsSingleViewModelAdapter, SupportsSingleViewModelListAdapter, SupportsViewModelListAdapter<Int> {
+interface ISelectorNavigationModel : ISingleNavigationModel, SupportsViewModelListAdapter<Int> {
 
     companion object {
         /**
@@ -33,15 +31,6 @@ interface ISelectorNavigationModel : INavigator<SingleItemNavigatorContent>,
          */
         const val SELECTOR_LAST = -4
     }
-
-    val size: Int
-
-    val lastIndex: Int
-        get() {
-            return size - 1
-        }
-
-    val items: List<IViewModel>
 
     val selectorIndex: Int
 

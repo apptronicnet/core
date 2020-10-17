@@ -75,5 +75,9 @@ abstract class BaseEntity<T> : Entity<T> {
         return subscription
     }
 
+    final override fun switchContext(targetContext: Context): Entity<T> {
+        return super.switchContext(targetContext)
+    }
+
 }
 

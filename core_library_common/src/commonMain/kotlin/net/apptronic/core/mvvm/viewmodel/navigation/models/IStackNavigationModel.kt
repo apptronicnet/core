@@ -3,21 +3,9 @@ package net.apptronic.core.mvvm.viewmodel.navigation.models
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModel
-import net.apptronic.core.mvvm.viewmodel.navigation.INavigator
 import net.apptronic.core.mvvm.viewmodel.navigation.NavigationTransition
 
-interface IStackNavigationModel : INavigator<SingleItemNavigatorContent>,
-        SupportsSingleViewModelAdapter, SupportsSingleViewModelListAdapter, SupportsViewModelListAdapter<Unit> {
-
-    /**
-     * Get number of [ViewModel]s in stack
-     */
-    val size: Int
-
-    /**
-     * Get list of [ViewModel] which now in stack
-     */
-    val stack: List<IViewModel>
+interface IStackNavigationModel : ISingleNavigationModel, SupportsViewModelListAdapter<Unit> {
 
     /**
      * Set stack to have single [ViewModel] without any animations.
@@ -40,13 +28,6 @@ interface IStackNavigationModel : INavigator<SingleItemNavigatorContent>,
     fun set(builder: Context.() -> IViewModel) {
         set(navigatorContext.builder())
     }
-
-    /**
-     * Get [ViewModel] at specified [index].
-     *
-     * @throws [IndexOutOfBoundsException] in case when requested index is out of stack
-     */
-    fun getItemAt(index: Int): IViewModel
 
     /**
      * Remove all [ViewModel]s from stack and set it to empty state
@@ -92,7 +73,7 @@ interface IStackNavigationModel : INavigator<SingleItemNavigatorContent>,
      * Get current stack and update it by adding new [ViewModel]s or removing existing [ViewModel]s
      */
     fun updateStack(transitionInfo: Any? = null, navigationTransition: NavigationTransition = NavigationTransition.Auto, update: (List<IViewModel>) -> List<IViewModel>) {
-        val current = stack
+        val current = items
         val next = update(current)
         replaceStack(next, transitionInfo, navigationTransition)
     }
@@ -114,10 +95,10 @@ interface IStackNavigationModel : INavigator<SingleItemNavigatorContent>,
      * Remove [ViewModel] at specific [index] of stack
      */
     fun removeAt(index: Int, transitionInfo: Any? = null, navigationTransition: NavigationTransition = NavigationTransition.Auto) {
-        if (index < 0 || index >= size) {
-            return
+        val viewModel = items.getOrNull(index)
+        if (viewModel != null) {
+            remove(viewModel, transitionInfo, navigationTransition)
         }
-        remove(getItemAt(index), transitionInfo, navigationTransition)
     }
 
     /**
@@ -126,8 +107,9 @@ interface IStackNavigationModel : INavigator<SingleItemNavigatorContent>,
      * @return true if last model removed from stack
      */
     fun removeLast(transitionInfo: Any? = null, navigationTransition: NavigationTransition = NavigationTransition.Auto): Boolean {
-        return if (size > 0) {
-            remove(getItemAt(size - 1), transitionInfo, navigationTransition)
+        val viewModel = items.lastOrNull()
+        return if (viewModel != null) {
+            remove(viewModel, transitionInfo, navigationTransition)
             true
         } else {
             false
@@ -141,7 +123,7 @@ interface IStackNavigationModel : INavigator<SingleItemNavigatorContent>,
      */
     fun popBackStack(transitionInfo: Any? = null, navigationTransition: NavigationTransition = NavigationTransition.Auto): Boolean {
         return if (size > 1) {
-            remove(getItemAt(size - 1), transitionInfo, navigationTransition)
+            removeAt(lastIndex, transitionInfo, navigationTransition)
             true
         } else {
             false
@@ -179,10 +161,10 @@ interface IStackNavigationModel : INavigator<SingleItemNavigatorContent>,
      * @return true if anything is removed from stack
      */
     fun popBackStackTo(index: Int, transitionInfo: Any? = null, navigationTransition: NavigationTransition = NavigationTransition.Auto): Boolean {
-        if (index < 0 || index >= size) {
-            return false
-        }
-        return popBackStackTo(getItemAt(index), transitionInfo, navigationTransition)
+        val viewModel = items.getOrNull(index)
+        return if (viewModel != null) {
+            popBackStackTo(viewModel, transitionInfo, navigationTransition)
+        } else false
     }
 
 }
