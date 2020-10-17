@@ -55,7 +55,6 @@ android {
 dependencies {
     implementation "net.apptronic.core:core-commons:$library_core_version"
     implementation project(path: ':library')
-    implementation project(path: ':library_compat')
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
