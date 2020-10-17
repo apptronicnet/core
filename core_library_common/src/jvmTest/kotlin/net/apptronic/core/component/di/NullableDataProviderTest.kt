@@ -1,6 +1,5 @@
-package net.apptronic.core.base.core.di
+package net.apptronic.core.component.di
 
-import net.apptronic.core.component.di.dependencyDescriptorNullable
 import net.apptronic.core.testutils.testContext
 import org.junit.Before
 import org.junit.Test

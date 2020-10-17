@@ -1,10 +1,7 @@
-package net.apptronic.core.base.core.di
+package net.apptronic.core.component.di
 
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.context.SubContext
-import net.apptronic.core.component.di.InjectionFailedException
-import net.apptronic.core.component.di.declareModule
-import net.apptronic.core.component.di.dependencyDescriptor
 import net.apptronic.core.component.lifecycle.BASE_LIFECYCLE
 import net.apptronic.core.testutils.testContext
 import org.junit.Test

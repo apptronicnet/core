@@ -205,8 +205,19 @@ internal class Module constructor(
 }
 
 fun declareModule(name: String = "", initializer: ModuleDefinition.() -> Unit): ModuleDefinition {
-    return ModuleDefinition(name).apply(initializer)
+    val moduleName = if (name.isNotBlank()) {
+        name
+    } else {
+        try {
+            getModuleNameFromStackTrace() ?: "Undefined"
+        } catch (e: Exception) {
+            "Undefined"
+        }
+    }
+    return ModuleDefinition(moduleName).apply(initializer)
 }
+
+expect fun getModuleNameFromStackTrace(): String?
 
 fun declareModule(builder: ModuleBuilder): ModuleDefinition {
     return ModuleDefinition(builder::class.qualifiedName ?: "Unknown").apply {

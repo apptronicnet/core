@@ -1,7 +1,5 @@
-package net.apptronic.core.base.core.di
+package net.apptronic.core.component.di
 
-import net.apptronic.core.component.di.declareModule
-import net.apptronic.core.component.di.dependencyDescriptor
 import net.apptronic.core.component.inject
 import net.apptronic.core.testutils.BaseTestComponent
 import org.junit.Test
