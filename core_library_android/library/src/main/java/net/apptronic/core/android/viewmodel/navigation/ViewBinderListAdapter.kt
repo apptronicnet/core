@@ -54,10 +54,10 @@ class ViewBinderListAdapter(
         return items.contains(item)
     }
 
-    override fun onDataChanged(items: List<ViewModelItem>, state: Any?, changeInfo: Any?) {
+    override fun onDataChanged(items: List<ViewModelItem>, state: Any?, updateSpec: Any?) {
         this.items = items
         listeners.forEach {
-            it.onDataChanged(items, changeInfo)
+            it.onDataChanged(items, updateSpec)
         }
     }
 

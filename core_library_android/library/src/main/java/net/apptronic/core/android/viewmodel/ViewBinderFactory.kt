@@ -27,11 +27,13 @@ inline fun <reified ViewModelType : IViewModel> viewBinder(
 abstract class ViewBinderFactory {
 
     fun getBinder(typeId: Int): ViewBinder<*> {
-        return lookupBinder(typeId) ?: GenericViewBinder()
+        @Suppress("UNCHECKED_CAST")
+        return lookupBinder(typeId) ?: GenericViewBinder<IViewModel>()
     }
 
-    fun getBinder(viewModel: IViewModel): ViewBinder<*> {
-        return lookupBinder(viewModel) ?: GenericViewBinder()
+    fun <T : IViewModel> getBinder(viewModel: T): ViewBinder<T> {
+        @Suppress("UNCHECKED_CAST")
+        return lookupBinder(viewModel) as? ViewBinder<T> ?: GenericViewBinder()
     }
 
     fun getType(viewModel: IViewModel): Int {
