@@ -5,7 +5,7 @@ buildscript {
     ext.junit_version = "4.12"
     ext.library_core_version = "0.8.6"
     ext.library_android_version = "0.8.6"
-    ext.library_android_compat_version = "0.8.0"
+    ext.library_android_compat_version = "0.8.1"
 
     repositories {
         google()
