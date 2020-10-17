@@ -148,7 +148,7 @@ private class ChainViewBinderFactory(private val targets: List<ViewBinderFactory
 
     override fun lookupBinder(typeId: Int): ViewBinder<*>? {
         for (target in targets) {
-            val binder = target.getBinder(typeId)
+            val binder = target.lookupBinder(typeId)
             if (binder != null) {
                 return binder
             }
@@ -158,7 +158,7 @@ private class ChainViewBinderFactory(private val targets: List<ViewBinderFactory
 
     override fun lookupBinder(viewModel: IViewModel): ViewBinder<*>? {
         for (target in targets) {
-            val binder = target.getBinder(viewModel)
+            val binder = target.lookupBinder(viewModel)
             if (binder != null) {
                 return binder
             }
@@ -168,8 +168,8 @@ private class ChainViewBinderFactory(private val targets: List<ViewBinderFactory
 
     override fun lookupType(viewModel: IViewModel): Int {
         for (target in targets) {
-            val typeId = target.getType(viewModel)
-            if (typeId > 0) {
+            val typeId = target.lookupType(viewModel)
+            if (typeId != null) {
                 return typeId
             }
         }
