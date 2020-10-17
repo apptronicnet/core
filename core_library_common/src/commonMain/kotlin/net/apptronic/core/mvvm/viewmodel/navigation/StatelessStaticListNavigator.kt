@@ -17,11 +17,11 @@ fun <T, Id, VM : IViewModel> IViewModel.listNavigator(
 ): StatelessStaticListNavigator {
     val listBuilder = listBuilder(builder)
     listBuilder.updateFrom(source.switchContext(navigatorContext))
-    val listNavigator = listNavigator(navigatorContext)
+    val navigator = listNavigator(navigatorContext)
     listBuilder.subscribe {
-        listNavigator.set(it.value, it.change)
+        navigator.set(it.value, it.change)
     }
-    return listNavigator(navigatorContext)
+    return navigator
 }
 
 fun <T, Id, VM : IViewModel> IViewModel.listNavigatorOnChange(
@@ -30,12 +30,12 @@ fun <T, Id, VM : IViewModel> IViewModel.listNavigatorOnChange(
         navigatorContext: Context = this.context
 ): StatelessStaticListNavigator {
     val listBuilder = listBuilder(builder)
-    val listNavigator = listNavigator(navigatorContext)
+    val navigator = listNavigator(navigatorContext)
     listBuilder.updateFromChanges(source.switchContext(navigatorContext))
     listBuilder.subscribe {
-        listNavigator.set(it.value, it.change)
+        navigator.set(it.value, it.change)
     }
-    return listNavigator(navigatorContext)
+    return navigator
 }
 
 fun IViewModel.listNavigator(source: Entity<List<IViewModel>>, navigatorContext: Context = this.context): StatelessStaticListNavigator {
