@@ -2,6 +2,7 @@ package net.apptronic.core.component.context
 
 import net.apptronic.core.component.di.ModuleDefinition
 import net.apptronic.core.component.di.declareModule
+import net.apptronic.core.component.di.generatedModuleName
 import net.apptronic.core.component.lifecycle.BASE_LIFECYCLE
 import net.apptronic.core.component.lifecycle.LifecycleDefinition
 import net.apptronic.core.mvvm.viewmodel.ViewModelContext
@@ -10,8 +11,8 @@ fun Context.dependencyModule(moduleDefinition: ModuleDefinition) {
     dependencyDispatcher.addModule(moduleDefinition)
 }
 
-fun Context.dependencyModule(initializer: ModuleDefinition.() -> Unit) {
-    dependencyDispatcher.addModule(declareModule("", initializer))
+fun Context.dependencyModule(name: String? = generatedModuleName(), initializer: ModuleDefinition.() -> Unit) {
+    dependencyDispatcher.addModule(declareModule(name, initializer))
 }
 
 fun Contextual.childContext(lifecycleDefinition: LifecycleDefinition = BASE_LIFECYCLE, builder: Context.() -> Unit = {}): Context {

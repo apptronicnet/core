@@ -69,7 +69,7 @@ class ModuleDefinition internal constructor(
         val providers: List<ObjectProvider<*>> = definitions.map {
             it.getProvider(context)
         }
-        return Module(name, providers)
+        return Module(name ?: "Undefined", providers)
     }
 
     inline fun <reified TypeDeclaration : Any> factory(
@@ -204,20 +204,11 @@ internal class Module constructor(
 
 }
 
-fun declareModule(name: String = "", initializer: ModuleDefinition.() -> Unit): ModuleDefinition {
-    val moduleName = if (name.isNotBlank()) {
-        name
-    } else {
-        try {
-            getModuleNameFromStackTrace() ?: "Undefined"
-        } catch (e: Exception) {
-            "Undefined"
-        }
-    }
-    return ModuleDefinition(moduleName).apply(initializer)
+fun declareModule(name: String? = generatedModuleName(), initializer: ModuleDefinition.() -> Unit): ModuleDefinition {
+    return ModuleDefinition(name ?: "Undefined").apply(initializer)
 }
 
-expect fun getModuleNameFromStackTrace(): String?
+expect fun generatedModuleName(): String?
 
 fun declareModule(builder: ModuleBuilder): ModuleDefinition {
     return ModuleDefinition(builder::class.qualifiedName ?: "Unknown").apply {

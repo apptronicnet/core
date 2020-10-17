@@ -15,7 +15,7 @@ class ModuleNameTest {
 
     @Test
     fun verifyGeneratedName() {
-        val module = declareModule() {
+        val module = declareModule {
             // EMPTY
         }
         assertEquals(module.name, "ModuleNameTest.kt:18")
