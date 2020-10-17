@@ -2,7 +2,8 @@ package net.apptronic.core.android.viewmodel
 
 import android.app.Activity
 import android.view.View
-import net.apptronic.core.android.viewmodel.view.ActivityDelegate
+import net.apptronic.core.android.viewmodel.view.ActivityViewProvider
+import net.apptronic.core.android.viewmodel.view.DefaultActivityViewProvider
 import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.navigation.ViewModelLifecycleController
 
@@ -12,9 +13,9 @@ fun <T : IViewModel> lifecycleController(
     activity: Activity
 ): ViewModelLifecycleController {
     viewModel.doOnBind {
-        val delegate = activityBinder.getViewDelegate<ActivityDelegate<*>>()
-        val view = delegate.performCreateActivityView(viewModel, activityBinder, activity)
-        delegate.performAttachActivityView(viewModel, activityBinder, activity, view)
+        val viewProvider = activityBinder as? ActivityViewProvider ?: DefaultActivityViewProvider
+        val view = viewProvider.onCreateActivityView(viewModel, activityBinder, activity)
+        viewProvider.onAttachActivityView(viewModel, activityBinder, activity, view)
         activityBinder.performViewBinding(viewModel, view)
     }
     return ViewModelLifecycleController(viewModel)
@@ -25,6 +26,7 @@ fun <T : IViewModel> lifecycleController(
     factory: ViewBinderFactory,
     activity: Activity
 ): ViewModelLifecycleController {
+    @Suppress("UNCHECKED_CAST")
     val binder = factory.getBinder(viewModel) as ViewBinder<T>
     return lifecycleController(viewModel, binder, activity)
 }
@@ -45,6 +47,7 @@ fun <T : IViewModel> lifecycleController(
     factory: ViewBinderFactory,
     contentViewProvider: () -> View
 ): ViewModelLifecycleController {
+    @Suppress("UNCHECKED_CAST")
     val binder = factory.getBinder(viewModel) as ViewBinder<T>
     return lifecycleController(viewModel, binder, contentViewProvider)
 }
@@ -66,6 +69,7 @@ fun <T : IViewModel> lifecycleController(
     factory: ViewBinderFactory,
     contentView: View
 ): ViewModelLifecycleController {
+    @Suppress("UNCHECKED_CAST")
     val binder = factory.getBinder(viewModel) as ViewBinder<T>
     return lifecycleController(viewModel, binder, contentView)
 }

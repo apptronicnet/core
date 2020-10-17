@@ -2,7 +2,8 @@ package net.apptronic.core.android.viewmodel
 
 import android.app.Activity
 import net.apptronic.core.android.plugins.getViewBinderFactoryFromExtension
-import net.apptronic.core.android.viewmodel.view.ActivityDelegate
+import net.apptronic.core.android.viewmodel.view.ActivityViewProvider
+import net.apptronic.core.android.viewmodel.view.DefaultActivityViewProvider
 import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.dispatcher.ViewContainer
 import net.apptronic.core.mvvm.viewmodel.dispatcher.ViewModelDispatcher
@@ -15,8 +16,8 @@ fun <T : IViewModel> Activity.activityContainer(
     return ActivityViewContainerImpl<T>(
         this, dispatcher
     ) {
-        val delegate = activityBinder.getViewDelegate<ActivityDelegate<*>>()
-        val view = delegate.performCreateActivityView(it, activityBinder, this)
+        val viewProvider = activityBinder as? ActivityViewProvider ?: DefaultActivityViewProvider
+        val view = viewProvider.onCreateActivityView(it, activityBinder, this)
         setContentView(view)
         activityBinder.performViewBinding(it, view)
     }
@@ -32,9 +33,11 @@ fun <T : IViewModel> Activity.activityContainer(
         val useFactory = factory
             ?: it.getViewBinderFactoryFromExtension()
             ?: throw IllegalArgumentException("ViewBinderFactory should be provided by parameters or Context.installViewFactoryPlugin()")
+
+        @Suppress("UNCHECKED_CAST")
         val activityBinder = useFactory.getBinder(it) as ViewBinder<T>
-        val delegate = activityBinder.getViewDelegate<ActivityDelegate<*>>()
-        val view = delegate.performCreateActivityView(it, activityBinder, this)
+        val viewProvider = activityBinder as? ActivityViewProvider ?: DefaultActivityViewProvider
+        val view = viewProvider.onCreateActivityView(it, activityBinder, this)
         setContentView(view)
         activityBinder.performViewBinding(it, view)
     }

@@ -58,7 +58,11 @@ private class StackNavigationModelBinding(
 ) : Binding() {
 
     override fun onBind(viewModel: IViewModel, viewBinder: ViewBinder<*>) {
-        val listAdapter = ViewBinderListAdapter(factory, emptyViewStyleAdapter())
+        val listAdapter = ViewBinderListAdapter(
+            viewGroup,
+            factory,
+            emptyViewStyleAdapter()
+        )
         val adapter = StackNavigationFrameAdapter(
             viewGroup, transitionBuilder, defaultAnimationTime, listAdapter = listAdapter
         )

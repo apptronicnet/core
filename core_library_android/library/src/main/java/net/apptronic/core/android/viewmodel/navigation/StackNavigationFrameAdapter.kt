@@ -8,6 +8,7 @@ import net.apptronic.core.android.viewmodel.transitions.ViewSwitch
 import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.navigation.*
 
+@Deprecated("Will be replaced")
 class StackNavigationFrameAdapter(
     private val container: ViewGroup,
     private val transitionBuilder: TransitionBuilder = TransitionBuilder(),
@@ -149,7 +150,7 @@ class StackNavigationFrameAdapter(
     }
 
     private fun attachBinder(item: ViewModelItem): AttachedBinder {
-        val view = listAdapter.createView(item.viewModel, container)
+        val view = listAdapter.createView(item.viewModel)
         val viewBinder = listAdapter.bindView(item, view)
         view.visibility = View.GONE
         val attachedBinder = AttachedBinder(viewBinder)

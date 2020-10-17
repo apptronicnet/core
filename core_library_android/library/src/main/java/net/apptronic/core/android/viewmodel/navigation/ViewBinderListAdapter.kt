@@ -1,20 +1,25 @@
 package net.apptronic.core.android.viewmodel.navigation
 
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.ViewBinderFactory
 import net.apptronic.core.android.viewmodel.style.list.ViewStyleAdapter
-import net.apptronic.core.android.viewmodel.view.ViewContainerDelegate
+import net.apptronic.core.android.viewmodel.view.DefaultViewContainerViewAdapter
+import net.apptronic.core.android.viewmodel.view.ViewContainerViewAdapter
 import net.apptronic.core.base.collections.simpleLazyListOf
 import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.navigation.ViewModelItem
 import net.apptronic.core.mvvm.viewmodel.navigation.adapters.ViewModelListAdapter
 
 class ViewBinderListAdapter(
+    private val container: ViewGroup,
     private val viewBinderFactory: ViewBinderFactory,
     private val styleAdapter: ViewStyleAdapter
 ) : ViewModelListAdapter<Any?> {
+
+    private val layoutInflater = LayoutInflater.from(container.context)
 
     private val listeners = mutableListOf<UpdateListener>()
     private var items: List<ViewModelItem> = emptyList()
@@ -66,16 +71,20 @@ class ViewBinderListAdapter(
         setup.invoke(viewBinderFactory)
     }
 
-    fun createView(typeId: Int, container: ViewGroup): View {
+    fun createView(typeId: Int, container: ViewGroup? = null): View {
         val binder = viewBinderFactory.getBinder(typeId)
-        val delegate = binder.getViewDelegate<ViewContainerDelegate<*>>()
-        return delegate.performCreateDetachedView(container.context, binder, null, container)
+        val viewAdapter = binder as? ViewContainerViewAdapter ?: DefaultViewContainerViewAdapter
+        return viewAdapter.onCreateDetachedView(
+            this.container.context, binder, layoutInflater, container ?: this.container
+        )
     }
 
-    fun createView(viewModel: IViewModel, container: ViewGroup): View {
+    fun createView(viewModel: IViewModel, container: ViewGroup? = null): View {
         val binder = viewBinderFactory.getBinder(viewModel)
-        val delegate = binder.getViewDelegate<ViewContainerDelegate<*>>()
-        return delegate.performCreateDetachedView(container.context, binder, null, container)
+        val viewAdapter = binder as? ViewContainerViewAdapter ?: DefaultViewContainerViewAdapter
+        return viewAdapter.onCreateDetachedView(
+            this.container.context, binder, layoutInflater, container ?: this.container
+        )
     }
 
     fun getViewType(position: Int): Int {

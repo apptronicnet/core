@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import net.apptronic.core.android.viewmodel.ViewBinder
-import net.apptronic.core.android.viewmodel.view.DialogDelegate
+import net.apptronic.core.android.viewmodel.view.DialogViewAdapter
 import net.apptronic.core.mvvm.viewmodel.IViewModel
 
 abstract class ViewBinderDialogFragment<T : IViewModel> : CoreCompatDialogFragment<T>() {
@@ -18,7 +18,7 @@ abstract class ViewBinderDialogFragment<T : IViewModel> : CoreCompatDialogFragme
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         viewBinder = buildViewBinder()
-        val delegate = viewBinder!!.getViewDelegate<DialogDelegate<*>>()
+        val delegate = viewBinder!!.getViewDelegate<DialogViewAdapter<*>>()
         return delegate.performCreateDialogView(
             viewModel, viewBinder!!, container?.context ?: requireContext()
         )

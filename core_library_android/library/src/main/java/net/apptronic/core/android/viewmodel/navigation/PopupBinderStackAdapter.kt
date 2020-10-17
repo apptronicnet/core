@@ -5,7 +5,8 @@ import android.view.View
 import android.widget.PopupWindow
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.ViewBinderFactory
-import net.apptronic.core.android.viewmodel.view.PopupWindowDelegate
+import net.apptronic.core.android.viewmodel.view.DefaultPopupWindowViewAdapter
+import net.apptronic.core.android.viewmodel.view.PopupWindowViewAdapter
 import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.navigation.TransitionInfo
 import net.apptronic.core.mvvm.viewmodel.navigation.ViewModelItem
@@ -40,17 +41,18 @@ open class PopupBinderStackAdapter(
         val newBinder =
             if (newModel != null) viewBinderFactory.getBinder(newModel) else null
         val next = if (newBinder != null && newModel != null) {
-            val delegate = newBinder.getViewDelegate<PopupWindowDelegate<*>>()
-            val popup = delegate.performCreatePopupWindow(newModel, newBinder, context)
-            val view = delegate.performCreatePopupView(newModel, newBinder, context)
-            delegate.performAttachPopupView(newModel, newBinder, popup, view)
+            val viewAdapter = newBinder as? PopupWindowViewAdapter ?: DefaultPopupWindowViewAdapter
+            val popup = viewAdapter.onCreatePopupWindow(newModel, newBinder, context)
+            val view = viewAdapter.onCreatePopupView(newModel, newBinder, context)
+            viewAdapter.onAttachPopupView(newModel, newBinder, popup, view)
             newBinder.performViewBinding(newModel, view)
             PopupAndBinder(newBinder, popup)
         } else null
         setDialog(next, transitionInfo.spec)
         next?.let {
-            val delegate = it.viewBinder.getViewDelegate<PopupWindowDelegate<*>>()
-            delegate.performPopupShown(it.viewBinder.getViewModel(), it.viewBinder, it.popupWindow)
+            val viewAdapter =
+                it.viewBinder as? PopupWindowViewAdapter ?: DefaultPopupWindowViewAdapter
+            viewAdapter.onPopupShown(it.viewBinder.getViewModel(), it.viewBinder, it.popupWindow)
         }
     }
 
@@ -67,10 +69,11 @@ open class PopupBinderStackAdapter(
     }
 
     open fun onAdd(next: PopupAndBinder, transitionSpec: Any?) {
-        val delegate = next.viewBinder.getViewDelegate<PopupWindowDelegate<*>>()
+        val viewAdapter =
+            next.viewBinder as? PopupWindowViewAdapter ?: DefaultPopupWindowViewAdapter
         val anchor = anchorProvider.provideAnchorForPopup(next.viewBinder.getViewModel())
         if (anchor != null) {
-            delegate.performShowPopupAsAnchor(
+            viewAdapter.onShowPopupAsAnchor(
                 next.viewBinder.getViewModel(),
                 next.viewBinder,
                 next.popupWindow,
@@ -78,7 +81,7 @@ open class PopupBinderStackAdapter(
                 transitionSpec
             )
         } else {
-            delegate.performShowPopupAtLocation(
+            viewAdapter.onShowPopupAtLocation(
                 next.viewBinder.getViewModel(),
                 next.viewBinder,
                 next.popupWindow,
@@ -94,8 +97,9 @@ open class PopupBinderStackAdapter(
     }
 
     open fun onRemove(previous: PopupAndBinder, transitionSpec: Any?) {
-        val delegate = previous.viewBinder.getViewDelegate<PopupWindowDelegate<*>>()
-        delegate.performDismissPopup(
+        val viewAdapter =
+            previous.viewBinder as? PopupWindowViewAdapter ?: DefaultPopupWindowViewAdapter
+        viewAdapter.onDismissPopup(
             previous.viewBinder.getViewModel(),
             previous.viewBinder,
             previous.popupWindow,

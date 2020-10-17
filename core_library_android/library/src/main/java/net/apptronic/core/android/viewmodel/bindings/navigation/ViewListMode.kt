@@ -28,10 +28,10 @@ private class ViewListModeBinding(
 ) : Binding() {
 
     override fun onBind(viewModel: IViewModel, viewBinder: ViewBinder<*>) {
-        val binderFactory = getComposedViewBinderFactory(mode.binderFactory, viewModel)
         val viewModelAdapter =
             ViewBinderListAdapter(
-                binderFactory,
+                container,
+                getComposedViewBinderFactory(mode.binderFactory, viewModel),
                 mode.styleAdapter ?: emptyViewStyleAdapter()
             )
         val adapter = RecyclerViewAdapter(viewModelAdapter, mode.bindingStrategy)

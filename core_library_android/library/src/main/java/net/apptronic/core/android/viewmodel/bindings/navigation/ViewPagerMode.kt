@@ -29,9 +29,11 @@ private class ViewPagerNavigatorBinding(
 ) : Binding() {
 
     override fun onBind(viewModel: IViewModel, viewBinder: ViewBinder<*>) {
-        val binderFactory = getComposedViewBinderFactory(mode.binderFactory, viewModel)
-        val styleAdapter = mode.styleAdapter ?: emptyViewStyleAdapter()
-        val viewModelAdapter = ViewBinderListAdapter(binderFactory, styleAdapter)
+        val viewModelAdapter = ViewBinderListAdapter(
+            container,
+            getComposedViewBinderFactory(mode.binderFactory, viewModel),
+            mode.styleAdapter ?: emptyViewStyleAdapter()
+        )
         container.adapter = ViewPagerAdapter(viewModelAdapter).apply {
             if (mode.titleFactory != null) {
                 titleProvider = TitleProvider(container.context, mode.titleFactory)

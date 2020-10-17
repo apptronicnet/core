@@ -1,5 +1,6 @@
 package net.apptronic.core.android.viewmodel.bindings.navigation
 
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import net.apptronic.core.android.plugins.getViewBinderFactoryFromExtension
@@ -7,7 +8,8 @@ import net.apptronic.core.android.viewmodel.Binding
 import net.apptronic.core.android.viewmodel.BindingContainer
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.ViewBinderFactory
-import net.apptronic.core.android.viewmodel.view.ViewContainerDelegate
+import net.apptronic.core.android.viewmodel.view.DefaultViewContainerViewAdapter
+import net.apptronic.core.android.viewmodel.view.ViewContainerViewAdapter
 import net.apptronic.core.mvvm.viewmodel.IViewModel
 
 enum class BindingType(
@@ -64,33 +66,35 @@ private class InnerViewBinding(
     private val bindingType: BindingType
 ) : Binding() {
 
+    private val layoutInflater = LayoutInflater.from(targetView.context)
+
     override fun onBind(viewModel: IViewModel, viewBinder: ViewBinder<*>) {
-        val delegate = viewBinder.getViewDelegate<ViewContainerDelegate<*>>()
+        val viewAdapter = viewBinder as? ViewContainerViewAdapter ?: DefaultViewContainerViewAdapter
         val targetBinder = factory.invoke(targetViewModel)
         val contentView: View = if (bindingType.detectAndCreate) {
             val container = targetView as? ViewGroup
             if (container != null && container.childCount == 0) {
-                val contentView = delegate.performCreateView(
+                val contentView = viewAdapter.onCreateView(
                     viewModel,
                     targetBinder,
                     container.context,
-                    null,
+                    layoutInflater,
                     container
                 )
-                delegate.performAttachView(viewModel, contentView, container)
+                viewAdapter.onAttachView(viewModel, contentView, container, container.childCount)
                 contentView
             } else targetView
         } else if (bindingType.createLayout) {
             val container = targetView as ViewGroup
             container.removeAllViews()
-            val contentView = delegate.performCreateView(
+            val contentView = viewAdapter.onCreateView(
                 viewModel,
                 targetBinder,
                 container.context,
-                null,
+                layoutInflater,
                 container
             )
-            delegate.performAttachView(viewModel, contentView, container)
+            viewAdapter.onAttachView(viewModel, contentView, container, container.childCount)
             contentView
         } else targetView
         targetBinder.performViewBinding(targetViewModel, contentView)

@@ -1,11 +1,13 @@
 package net.apptronic.core.android.viewmodel.navigation
 
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import net.apptronic.core.android.anim.factory.ViewTransitionFactory
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.ViewBinderFactory
-import net.apptronic.core.android.viewmodel.view.ViewContainerDelegate
+import net.apptronic.core.android.viewmodel.view.DefaultViewContainerViewAdapter
+import net.apptronic.core.android.viewmodel.view.ViewContainerViewAdapter
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.navigation.TransitionInfo
 import net.apptronic.core.mvvm.viewmodel.navigation.ViewModelItem
@@ -25,6 +27,8 @@ class SingleViewBinderAdapter(
     private val defaultAnimationTime: Long,
 ) : SingleViewModelAdapter {
 
+    private val layoutInflater = LayoutInflater.from(container.context)
+
     private val dispatcher = SingleViewContainerDispatcher(
         container, viewTransitionFactory, defaultAnimationTime
     )
@@ -43,9 +47,10 @@ class SingleViewBinderAdapter(
         val newModel = item?.viewModel
         val newBinder = if (newModel != null) viewBinderFactory.getBinder(newModel) else null
         if (newBinder != null && newModel != null) {
-            val delegate = newBinder.getViewDelegate<ViewContainerDelegate<*>>()
-            val view = delegate.performCreateView(
-                newModel, newBinder, container.context, null, container
+            val viewAdapter =
+                newBinder as? ViewContainerViewAdapter ?: DefaultViewContainerViewAdapter
+            val view = viewAdapter.onCreateView(
+                newModel, newBinder, container.context, layoutInflater, container
             )
             newBinder.performViewBinding(newModel, view)
         }

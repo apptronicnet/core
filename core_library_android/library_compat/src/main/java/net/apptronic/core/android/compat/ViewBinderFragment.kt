@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import net.apptronic.core.android.viewmodel.ViewBinder
-import net.apptronic.core.android.viewmodel.view.ViewContainerDelegate
+import net.apptronic.core.android.viewmodel.view.ViewContainerViewAdapter
 import net.apptronic.core.mvvm.viewmodel.IViewModel
 
 abstract class ViewBinderFragment<T : IViewModel> : CoreCompatFragment<T>() {
@@ -18,7 +18,7 @@ abstract class ViewBinderFragment<T : IViewModel> : CoreCompatFragment<T>() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         viewBinder = buildViewBinder()
-        val delegate = viewBinder!!.getViewDelegate<ViewContainerDelegate<*>>()
+        val delegate = viewBinder!!.getViewDelegate<ViewContainerViewAdapter<*>>()
         return delegate.performCreateView(
             viewModel, viewBinder!!, container?.context ?: requireContext(), inflater, container
         )

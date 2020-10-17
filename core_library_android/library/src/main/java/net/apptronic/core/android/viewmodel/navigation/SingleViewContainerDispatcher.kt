@@ -6,7 +6,8 @@ import net.apptronic.core.android.anim.AnimationPlayer
 import net.apptronic.core.android.anim.factory.*
 import net.apptronic.core.android.anim.transition.ViewTransitionDirection
 import net.apptronic.core.android.viewmodel.ViewBinder
-import net.apptronic.core.android.viewmodel.view.ViewContainerDelegate
+import net.apptronic.core.android.viewmodel.view.DefaultViewContainerViewAdapter
+import net.apptronic.core.android.viewmodel.view.ViewContainerViewAdapter
 import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.navigation.TransitionInfo
 
@@ -83,8 +84,9 @@ internal class SingleViewContainerDispatcher(
             newBinder.getView().visibility = View.VISIBLE
         }
         transition.viewAnimationSet.getAnimation(oldBinder.getView())?.doOnCompleteOrCancel {
-            val delegate = oldBinder.getViewDelegate<ViewContainerDelegate<*>>()
-            delegate.performDetachView(
+            val viewAdapter =
+                oldBinder as? ViewContainerViewAdapter ?: DefaultViewContainerViewAdapter
+            viewAdapter.onDetachView(
                 oldBinder.getViewModel(),
                 oldBinder,
                 oldBinder.getView(),
@@ -106,8 +108,9 @@ internal class SingleViewContainerDispatcher(
         )
         val animation = viewTransitionFactory.buildSingleExitOrEmpty(spec)
         animation.doOnCompleteOrCancel {
-            val delegate = viewBinder.getViewDelegate<ViewContainerDelegate<*>>()
-            delegate.performDetachView(
+            val viewAdapter =
+                viewBinder as? ViewContainerViewAdapter ?: DefaultViewContainerViewAdapter
+            viewAdapter.onDetachView(
                 viewBinder.getViewModel(),
                 viewBinder,
                 viewBinder.getView(),
@@ -123,7 +126,7 @@ internal class SingleViewContainerDispatcher(
         child: View,
         toFront: Boolean
     ) {
-        val delegate = viewBinder.getViewDelegate<ViewContainerDelegate<*>>()
+        val viewAdapter = viewBinder as? ViewContainerViewAdapter ?: DefaultViewContainerViewAdapter
         if (child.parent != null) {
             container.removeView(child)
         }
@@ -132,7 +135,7 @@ internal class SingleViewContainerDispatcher(
         } else {
             0
         }
-        delegate.performAttachView(viewModel, child, container, position)
+        viewAdapter.onAttachView(viewModel, child, container, position)
     }
 
 }

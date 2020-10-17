@@ -4,7 +4,8 @@ import android.app.Dialog
 import android.content.Context
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.ViewBinderFactory
-import net.apptronic.core.android.viewmodel.view.DialogDelegate
+import net.apptronic.core.android.viewmodel.view.DefaultDialogViewAdapter
+import net.apptronic.core.android.viewmodel.view.DialogViewAdapter
 import net.apptronic.core.mvvm.viewmodel.navigation.TransitionInfo
 import net.apptronic.core.mvvm.viewmodel.navigation.ViewModelItem
 import net.apptronic.core.mvvm.viewmodel.navigation.adapters.SingleViewModelAdapter
@@ -30,17 +31,17 @@ open class DialogBinderStackAdapter(
         val newBinder =
             if (newModel != null) viewBinderFactory.getBinder(newModel) else null
         val next = if (newBinder != null && newModel != null) {
-            val delegate = newBinder.getViewDelegate<DialogDelegate<*>>()
-            val dialog = delegate.performCreateDialog(newModel, newBinder, context)
-            val view = delegate.performCreateDialogView(newModel, newBinder, context)
+            val viewAdapter = newBinder as? DialogViewAdapter ?: DefaultDialogViewAdapter
+            val dialog = viewAdapter.onCreateDialog(newModel, newBinder, context)
+            val view = viewAdapter.onCreateDialogView(newModel, newBinder, context)
             newBinder.performViewBinding(item, view)
-            delegate.performAttachDialogView(newModel, newBinder, dialog, view)
+            viewAdapter.onAttachDialogView(newModel, newBinder, dialog, view)
             DialogAndBinder(newBinder, dialog)
         } else null
         setDialog(next, transitionInfo.spec)
         next?.let {
-            val delegate = it.viewBinder.getViewDelegate<DialogDelegate<*>>()
-            delegate.performDialogShown(it.viewBinder.getViewModel(), it.viewBinder, it.dialog)
+            val viewAdapter = it.viewBinder as? DialogViewAdapter ?: DefaultDialogViewAdapter
+            viewAdapter.onDialogShown(it.viewBinder.getViewModel(), it.viewBinder, it.dialog)
         }
     }
 
@@ -57,8 +58,8 @@ open class DialogBinderStackAdapter(
     }
 
     open fun onAdd(next: DialogAndBinder, transitionSpec: Any?) {
-        val delegate = next.viewBinder.getViewDelegate<DialogDelegate<*>>()
-        delegate.performShowDialog(next.viewBinder.getViewModel(), next.viewBinder, next.dialog)
+        val viewAdapter = next.viewBinder as? DialogViewAdapter ?: DefaultDialogViewAdapter
+        viewAdapter.onShowDialog(next.viewBinder.getViewModel(), next.viewBinder, next.dialog)
     }
 
     open fun onReplace(previous: DialogAndBinder, next: DialogAndBinder, transitionSpec: Any?) {
@@ -67,8 +68,8 @@ open class DialogBinderStackAdapter(
     }
 
     open fun onRemove(previous: DialogAndBinder, transitionSpec: Any?) {
-        val delegate = previous.viewBinder.getViewDelegate<DialogDelegate<*>>()
-        delegate.performDismissDialog(
+        val viewAdapter = previous.viewBinder as? DialogViewAdapter ?: DefaultDialogViewAdapter
+        viewAdapter.onDismissDialog(
             previous.viewBinder.getViewModel(), previous.viewBinder, previous.dialog
         )
     }

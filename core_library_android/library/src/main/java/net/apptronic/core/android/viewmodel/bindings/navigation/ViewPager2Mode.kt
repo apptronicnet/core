@@ -28,9 +28,11 @@ private class ViewPager2NavigatorBinding(
 ) : Binding() {
 
     override fun onBind(viewModel: IViewModel, viewBinder: ViewBinder<*>) {
-        val binderFactory = getComposedViewBinderFactory(mode.binderFactory, viewModel)
-        val styleAdapter = mode.styleAdapter ?: emptyViewStyleAdapter()
-        val viewModelAdapter = ViewBinderListAdapter(binderFactory, styleAdapter)
+        val viewModelAdapter = ViewBinderListAdapter(
+            container,
+            getComposedViewBinderFactory(mode.binderFactory, viewModel),
+            mode.styleAdapter ?: emptyViewStyleAdapter()
+        )
         val adapter = RecyclerViewAdapter(viewModelAdapter, mode.bindingStrategy)
         container.adapter = adapter
         navigator.setAdapter(viewModelAdapter)
