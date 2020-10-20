@@ -5,6 +5,13 @@ import android.view.View
 import android.view.animation.Interpolator
 import net.apptronic.core.android.R
 
+/**
+ * Cause animation to be not played but only fill end state of animation.
+ *
+ * Set [ViewAnimation.setFillAfter(true)] to retain end state of animation.
+ */
+const val VIEW_ANIMATION_DURATION_ONLY_FILL = -1L
+
 class ViewAnimation internal constructor(
     val target: View,
     private val container: View,
@@ -17,6 +24,7 @@ class ViewAnimation internal constructor(
     private val onCompleteActions = mutableListOf<() -> Unit>()
     private val onCancelActions = mutableListOf<() -> Unit>()
     private var player: AnimationPlayer? = null
+    private var isFillAfter: Boolean = false
 
     private class Next(
         val player: AnimationPlayer,
@@ -48,6 +56,11 @@ class ViewAnimation internal constructor(
     fun doOnCompleteOrCancel(action: () -> Unit): ViewAnimation {
         onCompleteActions.add(action)
         onCancelActions.add(action)
+        return this
+    }
+
+    fun setFillAfter(fillAfter: Boolean): ViewAnimation {
+        this.isFillAfter = fillAfter
         return this
     }
 
@@ -141,7 +154,9 @@ class ViewAnimation internal constructor(
         Log.d("ViewAnimation", "$this finalized")
         isFinalized = true
         target.setTag(R.id.ViewAnimation, null)
-        transformationSet?.reset(target, container)
+        if (!isFillAfter) {
+            transformationSet?.reset(target, container)
+        }
         onCompleteActions.forEach { it() }
         next?.start()
     }
