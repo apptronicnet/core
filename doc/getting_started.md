@@ -66,8 +66,8 @@ First open Intellij Idea / Android Studio and start Kotlin Multiplatform project
 
 | **Dependency**              | **Version** |
 |-----------------------------|-------------|
-| apptronic.net/core-commons  | 0.8.0-beta1 |
-| apptronic.net/core-android  | 0.8.0-beta1 |
+| apptronic.net/core-commons  | 0.8.6 |
+| apptronic.net/core-android  | 0.8.8 |
 | Kotlin                      | 1.4.10      |
 | Coroutines                  | 1.3.9       |
 
@@ -206,7 +206,7 @@ class App : Application() {
         // common code as interfaces
         // also we need to install Android plugin, which extend framework to work with it's Android binding library
         AppContext.installAndroidApplicationPlugin(this) {
-            // this specifial common view factory to be used in all bindings
+            // this specifies common view factory to be used in all bindings
             binderFactory(AppBinderFactory)
             // this specifies binding between Activity and concrete ViewModel type
             // last parameter is optional invocation for system onBackPressed button

@@ -35,6 +35,8 @@ TBD: Project initialization and Android plugins
 
 [Android: implement layout and bindings](common/android_layout_bindings.md)
 
+TBD: Using compatibility mode with Fragments
+
 #### Advanced features
 
 TBD ViewModel: features // Overview of all **ViewModel** features for implementation custom behavior
