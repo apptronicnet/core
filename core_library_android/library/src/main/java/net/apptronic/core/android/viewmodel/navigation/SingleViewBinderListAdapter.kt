@@ -53,12 +53,10 @@ class SingleViewBinderListAdapter(
         newItem?.setVisible(true)
         newItem?.setFocused(true)
         currentBinder = newBinder
-        if (oldItem?.viewModel?.isTerminated() != true) {
-            oldItem?.setFocused(false)
-            oldItem?.setVisible(false)
-        }
-        newBinder?.let {
-            cachedBinders.add(it)
+        if (oldItem != null && !oldItem.viewModel.isTerminated()) {
+            oldItem.setFocused(false)
+            oldItem.setVisible(false)
+            cachedBinders.add(oldBinder)
         }
         clearCache(items)
     }
@@ -87,7 +85,7 @@ class SingleViewBinderListAdapter(
             remove
         }
         if (maxCachedViews >= 0) {
-            while (cachedBinders.size > 0) {
+            while (cachedBinders.size > maxCachedViews) {
                 val first = cachedBinders.removeFirstOrNull()
                 if (first != null) {
                     first.getItem().setFocused(false)
