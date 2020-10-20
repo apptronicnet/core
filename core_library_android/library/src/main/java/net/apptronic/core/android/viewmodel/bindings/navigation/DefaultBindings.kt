@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.widget.ViewPager2
 import net.apptronic.core.android.viewmodel.BindingContainer
+import net.apptronic.core.mvvm.viewmodel.navigation.ListNavigator
 import net.apptronic.core.mvvm.viewmodel.navigation.StaticListNavigator
 import net.apptronic.core.mvvm.viewmodel.navigation.models.IListNavigationModel
 import net.apptronic.core.mvvm.viewmodel.navigation.models.ISelectorNavigationModel
@@ -56,7 +57,7 @@ fun BindingContainer.bindNavigator(
  */
 fun BindingContainer.bindNavigator(
     container: ViewPager2,
-    navigator: StaticListNavigator<*>
+    navigator: ListNavigator<*, *, *>,
 ) {
     bindNavigator(container, navigator, ViewPager2Mode())
 }
