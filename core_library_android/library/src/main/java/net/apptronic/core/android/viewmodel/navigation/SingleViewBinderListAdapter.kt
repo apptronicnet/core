@@ -73,7 +73,7 @@ class SingleViewBinderListAdapter(
                 this.viewModel, newBinder, container.context, layoutInflater, container
             )
             this.setBound(true)
-            newBinder.performViewBinding(this.viewModel, view)
+            newBinder.performViewBinding(this, view)
         }
     }
 
