@@ -2,12 +2,16 @@
 
 ### Next generation framework for developing multi-platform applications
 
-[Documentation page](https://apptronicnet.github.io/core/)
-
-Demo app which demonstrates basics of **apptronic.net/core**:<br/>[https://github.com/apptronicnet/core_demo_android_app](https://github.com/apptronicnet/core_demo_android_app)
-
 With this framework it possible to develop most code of application in Kotlin/Multiplatform:
 whole architecture, app model and UI model (using MVVM pattern).
+
+### How to start
+
+To start project using framework follow to [Getting started guide](doc/getting_started.md)
+
+Read [Manual](doc/manual.md) for complete guide to framework.
+
+Demo app which demonstrates basics of **apptronic.net/core**:<br/>[https://github.com/apptronicnet/core_demo_android_app](https://github.com/apptronicnet/core_demo_android_app)
 
 ## Why apptronic.net / core?
 
@@ -55,12 +59,6 @@ In most cases it is no more than 10-15% of all code.
 ### iOS development
 
 UI Binding library for iOS is under development
-
-### How to start
-
-To start project using framework follow to [Getting started guide](doc/getting_started.md)
-
-Read [Manual](doc/manual.md) for complete guide to framework.
 
 #### Contact info
 

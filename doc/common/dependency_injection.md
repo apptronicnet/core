@@ -216,7 +216,7 @@ val SomeModule = declareModule {
 }
 ```
 
-Technique above shows a simple way to inject constructor ot other parameters in **Module**.
+Technique above shows a simple way to inject a constructor or other parameters in **Module**.
 
 All injections performed here are taken from current **Context** with all of it's **Modules** and **Instances** and all its parent **Contexts**.
 

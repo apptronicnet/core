@@ -66,8 +66,8 @@ First open Intellij Idea / Android Studio and start Kotlin Multiplatform project
 
 | **Dependency**              | **Version** |
 |-----------------------------|-------------|
-| apptronic.net/core-commons  | 0.8.6 |
-| apptronic.net/core-android  | 0.8.8 |
+| apptronic.net/core-commons  | 0.8.6       |
+| apptronic.net/core-android  | 0.8.10      |
 | Kotlin                      | 1.4.10      |
 | Coroutines                  | 1.3.9       |
 
