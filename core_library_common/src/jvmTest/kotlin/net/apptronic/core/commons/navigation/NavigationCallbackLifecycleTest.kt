@@ -36,28 +36,28 @@ class NavigationCallbackLifecycleTest {
     fun verifyLifecycle() {
         val handler1 = SimpleHandler(context.childContext())
 
-        router.sendCommands(1, 2, 3)
+        router.sendCommandsSync(1, 2, 3)
         assertEquals(handler1.count, 3)
 
         val handler2 = SimpleHandler(context.childContext())
-        router.sendCommands(4, 5)
+        router.sendCommandsSync(4, 5)
 
         assertEquals(handler1.count, 3)
         assertEquals(handler2.count, 2)
 
         handler2.terminate()
 
-        router.sendCommands(6, 7)
+        router.sendCommandsSync(6, 7)
         assertEquals(handler1.count, 5)
         assertEquals(handler2.count, 2)
 
-        router.sendCommandsBroadcast(8, 9)
+        router.sendCommandsBroadcastSync(8, 9)
         assertEquals(handler1.count, 7)
         assertEquals(handler2.count, 2)
 
         handler1.terminate()
 
-        router.sendCommandsBroadcast(10, 11, 12)
+        router.sendCommandsBroadcastSync(10, 11, 12)
         assertEquals(handler1.count, 7)
         assertEquals(handler2.count, 2)
     }

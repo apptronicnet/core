@@ -5,27 +5,33 @@ import net.apptronic.core.component.context.Contextual
 
 interface NavigationRouter<T> {
 
+    @Deprecated("No clear interface", replaceWith = ReplaceWith("sendCommandsSync(commands)"))
+    fun sendCommands(vararg commands: T) = sendCommandsSync(*commands)
+
+    @Deprecated("No clear interface", replaceWith = ReplaceWith("sendCommandsBroadcastSync(commands)"))
+    fun sendCommandsBroadcast(vararg commands: T) = sendCommandsBroadcastSync(*commands)
+
     /**
      * Send a set of commands to be handled by registered [NavigationHandler]s.
      *
      * Commands will be handled by first [NavigationHandler] which supports it's execution according to priority.
      */
-    fun sendCommands(vararg commands: T)
+    fun sendCommandsSync(vararg commands: T)
 
     /**
      * Send a set of commands to be handled by registered [NavigationHandler]s.
      *
      * Commands will be handled by all [NavigationHandler]s which supports it's execution.
      */
-    fun sendCommandsBroadcast(vararg commands: T)
+    fun sendCommandsBroadcastSync(vararg commands: T)
 
     /**
-     * Same as [sendCommands] but doing it asynchronously.
+     * Same as [sendCommandsSync] but doing it asynchronously.
      */
     fun sendCommandsAsync(vararg commands: T)
 
     /**
-     * Same as [sendCommandsBroadcast] but doing it asynchronously.
+     * Same as [sendCommandsBroadcastSync] but doing it asynchronously.
      */
     fun sendCommandsBroadcastAsync(vararg commands: T)
 

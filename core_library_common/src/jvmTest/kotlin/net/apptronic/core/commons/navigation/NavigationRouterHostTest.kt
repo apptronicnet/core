@@ -36,9 +36,9 @@ class NavigationRouterHostTest {
     fun verifyNavigationRouterHost() {
         val viewModel = HostViewModel(coreContext.viewModelContext())
         val events = viewModel.navigationEvents.record()
-        viewModel.router.sendCommands(1)
-        viewModel.router.sendCommands(2)
-        viewModel.router.sendCommandsBroadcast(3)
+        viewModel.router.sendCommandsSync(1)
+        viewModel.router.sendCommandsSync(2)
+        viewModel.router.sendCommandsBroadcastSync(3)
         events.assertItems(1, 2, 3)
     }
 
@@ -71,9 +71,9 @@ class NavigationRouterHostTest {
     fun verifyNavigationRouterDependency() {
         val viewModel = coreContext.dependencyViewModel()
         val events = viewModel.navigationEvents.record()
-        viewModel.router.sendCommands(1)
-        viewModel.router.sendCommands(2)
-        viewModel.router.sendCommandsBroadcast(3)
+        viewModel.router.sendCommandsSync(1)
+        viewModel.router.sendCommandsSync(2)
+        viewModel.router.sendCommandsBroadcastSync(3)
         events.assertItems(1, 2, 3)
     }
 

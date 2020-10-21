@@ -47,13 +47,13 @@ class MultipleNavigationRoutersTest {
         val intRecords = intHandler.events.record()
         val stringRecords = stringHandler.events.record()
 
-        intRouter.sendCommands(1, 2)
+        intRouter.sendCommandsSync(1, 2)
         intRecords.assertItems(1, 2)
 
-        stringRouter.sendCommands("A", "B")
+        stringRouter.sendCommandsSync("A", "B")
         stringRecords.assertItems("A", "B")
 
-        intRouter.sendCommands(3, 4, 5)
+        intRouter.sendCommandsSync(3, 4, 5)
         intRecords.assertItems(1, 2, 3, 4, 5)
         stringRecords.assertItems("A", "B")
     }

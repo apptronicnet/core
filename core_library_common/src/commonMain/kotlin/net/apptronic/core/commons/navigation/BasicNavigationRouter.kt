@@ -47,23 +47,23 @@ class BasicNavigationRouter<T>(context: Context) : BaseComponent(context), Navig
         }
     }
 
-    override fun sendCommands(vararg commands: T) {
+    override fun sendCommandsSync(vararg commands: T) {
         sendCommandsInternal(commands.toList(), false)
     }
 
     override fun sendCommandsAsync(vararg commands: T) {
         contextCoroutineScope.launch {
-            sendCommands(*commands)
+            sendCommandsSync(*commands)
         }
     }
 
-    override fun sendCommandsBroadcast(vararg commands: T) {
+    override fun sendCommandsBroadcastSync(vararg commands: T) {
         sendCommandsInternal(commands.toList(), true)
     }
 
     override fun sendCommandsBroadcastAsync(vararg commands: T) {
         contextCoroutineScope.launch {
-            sendCommandsBroadcast(*commands)
+            sendCommandsInternal(commands.toList(), true)
         }
     }
 

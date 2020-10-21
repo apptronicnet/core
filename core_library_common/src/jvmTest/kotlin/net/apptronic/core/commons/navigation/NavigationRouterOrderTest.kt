@@ -39,36 +39,36 @@ class NavigationRouterOrderTest {
         val handler1 = SimpleHandler(context.childContext())
         val events1 = handler1.events.record()
 
-        router.sendCommands(1)
+        router.sendCommandsSync(1)
         events1.assertItems(1)
 
         val handler2 = SimpleHandler(context.childContext())
         val events2 = handler2.events.record()
 
-        router.sendCommands(2)
+        router.sendCommandsSync(2)
         events1.assertItems(1)
         events2.assertItems(2)
 
-        router.sendCommands(3)
+        router.sendCommandsSync(3)
         events1.assertItems(1)
         events2.assertItems(2, 3)
 
         val handler3 = SimpleHandler(context.childContext())
         val events3 = handler3.events.record()
 
-        router.sendCommands(4)
+        router.sendCommandsSync(4)
         events1.assertItems(1)
         events2.assertItems(2, 3)
         events3.assertItems(4)
 
-        router.sendCommands(5)
+        router.sendCommandsSync(5)
         events1.assertItems(1)
         events2.assertItems(2, 3)
         events3.assertItems(4, 5)
 
         handler3.terminate()
 
-        router.sendCommands(6, 7)
+        router.sendCommandsSync(6, 7)
         events1.assertItems(1)
         events2.assertItems(2, 3, 6, 7)
         events3.assertItems(4, 5)

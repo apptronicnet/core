@@ -17,7 +17,10 @@ fun Contextual.terminate() {
  * Execute asynchronous action. This may be useful if action is navigation action to prevent immediate [Context]
  * termination of [Lifecycle] changes.
  */
-fun Contextual.doAsync(coroutineScope: CoroutineScope = contextCoroutineScope, action: () -> Unit) {
+fun Contextual.doAsync(
+        coroutineScope: CoroutineScope = contextCoroutineScope,
+        action: suspend CoroutineScope.() -> Unit
+) {
     coroutineScope.launch {
         action()
     }

@@ -56,12 +56,12 @@ class NavigationRouterPriorityTest {
         val events2 = handler2.events.record()
         val events3 = handler3.events.record()
 
-        router.sendCommands(1)
+        router.sendCommandsSync(1)
         events1.assertItems(1)
         events2.assertItems()
         events3.assertItems()
 
-        router.sendCommands(2)
+        router.sendCommandsSync(2)
 
         events1.assertItems(1, 2)
         events2.assertItems()
@@ -69,20 +69,20 @@ class NavigationRouterPriorityTest {
 
         handler1.terminate()
 
-        router.sendCommands(3)
+        router.sendCommandsSync(3)
         events1.assertItems(1, 2)
         events2.assertItems(3)
         events3.assertItems()
 
         handler3.terminate()
 
-        router.sendCommands(4)
+        router.sendCommandsSync(4)
         events1.assertItems(1, 2)
         events2.assertItems(3, 4)
         events3.assertItems()
 
         handler2.terminate()
-        router.sendCommands(5)
+        router.sendCommandsSync(5)
         events1.assertItems(1, 2)
         events2.assertItems(3, 4)
         events3.assertItems()
