@@ -14,7 +14,7 @@ fun <T : Any, Id : Any, VM : IViewModel> IViewModel.listDynamicNavigator(
 }
 
 fun <T : Any, Id : Any, VM : IViewModel> IViewModel.listDynamicNavigator(
-        source: Entity<List<T>>,
+        source: Entity<out List<T>>,
         builder: ViewModelBuilder<in T, in Id, in VM>,
         navigatorContext: Context = this.context
 ): StatelessDynamicListNavigator<T, Id, VM> {
@@ -26,7 +26,7 @@ fun <T : Any, Id : Any, VM : IViewModel> IViewModel.listDynamicNavigator(
 }
 
 fun <T : Any, Id : Any, VM : IViewModel> IViewModel.listDynamicNavigatorOnChange(
-        source: Entity<Next<List<T>, Any?>>,
+        source: Entity<Next<out List<T>, Any?>>,
         builder: ViewModelBuilder<in T, in Id, in VM>,
         navigatorContext: Context = this.context
 ): StatelessDynamicListNavigator<T, Id, VM> {
