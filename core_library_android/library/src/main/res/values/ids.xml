@@ -3,5 +3,6 @@
 
     <item name="ViewAnimation" type="id" />
     <item name="TransitionAnimation" type="id" />
+    <item name="ViewBinding" type="id" />
 
 </resources>

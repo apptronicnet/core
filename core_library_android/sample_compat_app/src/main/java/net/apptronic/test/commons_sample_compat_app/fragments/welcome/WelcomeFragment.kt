@@ -4,10 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import kotlinx.android.synthetic.main.fragment_welcome.*
 import net.apptronic.core.android.compat.CoreCompatFragment
 import net.apptronic.core.component.context.Context
 import net.apptronic.test.commons_sample_compat_app.R
+import net.apptronic.test.commons_sample_compat_app.databinding.FragmentWelcomeBinding
 
 class WelcomeFragment : CoreCompatFragment<WelcomeViewModel>() {
 
@@ -23,11 +23,13 @@ class WelcomeFragment : CoreCompatFragment<WelcomeViewModel>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.text.subscribe {
-            welcomeMessage.text = it
-        }
-        btnNext.setOnClickListener {
-            viewModel.onClickNext.sendEvent()
+        with(FragmentWelcomeBinding.bind(view)) {
+            viewModel.text.subscribe {
+                welcomeMessage.text = it
+            }
+            btnNext.setOnClickListener {
+                viewModel.onClickNext.sendEvent()
+            }
         }
     }
 

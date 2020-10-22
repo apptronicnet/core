@@ -22,7 +22,7 @@ fun ViewBinder<*>.bindPopupNavigator(
     navigator: StackNavigationModel,
     mode: PopupMode
 ) {
-    bindNavigator(getView(), navigator, mode)
+    bindNavigator(view, navigator, mode)
 }
 
 fun BindingContainer.bindNavigator(
@@ -67,7 +67,7 @@ fun ViewBinder<*>.PopupMode(
     anchorProvider: PopupAnchorProvider,
     binderFactory: ViewBinderFactory? = null
 ) = PopupMode(
-    getView().context,
+    view.context,
     anchorProvider,
     binderFactory
 )
@@ -76,7 +76,7 @@ fun ViewBinder<*>.PopupMode(
     anchorView: View,
     binderFactory: ViewBinderFactory? = null
 ) = PopupMode(
-    getView().context,
+    view.context,
     ConcreteAnchorProvider(anchorView),
     binderFactory
 )

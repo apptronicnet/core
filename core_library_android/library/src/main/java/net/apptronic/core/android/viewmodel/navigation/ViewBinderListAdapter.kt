@@ -62,7 +62,7 @@ class ViewBinderListAdapter(
     }
 
     fun indexOf(binder: ViewBinder<*>): Int {
-        return items.indexOf(binder.getItem())
+        return items.indexOf(binder.viewModelItem)
     }
 
     private val boundViews = mutableMapOf<Long, ViewBinder<*>>()
@@ -109,7 +109,7 @@ class ViewBinderListAdapter(
         val oldBinder: ViewBinder<*>? = boundViews[item.viewModel.componentId]
         styleAdapter.applyViewStyle(view, position, viewModels)
         return if (oldBinder != null) {
-            if (oldBinder.getViewModel() != item.viewModel) {
+            if (oldBinder.viewModel != item.viewModel) {
                 // TODO should not happen in RecyclerView
                 // TODO need to check
                 setFocused(oldBinder, false)
@@ -135,19 +135,19 @@ class ViewBinderListAdapter(
     }
 
     fun unbindView(viewBinder: ViewBinder<*>) {
-        val viewModel = viewBinder.getViewModel()
+        val viewModel = viewBinder.viewModel
         if (boundViews.containsKey(viewModel.componentId)) {
-            viewBinder.getItem().setBound(false)
+            viewBinder.viewModelItem.setBound(false)
             boundViews.remove(viewModel.componentId)
         }
     }
 
     fun setVisible(viewBinder: ViewBinder<*>, isVisible: Boolean) {
-        viewBinder.getItem().setVisible(isVisible)
+        viewBinder.viewModelItem.setVisible(isVisible)
     }
 
     fun setFocused(viewBinder: ViewBinder<*>, isFocused: Boolean) {
-        viewBinder.getItem().setFocused(isFocused)
+        viewBinder.viewModelItem.setFocused(isFocused)
     }
 
 }

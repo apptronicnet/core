@@ -92,16 +92,16 @@ class RecyclerViewAdapter(
     private fun doBindViewHolder(holder: ViewModelHolder, position: Int) {
         holder.item = listAdapter.getItemAt(position)
         val binder = listAdapter.bindView(position, holder.itemView)
-        binder.getItem().setVisible(true)
-        binder.getItem().setFocused(true)
+        binder.viewModelItem.setVisible(true)
+        binder.viewModelItem.setFocused(true)
         holder.viewBinder = binder
     }
 
     private fun doUnbindViewHolder(holder: ViewModelHolder) {
         val binder = holder.viewBinder
         if (binder != null) {
-            binder.getItem().setFocused(false)
-            binder.getItem().setVisible(false)
+            binder.viewModelItem.setFocused(false)
+            binder.viewModelItem.setVisible(false)
             listAdapter.unbindView(binder)
             holder.item = null
             holder.viewBinder = null

@@ -1,21 +1,18 @@
 package net.apptronic.test.commons_sample_app.binders
 
-import android.view.View
-import kotlinx.android.synthetic.main.bottom_sheet.view.*
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.bindings.bindClickListener
 import net.apptronic.test.commons_sample_app.R
 import net.apptronic.test.commons_sample_app.bottomsheet.BottomSheetViewModel
+import net.apptronic.test.commons_sample_app.databinding.BottomSheetBinding
 
 class BottomSheetViewBinder : ViewBinder<BottomSheetViewModel>() {
 
     override var layoutResId: Int? = R.layout.bottom_sheet
 
-    override fun onBindView(view: View, viewModel: BottomSheetViewModel) {
-        with(view) {
-            bindClickListener(btnReplace, viewModel::onClickReplace)
-            bindClickListener(btnHide, viewModel::onClickHide)
-        }
+    override fun onBindView() = withBinging(BottomSheetBinding::bind) {
+        bindClickListener(btnReplace, viewModel::onClickReplace)
+        bindClickListener(btnHide, viewModel::onClickHide)
     }
 
 }

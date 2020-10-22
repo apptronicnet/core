@@ -32,7 +32,7 @@ class ViewPagerAdapter(
     override fun destroyItem(collection: ViewGroup, position: Int, obj: Any) {
         val binder = obj as ViewBinder<*>
         binderAdapter.unbindView(binder)
-        collection.removeView(binder.getView())
+        collection.removeView(binder.view)
     }
 
     override fun getCount(): Int {
@@ -41,7 +41,7 @@ class ViewPagerAdapter(
 
     override fun isViewFromObject(view: View, obj: Any): Boolean {
         val binder = obj as ViewBinder<*>
-        return view === binder.getView()
+        return view === binder.view
     }
 
     override fun getPageTitle(position: Int): CharSequence? {

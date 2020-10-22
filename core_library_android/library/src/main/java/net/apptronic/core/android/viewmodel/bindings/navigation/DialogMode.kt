@@ -13,7 +13,7 @@ fun ViewBinder<*>.bindNavigator(
     navigator: StackNavigationModel,
     mode: DialogMode
 ) {
-    bindNavigator(getView().context, navigator, mode)
+    bindNavigator(view.context, navigator, mode)
 }
 
 fun BindingContainer.bindNavigator(

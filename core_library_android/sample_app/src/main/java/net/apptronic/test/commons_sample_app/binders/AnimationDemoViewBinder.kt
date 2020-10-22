@@ -2,13 +2,11 @@ package net.apptronic.test.commons_sample_app.binders
 
 import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
-import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.TextView
-import kotlinx.android.synthetic.main.animation_demo.view.*
 import net.apptronic.core.android.anim.AnimationPlayer
 import net.apptronic.core.android.anim.ViewAnimationDefinition
 import net.apptronic.core.android.anim.transformations.*
@@ -16,12 +14,15 @@ import net.apptronic.core.android.anim.viewAnimation
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.test.commons_sample_app.R
 import net.apptronic.test.commons_sample_app.animation.AnimationDemoViewModel
+import net.apptronic.test.commons_sample_app.databinding.AnimationDemoBinding
 
 private val DURATION = 1200L
 
 class AnimationDemoViewBinder : ViewBinder<AnimationDemoViewModel>() {
 
     override var layoutResId: Int? = R.layout.animation_demo
+
+    private val viewBinding by viewBinding(AnimationDemoBinding::bind)
 
     private var index = 1
     private fun backgroundColor(): Int = when (index % 3) {
@@ -33,7 +34,7 @@ class AnimationDemoViewBinder : ViewBinder<AnimationDemoViewModel>() {
     private lateinit var exitAnimation: ViewAnimationDefinition
     private lateinit var enterAnimation: ViewAnimationDefinition
 
-    private fun View.addButtons(
+    private fun AnimationDemoBinding.addButtons(
         enterName: String,
         exitName: String,
         animation: ViewAnimationDefinition
@@ -70,9 +71,9 @@ class AnimationDemoViewBinder : ViewBinder<AnimationDemoViewModel>() {
 
     private lateinit var currentView: TextView
 
-    private fun View.playAnimations(player: AnimationPlayer) {
+    private fun playAnimations(player: AnimationPlayer) = with(viewBinding) {
         index++
-        val enteringView = LayoutInflater.from(context)
+        val enteringView = LayoutInflater.from(root.context)
             .inflate(R.layout.animation_demo_item, viewContainer, false) as TextView
         val exitingView = currentView
         enteringView.text = index.toString()
@@ -88,60 +89,58 @@ class AnimationDemoViewBinder : ViewBinder<AnimationDemoViewModel>() {
         currentView = enteringView
     }
 
-    override fun onBindView(view: View, viewModel: AnimationDemoViewModel) {
+    override fun onBindView() = with(viewBinding) {
         val player = AnimationPlayer(view)
-        with(view) {
-            currentView = startItem as TextView
-            currentView.background = ColorDrawable(backgroundColor())
-            btnPlayAnimations.setOnClickListener {
-                playAnimations(player)
-            }
-            addButtons(
-                "Fade in",
-                "Fade out",
-                FadeAnimation
-            )
-            addButtons(
-                "Enter from left",
-                "Exit to left",
-                FromLeftAnimation
-            )
-            addButtons(
-                "Enter from right",
-                "Exit to right",
-                FromRightAnimation
-            )
-            addButtons(
-                "Fade from left",
-                "Fade to left",
-                FadeLeftAnimation
-            )
-            addButtons(
-                "Fade from right",
-                "Fade to right",
-                FadeRightAnimation
-            )
-            addButtons(
-                "Enter from top",
-                "Exit to top",
-                ScaleTopAnimation
-            )
-            addButtons(
-                "Enter from bottom",
-                "Exit to bottom",
-                ScaleBottomAnimation
-            )
-            addButtons(
-                "Roll in left",
-                "Roll out left",
-                RollLeft
-            )
-            addButtons(
-                "Roll in right",
-                "Roll out right",
-                RollRight
-            )
+        currentView = startItem.root
+        currentView.background = ColorDrawable(backgroundColor())
+        btnPlayAnimations.setOnClickListener {
+            playAnimations(player)
         }
+        addButtons(
+            "Fade in",
+            "Fade out",
+            FadeAnimation
+        )
+        addButtons(
+            "Enter from left",
+            "Exit to left",
+            FromLeftAnimation
+        )
+        addButtons(
+            "Enter from right",
+            "Exit to right",
+            FromRightAnimation
+        )
+        addButtons(
+            "Fade from left",
+            "Fade to left",
+            FadeLeftAnimation
+        )
+        addButtons(
+            "Fade from right",
+            "Fade to right",
+            FadeRightAnimation
+        )
+        addButtons(
+            "Enter from top",
+            "Exit to top",
+            ScaleTopAnimation
+        )
+        addButtons(
+            "Enter from bottom",
+            "Exit to bottom",
+            ScaleBottomAnimation
+        )
+        addButtons(
+            "Roll in left",
+            "Roll out left",
+            RollLeft
+        )
+        addButtons(
+            "Roll in right",
+            "Roll out right",
+            RollRight
+        )
     }
 
     private val FadeAnimation = viewAnimation {

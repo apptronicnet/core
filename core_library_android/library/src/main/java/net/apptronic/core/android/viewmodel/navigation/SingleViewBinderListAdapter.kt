@@ -40,7 +40,7 @@ class SingleViewBinderListAdapter(
         items: List<ViewModelItem>, visibleIndex: Int, transitionInfo: TransitionInfo
     ) {
         val oldBinder = currentBinder
-        val oldItem = oldBinder?.getItem()
+        val oldItem = oldBinder?.viewModelItem
         val newItem = items.getOrNull(visibleIndex)
         if (oldItem?.viewModel == newItem?.viewModel) {
             return
@@ -63,7 +63,7 @@ class SingleViewBinderListAdapter(
 
     private fun ViewModelItem.getBinder(): ViewBinder<*> {
         return cachedBinders.firstOrNull {
-            it.getViewModel() == viewModel
+            it.viewModel == viewModel
         } ?: viewBinderFactory.getBinder(viewModel).also { newBinder ->
             val viewAdapter =
                 newBinder as? ViewContainerViewAdapter ?: DefaultViewContainerViewAdapter
@@ -77,10 +77,10 @@ class SingleViewBinderListAdapter(
 
     private fun clearCache(items: List<ViewModelItem>) {
         cachedBinders.removeAll {
-            val remove = !items.contains(it.getItem())
-            if (remove && !it.getViewModel().isTerminated()) {
-                it.getItem().setFocused(false)
-                it.getItem().setVisible(false)
+            val remove = !items.contains(it.viewModelItem)
+            if (remove && !it.viewModel.isTerminated()) {
+                it.viewModelItem.setFocused(false)
+                it.viewModelItem.setVisible(false)
             }
             remove
         }
@@ -88,9 +88,9 @@ class SingleViewBinderListAdapter(
             while (cachedBinders.size > maxCachedViews) {
                 val first = cachedBinders.removeFirstOrNull()
                 if (first != null) {
-                    first.getItem().setFocused(false)
-                    first.getItem().setVisible(false)
-                    first.getItem().setBound(false)
+                    first.viewModelItem.setFocused(false)
+                    first.viewModelItem.setVisible(false)
+                    first.viewModelItem.setBound(false)
                 } else return
             }
         }

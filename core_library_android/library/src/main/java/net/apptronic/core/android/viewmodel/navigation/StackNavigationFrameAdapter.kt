@@ -69,7 +69,7 @@ class StackNavigationFrameAdapter(
         }
         val currentBinder = this.currentBinder
         viewBinders.toTypedArray().forEach {
-            val actual = listAdapter.contains(it.binder.getItem())
+            val actual = listAdapter.contains(it.binder.viewModelItem)
             if (!actual) {
                 detachBinder(it, it != previousBinder)
             }
@@ -163,8 +163,8 @@ class StackNavigationFrameAdapter(
         val binder: ViewBinder<*>
     ) : Comparable<AttachedBinder> {
         var position = 0
-        val view = binder.getView()
-        val viewModel = binder.getViewModel()
+        val view = binder.view
+        val viewModel = binder.viewModel
         fun refreshPosition(items: List<IViewModel>) {
             val index = items.indexOf(viewModel)
             if (index >= 0) {

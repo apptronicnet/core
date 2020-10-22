@@ -41,7 +41,7 @@ open class DialogBinderStackAdapter(
         setDialog(next, transitionInfo.spec)
         next?.let {
             val viewAdapter = it.viewBinder as? DialogViewAdapter ?: DefaultDialogViewAdapter
-            viewAdapter.onDialogShown(it.viewBinder.getViewModel(), it.viewBinder, it.dialog)
+            viewAdapter.onDialogShown(it.viewBinder.viewModel, it.viewBinder, it.dialog)
         }
     }
 
@@ -59,7 +59,7 @@ open class DialogBinderStackAdapter(
 
     open fun onAdd(next: DialogAndBinder, transitionSpec: Any?) {
         val viewAdapter = next.viewBinder as? DialogViewAdapter ?: DefaultDialogViewAdapter
-        viewAdapter.onShowDialog(next.viewBinder.getViewModel(), next.viewBinder, next.dialog)
+        viewAdapter.onShowDialog(next.viewBinder.viewModel, next.viewBinder, next.dialog)
     }
 
     open fun onReplace(previous: DialogAndBinder, next: DialogAndBinder, transitionSpec: Any?) {
@@ -70,7 +70,7 @@ open class DialogBinderStackAdapter(
     open fun onRemove(previous: DialogAndBinder, transitionSpec: Any?) {
         val viewAdapter = previous.viewBinder as? DialogViewAdapter ?: DefaultDialogViewAdapter
         viewAdapter.onDismissDialog(
-            previous.viewBinder.getViewModel(), previous.viewBinder, previous.dialog
+            previous.viewBinder.viewModel, previous.viewBinder, previous.dialog
         )
     }
 

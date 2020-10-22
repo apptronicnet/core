@@ -43,15 +43,15 @@ internal class SingleViewContainerDispatcher(
         transitionSpec: Any?
     ) {
         val spec = SingleTransitionSpec(
-            target = viewBinder.getView(),
+            target = viewBinder.view,
             container = container,
             duration = defaultAnimationTime,
             transitionSpec = transitionSpec
         )
         val animation = viewTransitionFactory.buildSingleEnterOrEmpty(spec)
         animation.doOnStart {
-            addViewToContainer(viewBinder.getViewModel(), viewBinder, viewBinder.getView(), true)
-            viewBinder.getView().visibility = View.VISIBLE
+            addViewToContainer(viewBinder.viewModel, viewBinder, viewBinder.view, true)
+            viewBinder.view.visibility = View.VISIBLE
         }.playOn(player, true)
     }
 
@@ -62,8 +62,8 @@ internal class SingleViewContainerDispatcher(
         transitionSpec: Any?
     ) {
         val spec = ViewTransitionSpec(
-            enter = newBinder.getView(),
-            exit = oldBinder.getView(),
+            enter = newBinder.view,
+            exit = oldBinder.view,
             container = container,
             duration = defaultAnimationTime,
             transitionSpec = transitionSpec,
@@ -73,23 +73,23 @@ internal class SingleViewContainerDispatcher(
                 ViewTransitionDirection.ExitingOnFront
         )
         val transition = viewTransitionFactory.buildViewTransitionOrEmpty(spec)
-        transition.viewAnimationSet.getAnimation(newBinder.getView())?.doOnStart {
+        transition.viewAnimationSet.getAnimation(newBinder.view)?.doOnStart {
             val addNewOnFront = transition.direction == ViewTransitionDirection.EnteringOnFront
             addViewToContainer(
-                newBinder.getViewModel(),
+                newBinder.viewModel,
                 newBinder,
-                newBinder.getView(),
+                newBinder.view,
                 addNewOnFront
             )
-            newBinder.getView().visibility = View.VISIBLE
+            newBinder.view.visibility = View.VISIBLE
         }
-        transition.viewAnimationSet.getAnimation(oldBinder.getView())?.doOnCompleteOrCancel {
+        transition.viewAnimationSet.getAnimation(oldBinder.view)?.doOnCompleteOrCancel {
             val viewAdapter =
                 oldBinder as? ViewContainerViewAdapter ?: DefaultViewContainerViewAdapter
             viewAdapter.onDetachView(
-                oldBinder.getViewModel(),
+                oldBinder.viewModel,
                 oldBinder,
-                oldBinder.getView(),
+                oldBinder.view,
                 container
             )
         }
@@ -101,7 +101,7 @@ internal class SingleViewContainerDispatcher(
         transitionSpec: Any?
     ) {
         val spec = SingleTransitionSpec(
-            target = viewBinder.getView(),
+            target = viewBinder.view,
             container = container,
             duration = defaultAnimationTime,
             transitionSpec = transitionSpec
@@ -111,9 +111,9 @@ internal class SingleViewContainerDispatcher(
             val viewAdapter =
                 viewBinder as? ViewContainerViewAdapter ?: DefaultViewContainerViewAdapter
             viewAdapter.onDetachView(
-                viewBinder.getViewModel(),
+                viewBinder.viewModel,
                 viewBinder,
-                viewBinder.getView(),
+                viewBinder.view,
                 container
             )
         }

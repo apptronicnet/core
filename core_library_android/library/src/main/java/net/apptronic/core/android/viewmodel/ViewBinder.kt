@@ -2,6 +2,8 @@ package net.apptronic.core.android.viewmodel
 
 import android.app.Activity
 import android.app.Dialog
+import android.content.Context
+import android.os.Bundle
 import android.os.Parcelable
 import android.util.SparseArray
 import android.view.View
@@ -15,7 +17,12 @@ import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelLifecycle
 import net.apptronic.core.mvvm.viewmodel.navigation.ViewModelItem
 
-private val SavedInstanceStateExtensionDescriptor = extensionDescriptor<SparseArray<Parcelable>>()
+private class SavedInstanceState(
+    val hierarchyState: SparseArray<Parcelable>,
+    val customState: Bundle
+)
+
+private val SavedInstanceStateExtensionDescriptor = extensionDescriptor<SavedInstanceState>()
 private val ViewBinderExtensionsDescriptor = extensionDescriptor<ViewBinder<*>>()
 
 fun IViewModel.requireBoundView() {
@@ -42,26 +49,63 @@ abstract class ViewBinder<T : IViewModel> : ViewAdapter, BindingContainer {
     @LayoutRes
     open var layoutResId: Int? = null
 
-    private var item: ViewModelItem? = null
-    private var viewModel: T? = null
-    private var view: View? = null
-    private var bindings: Bindings? = null
+    private var viewModelItemReference: ViewModelItem? = null
+    private var viewModelReference: T? = null
+    private var viewReference: View? = null
+    private var bindingsReference: Bindings? = null
+    private var savedInstanceStateReference: Bundle? = null
+    private var outStateReference: Bundle? = null
 
-    fun getItem(): ViewModelItem {
-        return item ?: throw IllegalStateException("No ViewModelItem for $this")
+    fun <E> viewBinding(builder: (View) -> E): ViewBindingProperty<E> {
+        return ViewBindingProperty(this, builder)
     }
 
-    fun getViewModel(): T {
-        return viewModel ?: throw IllegalStateException("No viewModel bound for $this")
+    fun <E> getBinding(builder: (View) -> E): E {
+        return view.getBinding(builder)
     }
 
-    fun getView(): View {
-        return view ?: throw IllegalStateException("No view bound for $this")
+    fun <E> withBinging(builder: (View) -> E, action: E.() -> Unit) {
+        with(view.getBinding(builder), action)
     }
 
-    internal fun getBindings(): Bindings {
-        return bindings ?: throw IllegalStateException("No bindings for $this")
-    }
+    val viewModelItem: ViewModelItem
+        get() {
+            return viewModelItemReference
+                ?: throw IllegalStateException("No ViewModelItem for $this")
+        }
+
+    val viewModel: T
+        get() {
+            return viewModelReference
+                ?: throw IllegalStateException("No viewModel bound for $this")
+        }
+
+    val view: View
+        get() {
+            return viewReference
+                ?: throw IllegalStateException("No view bound for $this")
+        }
+
+    val context: Context
+        get() {
+            return view.context
+        }
+
+    val savedInstanceState: Bundle?
+        get() {
+            return savedInstanceStateReference
+        }
+
+    val outState: Bundle
+        get() {
+            return outStateReference
+                ?: throw IllegalStateException("Out state is not ready for $this")
+        }
+
+    private val bindings: Bindings
+        get() {
+            return bindingsReference ?: throw IllegalStateException("No bindings for $this")
+        }
 
     private fun preCheck(viewModel: IViewModel) {
         if (viewModel.extensions[ViewBinderExtensionsDescriptor] != null) {
@@ -86,32 +130,42 @@ abstract class ViewBinder<T : IViewModel> : ViewAdapter, BindingContainer {
     }
 
     /**
-     * Bind [view] to [viewModel]
+     * Bind [view] to [viewModelReference]
      */
     @Suppress("UNCHECKED_CAST")
     fun performViewBinding(item: ViewModelItem, view: View) {
         preCheck(item.viewModel)
-        this.item = item
+        this.viewModelItemReference = item
         performViewBindingInternal(item.viewModel, view)
 
     }
 
     private fun performViewBindingInternal(viewModel: IViewModel, view: View) {
-        this.view = view
-        this.viewModel = viewModel as T
-        bindings = Bindings(viewModel, this)
-        onBindView(view, viewModel)
+        this.viewReference = view
+        this.viewModelReference = viewModel as T
+        bindingsReference = Bindings(viewModel, this)
 
-        viewModel.extensions[SavedInstanceStateExtensionDescriptor]?.let {
-            view.restoreHierarchyState(it)
+        val savedState = viewModel.extensions[SavedInstanceStateExtensionDescriptor]
+        viewModel.extensions.remove(SavedInstanceStateExtensionDescriptor)
+        savedState?.let {
+            this.savedInstanceStateReference = it.customState
         }
+        onBindView()
+        savedState?.let {
+            view.restoreHierarchyState(it.hierarchyState)
+        }
+        onViewStateRestored()
+        outStateReference = Bundle()
         viewModel.extensions[ViewBinderExtensionsDescriptor] = this
         viewModel.doOnUnbind {
             val hierarchyState = SparseArray<Parcelable>()
             view.saveHierarchyState(hierarchyState)
-            viewModel.extensions[SavedInstanceStateExtensionDescriptor] = hierarchyState
-            getBindings().unbind()
-            bindings = null
+            viewModel.extensions[SavedInstanceStateExtensionDescriptor] = SavedInstanceState(
+                hierarchyState,
+                outStateReference ?: Bundle()
+            )
+            bindings.unbind()
+            bindingsReference = null
             viewModel.extensions.remove(ViewBinderExtensionsDescriptor)
         }
     }
@@ -120,14 +174,18 @@ abstract class ViewBinder<T : IViewModel> : ViewAdapter, BindingContainer {
      * Called when [view] is binding to the [viewModel]. At this time [viewModel] lifecycle
      * is in stage [ViewModelLifecycle.STAGE_BOUND]
      */
-    protected abstract fun onBindView(view: View, viewModel: T)
+    protected abstract fun onBindView()
+
+    protected open fun onViewStateRestored() {
+        // implement by subclasses if needed
+    }
 
     final override fun onUnbind(action: () -> Unit) {
-        getBindings().onUnbind(action)
+        bindings.onUnbind(action)
     }
 
     final override fun add(binding: Binding) {
-        getBindings().add(binding)
+        bindings.add(binding)
     }
 
 }

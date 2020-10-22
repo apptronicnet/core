@@ -8,7 +8,6 @@ import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.widget.Button
 import android.widget.TextView
-import kotlinx.android.synthetic.main.view_switch_demo.view.*
 import net.apptronic.core.android.anim.AnimationPlayer
 import net.apptronic.core.android.anim.factory.*
 import net.apptronic.core.android.anim.playback
@@ -20,6 +19,7 @@ import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.mvvm.viewmodel.navigation.BasicTransition
 import net.apptronic.test.commons_sample_app.R
 import net.apptronic.test.commons_sample_app.animation.ViewTransitionDemoViewModel
+import net.apptronic.test.commons_sample_app.databinding.ViewSwitchDemoBinding
 
 private val ReplaceTransition = Any()
 
@@ -39,10 +39,12 @@ class ViewTransitionDemoViewBinder : ViewBinder<ViewTransitionDemoViewModel>() {
     private lateinit var currentView: View
     private lateinit var player: AnimationPlayer
 
+    private val viewBinding by viewBinding(ViewSwitchDemoBinding::bind)
+
     private fun View.addButton(
         name: String,
         transitionInfo: Any
-    ) {
+    ) = with(viewBinding) {
         val button = LayoutInflater.from(context).inflate(
             R.layout.view_switch_demo_button, controlGrid, false
         ) as Button
@@ -53,7 +55,7 @@ class ViewTransitionDemoViewBinder : ViewBinder<ViewTransitionDemoViewModel>() {
         }
     }
 
-    private fun View.playSwitch(transitionInfo: Any) {
+    private fun View.playSwitch(transitionInfo: Any) = with(viewBinding) {
         index++
         val enteringView = LayoutInflater.from(context)
             .inflate(R.layout.view_switch_demo_item, switchContainer, false) as TextView
@@ -83,10 +85,10 @@ class ViewTransitionDemoViewBinder : ViewBinder<ViewTransitionDemoViewModel>() {
         currentView = enteringView
     }
 
-    override fun onBindView(view: View, viewModel: ViewTransitionDemoViewModel) {
+    override fun onBindView() = with(viewBinding) {
         player = AnimationPlayer(view)
         with(view) {
-            currentView = firstItem as TextView
+            currentView = firstItem.root
             currentView.background = ColorDrawable(backgroundColor())
             addButton("Next", BasicTransition.Next)
             addButton("Previous", BasicTransition.Previous)

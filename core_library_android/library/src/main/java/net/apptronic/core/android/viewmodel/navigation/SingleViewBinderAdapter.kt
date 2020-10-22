@@ -40,7 +40,7 @@ class SingleViewBinderAdapter(
     private var currentBinder: ViewBinder<*>? = null
 
     override fun onInvalidate(item: ViewModelItem?, transitionInfo: TransitionInfo) {
-        if (item?.viewModel == currentBinder?.getViewModel()) {
+        if (item?.viewModel == currentBinder?.viewModel) {
             return
         }
         val oldBinder = currentBinder

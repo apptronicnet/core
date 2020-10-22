@@ -52,7 +52,7 @@ open class PopupBinderStackAdapter(
         next?.let {
             val viewAdapter =
                 it.viewBinder as? PopupWindowViewAdapter ?: DefaultPopupWindowViewAdapter
-            viewAdapter.onPopupShown(it.viewBinder.getViewModel(), it.viewBinder, it.popupWindow)
+            viewAdapter.onPopupShown(it.viewBinder.viewModel, it.viewBinder, it.popupWindow)
         }
     }
 
@@ -71,10 +71,10 @@ open class PopupBinderStackAdapter(
     open fun onAdd(next: PopupAndBinder, transitionSpec: Any?) {
         val viewAdapter =
             next.viewBinder as? PopupWindowViewAdapter ?: DefaultPopupWindowViewAdapter
-        val anchor = anchorProvider.provideAnchorForPopup(next.viewBinder.getViewModel())
+        val anchor = anchorProvider.provideAnchorForPopup(next.viewBinder.viewModel)
         if (anchor != null) {
             viewAdapter.onShowPopupAsAnchor(
-                next.viewBinder.getViewModel(),
+                next.viewBinder.viewModel,
                 next.viewBinder,
                 next.popupWindow,
                 anchor,
@@ -82,7 +82,7 @@ open class PopupBinderStackAdapter(
             )
         } else {
             viewAdapter.onShowPopupAtLocation(
-                next.viewBinder.getViewModel(),
+                next.viewBinder.viewModel,
                 next.viewBinder,
                 next.popupWindow,
                 container,
@@ -100,7 +100,7 @@ open class PopupBinderStackAdapter(
         val viewAdapter =
             previous.viewBinder as? PopupWindowViewAdapter ?: DefaultPopupWindowViewAdapter
         viewAdapter.onDismissPopup(
-            previous.viewBinder.getViewModel(),
+            previous.viewBinder.viewModel,
             previous.viewBinder,
             previous.popupWindow,
             transitionSpec
