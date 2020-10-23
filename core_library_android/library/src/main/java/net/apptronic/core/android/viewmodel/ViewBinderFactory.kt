@@ -77,6 +77,23 @@ class ConcreteViewBinderFactory internal constructor() : ViewBinderFactory() {
     }
 
     /**
+     * Add binding with only display layout feature without bindings
+     *
+     * @param [layoutResId] value for layout in [ViewBinder]
+     * @param [builder] builder function of constructor reference for [ViewBinder]
+     */
+    inline fun <reified ViewModelType : IViewModel> empty(
+        @LayoutRes layoutResId: Int?,
+        noinline builder: () -> ViewBinder<ViewModelType> = ::EmptyViewBinder
+    ) {
+        add(
+            clazz = ViewModelType::class,
+            builder = builder,
+            layoutResId = layoutResId
+        )
+    }
+
+    /**
      * Add binding
      * @param [ViewModelType] type of [ViewModel] for bind
      * @param [builder] builder function of constructor reference for [ViewBinder]
