@@ -8,9 +8,7 @@ import net.apptronic.core.component.plugin.Extendable
 import net.apptronic.core.component.plugin.Extensions
 
 fun IComponent.applyPlugins() {
-    context.plugins.plugins.forEach {
-        it.onComponent(this)
-    }
+    context.plugins.nextComponent(this)
 }
 
 interface IComponent : Extendable, Contextual {

@@ -24,6 +24,7 @@ private class TestContext(
 
     init {
         parent?.lifecycle?.registerChildLifecycle(lifecycle)
+        plugins.attach(this)
     }
 
 }

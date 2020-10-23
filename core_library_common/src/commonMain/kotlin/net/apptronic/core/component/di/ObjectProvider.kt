@@ -89,17 +89,23 @@ private class SingleProvider<TypeDeclaration : Any>(
             dispatcher: DependencyDispatcher,
             searchSpec: SearchSpec
     ): TypeDeclaration {
-        return entity ?: run {
-            val scope = SingleScope(definitionContext, dispatcher)
-            val created: TypeDeclaration = builder.invoke(scope)
-            scope.autoRecycle(created)
-            entity = created
-            definitionContext.lifecycle.doOnTerminate {
-                scope.finalize()
-                entity = null
-            }
-            created
+        return entity ?: createInstance(definitionContext, dispatcher)
+    }
+
+    private fun createInstance(
+            definitionContext: Context,
+            dispatcher: DependencyDispatcher
+    ): TypeDeclaration {
+        val scope = SingleScope(definitionContext, dispatcher)
+        val instance: TypeDeclaration = builder.invoke(scope)
+        scope.autoRecycle(instance)
+        val processed = definitionContext.plugins.nextProvide(definitionContext, instance)
+        entity = processed
+        definitionContext.lifecycle.doOnTerminate {
+            scope.finalize()
+            entity = null
         }
+        return processed
     }
 
 }
@@ -122,7 +128,7 @@ private class FactoryProvider<TypeDeclaration : Any>(
         injectionContext.lifecycle.onExitFromActiveStage {
             scope.finalize()
         }
-        return instance
+        return definitionContext.plugins.nextProvide(definitionContext, instance)
     }
 
 }
@@ -161,14 +167,9 @@ private class SharedProvider<TypeDeclaration : Any>(
     override fun provide(definitionContext: Context, dispatcher: DependencyDispatcher, searchSpec: SearchSpec): TypeDeclaration {
         val providedContext = searchSpec.context
         val parameters = searchSpec.params
-        val share = shares[parameters] ?: run {
-            val scope = SharedScope(definitionContext, dispatcher, parameters)
-            val instance = builder.invoke(scope)
-            scope.autoRecycle(instance)
-            val share = SharedInstance(instance, scope)
-            shares[parameters] = share
-            share
-        }
+        val share = shares[parameters] ?: createInstance(
+                definitionContext, dispatcher, parameters
+        )
         share.shareCount++
         providedContext.lifecycle.onExitFromActiveStage {
             share.shareCount--
@@ -178,6 +179,18 @@ private class SharedProvider<TypeDeclaration : Any>(
             }
         }
         return share.instance
+    }
+
+    private fun createInstance(
+            definitionContext: Context, dispatcher: DependencyDispatcher, parameters: Parameters
+    ): SharedInstance<TypeDeclaration> {
+        val scope = SharedScope(definitionContext, dispatcher, parameters)
+        val instance = builder.invoke(scope)
+        scope.autoRecycle(instance)
+        val processed = definitionContext.plugins.nextProvide(definitionContext, instance)
+        val share = SharedInstance(processed, scope)
+        shares[parameters] = share
+        return share
     }
 
     private fun unused(parameters: Parameters, share: SharedInstance<TypeDeclaration>) {

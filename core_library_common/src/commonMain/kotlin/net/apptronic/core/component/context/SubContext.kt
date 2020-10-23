@@ -31,14 +31,7 @@ open class SubContext : BaseContext {
 
     private fun init() {
         parent.lifecycle.registerChildLifecycle(lifecycle)
-        parent.plugins.let { parentPlugins ->
-            parentPlugins.descriptors.forEach { descriptor ->
-                parentPlugins[descriptor]?.let { plugin ->
-                    pluginsImpl.add(descriptor, plugin)
-                    plugin.onContext(this)
-                }
-            }
-        }
+        plugins.attach(this)
     }
 
 }

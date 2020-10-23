@@ -20,7 +20,7 @@ private val ViewModelLogPluginDescriptor = pluginDescriptor<ViewModelLogPlugin>(
 
 private class ViewModelLogPlugin internal constructor(
         private val logMessage: (String) -> Unit
-) : Plugin() {
+) : Plugin {
 
     override fun onComponent(component: IComponent) {
         super.onComponent(component)

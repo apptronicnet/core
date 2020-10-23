@@ -108,7 +108,8 @@ internal class ContextDependencyDispatcher(
             if (providerSearch != null) {
                 val provider = providerSearch as ObjectProvider<TypeDeclaration>
                 val instance = provider.provide(context, this, searchSpec)
-                return@obtainLocalInstance ValueHolder(instance)
+                val processed = context.plugins.nextInject(context, searchSpec.context, instance)
+                return@obtainLocalInstance ValueHolder(processed)
             }
         }
         return null

@@ -19,4 +19,8 @@ private class CoreContext(
 
     override val parent: Context? = null
 
+    init {
+        plugins.attach(this)
+    }
+
 }

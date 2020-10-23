@@ -3,7 +3,6 @@ package net.apptronic.core.component.context
 import net.apptronic.core.component.coroutines.CoroutineDispatchers
 import net.apptronic.core.component.di.DependencyDispatcher
 import net.apptronic.core.component.lifecycle.Lifecycle
-import net.apptronic.core.component.plugin.ContextPlugins
 import net.apptronic.core.component.plugin.Extendable
 import net.apptronic.core.component.plugin.Plugin
 import net.apptronic.core.component.plugin.PluginDescriptor
