@@ -3,11 +3,11 @@ package net.apptronic.core.commons.cache
 import kotlinx.coroutines.Job
 import net.apptronic.core.UnderDevelopment
 import net.apptronic.core.base.observable.subject.ValueHolder
+import net.apptronic.core.component.Component
 import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.extensions.BaseComponent
 
 @UnderDevelopment
-abstract class CacheComponent<T, K>(context: Context) : BaseComponent(context) {
+abstract class CacheComponent<T, K>(context: Context) : Component(context) {
 
     abstract operator fun set(key: K, value: T)
 

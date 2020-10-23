@@ -1,8 +1,8 @@
 package net.apptronic.core.mvvm.viewmodel.dispatcher
 
+import net.apptronic.core.component.Component
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.context.terminate
-import net.apptronic.core.component.extensions.BaseComponent
 import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModel
 import net.apptronic.core.mvvm.viewmodel.ViewModelParent
@@ -15,7 +15,7 @@ import kotlin.reflect.KClass
 abstract class BaseViewModelDispatcher<T : IViewModel>(
         context: Context,
         private val type: KClass<T>
-) : BaseComponent(context), ViewModelDispatcher<T>, ViewModelParent {
+) : Component(context), ViewModelDispatcher<T>, ViewModelParent {
 
     private var viewModel: T? = null
     private var viewContainer: ViewContainer<T>? = null

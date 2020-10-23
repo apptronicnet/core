@@ -1,11 +1,11 @@
 package net.apptronic.core.component.plugin
 
+import net.apptronic.core.component.Component
 import net.apptronic.core.component.IComponent
 import net.apptronic.core.component.context.childContext
 import net.apptronic.core.component.context.coreContext
 import net.apptronic.core.component.context.viewModelContext
 import net.apptronic.core.component.coroutines.testCoroutineDispatchers
-import net.apptronic.core.component.extensions.BaseComponent
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertSame
@@ -30,23 +30,23 @@ class PluginOnComponentTest {
     }
 
     private val child1 = rootContext.childContext()
-    private val component0 = BaseComponent(child1)
-    private val component1 = BaseComponent(child1)
+    private val component0 = Component(child1)
+    private val component1 = Component(child1)
     private val child2 = rootContext.childContext()
-    private val component2 = BaseComponent(child2)
-    private val component3 = BaseComponent(child2)
+    private val component2 = Component(child2)
+    private val component3 = Component(child2)
     private val child3 = rootContext.childContext()
-    private val component4 = BaseComponent(child3)
+    private val component4 = Component(child3)
     private val child4 = child1.childContext()
-    private val component5 = BaseComponent(child4)
+    private val component5 = Component(child4)
     private val child5 = child1.childContext()
-    private val component6 = BaseComponent(child5)
+    private val component6 = Component(child5)
     private val child6 = child2.viewModelContext()
-    private val viewModel7 = BaseComponent(child5)
-    private val viewModel8 = BaseComponent(child5)
+    private val viewModel7 = Component(child5)
+    private val viewModel8 = Component(child5)
     private val child7 = child6.viewModelContext()
-    private val viewModel9 = BaseComponent(child7)
-    private val viewModel10 = BaseComponent(child7)
+    private val viewModel9 = Component(child7)
+    private val viewModel10 = Component(child7)
 
     @Test
     fun verifyInstallCalledCorrectly() {

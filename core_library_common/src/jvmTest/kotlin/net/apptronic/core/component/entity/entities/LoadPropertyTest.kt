@@ -1,13 +1,13 @@
 package net.apptronic.core.component.entity.entities
 
-import net.apptronic.core.component.extensions.BaseComponent
+import net.apptronic.core.component.Component
 import net.apptronic.core.testutils.testContext
 import org.junit.Test
 
 class LoadPropertyTest {
 
     private var counter = 1
-    private val component = BaseComponent(testContext())
+    private val component = Component(testContext())
 
     @Test
     fun shouldCorrectWorkWithGeneric() {

@@ -1,7 +1,7 @@
 package net.apptronic.core.commons.navigation
 
+import net.apptronic.core.component.Component
 import net.apptronic.core.component.context.*
-import net.apptronic.core.component.extensions.BaseComponent
 import org.junit.Test
 import kotlin.test.assertEquals
 
@@ -15,7 +15,7 @@ class NavigationCallbackLifecycleTest {
 
     private class SimpleHandler(
             context: Context,
-    ) : BaseComponent(context), DefaultNavigationHandler {
+    ) : Component(context), DefaultNavigationHandler {
 
         var count = 0
 

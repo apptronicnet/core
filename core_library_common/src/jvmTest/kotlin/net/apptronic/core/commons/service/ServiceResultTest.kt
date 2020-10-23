@@ -2,11 +2,11 @@ package net.apptronic.core.commons.service
 
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import net.apptronic.core.component.Component
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.context.dependencyModule
 import net.apptronic.core.component.coroutines.ManualDispatcher
 import net.apptronic.core.component.coroutines.contextCoroutineScope
-import net.apptronic.core.component.extensions.BaseComponent
 import net.apptronic.core.component.inject
 import net.apptronic.core.component.value
 import net.apptronic.core.testutils.testContext
@@ -62,7 +62,7 @@ class ServiceResultTest {
         data class Error(val e: Exception) : Response()
     }
 
-    class UserComponent(context: Context) : BaseComponent(context) {
+    class UserComponent(context: Context) : Component(context) {
         private val coroutineScope = contextCoroutineScope
         val service = injectService(ParseStringAsIntService)
         val source = value<String>()

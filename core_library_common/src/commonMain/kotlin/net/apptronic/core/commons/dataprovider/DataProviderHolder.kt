@@ -4,9 +4,9 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.commons.cache.CacheComponent
+import net.apptronic.core.component.Component
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.entity.Entity
-import net.apptronic.core.component.extensions.BaseComponent
 import net.apptronic.core.component.value
 
 class DataProviderHolder<T, K>(
@@ -14,7 +14,7 @@ class DataProviderHolder<T, K>(
         private val key: K,
         private val dataProvider: DataProvider<T, K>,
         private val cache: CacheComponent<T, K>?
-) : BaseComponent(context), Observer<T> {
+) : Component(context), Observer<T> {
 
     private val data = value<T>()
     private var getCacheJob: Job? = null

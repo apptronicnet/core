@@ -1,11 +1,11 @@
 package net.apptronic.core.testutils
 
+import net.apptronic.core.component.Component
 import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.extensions.BaseComponent
 import net.apptronic.core.component.lifecycle.Lifecycle
 import net.apptronic.core.component.lifecycle.LifecycleStage
 
-open class BaseTestComponent : BaseComponent {
+open class BaseTestComponent : Component {
 
     constructor(contextInitializer: Context.() -> Unit = {}) : super(testContext(builder = contextInitializer))
 

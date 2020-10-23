@@ -2,6 +2,7 @@ package net.apptronic.core.commons.dataprovider
 
 import kotlinx.coroutines.withContext
 import net.apptronic.core.commons.cache.SimpleCache
+import net.apptronic.core.component.Component
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.context.childContext
 import net.apptronic.core.component.context.dependencyModule
@@ -9,7 +10,6 @@ import net.apptronic.core.component.coroutines.ManualDispatcher
 import net.apptronic.core.component.entity.Entity
 import net.apptronic.core.component.entity.entities.asProperty
 import net.apptronic.core.component.entity.functions.mapSuspend
-import net.apptronic.core.component.extensions.BaseComponent
 import net.apptronic.core.component.now
 import net.apptronic.core.component.terminate
 import net.apptronic.core.testutils.testContext
@@ -48,7 +48,7 @@ class DataProviderWithCacheTest {
 
     private fun userComponent(id: Int) = UserComponent(context.childContext(), id)
 
-    class UserComponent(context: Context, val id: Int) : BaseComponent(context) {
+    class UserComponent(context: Context, val id: Int) : Component(context) {
         val data = injectData(DataProviderDescriptor, id).asProperty()
     }
 

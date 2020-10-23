@@ -1,8 +1,8 @@
 package net.apptronic.core.component.di
 
+import net.apptronic.core.component.AbstractComponent
 import net.apptronic.core.component.Component
 import net.apptronic.core.component.context.EmptyContext
-import net.apptronic.core.component.extensions.BaseComponent
 import net.apptronic.core.component.inject
 import net.apptronic.core.testutils.testContext
 import org.junit.Before
@@ -33,14 +33,14 @@ class ProvidingTest {
 
     class SomeThing(val text: String)
 
-    lateinit var component: Component
+    lateinit var component: AbstractComponent
 
     @Before
     fun before() {
         val coreContext = testContext {
             dependencyDispatcher.addModule(CoreModule)
         }
-        component = BaseComponent(coreContext, EmptyContext)
+        component = Component(coreContext, EmptyContext)
         component.context.dependencyDispatcher.addInstance(SomeThingTextDescriptor, EXPECTED_TEXT)
     }
 

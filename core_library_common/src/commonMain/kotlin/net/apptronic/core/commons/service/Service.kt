@@ -1,9 +1,9 @@
 package net.apptronic.core.commons.service
 
+import net.apptronic.core.component.Component
 import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.extensions.BaseComponent
 
-abstract class Service<T : Any, R : Any>(context: Context) : BaseComponent(context) {
+abstract class Service<T : Any, R : Any>(context: Context) : Component(context) {
 
     abstract suspend fun onNext(request: T): R
 

@@ -2,10 +2,10 @@ package net.apptronic.core.commons.service
 
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.launch
+import net.apptronic.core.component.Component
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.coroutines.lifecycleCoroutineScope
 import net.apptronic.core.component.di.DependencyDescriptor
-import net.apptronic.core.component.extensions.BaseComponent
 import net.apptronic.core.component.inject
 import net.apptronic.core.component.lifecycle.enterStage
 import net.apptronic.core.component.lifecycle.exitStage
@@ -13,7 +13,7 @@ import net.apptronic.core.component.lifecycle.exitStage
 internal class ServiceDispatcherImpl<T : Any, R : Any>(
         context: Context,
         private val serviceInstanceDescriptor: DependencyDescriptor<Service<T, R>>
-) : BaseComponent(context), ServiceDispatcher<T, R> {
+) : Component(context), ServiceDispatcher<T, R> {
 
     private inner class PendingRequest(val request: T) {
         val responseDeferred = CompletableDeferred<R>()

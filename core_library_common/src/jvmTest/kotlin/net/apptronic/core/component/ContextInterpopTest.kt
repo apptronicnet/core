@@ -3,7 +3,6 @@ package net.apptronic.core.component
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.context.terminate
 import net.apptronic.core.component.entity.entities.setAs
-import net.apptronic.core.component.extensions.BaseComponent
 import net.apptronic.core.component.lifecycle.enterStage
 import net.apptronic.core.component.lifecycle.exitStage
 import net.apptronic.core.testutils.BaseTestComponent
@@ -20,13 +19,13 @@ class ContextInterpopTest {
 
     }
 
-    class Child(context: Context) : BaseComponent(context) {
+    class Child(context: Context) : Component(context) {
 
         val dataReflection = value("Undefined")
 
     }
 
-    class Another(context: Context) : BaseComponent(context) {
+    class Another(context: Context) : Component(context) {
 
         val dataReflection = value("Undefined")
 

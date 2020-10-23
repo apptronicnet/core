@@ -1,14 +1,14 @@
 package net.apptronic.core.component.entity.composite
 
+import net.apptronic.core.component.Component
 import net.apptronic.core.component.context.terminate
-import net.apptronic.core.component.extensions.BaseComponent
 import net.apptronic.core.component.typedEvent
 import net.apptronic.core.record
 import net.apptronic.core.testutils.testContext
 import org.junit.After
 import org.junit.Test
 
-class LastItemCompositionTest : BaseComponent(testContext()) {
+class LastItemCompositionTest : Component(testContext()) {
 
     private val item1 = typedEvent<Int>()
     private val item2 = typedEvent<Int>()

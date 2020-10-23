@@ -1,7 +1,7 @@
 package net.apptronic.core.mvvm.viewmodel.dispatcher
 
+import net.apptronic.core.component.Component
 import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.extensions.BaseComponent
 import net.apptronic.core.component.genericEvent
 import net.apptronic.core.component.typedEvent
 import net.apptronic.core.mvvm.viewmodel.IViewModel
@@ -16,7 +16,7 @@ inline fun <reified T : IViewModel> viewModelDispathcerComponent(noinline builde
 class ViewModelDispatcherComponent<T : IViewModel>(
         private val viewModelClass: KClass<T>,
         private val builder: (Context) -> T
-) : BaseComponent(testContext()) {
+) : Component(testContext()) {
 
     val dispatcher = BuilderViewModelDispatcher(context, viewModelClass, builder)
 

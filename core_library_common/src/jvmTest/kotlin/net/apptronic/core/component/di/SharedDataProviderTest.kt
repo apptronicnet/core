@@ -1,8 +1,8 @@
 package net.apptronic.core.component.di
 
+import net.apptronic.core.component.Component
 import net.apptronic.core.component.context.EmptyContext
 import net.apptronic.core.component.context.terminate
-import net.apptronic.core.component.extensions.BaseComponent
 import net.apptronic.core.component.inject
 import net.apptronic.core.component.lifecycle.enterStage
 import net.apptronic.core.component.lifecycle.exitStage
@@ -28,7 +28,7 @@ class SharedDataProviderTest {
     private val context = testContext {
         dependencyDispatcher.addModule(module)
     }
-    private val component = BaseComponent(context)
+    private val component = Component(context)
 
     @Test
     fun shouldBeSame() {
@@ -69,12 +69,12 @@ class SharedDataProviderTest {
     @Test
     fun shouldBeSameInContexts() {
         val childContext1 = EmptyContext.createContext(context)
-        val childComponent1 = BaseComponent(childContext1)
+        val childComponent1 = Component(childContext1)
         val instance1 = childComponent1.inject<Shared>()
         assert(instance1.isRecycled.not())
 
         val childContext2 = EmptyContext.createContext(context)
-        val childComponent2 = BaseComponent(childContext2)
+        val childComponent2 = Component(childContext2)
         val instance2 = childComponent2.inject<Shared>()
         assert(instance1 === instance2)
         assert(instance1.isRecycled.not())
@@ -89,14 +89,14 @@ class SharedDataProviderTest {
     @Test
     fun shouldBeDifferentInContexts() {
         val childContext1 = EmptyContext.createContext(context)
-        val childComponent1 = BaseComponent(childContext1)
+        val childComponent1 = Component(childContext1)
         val instance1 = childComponent1.inject<Shared>()
         assert(instance1.isRecycled.not())
         childContext1.terminate()
         assert(instance1.isRecycled)
 
         val childContext2 = EmptyContext.createContext(context)
-        val childComponent2 = BaseComponent(childContext2)
+        val childComponent2 = Component(childContext2)
         val instance2 = childComponent2.inject<Shared>()
         assert(instance1 !== instance2)
         assert(instance2.isRecycled.not())

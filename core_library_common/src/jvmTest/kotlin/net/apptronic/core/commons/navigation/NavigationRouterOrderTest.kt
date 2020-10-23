@@ -1,7 +1,7 @@
 package net.apptronic.core.commons.navigation
 
+import net.apptronic.core.component.Component
 import net.apptronic.core.component.context.*
-import net.apptronic.core.component.extensions.BaseComponent
 import net.apptronic.core.component.typedEvent
 import net.apptronic.core.record
 import org.junit.After
@@ -17,7 +17,7 @@ class NavigationRouterOrderTest {
 
     private class SimpleHandler(
             context: Context,
-    ) : BaseComponent(context), DefaultNavigationHandler {
+    ) : Component(context), DefaultNavigationHandler {
 
         val events = typedEvent<Any>()
 

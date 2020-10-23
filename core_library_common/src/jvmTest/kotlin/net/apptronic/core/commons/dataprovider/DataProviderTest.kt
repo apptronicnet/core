@@ -1,6 +1,7 @@
 package net.apptronic.core.commons.dataprovider
 
 import net.apptronic.core.assertListEquals
+import net.apptronic.core.component.*
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.context.EmptyContext
 import net.apptronic.core.component.context.childContext
@@ -11,11 +12,6 @@ import net.apptronic.core.component.entity.behavior.filterNotNull
 import net.apptronic.core.component.entity.behavior.resendWhen
 import net.apptronic.core.component.entity.entities.asProperty
 import net.apptronic.core.component.entity.functions.map
-import net.apptronic.core.component.extensions.BaseComponent
-import net.apptronic.core.component.inject
-import net.apptronic.core.component.newChain
-import net.apptronic.core.component.terminate
-import net.apptronic.core.component.typedEvent
 import net.apptronic.core.testutils.testContext
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -27,7 +23,7 @@ class DataProviderTest {
 
     private val providersById = mutableListOf<Int>()
 
-    private class Repository(context: Context) : BaseComponent(context) {
+    private class Repository(context: Context) : Component(context) {
 
         private val onUpdateById = typedEvent<Int>()
         private val storage = mutableMapOf<Int, String>()
@@ -80,7 +76,7 @@ class DataProviderTest {
         }
     }
 
-    private inner class UsesStringComponent(context: Context, val id: Int) : BaseComponent(context) {
+    private inner class UsesStringComponent(context: Context, val id: Int) : Component(context) {
 
         val data = injectData(StringProviderDescriptor, id).asProperty()
 

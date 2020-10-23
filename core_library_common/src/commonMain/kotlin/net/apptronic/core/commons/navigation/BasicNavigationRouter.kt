@@ -1,11 +1,11 @@
 package net.apptronic.core.commons.navigation
 
 import kotlinx.coroutines.launch
+import net.apptronic.core.component.Component
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.coroutines.contextCoroutineScope
-import net.apptronic.core.component.extensions.BaseComponent
 
-class BasicNavigationRouter<T>(context: Context) : BaseComponent(context), NavigationRouter<T> {
+class BasicNavigationRouter<T>(context: Context) : Component(context), NavigationRouter<T> {
 
     private inner class PriorityHandlers(val priority: Int) : Comparable<PriorityHandlers> {
         val list = mutableListOf<NavigationHandler<T>>()

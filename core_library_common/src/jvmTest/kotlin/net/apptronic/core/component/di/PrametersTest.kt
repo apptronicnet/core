@@ -1,10 +1,10 @@
 package net.apptronic.core.component.di
 
+import net.apptronic.core.component.Component
 import net.apptronic.core.component.context.Context
 import net.apptronic.core.component.context.childContext
 import net.apptronic.core.component.context.dependencyModule
 import net.apptronic.core.component.context.terminate
-import net.apptronic.core.component.extensions.BaseComponent
 import net.apptronic.core.component.inject
 import net.apptronic.core.testutils.testContext
 import org.junit.After
@@ -29,7 +29,7 @@ class PrametersTest {
         dependencyModule(Module)
     }
 
-    class UserClientComponent(context: Context, val userId: String) : BaseComponent(context) {
+    class UserClientComponent(context: Context, val userId: String) : Component(context) {
 
         val repository = inject<UserRepository>(parameters {
             add(UserIdDescriptor, userId)

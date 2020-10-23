@@ -2,7 +2,7 @@ package net.apptronic.core.mvvm.viewmodel
 
 import net.apptronic.core.base.observable.Observable
 import net.apptronic.core.base.observable.subject.BehaviorSubject
-import net.apptronic.core.component.Component
+import net.apptronic.core.component.AbstractComponent
 import net.apptronic.core.component.IComponent
 import net.apptronic.core.component.applyPlugins
 import net.apptronic.core.component.context.Context
@@ -175,7 +175,7 @@ interface IViewModel : IComponent {
 
 }
 
-open class ViewModel : Component, IViewModel {
+open class ViewModel : AbstractComponent, IViewModel {
 
     final override val context: ViewModelContext
 

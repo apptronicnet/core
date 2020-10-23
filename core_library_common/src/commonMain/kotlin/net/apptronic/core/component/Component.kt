@@ -1,54 +1,20 @@
 package net.apptronic.core.component
 
-import net.apptronic.core.component.context.Contextual
-import net.apptronic.core.component.lifecycle.Lifecycle
-import net.apptronic.core.component.lifecycle.LifecycleStage
-import net.apptronic.core.component.lifecycle.LifecycleStageDefinition
-import net.apptronic.core.component.plugin.Extendable
-import net.apptronic.core.component.plugin.Extensions
+import net.apptronic.core.component.context.Context
+import net.apptronic.core.component.context.ContextDefinition
 
-fun IComponent.applyPlugins() {
-    context.plugins.nextComponent(this)
-}
+open class Component : AbstractComponent {
 
-interface IComponent : Extendable, Contextual {
+    final override val context: Context
 
-    val componentId: Long
-
-    fun onceStage(definition: LifecycleStageDefinition, key: String, action: () -> Unit)
-
-    fun onEnterStage(definition: LifecycleStageDefinition, callback: LifecycleStage.OnEnterHandler.() -> Unit)
-
-    fun onExitStage(definition: LifecycleStageDefinition, callback: LifecycleStage.OnExitHandler.() -> Unit)
-
-    fun doOnTerminate(callback: LifecycleStage.OnExitHandler.() -> Unit)
-
-}
-
-abstract class Component : IComponent {
-
-    final override val extensions: Extensions = Extensions()
-
-    final override val componentId: Long = ComponentRegistry.nextId()
-
-    final override fun onceStage(definition: LifecycleStageDefinition, key: String, action: () -> Unit) {
-        context.lifecycle[definition]?.doOnce(key, action)
+    constructor(context: Context) : super() {
+        this.context = context
+        applyPlugins()
     }
 
-    final override fun onEnterStage(definition: LifecycleStageDefinition, callback: LifecycleStage.OnEnterHandler.() -> Unit) {
-        context.lifecycle[definition]?.doOnEnter(callback)
+    constructor(parentContext: Context, contextDefinition: ContextDefinition<Context>) : super() {
+        context = contextDefinition.createContext(parentContext)
+        applyPlugins()
     }
 
-    final override fun onExitStage(definition: LifecycleStageDefinition, callback: LifecycleStage.OnExitHandler.() -> Unit) {
-        context.lifecycle[definition]?.doOnExit(callback)
-    }
-
-    final override fun doOnTerminate(callback: LifecycleStage.OnExitHandler.() -> Unit) {
-        onExitStage(Lifecycle.ROOT_STAGE, callback)
-    }
-
-}
-
-fun IComponent.terminate() {
-    context.lifecycle.terminate()
 }

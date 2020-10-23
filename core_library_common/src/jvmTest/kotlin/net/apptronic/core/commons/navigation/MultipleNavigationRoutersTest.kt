@@ -1,7 +1,7 @@
 package net.apptronic.core.commons.navigation
 
+import net.apptronic.core.component.Component
 import net.apptronic.core.component.context.*
-import net.apptronic.core.component.extensions.BaseComponent
 import net.apptronic.core.component.typedEvent
 import net.apptronic.core.record
 import org.junit.After
@@ -21,7 +21,7 @@ class MultipleNavigationRoutersTest {
 
     private class TypedHandler<T>(
             context: Context, routerDescriptor: NavigationRouterDescriptor<T>
-    ) : BaseComponent(context), NavigationHandler<T> {
+    ) : Component(context), NavigationHandler<T> {
 
         val events = typedEvent<T>()
 
