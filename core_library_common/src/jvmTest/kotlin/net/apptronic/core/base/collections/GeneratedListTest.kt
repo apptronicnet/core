@@ -6,7 +6,7 @@ import kotlin.test.assertTrue
 
 class GeneratedListTest {
 
-    val list = generateList(minValue = -3, maxValue = 5) {
+    val list = generatedList(minValue = -3, maxValue = 5) {
         it.toString()
     }
 

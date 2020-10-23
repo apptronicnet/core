@@ -69,7 +69,7 @@ class ModuleDefinition internal constructor(
         val providers: List<ObjectProvider<*>> = definitions.map {
             it.getProvider(context)
         }
-        return Module(name ?: "Undefined", providers)
+        return Module(name, providers)
     }
 
     inline fun <reified TypeDeclaration : Any> factory(

@@ -1,6 +1,6 @@
 package net.apptronic.core.base.collections
 
-fun <E> generateList(
+fun <E> generatedList(
         minValue: Int = 0,
         maxValue: Int = 0,
         generator: (Int) -> E
