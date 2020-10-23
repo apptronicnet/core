@@ -1,11 +1,11 @@
 package net.apptronic.core.android.view
 
 import net.apptronic.core.component.context.Context
+import net.apptronic.core.component.context.ContextPlugins
 import net.apptronic.core.component.coroutines.CoroutineDispatchers
 import net.apptronic.core.component.di.DependencyDispatcher
 import net.apptronic.core.component.lifecycle.BASE_LIFECYCLE
 import net.apptronic.core.component.lifecycle.Lifecycle
-import net.apptronic.core.component.plugin.ContextPlugins
 import net.apptronic.core.component.plugin.Extensions
 import net.apptronic.core.component.plugin.Plugin
 import net.apptronic.core.component.plugin.PluginDescriptor

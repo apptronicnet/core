@@ -17,8 +17,8 @@ import kotlin.reflect.KClass
 val ActivityBindingPluginDescriptor = pluginDescriptor<ActivityBindingPlugin>()
 
 class ActivityBindingPlugin(
-        private val androidApplication: Application
-) : Plugin(), Application.ActivityLifecycleCallbacks {
+    private val androidApplication: Application
+) : Plugin, Application.ActivityLifecycleCallbacks {
 
     private class ActivityBinding<A : Activity, VM : IViewModel>(
         val activity: KClass<A>,

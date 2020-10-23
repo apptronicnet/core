@@ -25,7 +25,7 @@ fun Context.installAndroidApplicationPlugin(
 
 class AndroidApplicationPlugin internal constructor(
     private val androidApplication: Application
-) : Plugin() {
+) : Plugin {
 
     private var viewBinderFactory: ViewBinderFactory? = null
     private var transitionBuilder: TransitionBuilder? = null

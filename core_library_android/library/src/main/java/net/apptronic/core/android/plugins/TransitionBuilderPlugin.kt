@@ -19,7 +19,7 @@ private val ViewBinderFactoryPluginDescriptor = pluginDescriptor<TransitionBuild
 @Deprecated("Replaced by ViewTransitionFactory")
 private class TransitionBuilderPlugin(
     private val builder: TransitionBuilder
-) : Plugin() {
+) : Plugin {
 
     override fun onComponent(component: IComponent) {
         super.onComponent(component)

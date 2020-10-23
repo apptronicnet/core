@@ -16,7 +16,7 @@ private val ViewTransitionFactoryPluginDescriptor = pluginDescriptor<ViewTransit
 
 private class ViewTransitionFactoryPlugin(
     private val factory: ViewTransitionFactory
-) : Plugin() {
+) : Plugin {
 
     override fun onComponent(component: IComponent) {
         super.onComponent(component)

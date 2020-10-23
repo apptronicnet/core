@@ -16,7 +16,7 @@ private val ViewBinderFactoryPluginDescriptor = pluginDescriptor<ViewBinderFacto
 
 private class ViewBinderFactoryPlugin(
     private val factory: ViewBinderFactory
-) : Plugin() {
+) : Plugin {
 
     override fun onComponent(component: IComponent) {
         super.onComponent(component)
