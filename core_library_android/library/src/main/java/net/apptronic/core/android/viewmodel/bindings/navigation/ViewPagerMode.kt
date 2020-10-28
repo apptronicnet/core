@@ -5,7 +5,7 @@ import net.apptronic.core.android.viewmodel.Binding
 import net.apptronic.core.android.viewmodel.BindingContainer
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.ViewBinderFactory
-import net.apptronic.core.android.viewmodel.listadapters.TitleFactory
+import net.apptronic.core.android.viewmodel.listadapters.TitleAdapter
 import net.apptronic.core.android.viewmodel.listadapters.TitleProvider
 import net.apptronic.core.android.viewmodel.listadapters.ViewPagerAdapter
 import net.apptronic.core.android.viewmodel.navigation.ViewBinderListAdapter
@@ -35,8 +35,8 @@ private class ViewPagerNavigatorBinding(
             mode.styleAdapter ?: emptyViewStyleAdapter()
         )
         container.adapter = ViewPagerAdapter(viewModelAdapter).apply {
-            if (mode.titleFactory != null) {
-                titleProvider = TitleProvider(container.context, mode.titleFactory)
+            if (mode.titleAdapter != null) {
+                titleProvider = TitleProvider(container.context, mode.titleAdapter)
             }
         }
         navigator.setAdapter(viewModelAdapter)
@@ -46,6 +46,6 @@ private class ViewPagerNavigatorBinding(
 
 class ViewPagerMode(
     val binderFactory: ViewBinderFactory? = null,
-    val titleFactory: TitleFactory? = null,
+    val titleAdapter: TitleAdapter? = null,
     val styleAdapter: ViewStyleAdapter? = null
 )

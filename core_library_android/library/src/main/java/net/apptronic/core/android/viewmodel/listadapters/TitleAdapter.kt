@@ -5,16 +5,19 @@ import net.apptronic.core.mvvm.viewmodel.IViewModel
 
 class TitleProvider(
     private val context: Context,
-    private val titleFactory: TitleFactory
+    private val titleAdapter: TitleAdapter
 ) {
 
     fun getItemTitle(viewModel: IViewModel, position: Int): String {
-        return titleFactory.getItemTitle(context, viewModel, position) ?: ""
+        return titleAdapter.getItemTitle(context, viewModel, position) ?: ""
     }
 
 }
 
-interface TitleFactory {
+/**
+ * Provides titles for pages in [ViewPagerAdapter]
+ */
+interface TitleAdapter {
 
     fun getItemTitle(context: Context, viewModel: IViewModel, position: Int): String?
 
