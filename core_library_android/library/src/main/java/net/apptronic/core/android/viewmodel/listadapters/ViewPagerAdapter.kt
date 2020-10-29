@@ -26,11 +26,15 @@ class ViewPagerAdapter(
         val view = binderAdapter.createView(item.viewModel, container)
         val binder = binderAdapter.bindView(position, view)
         container.addView(view)
+        item.setVisible(true)
+        item.setFocused(true)
         return binder
     }
 
     override fun destroyItem(collection: ViewGroup, position: Int, obj: Any) {
         val binder = obj as ViewBinder<*>
+        binder.viewModelItem.setFocused(false)
+        binder.viewModelItem.setVisible(false)
         binderAdapter.unbindView(binder)
         collection.removeView(binder.view)
     }
