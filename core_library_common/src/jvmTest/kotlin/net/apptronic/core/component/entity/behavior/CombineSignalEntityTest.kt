@@ -21,7 +21,7 @@ class CombineSignalEntityTest {
         source1.set("Str")
         source2.set(0)
 
-        val result = context.combineAsSignals(source1, source2, source3, source4).record()
+        val result = context.whenAnyUpdates(source1, source2, source3, source4).record()
 
         result.assertSize(0)
 
