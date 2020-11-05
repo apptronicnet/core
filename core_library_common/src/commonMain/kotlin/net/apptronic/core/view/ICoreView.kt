@@ -1,8 +1,8 @@
 package net.apptronic.core.view
 
 import net.apptronic.core.UnderDevelopment
-import net.apptronic.core.component.entity.Entity
-import net.apptronic.core.component.entity.functions.map
+import net.apptronic.core.entity.Entity
+import net.apptronic.core.entity.functions.map
 import net.apptronic.core.view.containers.ICoreContainerView
 import net.apptronic.core.view.dimension.CoreLayoutDimension
 import net.apptronic.core.view.properties.HorizontalAlignment

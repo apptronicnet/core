@@ -2,13 +2,13 @@ package net.apptronic.core.commons.service
 
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.launch
-import net.apptronic.core.component.Component
-import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.coroutines.lifecycleCoroutineScope
-import net.apptronic.core.component.di.DependencyDescriptor
-import net.apptronic.core.component.inject
-import net.apptronic.core.component.lifecycle.enterStage
-import net.apptronic.core.component.lifecycle.exitStage
+import net.apptronic.core.context.Context
+import net.apptronic.core.context.component.Component
+import net.apptronic.core.context.component.inject
+import net.apptronic.core.context.coroutines.lifecycleCoroutineScope
+import net.apptronic.core.context.di.DependencyDescriptor
+import net.apptronic.core.context.lifecycle.enterStage
+import net.apptronic.core.context.lifecycle.exitStage
 
 internal class ServiceDispatcherImpl<T : Any, R : Any>(
         context: Context,

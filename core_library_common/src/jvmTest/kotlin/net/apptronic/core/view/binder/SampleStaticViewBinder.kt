@@ -1,9 +1,6 @@
 package net.apptronic.core.view.binder
 
-import net.apptronic.core.component.value
-import net.apptronic.core.mvvm.viewmodel.ViewModel
-import net.apptronic.core.mvvm.viewmodel.ViewModelContext
-import net.apptronic.core.mvvm.viewmodel.navigation.BasicTransition
+import net.apptronic.core.context.component.value
 import net.apptronic.core.view.*
 import net.apptronic.core.view.commons.ICoreTextView
 import net.apptronic.core.view.containers.frameContainer
@@ -16,6 +13,9 @@ import net.apptronic.core.view.widgets.CoreTextButtonView
 import net.apptronic.core.view.widgets.CoreTextView
 import net.apptronic.core.view.widgets.buttonTextView
 import net.apptronic.core.view.widgets.textView
+import net.apptronic.core.viewmodel.ViewModel
+import net.apptronic.core.viewmodel.ViewModelContext
+import net.apptronic.core.viewmodel.navigation.BasicTransition
 
 class SampleViewModel(context: ViewModelContext) : ViewModel(context) {
 

@@ -1,13 +1,13 @@
 package net.apptronic.core.commons.dataprovider
 
 import net.apptronic.core.commons.cache.CacheComponent
-import net.apptronic.core.component.context.Contextual
-import net.apptronic.core.component.di.ModuleDefinition
-import net.apptronic.core.component.di.SharedScope
-import net.apptronic.core.component.di.SingleScope
-import net.apptronic.core.component.di.parameters
-import net.apptronic.core.component.entity.Entity
-import net.apptronic.core.component.inject
+import net.apptronic.core.context.Contextual
+import net.apptronic.core.context.component.inject
+import net.apptronic.core.context.di.ModuleDefinition
+import net.apptronic.core.context.di.SharedScope
+import net.apptronic.core.context.di.SingleScope
+import net.apptronic.core.context.di.parameters
+import net.apptronic.core.entity.Entity
 
 fun <T : Any> Contextual.injectData(descriptor: DataProviderDescriptor<T, Unit>): Entity<T> {
     return inject(descriptor.holderDescriptor, parameters { add(descriptor.keyDescriptor, Unit) }).provideData(context)

@@ -2,17 +2,17 @@ package net.apptronic.core.commons.dataprovider
 
 import kotlinx.coroutines.withContext
 import net.apptronic.core.commons.cache.SimpleCache
-import net.apptronic.core.component.Component
-import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.context.childContext
-import net.apptronic.core.component.context.dependencyModule
-import net.apptronic.core.component.coroutines.ManualDispatcher
-import net.apptronic.core.component.entity.Entity
-import net.apptronic.core.component.entity.entities.asProperty
-import net.apptronic.core.component.entity.functions.mapSuspend
-import net.apptronic.core.component.now
-import net.apptronic.core.component.terminate
-import net.apptronic.core.testutils.testContext
+import net.apptronic.core.context.Context
+import net.apptronic.core.context.childContext
+import net.apptronic.core.context.component.Component
+import net.apptronic.core.context.component.now
+import net.apptronic.core.context.component.terminate
+import net.apptronic.core.context.coroutines.ManualDispatcher
+import net.apptronic.core.context.dependencyModule
+import net.apptronic.core.entity.Entity
+import net.apptronic.core.entity.entities.asProperty
+import net.apptronic.core.entity.functions.mapSuspend
+import net.apptronic.core.testutils.createTestContext
 import org.junit.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -35,7 +35,7 @@ class DataProviderWithCacheTest {
 
     }
 
-    val context = testContext {
+    val context = createTestContext {
         dependencyModule {
             sharedCache(DataProviderDescriptor) {
                 SimpleCache(scopedContext(), maxCount = 2)

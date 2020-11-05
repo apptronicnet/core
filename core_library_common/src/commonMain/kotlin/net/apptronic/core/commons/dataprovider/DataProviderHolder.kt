@@ -4,10 +4,10 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.commons.cache.CacheComponent
-import net.apptronic.core.component.Component
-import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.entity.Entity
-import net.apptronic.core.component.value
+import net.apptronic.core.context.Context
+import net.apptronic.core.context.component.Component
+import net.apptronic.core.context.component.value
+import net.apptronic.core.entity.Entity
 
 class DataProviderHolder<T, K>(
         context: Context,

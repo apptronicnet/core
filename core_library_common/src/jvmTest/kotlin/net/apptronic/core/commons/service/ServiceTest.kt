@@ -2,9 +2,9 @@ package net.apptronic.core.commons.service
 
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.runBlocking
-import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.context.dependencyModule
-import net.apptronic.core.testutils.testContext
+import net.apptronic.core.context.Context
+import net.apptronic.core.context.dependencyModule
+import net.apptronic.core.testutils.createTestContext
 import org.junit.Test
 import kotlin.test.assertEquals
 
@@ -27,7 +27,7 @@ class ServiceTest {
         }
     }
 
-    val context = testContext {
+    val context = createTestContext {
         dependencyModule {
             service(StringService) {
                 ServiceExample(scopedContext())

@@ -1,16 +1,16 @@
 package net.apptronic.core.view
 
 import net.apptronic.core.UnderDevelopment
-import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.context.ContextPlugins
-import net.apptronic.core.component.context.terminate
-import net.apptronic.core.component.coroutines.CoroutineDispatchers
-import net.apptronic.core.component.di.DependencyDispatcher
-import net.apptronic.core.component.lifecycle.BASE_LIFECYCLE
-import net.apptronic.core.component.lifecycle.Lifecycle
-import net.apptronic.core.component.plugin.Extensions
-import net.apptronic.core.component.plugin.Plugin
-import net.apptronic.core.component.plugin.PluginDescriptor
+import net.apptronic.core.context.Context
+import net.apptronic.core.context.ContextPlugins
+import net.apptronic.core.context.coroutines.CoroutineDispatchers
+import net.apptronic.core.context.di.DependencyDispatcher
+import net.apptronic.core.context.lifecycle.BASE_LIFECYCLE
+import net.apptronic.core.context.lifecycle.Lifecycle
+import net.apptronic.core.context.plugin.Extensions
+import net.apptronic.core.context.plugin.Plugin
+import net.apptronic.core.context.plugin.PluginDescriptor
+import net.apptronic.core.context.terminate
 
 @UnderDevelopment
 class CoreViewContext : Context {

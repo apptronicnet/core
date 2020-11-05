@@ -2,9 +2,9 @@ package net.apptronic.core.ios.viewmodel.navigation
 
 import net.apptronic.core.ios.viewmodel.ViewBinder
 import net.apptronic.core.ios.viewmodel.ViewBinderFactory
-import net.apptronic.core.mvvm.viewmodel.navigation.TransitionInfo
-import net.apptronic.core.mvvm.viewmodel.navigation.ViewModelItem
-import net.apptronic.core.mvvm.viewmodel.navigation.adapters.SingleViewModelAdapter
+import net.apptronic.core.viewmodel.navigation.TransitionInfo
+import net.apptronic.core.viewmodel.navigation.ViewModelItem
+import net.apptronic.core.viewmodel.navigation.adapters.SingleViewModelAdapter
 import platform.UIKit.UIView
 import platform.UIKit.addSubview
 import platform.UIKit.removeFromSuperview

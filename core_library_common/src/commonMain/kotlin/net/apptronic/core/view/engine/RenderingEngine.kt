@@ -2,9 +2,9 @@ package net.apptronic.core.view.engine
 
 import net.apptronic.core.UnderDevelopment
 import net.apptronic.core.base.utils.isInstanceOf
-import net.apptronic.core.mvvm.viewmodel.IViewModel
 import net.apptronic.core.view.ICoreView
 import net.apptronic.core.view.ICoreViewRepresentable
+import net.apptronic.core.viewmodel.IViewModel
 import kotlin.reflect.KClass
 
 @UnderDevelopment

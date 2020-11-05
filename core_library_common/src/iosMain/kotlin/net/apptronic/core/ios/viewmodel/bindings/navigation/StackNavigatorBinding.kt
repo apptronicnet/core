@@ -5,8 +5,8 @@ import net.apptronic.core.ios.viewmodel.BindingContainer
 import net.apptronic.core.ios.viewmodel.ViewBinder
 import net.apptronic.core.ios.viewmodel.ViewBinderFactory
 import net.apptronic.core.ios.viewmodel.navigation.SingleViewBinderAdapter
-import net.apptronic.core.mvvm.viewmodel.IViewModel
-import net.apptronic.core.mvvm.viewmodel.navigation.StackNavigationModel
+import net.apptronic.core.viewmodel.IViewModel
+import net.apptronic.core.viewmodel.navigation.StackNavigationModel
 import platform.UIKit.UIView
 
 fun BindingContainer.bindStackNavigator(

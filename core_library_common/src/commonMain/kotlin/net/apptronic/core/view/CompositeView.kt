@@ -1,8 +1,8 @@
 package net.apptronic.core.view
 
 import net.apptronic.core.UnderDevelopment
-import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.context.Contextual
+import net.apptronic.core.context.Context
+import net.apptronic.core.context.Contextual
 
 @UnderDevelopment
 abstract class CompositeView : ICoreViewRepresentable, ICoreViewBuilder, Contextual {

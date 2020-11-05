@@ -1,6 +1,6 @@
 package net.apptronic.core.commons.service
 
-import net.apptronic.core.component.di.dependencyDescriptor
+import net.apptronic.core.context.di.dependencyDescriptor
 import kotlin.reflect.KClass
 
 inline fun <reified T : Any, reified R : Any> serviceDescriptor(): ServiceDescriptor<T, R> {

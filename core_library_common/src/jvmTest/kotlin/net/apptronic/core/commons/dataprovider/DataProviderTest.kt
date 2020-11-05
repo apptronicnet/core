@@ -1,18 +1,17 @@
 package net.apptronic.core.commons.dataprovider
 
 import net.apptronic.core.assertListEquals
-import net.apptronic.core.component.*
-import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.context.EmptyContext
-import net.apptronic.core.component.context.childContext
-import net.apptronic.core.component.context.dependencyModule
-import net.apptronic.core.component.entity.Entity
-import net.apptronic.core.component.entity.behavior.filter
-import net.apptronic.core.component.entity.behavior.filterNotNull
-import net.apptronic.core.component.entity.behavior.resendWhen
-import net.apptronic.core.component.entity.entities.asProperty
-import net.apptronic.core.component.entity.functions.map
-import net.apptronic.core.testutils.testContext
+import net.apptronic.core.context.Context
+import net.apptronic.core.context.childContext
+import net.apptronic.core.context.component.*
+import net.apptronic.core.context.dependencyModule
+import net.apptronic.core.entity.Entity
+import net.apptronic.core.entity.behavior.filter
+import net.apptronic.core.entity.behavior.filterNotNull
+import net.apptronic.core.entity.behavior.resendWhen
+import net.apptronic.core.entity.entities.asProperty
+import net.apptronic.core.entity.functions.map
+import net.apptronic.core.testutils.createTestContext
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -63,14 +62,14 @@ class DataProviderTest {
 
     }
 
-    val context = testContext {
+    val context = createTestContext {
         dependencyModule {
             single {
-                Repository(scopedContext(EmptyContext))
+                Repository(scopedContext(net.apptronic.core.context.EmptyContext))
             }
             sharedDataProvider<String, Int>(StringProviderDescriptor) {
                 StringValueDataProvider(
-                        scopedContext(EmptyContext), it
+                        scopedContext(net.apptronic.core.context.EmptyContext), it
                 )
             }
         }

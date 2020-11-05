@@ -1,7 +1,7 @@
 package net.apptronic.core.view
 
 import net.apptronic.core.UnderDevelopment
-import net.apptronic.core.component.entity.Entity
+import net.apptronic.core.entity.Entity
 
 @UnderDevelopment
 interface ViewPropertyOwner {

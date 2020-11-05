@@ -1,11 +1,11 @@
 package net.apptronic.core.view
 
 import net.apptronic.core.UnderDevelopment
-import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.entity.Entity
-import net.apptronic.core.component.entity.behavior.watch
-import net.apptronic.core.component.entity.entities.setAs
-import net.apptronic.core.component.value
+import net.apptronic.core.context.Context
+import net.apptronic.core.context.component.value
+import net.apptronic.core.entity.Entity
+import net.apptronic.core.entity.behavior.watch
+import net.apptronic.core.entity.entities.setAs
 
 @UnderDevelopment
 class ViewProperty<T> internal constructor(

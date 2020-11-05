@@ -1,7 +1,7 @@
 package net.apptronic.core.testutils
 
-import net.apptronic.core.component.lifecycle.defineLifecycle
-import net.apptronic.core.component.lifecycle.lifecycleStage
+import net.apptronic.core.context.lifecycle.defineLifecycle
+import net.apptronic.core.context.lifecycle.lifecycleStage
 
 val TEST_LIFECYCLE = defineLifecycle {
     addStage(TestLifecycle.STAGE_CREATED)

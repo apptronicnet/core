@@ -1,6 +1,6 @@
 package net.apptronic.core.view.engine
 
-import net.apptronic.core.component.value
+import net.apptronic.core.context.component.value
 import net.apptronic.core.view.CompositeView
 import net.apptronic.core.view.ICoreView
 import net.apptronic.core.view.containers.stackContainer

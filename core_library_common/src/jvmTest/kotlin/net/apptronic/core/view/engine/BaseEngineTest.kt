@@ -1,7 +1,7 @@
 package net.apptronic.core.view.engine
 
-import net.apptronic.core.component.context.Contextual
-import net.apptronic.core.component.context.terminate
+import net.apptronic.core.context.Contextual
+import net.apptronic.core.context.terminate
 import net.apptronic.core.view.ICoreView
 import net.apptronic.core.view.ICoreViewRepresentable
 import net.apptronic.core.view.engine.base.TestCanvas

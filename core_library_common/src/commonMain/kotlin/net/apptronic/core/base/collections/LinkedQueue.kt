@@ -2,7 +2,7 @@ package net.apptronic.core.base.collections
 
 import kotlinx.coroutines.CompletableDeferred
 import net.apptronic.core.base.observable.Observer
-import net.apptronic.core.base.observable.subject.ValueHolder
+import net.apptronic.core.base.subject.ValueHolder
 
 class LinkedQueue<T> : Queue<T>, Observer<T> {
 

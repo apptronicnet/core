@@ -1,7 +1,7 @@
 package net.apptronic.core.commons.service
 
-import net.apptronic.core.component.Component
-import net.apptronic.core.component.context.Context
+import net.apptronic.core.context.Context
+import net.apptronic.core.context.component.Component
 
 abstract class Service<T : Any, R : Any>(context: Context) : Component(context) {
 

@@ -1,7 +1,7 @@
 package net.apptronic.core.view
 
 import net.apptronic.core.UnderDevelopment
-import net.apptronic.core.component.context.Context
+import net.apptronic.core.context.Context
 
 @UnderDevelopment
 interface ViewPropertyConsumer {

@@ -1,8 +1,8 @@
 package net.apptronic.core.ios.viewmodel
 
-import net.apptronic.core.component.plugin.extensionDescriptor
-import net.apptronic.core.debugError
-import net.apptronic.core.mvvm.viewmodel.IViewModel
+import net.apptronic.core.base.platform.debugError
+import net.apptronic.core.context.plugin.extensionDescriptor
+import net.apptronic.core.viewmodel.IViewModel
 
 private val ViewBinderExtensionsDescriptor = extensionDescriptor<ViewBinder<*, *>>()
 

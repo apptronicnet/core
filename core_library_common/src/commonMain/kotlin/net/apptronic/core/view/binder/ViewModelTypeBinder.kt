@@ -1,10 +1,10 @@
 package net.apptronic.core.view.binder
 
 import net.apptronic.core.UnderDevelopment
-import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.context.Contextual
-import net.apptronic.core.mvvm.viewmodel.IViewModel
+import net.apptronic.core.context.Context
+import net.apptronic.core.context.Contextual
 import net.apptronic.core.view.CoreViewContext
+import net.apptronic.core.viewmodel.IViewModel
 
 @UnderDevelopment
 abstract class ViewModelTypeBinder<T : IViewModel> : ViewModelBinder<T>(), Contextual {

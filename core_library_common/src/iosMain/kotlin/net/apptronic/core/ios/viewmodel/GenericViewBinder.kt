@@ -1,6 +1,6 @@
 package net.apptronic.core.ios.viewmodel
 
-import net.apptronic.core.mvvm.viewmodel.IViewModel
+import net.apptronic.core.viewmodel.IViewModel
 import platform.UIKit.*
 
 class GenericViewBinder : ViewBinder<IViewModel, GenericViewBinder.GenericView>() {

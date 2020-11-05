@@ -1,10 +1,10 @@
 package net.apptronic.core
 
-import net.apptronic.core.base.observable.subject.ValueHolder
-import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.entity.Entity
-import net.apptronic.core.component.entity.EntitySubscription
-import net.apptronic.core.component.entity.subscriptions.EntitySubscriptionListener
+import net.apptronic.core.base.subject.ValueHolder
+import net.apptronic.core.context.Context
+import net.apptronic.core.entity.Entity
+import net.apptronic.core.entity.EntitySubscription
+import net.apptronic.core.entity.subscriptions.EntitySubscriptionListener
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 

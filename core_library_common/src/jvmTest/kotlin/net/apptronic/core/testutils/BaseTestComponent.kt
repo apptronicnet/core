@@ -1,13 +1,13 @@
 package net.apptronic.core.testutils
 
-import net.apptronic.core.component.Component
-import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.lifecycle.Lifecycle
-import net.apptronic.core.component.lifecycle.LifecycleStage
+import net.apptronic.core.context.Context
+import net.apptronic.core.context.component.Component
+import net.apptronic.core.context.lifecycle.Lifecycle
+import net.apptronic.core.context.lifecycle.LifecycleStage
 
 open class BaseTestComponent : Component {
 
-    constructor(contextInitializer: Context.() -> Unit = {}) : super(testContext(builder = contextInitializer))
+    constructor(contextInitializer: Context.() -> Unit = {}) : super(createTestContext(builder = contextInitializer))
 
     fun getLifecycle(): Lifecycle = context.lifecycle
 

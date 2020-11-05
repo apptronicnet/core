@@ -1,8 +1,7 @@
 package net.apptronic.core.base.observable
 
-import net.apptronic.core.base.observable.extensions.DistinctUntilChangedObserver
-import net.apptronic.core.utils.EqComparator
-import net.apptronic.core.utils.SimpleEqComparator
+import net.apptronic.core.base.utils.EqComparator
+import net.apptronic.core.base.utils.SimpleEqComparator
 
 fun <T> Observable<T>.distinctUntilChanged(eqComparator: EqComparator<T> = SimpleEqComparator()): Observable<T> {
     return DistinctUntilChangedObservable(this, eqComparator)

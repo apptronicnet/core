@@ -1,7 +1,7 @@
 package net.apptronic.core.base.collections
 
-import net.apptronic.core.base.observable.subject.ValueHolder
-import net.apptronic.core.component.entity.Entity
+import net.apptronic.core.base.subject.ValueHolder
+import net.apptronic.core.entity.Entity
 
 fun <T> queueOf(): Queue<T> {
     return LinkedQueue()

@@ -1,7 +1,7 @@
 package net.apptronic.core.commons.dataprovider
 
 import net.apptronic.core.commons.cache.CacheComponent
-import net.apptronic.core.component.di.dependencyDescriptor
+import net.apptronic.core.context.di.dependencyDescriptor
 import kotlin.reflect.KClass
 
 inline fun <reified T : Any, reified K : Any> dataProviderDescriptor() = dataProviderDescriptor(T::class, K::class)

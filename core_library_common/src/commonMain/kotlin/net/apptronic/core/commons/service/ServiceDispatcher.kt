@@ -1,9 +1,9 @@
 package net.apptronic.core.commons.service
 
-import net.apptronic.core.component.context.Contextual
-import net.apptronic.core.component.di.ModuleDefinition
-import net.apptronic.core.component.di.SharedScope
-import net.apptronic.core.component.inject
+import net.apptronic.core.context.Contextual
+import net.apptronic.core.context.component.inject
+import net.apptronic.core.context.di.ModuleDefinition
+import net.apptronic.core.context.di.SharedScope
 
 interface ServiceDispatcher<T : Any, R : Any> {
 
