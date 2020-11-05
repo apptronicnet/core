@@ -1,11 +1,11 @@
 package net.apptronic.core.viewmodel.commons
 
-import net.apptronic.core.context.component.mutableValue
-import net.apptronic.core.context.component.typedEvent
-import net.apptronic.core.context.component.value
 import net.apptronic.core.entity.Entity
 import net.apptronic.core.entity.behavior.onSubscribe
 import net.apptronic.core.entity.entities.asEvent
+import net.apptronic.core.entity.mutableValue
+import net.apptronic.core.entity.typedEvent
+import net.apptronic.core.entity.value
 import net.apptronic.core.viewmodel.IViewModel
 import net.apptronic.core.viewmodel.ViewModel
 import net.apptronic.core.viewmodel.ViewModelContext

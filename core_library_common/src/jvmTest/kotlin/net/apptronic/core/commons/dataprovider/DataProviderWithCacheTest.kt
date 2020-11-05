@@ -5,13 +5,13 @@ import net.apptronic.core.commons.cache.SimpleCache
 import net.apptronic.core.context.Context
 import net.apptronic.core.context.childContext
 import net.apptronic.core.context.component.Component
-import net.apptronic.core.context.component.now
 import net.apptronic.core.context.component.terminate
 import net.apptronic.core.context.coroutines.ManualDispatcher
 import net.apptronic.core.context.dependencyModule
 import net.apptronic.core.entity.Entity
 import net.apptronic.core.entity.entities.asProperty
 import net.apptronic.core.entity.functions.mapSuspend
+import net.apptronic.core.entity.now
 import net.apptronic.core.testutils.createTestContext
 import org.junit.Test
 import kotlin.test.assertFalse

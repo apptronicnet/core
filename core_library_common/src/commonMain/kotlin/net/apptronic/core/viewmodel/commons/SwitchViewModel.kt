@@ -2,8 +2,6 @@ package net.apptronic.core.viewmodel.commons
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import net.apptronic.core.context.component.typedEvent
-import net.apptronic.core.context.component.value
 import net.apptronic.core.context.coroutines.lifecycleCoroutineScope
 import net.apptronic.core.entity.Entity
 import net.apptronic.core.entity.base.UpdateEntity
@@ -12,6 +10,8 @@ import net.apptronic.core.entity.entities.setTo
 import net.apptronic.core.entity.functions.and
 import net.apptronic.core.entity.functions.onNext
 import net.apptronic.core.entity.functions.onNextSuspend
+import net.apptronic.core.entity.typedEvent
+import net.apptronic.core.entity.value
 import net.apptronic.core.viewmodel.IViewModel
 import net.apptronic.core.viewmodel.ViewModel
 import net.apptronic.core.viewmodel.ViewModelContext

@@ -1,15 +1,15 @@
 package net.apptronic.core.viewmodel.navigation
 
 import net.apptronic.core.context.component.terminate
-import net.apptronic.core.context.component.value
 import net.apptronic.core.context.lifecycle.enterStage
 import net.apptronic.core.context.lifecycle.exitStage
-import net.apptronic.core.context.viewModelContext
+import net.apptronic.core.entity.value
 import net.apptronic.core.testutils.createTestContext
 import net.apptronic.core.viewmodel.IViewModel
 import net.apptronic.core.viewmodel.ViewModel
 import net.apptronic.core.viewmodel.ViewModelLifecycle
 import net.apptronic.core.viewmodel.navigation.models.StaticListNavigatorContent
+import net.apptronic.core.viewmodel.viewModelContext
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse

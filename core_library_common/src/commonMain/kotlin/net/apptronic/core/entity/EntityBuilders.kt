@@ -1,9 +1,8 @@
-package net.apptronic.core.context.component
+package net.apptronic.core.entity
 
 import kotlinx.coroutines.CoroutineScope
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.context.Contextual
-import net.apptronic.core.entity.Entity
 import net.apptronic.core.entity.entities.*
 import net.apptronic.core.entity.functions.onNextSuspend
 

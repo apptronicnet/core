@@ -1,9 +1,9 @@
 package net.apptronic.core.entity.exceptions
 
-import net.apptronic.core.context.component.value
 import net.apptronic.core.entity.entities.Property
 import net.apptronic.core.entity.entities.asProperty
 import net.apptronic.core.entity.functions.map
+import net.apptronic.core.entity.value
 import net.apptronic.core.testutils.createTestContext
 import org.junit.Test
 import kotlin.test.*

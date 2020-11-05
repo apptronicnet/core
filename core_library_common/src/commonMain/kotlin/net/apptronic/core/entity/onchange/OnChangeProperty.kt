@@ -5,12 +5,12 @@ import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.base.subject.ValueHolder
 import net.apptronic.core.context.Context
 import net.apptronic.core.context.Contextual
-import net.apptronic.core.context.component.typedEvent
-import net.apptronic.core.context.component.value
 import net.apptronic.core.entity.Entity
 import net.apptronic.core.entity.base.EntityValue
 import net.apptronic.core.entity.base.ObservableEntity
 import net.apptronic.core.entity.entities.setAs
+import net.apptronic.core.entity.typedEvent
+import net.apptronic.core.entity.value
 
 fun <T, E> Entity<Next<T, E>>.asOnChangeProperty(): OnChangeProperty<T, E> {
     return OnChangeValueImpl<T, E>(context).setAs(this)

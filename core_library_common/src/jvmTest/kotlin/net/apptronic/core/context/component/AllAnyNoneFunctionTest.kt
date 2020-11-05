@@ -2,6 +2,7 @@ package net.apptronic.core.context.component
 
 import net.apptronic.core.entity.entities.setAs
 import net.apptronic.core.entity.functions.*
+import net.apptronic.core.entity.value
 import net.apptronic.core.testutils.createTestContext
 import org.junit.Test
 

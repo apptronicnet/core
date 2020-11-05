@@ -8,11 +8,11 @@ import net.apptronic.core.base.elapsedRealtimeMillis
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.context.Context
 import net.apptronic.core.context.Contextual
-import net.apptronic.core.context.component.typedEvent
-import net.apptronic.core.context.component.value
 import net.apptronic.core.context.coroutines.createContextCoroutineScope
 import net.apptronic.core.context.coroutines.createLifecycleCoroutineScope
 import net.apptronic.core.entity.Entity
+import net.apptronic.core.entity.typedEvent
+import net.apptronic.core.entity.value
 
 
 fun Contextual.timer(

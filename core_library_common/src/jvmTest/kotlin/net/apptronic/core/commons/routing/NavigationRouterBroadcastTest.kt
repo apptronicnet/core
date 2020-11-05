@@ -1,12 +1,12 @@
 package net.apptronic.core.commons.routing
 
 import net.apptronic.core.context.Contextual
-import net.apptronic.core.context.component.typedEvent
-import net.apptronic.core.context.viewModelContext
+import net.apptronic.core.entity.typedEvent
 import net.apptronic.core.record
 import net.apptronic.core.testutils.createTestContext
 import net.apptronic.core.viewmodel.ViewModel
 import net.apptronic.core.viewmodel.ViewModelContext
+import net.apptronic.core.viewmodel.viewModelContext
 import org.junit.Test
 
 class NavigationRouterBroadcastTest {

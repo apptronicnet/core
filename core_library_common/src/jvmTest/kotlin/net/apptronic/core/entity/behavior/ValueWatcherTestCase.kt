@@ -1,8 +1,8 @@
 package net.apptronic.core.entity.behavior
 
-import net.apptronic.core.context.component.mutableValue
 import net.apptronic.core.context.component.terminate
-import net.apptronic.core.context.component.value
+import net.apptronic.core.entity.mutableValue
+import net.apptronic.core.entity.value
 import net.apptronic.core.testutils.BaseTestComponent
 import org.junit.Test
 

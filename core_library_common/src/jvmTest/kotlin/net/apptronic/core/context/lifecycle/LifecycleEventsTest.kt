@@ -1,7 +1,7 @@
 package net.apptronic.core.context.lifecycle
 
-import net.apptronic.core.context.component.genericEvent
-import net.apptronic.core.context.component.typedEvent
+import net.apptronic.core.entity.genericEvent
+import net.apptronic.core.entity.typedEvent
 import net.apptronic.core.testutils.BaseTestComponent
 import net.apptronic.core.testutils.TestLifecycle
 import org.junit.Test

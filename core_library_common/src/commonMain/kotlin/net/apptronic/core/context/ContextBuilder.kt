@@ -5,7 +5,6 @@ import net.apptronic.core.context.di.declareModule
 import net.apptronic.core.context.di.generatedModuleName
 import net.apptronic.core.context.lifecycle.BASE_LIFECYCLE
 import net.apptronic.core.context.lifecycle.LifecycleDefinition
-import net.apptronic.core.viewmodel.ViewModelContext
 
 fun Context.dependencyModule(moduleDefinition: ModuleDefinition) {
     dependencyDispatcher.addModule(moduleDefinition)
@@ -23,14 +22,4 @@ fun Contextual.childContext(lifecycleDefinition: LifecycleDefinition = BASE_LIFE
 
 fun <T : Context> Contextual.childContext(contextDefinition: ContextDefinition<T>): T {
     return contextDefinition.createContext(context)
-}
-
-fun Contextual.viewModelContext(definition: ContextDefinition<ViewModelContext>): ViewModelContext {
-    return definition.createContext(context)
-}
-
-fun Contextual.viewModelContext(name: String = "ViewModelContext", builder: ViewModelContext.() -> Unit = {}): ViewModelContext {
-    val viewModelContext = ViewModelContext(parent = context, name = name)
-    viewModelContext.builder()
-    return viewModelContext
 }

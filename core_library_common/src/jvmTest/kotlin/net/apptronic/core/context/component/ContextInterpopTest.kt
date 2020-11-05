@@ -5,6 +5,7 @@ import net.apptronic.core.context.lifecycle.enterStage
 import net.apptronic.core.context.lifecycle.exitStage
 import net.apptronic.core.context.terminate
 import net.apptronic.core.entity.entities.setAs
+import net.apptronic.core.entity.value
 import net.apptronic.core.testutils.BaseTestComponent
 import net.apptronic.core.testutils.TestLifecycle
 import net.apptronic.core.testutils.createTestContext

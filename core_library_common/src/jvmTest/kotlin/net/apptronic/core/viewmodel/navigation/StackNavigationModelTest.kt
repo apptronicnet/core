@@ -2,13 +2,13 @@ package net.apptronic.core.viewmodel.navigation
 
 import net.apptronic.core.context.lifecycle.enterStage
 import net.apptronic.core.context.terminate
-import net.apptronic.core.context.viewModelContext
 import net.apptronic.core.testutils.createTestContext
 import net.apptronic.core.viewmodel.IViewModel
 import net.apptronic.core.viewmodel.ViewModel
 import net.apptronic.core.viewmodel.ViewModelLifecycle
 import net.apptronic.core.viewmodel.navigation.adapters.SingleViewModelAdapter
 import net.apptronic.core.viewmodel.navigation.models.SingleItemNavigatorContent
+import net.apptronic.core.viewmodel.viewModelContext
 import org.junit.After
 import org.junit.Test
 import kotlin.test.assertEquals

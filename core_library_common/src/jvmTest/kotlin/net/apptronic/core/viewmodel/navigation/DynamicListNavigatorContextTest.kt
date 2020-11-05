@@ -2,9 +2,8 @@ package net.apptronic.core.viewmodel.navigation
 
 import net.apptronic.core.context.Context
 import net.apptronic.core.context.childContext
-import net.apptronic.core.context.component.value
 import net.apptronic.core.context.lifecycle.enterStage
-import net.apptronic.core.context.viewModelContext
+import net.apptronic.core.entity.value
 import net.apptronic.core.viewmodel.*
 import org.junit.Test
 

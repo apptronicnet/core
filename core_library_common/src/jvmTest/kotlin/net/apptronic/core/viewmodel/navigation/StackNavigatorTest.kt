@@ -1,11 +1,11 @@
 package net.apptronic.core.viewmodel.navigation
 
 import net.apptronic.core.context.component.terminate
-import net.apptronic.core.context.viewModelContext
 import net.apptronic.core.testutils.createTestContext
 import net.apptronic.core.viewmodel.IViewModel
 import net.apptronic.core.viewmodel.ViewModel
 import net.apptronic.core.viewmodel.ViewModelContext
+import net.apptronic.core.viewmodel.viewModelContext
 import kotlin.test.Test
 
 class StackNavigatorTest {

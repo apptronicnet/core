@@ -1,6 +1,6 @@
 package net.apptronic.core.view.binder
 
-import net.apptronic.core.context.component.value
+import net.apptronic.core.entity.value
 import net.apptronic.core.view.*
 import net.apptronic.core.view.commons.ICoreTextView
 import net.apptronic.core.view.containers.frameContainer

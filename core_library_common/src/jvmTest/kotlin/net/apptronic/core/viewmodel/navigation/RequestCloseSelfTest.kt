@@ -1,12 +1,12 @@
 package net.apptronic.core.viewmodel.navigation
 
 import net.apptronic.core.context.terminate
-import net.apptronic.core.context.viewModelContext
 import net.apptronic.core.testutils.createTestContext
 import net.apptronic.core.viewmodel.ViewModel
 import net.apptronic.core.viewmodel.navigation.adapters.SingleViewModelAdapter
 import net.apptronic.core.viewmodel.navigation.adapters.SingleViewModelListAdapter
 import net.apptronic.core.viewmodel.navigation.adapters.ViewModelListAdapter
+import net.apptronic.core.viewmodel.viewModelContext
 import org.junit.After
 import org.junit.Test
 import kotlin.test.assertSame

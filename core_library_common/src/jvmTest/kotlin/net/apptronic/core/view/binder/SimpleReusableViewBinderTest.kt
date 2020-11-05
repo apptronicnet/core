@@ -1,9 +1,8 @@
 package net.apptronic.core.view.binder
 
-import net.apptronic.core.context.component.genericEvent
-import net.apptronic.core.context.component.value
-import net.apptronic.core.context.viewModelContext
 import net.apptronic.core.entity.functions.map
+import net.apptronic.core.entity.genericEvent
+import net.apptronic.core.entity.value
 import net.apptronic.core.testutils.createTestContext
 import net.apptronic.core.view.commons.ICoreButtonView
 import net.apptronic.core.view.commons.ICoreTextView
@@ -16,6 +15,7 @@ import net.apptronic.core.view.widgets.buttonTextView
 import net.apptronic.core.view.widgets.textView
 import net.apptronic.core.viewmodel.ViewModel
 import net.apptronic.core.viewmodel.ViewModelContext
+import net.apptronic.core.viewmodel.viewModelContext
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.fail

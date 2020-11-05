@@ -2,7 +2,6 @@ package net.apptronic.core.viewmodel
 
 import net.apptronic.core.context.lifecycle.enterStage
 import net.apptronic.core.context.lifecycle.exitStage
-import net.apptronic.core.context.viewModelContext
 import net.apptronic.core.testutils.createTestContext
 
 open class TestViewModel : ViewModel(createTestContext().viewModelContext()) {

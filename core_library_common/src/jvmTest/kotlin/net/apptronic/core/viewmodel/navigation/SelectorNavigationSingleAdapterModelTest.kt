@@ -2,12 +2,8 @@ package net.apptronic.core.viewmodel.navigation
 
 import net.apptronic.core.assertListEquals
 import net.apptronic.core.context.lifecycle.enterStage
-import net.apptronic.core.context.viewModelContext
 import net.apptronic.core.testutils.createTestContext
-import net.apptronic.core.viewmodel.IViewModel
-import net.apptronic.core.viewmodel.ViewModel
-import net.apptronic.core.viewmodel.ViewModelContext
-import net.apptronic.core.viewmodel.ViewModelLifecycle
+import net.apptronic.core.viewmodel.*
 import net.apptronic.core.viewmodel.navigation.adapters.SingleViewModelAdapter
 import net.apptronic.core.viewmodel.navigation.models.ISelectorNavigationModel
 import org.junit.Test

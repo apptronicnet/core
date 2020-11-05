@@ -4,13 +4,13 @@ import net.apptronic.core.base.SubscriptionHolders
 import net.apptronic.core.base.addTo
 import net.apptronic.core.base.observable.Observable
 import net.apptronic.core.base.platform.debugError
-import net.apptronic.core.context.component.value
 import net.apptronic.core.context.lifecycle.LifecycleStageDefinition
 import net.apptronic.core.context.lifecycle.enterStage
 import net.apptronic.core.context.lifecycle.exitStage
 import net.apptronic.core.entity.Entity
 import net.apptronic.core.entity.entities.distinctUntilChanged
 import net.apptronic.core.entity.functions.and
+import net.apptronic.core.entity.value
 import net.apptronic.core.viewmodel.IViewModel
 import net.apptronic.core.viewmodel.ViewModelLifecycle
 

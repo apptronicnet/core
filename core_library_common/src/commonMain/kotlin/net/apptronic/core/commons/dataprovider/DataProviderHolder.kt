@@ -6,8 +6,8 @@ import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.commons.cache.CacheComponent
 import net.apptronic.core.context.Context
 import net.apptronic.core.context.component.Component
-import net.apptronic.core.context.component.value
 import net.apptronic.core.entity.Entity
+import net.apptronic.core.entity.value
 
 class DataProviderHolder<T, K>(
         context: Context,

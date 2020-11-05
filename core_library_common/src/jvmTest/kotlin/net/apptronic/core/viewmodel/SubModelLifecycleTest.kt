@@ -1,7 +1,6 @@
 package net.apptronic.core.viewmodel
 
 import net.apptronic.core.context.component.terminate
-import net.apptronic.core.context.viewModelContext
 import net.apptronic.core.testutils.createTestContext
 import net.apptronic.core.viewmodel.navigation.ViewModelLifecycleController
 import net.apptronic.core.viewmodel.navigation.stackNavigator

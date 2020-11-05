@@ -5,10 +5,10 @@ import kotlinx.coroutines.withContext
 import net.apptronic.core.context.Context
 import net.apptronic.core.context.component.Component
 import net.apptronic.core.context.component.inject
-import net.apptronic.core.context.component.value
 import net.apptronic.core.context.coroutines.ManualDispatcher
 import net.apptronic.core.context.coroutines.contextCoroutineScope
 import net.apptronic.core.context.dependencyModule
+import net.apptronic.core.entity.value
 import net.apptronic.core.testutils.createTestContext
 import org.junit.Test
 import kotlin.test.assertEquals

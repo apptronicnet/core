@@ -1,6 +1,6 @@
 package net.apptronic.core.entity.behavior
 
-import net.apptronic.core.context.component.typedEvent
+import net.apptronic.core.entity.typedEvent
 import net.apptronic.core.testutils.createTestContext
 import org.junit.Test
 import kotlin.test.assertEquals

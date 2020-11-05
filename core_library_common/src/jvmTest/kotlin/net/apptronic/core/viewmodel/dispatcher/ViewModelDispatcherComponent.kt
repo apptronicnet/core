@@ -2,8 +2,8 @@ package net.apptronic.core.viewmodel.dispatcher
 
 import net.apptronic.core.context.Context
 import net.apptronic.core.context.component.Component
-import net.apptronic.core.context.component.genericEvent
-import net.apptronic.core.context.component.typedEvent
+import net.apptronic.core.entity.genericEvent
+import net.apptronic.core.entity.typedEvent
 import net.apptronic.core.testutils.createTestContext
 import net.apptronic.core.viewmodel.IViewModel
 import net.apptronic.core.viewmodel.navigation.ViewModelLifecycleController

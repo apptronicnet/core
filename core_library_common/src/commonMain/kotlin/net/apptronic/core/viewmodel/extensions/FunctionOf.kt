@@ -1,11 +1,11 @@
 package net.apptronic.core.viewmodel.extensions
 
 import net.apptronic.core.context.Contextual
-import net.apptronic.core.context.component.property
 import net.apptronic.core.entity.Entity
 import net.apptronic.core.entity.entities.Property
 import net.apptronic.core.entity.functions.entityArrayFunction
 import net.apptronic.core.entity.functions.entityFunction
+import net.apptronic.core.entity.property
 
 fun <T, A> Contextual.functionOf(
         a: Entity<A>,

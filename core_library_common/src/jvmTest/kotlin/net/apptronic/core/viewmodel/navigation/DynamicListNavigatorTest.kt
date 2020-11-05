@@ -1,12 +1,12 @@
 package net.apptronic.core.viewmodel.navigation
 
 import net.apptronic.core.context.Context
-import net.apptronic.core.context.component.value
-import net.apptronic.core.context.viewModelContext
 import net.apptronic.core.entity.Entity
+import net.apptronic.core.entity.value
 import net.apptronic.core.viewmodel.TestViewModel
 import net.apptronic.core.viewmodel.ViewModel
 import net.apptronic.core.viewmodel.ViewModelContext
+import net.apptronic.core.viewmodel.viewModelContext
 import org.junit.Test
 
 class DynamicListNavigatorTest : TestViewModel() {

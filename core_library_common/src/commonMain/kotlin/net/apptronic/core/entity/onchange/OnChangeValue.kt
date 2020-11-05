@@ -2,11 +2,11 @@ package net.apptronic.core.entity.onchange
 
 import net.apptronic.core.base.subject.ValueHolder
 import net.apptronic.core.context.Context
-import net.apptronic.core.context.component.value
 import net.apptronic.core.entity.Entity
 import net.apptronic.core.entity.base.UpdateEntity
 import net.apptronic.core.entity.entities.Value
 import net.apptronic.core.entity.entities.setAs
+import net.apptronic.core.entity.value
 
 interface OnChangeValue<T, E> : OnChangeProperty<T, E>, Entity<Next<T, E>>, UpdateEntity<Next<T, E>> {
 

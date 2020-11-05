@@ -2,9 +2,9 @@ package net.apptronic.core.entity.behavior
 
 import net.apptronic.core.assertListEquals
 import net.apptronic.core.context.component.Component
-import net.apptronic.core.context.component.value
 import net.apptronic.core.context.coroutines.CoroutineDispatchers
 import net.apptronic.core.context.coroutines.ManualDispatcher
+import net.apptronic.core.entity.value
 import net.apptronic.core.testutils.createTestContext
 import org.junit.Test
 

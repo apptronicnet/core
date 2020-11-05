@@ -1,9 +1,9 @@
 package net.apptronic.core.entity.functions
 
-import net.apptronic.core.context.component.value
 import net.apptronic.core.entity.entities.Property
 import net.apptronic.core.entity.entities.Value
 import net.apptronic.core.entity.entities.asProperty
+import net.apptronic.core.entity.value
 import net.apptronic.core.testutils.BaseTestComponent
 import org.junit.Test
 import kotlin.test.assertEquals

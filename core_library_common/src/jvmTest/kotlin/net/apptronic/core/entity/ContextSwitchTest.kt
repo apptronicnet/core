@@ -1,8 +1,6 @@
 package net.apptronic.core.entity
 
 import net.apptronic.core.context.childContext
-import net.apptronic.core.context.component.property
-import net.apptronic.core.context.component.value
 import net.apptronic.core.context.lifecycle.Lifecycle
 import net.apptronic.core.context.lifecycle.enterStage
 import net.apptronic.core.context.lifecycle.exitStage

@@ -5,6 +5,7 @@ import net.apptronic.core.entity.functions.and
 import net.apptronic.core.entity.functions.not
 import net.apptronic.core.entity.functions.or
 import net.apptronic.core.entity.functions.xor
+import net.apptronic.core.entity.value
 import net.apptronic.core.testutils.BaseTestComponent
 import org.junit.Test
 

@@ -2,7 +2,7 @@ package net.apptronic.core.entity.entities
 
 import net.apptronic.core.assertListEquals
 import net.apptronic.core.context.component.Component
-import net.apptronic.core.context.component.value
+import net.apptronic.core.entity.value
 import net.apptronic.core.testutils.createTestContext
 import org.junit.Test
 

@@ -4,8 +4,8 @@ import net.apptronic.core.context.childContext
 import net.apptronic.core.context.component.Component
 import net.apptronic.core.context.component.IComponent
 import net.apptronic.core.context.coreContext
-import net.apptronic.core.context.viewModelContext
 import net.apptronic.core.test.testCoroutineDispatchers
+import net.apptronic.core.viewmodel.viewModelContext
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertSame
