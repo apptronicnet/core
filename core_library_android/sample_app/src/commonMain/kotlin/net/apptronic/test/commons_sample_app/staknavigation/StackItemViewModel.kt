@@ -2,10 +2,10 @@ package net.apptronic.test.commons_sample_app.staknavigation
 
 import net.apptronic.core.context.Context
 import net.apptronic.core.context.ContextDefinition
-import net.apptronic.core.entity.functions.map
-import net.apptronic.core.entity.genericEvent
-import net.apptronic.core.entity.property
-import net.apptronic.core.entity.value
+import net.apptronic.core.entity.commons.genericEvent
+import net.apptronic.core.entity.commons.property
+import net.apptronic.core.entity.commons.value
+import net.apptronic.core.entity.function.map
 import net.apptronic.core.viewmodel.EmptyViewModelContext
 import net.apptronic.core.viewmodel.ViewModel
 import net.apptronic.core.viewmodel.ViewModelContext

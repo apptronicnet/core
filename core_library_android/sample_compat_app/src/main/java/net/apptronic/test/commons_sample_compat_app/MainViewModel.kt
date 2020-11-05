@@ -1,7 +1,7 @@
 package net.apptronic.test.commons_sample_compat_app
 
 import net.apptronic.core.context.Contextual
-import net.apptronic.core.entity.genericEvent
+import net.apptronic.core.entity.commons.genericEvent
 import net.apptronic.core.viewmodel.ViewModel
 import net.apptronic.core.viewmodel.ViewModelContext
 import net.apptronic.core.viewmodel.viewModelContext

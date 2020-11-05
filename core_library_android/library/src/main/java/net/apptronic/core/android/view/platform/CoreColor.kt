@@ -2,7 +2,7 @@ package net.apptronic.core.android.view.platform
 
 import android.graphics.Color
 import net.apptronic.core.entity.Entity
-import net.apptronic.core.entity.functions.map
+import net.apptronic.core.entity.function.map
 import net.apptronic.core.view.properties.CoreColor
 
 val CoreColor.colorInt: Int

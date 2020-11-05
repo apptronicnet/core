@@ -1,9 +1,9 @@
 package net.apptronic.test.commons_sample_app.staknavigation
 
 import net.apptronic.core.context.Contextual
+import net.apptronic.core.entity.commons.toggle
+import net.apptronic.core.entity.commons.value
 import net.apptronic.core.entity.operators.increment
-import net.apptronic.core.entity.toggle
-import net.apptronic.core.entity.value
 import net.apptronic.core.viewmodel.ViewModel
 import net.apptronic.core.viewmodel.ViewModelContext
 import net.apptronic.core.viewmodel.navigation.BasicTransition

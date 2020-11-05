@@ -2,9 +2,9 @@ package net.apptronic.test.commons_sample_app.list
 
 import net.apptronic.core.context.Context
 import net.apptronic.core.context.Contextual
-import net.apptronic.core.entity.functions.map
-import net.apptronic.core.entity.functions.merge
-import net.apptronic.core.entity.mutableValue
+import net.apptronic.core.entity.commons.mutableValue
+import net.apptronic.core.entity.function.map
+import net.apptronic.core.entity.function.merge
 import net.apptronic.core.viewmodel.IViewModel
 import net.apptronic.core.viewmodel.ViewModel
 import net.apptronic.core.viewmodel.navigation.listNavigator

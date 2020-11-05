@@ -1,7 +1,7 @@
 package net.apptronic.test.commons_sample_app.lazylistfiltering
 
 import net.apptronic.core.context.Context
-import net.apptronic.core.entity.value
+import net.apptronic.core.entity.commons.value
 import net.apptronic.core.viewmodel.EmptyViewModelContext
 import net.apptronic.core.viewmodel.ViewModel
 

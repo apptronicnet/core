@@ -1,8 +1,8 @@
 package net.apptronic.test.commons_sample_app.dialog
 
 import net.apptronic.core.context.Context
-import net.apptronic.core.entity.functions.map
-import net.apptronic.core.entity.value
+import net.apptronic.core.entity.commons.value
+import net.apptronic.core.entity.function.map
 import net.apptronic.core.viewmodel.EmptyViewModelContext
 import net.apptronic.core.viewmodel.ViewModel
 

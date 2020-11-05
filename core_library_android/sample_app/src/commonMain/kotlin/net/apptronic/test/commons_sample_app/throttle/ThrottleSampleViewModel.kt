@@ -4,11 +4,11 @@ import kotlinx.coroutines.delay
 import net.apptronic.core.base.SerialIdGenerator
 import net.apptronic.core.context.Contextual
 import net.apptronic.core.entity.behavior.throttleMap
-import net.apptronic.core.entity.entities.setTo
-import net.apptronic.core.entity.functions.map
-import net.apptronic.core.entity.functions.mapOr
-import net.apptronic.core.entity.genericEvent
-import net.apptronic.core.entity.value
+import net.apptronic.core.entity.commons.genericEvent
+import net.apptronic.core.entity.commons.setTo
+import net.apptronic.core.entity.commons.value
+import net.apptronic.core.entity.function.map
+import net.apptronic.core.entity.function.mapOr
 import net.apptronic.core.viewmodel.ViewModel
 import net.apptronic.core.viewmodel.ViewModelContext
 import net.apptronic.core.viewmodel.viewModelContext

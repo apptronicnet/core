@@ -1,10 +1,10 @@
 package net.apptronic.test.commons_sample_app.convert
 
 import net.apptronic.core.context.Contextual
-import net.apptronic.core.entity.functions.map
-import net.apptronic.core.entity.functions.mapOrNull
-import net.apptronic.core.entity.functions.merge
-import net.apptronic.core.entity.value
+import net.apptronic.core.entity.commons.value
+import net.apptronic.core.entity.function.map
+import net.apptronic.core.entity.function.mapOrNull
+import net.apptronic.core.entity.function.merge
 import net.apptronic.core.viewmodel.ViewModel
 import net.apptronic.core.viewmodel.ViewModelContext
 import net.apptronic.core.viewmodel.viewModelContext

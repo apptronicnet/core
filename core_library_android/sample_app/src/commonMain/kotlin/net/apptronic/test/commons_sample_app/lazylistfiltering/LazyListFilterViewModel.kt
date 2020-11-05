@@ -2,9 +2,9 @@ package net.apptronic.test.commons_sample_app.lazylistfiltering
 
 import net.apptronic.core.base.collections.wrapLists
 import net.apptronic.core.context.Contextual
-import net.apptronic.core.entity.functions.map
-import net.apptronic.core.entity.functions.merge
-import net.apptronic.core.entity.value
+import net.apptronic.core.entity.commons.value
+import net.apptronic.core.entity.function.map
+import net.apptronic.core.entity.function.merge
 import net.apptronic.core.viewmodel.ViewModel
 import net.apptronic.core.viewmodel.ViewModelContext
 import net.apptronic.core.viewmodel.navigation.listDynamicNavigator

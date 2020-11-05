@@ -1,10 +1,10 @@
 package net.apptronic.test.commons_sample_compat_app.fragments.enterdata.location
 
 import net.apptronic.core.context.Contextual
-import net.apptronic.core.entity.functions.and
-import net.apptronic.core.entity.functions.isNotEmpty
-import net.apptronic.core.entity.genericEvent
-import net.apptronic.core.entity.property
+import net.apptronic.core.entity.commons.genericEvent
+import net.apptronic.core.entity.commons.property
+import net.apptronic.core.entity.function.and
+import net.apptronic.core.entity.function.isNotEmpty
 import net.apptronic.core.viewmodel.ViewModel
 import net.apptronic.core.viewmodel.ViewModelContext
 import net.apptronic.core.viewmodel.commons.textInput

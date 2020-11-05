@@ -1,7 +1,7 @@
 package net.apptronic.test.commons_sample_app.list
 
 import net.apptronic.core.context.Context
-import net.apptronic.core.entity.toggle
+import net.apptronic.core.entity.commons.toggle
 import net.apptronic.test.commons_sample_app.resources.ColorVariant
 import net.apptronic.test.commons_sample_app.resources.ImageVariant
 import kotlin.random.Random

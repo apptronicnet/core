@@ -3,7 +3,7 @@ package net.apptronic.test.commons_sample_app.binders.tabs
 import android.view.View
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.bindings.navigation.bindNavigator
-import net.apptronic.core.entity.functions.map
+import net.apptronic.core.entity.function.map
 import net.apptronic.test.commons_sample_app.R
 import net.apptronic.test.commons_sample_app.databinding.TabsBinding
 import net.apptronic.test.commons_sample_app.tabs.TabsViewModel

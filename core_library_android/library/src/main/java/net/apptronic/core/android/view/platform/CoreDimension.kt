@@ -3,7 +3,7 @@ package net.apptronic.core.android.view.platform
 import android.content.Context
 import android.content.res.Resources
 import net.apptronic.core.entity.Entity
-import net.apptronic.core.entity.functions.map
+import net.apptronic.core.entity.function.map
 import net.apptronic.core.view.dimension.DiscreteCoreDimension
 
 /**

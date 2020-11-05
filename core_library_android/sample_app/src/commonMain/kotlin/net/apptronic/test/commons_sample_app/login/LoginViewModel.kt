@@ -2,7 +2,7 @@ package net.apptronic.test.commons_sample_app.login
 
 import net.apptronic.core.commons.routing.injectNavigationRouter
 import net.apptronic.core.context.Contextual
-import net.apptronic.core.entity.genericEvent
+import net.apptronic.core.entity.commons.genericEvent
 import net.apptronic.core.viewmodel.ViewModel
 import net.apptronic.core.viewmodel.ViewModelContext
 import net.apptronic.core.viewmodel.commons.textInput

@@ -4,7 +4,7 @@ import android.view.View
 import net.apptronic.core.android.viewmodel.Binding
 import net.apptronic.core.android.viewmodel.BindingContainer
 import net.apptronic.core.android.viewmodel.ViewBinder
-import net.apptronic.core.entity.entities.Event
+import net.apptronic.core.entity.commons.Event
 import net.apptronic.core.viewmodel.IViewModel
 
 fun BindingContainer.bindClickListener(view: View, target: Event<Unit>) {

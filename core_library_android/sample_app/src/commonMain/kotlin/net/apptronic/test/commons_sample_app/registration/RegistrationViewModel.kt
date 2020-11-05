@@ -2,13 +2,13 @@ package net.apptronic.test.commons_sample_app.registration
 
 import net.apptronic.core.commons.routing.injectNavigationRouter
 import net.apptronic.core.context.Contextual
-import net.apptronic.core.entity.entities.setAs
-import net.apptronic.core.entity.functions.*
-import net.apptronic.core.entity.genericEvent
-import net.apptronic.core.entity.value
+import net.apptronic.core.entity.commons.genericEvent
+import net.apptronic.core.entity.commons.setAs
+import net.apptronic.core.entity.commons.value
+import net.apptronic.core.entity.extensions.forEachChangeAnyOf
+import net.apptronic.core.entity.function.*
 import net.apptronic.core.viewmodel.ViewModel
 import net.apptronic.core.viewmodel.ViewModelContext
-import net.apptronic.core.viewmodel.extensions.forEachChangeAnyOf
 import net.apptronic.core.viewmodel.viewModelContext
 import net.apptronic.test.commons_sample_app.BackToLogin
 import net.apptronic.test.commons_sample_app.app.HttpClientDescriptor

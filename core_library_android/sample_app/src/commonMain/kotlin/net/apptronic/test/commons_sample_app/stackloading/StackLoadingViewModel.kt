@@ -3,10 +3,10 @@ package net.apptronic.test.commons_sample_app.stackloading
 import kotlinx.coroutines.launch
 import net.apptronic.core.context.Contextual
 import net.apptronic.core.context.coroutines.contextCoroutineScope
+import net.apptronic.core.entity.commons.genericEvent
+import net.apptronic.core.entity.commons.value
 import net.apptronic.core.entity.conditions.awaitUntilSet
-import net.apptronic.core.entity.functions.map
-import net.apptronic.core.entity.genericEvent
-import net.apptronic.core.entity.value
+import net.apptronic.core.entity.function.map
 import net.apptronic.core.viewmodel.ViewModel
 import net.apptronic.core.viewmodel.ViewModelContext
 import net.apptronic.core.viewmodel.navigation.BasicTransition
