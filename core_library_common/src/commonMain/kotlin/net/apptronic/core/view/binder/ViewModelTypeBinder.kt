@@ -3,6 +3,7 @@ package net.apptronic.core.view.binder
 import net.apptronic.core.UnderDevelopment
 import net.apptronic.core.context.Context
 import net.apptronic.core.context.Contextual
+import net.apptronic.core.context.di.DependencyProvider
 import net.apptronic.core.view.CoreViewContext
 import net.apptronic.core.viewmodel.IViewModel
 
@@ -14,4 +15,6 @@ abstract class ViewModelTypeBinder<T : IViewModel> : ViewModelBinder<T>(), Conte
 
     abstract fun onBind(viewModel: T)
 
+    override val dependencyProvider: DependencyProvider
+        get() = context.dependencyProvider
 }

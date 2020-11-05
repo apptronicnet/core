@@ -2,60 +2,57 @@ package net.apptronic.core.context.component
 
 import net.apptronic.core.context.Contextual
 import net.apptronic.core.context.di.DependencyDescriptor
-import net.apptronic.core.context.di.DependencyProvider
 import net.apptronic.core.context.di.Parameters
 import net.apptronic.core.context.di.emptyParameters
-
-fun Contextual.provider(): DependencyProvider = context.dependencyDispatcher
 
 inline fun <reified TypeDeclaration : Any> Contextual.inject(
         params: Parameters = emptyParameters()
 ): TypeDeclaration {
-    return provider().inject(TypeDeclaration::class, params)
+    return dependencyProvider.inject(TypeDeclaration::class, params)
 }
 
 inline fun <reified TypeDeclaration : Any> Contextual.optional(
         params: Parameters = emptyParameters()
 ): TypeDeclaration? {
-    return provider().optional(TypeDeclaration::class, params)
+    return dependencyProvider.optional(TypeDeclaration::class, params)
 }
 
 inline fun <reified TypeDeclaration : Any> Contextual.injectLazy(
         params: Parameters = emptyParameters()
 ): Lazy<TypeDeclaration> {
-    return provider().injectLazy(TypeDeclaration::class, params)
+    return dependencyProvider.injectLazy(TypeDeclaration::class, params)
 }
 
 inline fun <reified TypeDeclaration : Any> Contextual.optionalLazy(
         params: Parameters = emptyParameters()
 ): Lazy<TypeDeclaration?> {
-    return provider().optionalLazy(TypeDeclaration::class, params)
+    return dependencyProvider.optionalLazy(TypeDeclaration::class, params)
 }
 
 fun <TypeDeclaration> Contextual.inject(
         descriptor: DependencyDescriptor<TypeDeclaration>,
         params: Parameters = emptyParameters()
 ): TypeDeclaration {
-    return provider().inject(descriptor, params)
+    return dependencyProvider.inject(descriptor, params)
 }
 
 fun <TypeDeclaration> Contextual.optional(
         descriptor: DependencyDescriptor<TypeDeclaration>,
         params: Parameters = emptyParameters()
 ): TypeDeclaration? {
-    return provider().optional(descriptor, params)
+    return dependencyProvider.optional(descriptor, params)
 }
 
 fun <TypeDeclaration> Contextual.injectLazy(
         descriptor: DependencyDescriptor<TypeDeclaration>,
         params: Parameters = emptyParameters()
 ): Lazy<TypeDeclaration> {
-    return provider().injectLazy(descriptor, params)
+    return dependencyProvider.injectLazy(descriptor, params)
 }
 
 fun <TypeDeclaration> Contextual.optionalLazy(
         descriptor: DependencyDescriptor<TypeDeclaration>,
         params: Parameters = emptyParameters()
 ): Lazy<TypeDeclaration?> {
-    return provider().optionalLazy(descriptor, params)
+    return dependencyProvider.optionalLazy(descriptor, params)
 }
