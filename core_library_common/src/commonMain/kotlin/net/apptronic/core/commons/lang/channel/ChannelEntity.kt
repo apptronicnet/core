@@ -13,7 +13,7 @@ import net.apptronic.core.context.Context
 import net.apptronic.core.context.coroutines.createLifecycleCoroutineScope
 import net.apptronic.core.entity.Entity
 import net.apptronic.core.entity.EntitySubscription
-import net.apptronic.core.entity.entities.performEntitySubscription
+import net.apptronic.core.entity.commons.performEntitySubscription
 
 @UnderDevelopment
 fun <T> ReceiveChannel<T>.asEntity(context: Context): Entity<T> {

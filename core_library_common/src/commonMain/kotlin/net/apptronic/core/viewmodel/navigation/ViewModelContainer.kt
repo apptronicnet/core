@@ -8,9 +8,9 @@ import net.apptronic.core.context.lifecycle.LifecycleStageDefinition
 import net.apptronic.core.context.lifecycle.enterStage
 import net.apptronic.core.context.lifecycle.exitStage
 import net.apptronic.core.entity.Entity
-import net.apptronic.core.entity.entities.distinctUntilChanged
-import net.apptronic.core.entity.functions.and
-import net.apptronic.core.entity.value
+import net.apptronic.core.entity.commons.distinctUntilChanged
+import net.apptronic.core.entity.commons.value
+import net.apptronic.core.entity.function.and
 import net.apptronic.core.viewmodel.IViewModel
 import net.apptronic.core.viewmodel.ViewModelLifecycle
 

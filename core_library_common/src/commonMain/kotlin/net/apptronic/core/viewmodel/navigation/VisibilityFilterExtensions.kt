@@ -2,7 +2,7 @@ package net.apptronic.core.viewmodel.navigation
 
 import net.apptronic.core.base.utils.isInstanceOf
 import net.apptronic.core.entity.Entity
-import net.apptronic.core.entity.functions.ofValue
+import net.apptronic.core.entity.function.ofValue
 import net.apptronic.core.viewmodel.IViewModel
 import net.apptronic.core.viewmodel.ViewModel
 import kotlin.reflect.KClass

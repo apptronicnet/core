@@ -1,11 +1,11 @@
 package net.apptronic.core.context.lifecycle
 
 import net.apptronic.core.entity.ValueNotSetException
-import net.apptronic.core.entity.value
+import net.apptronic.core.entity.commons.value
+import net.apptronic.core.entity.extensions.copyValueFrom
+import net.apptronic.core.entity.function.functionOf
 import net.apptronic.core.testutils.BaseTestComponent
 import net.apptronic.core.testutils.TestLifecycle
-import net.apptronic.core.viewmodel.extensions.copyValueFrom
-import net.apptronic.core.viewmodel.extensions.functionOf
 import org.junit.Test
 import kotlin.test.assertFailsWith
 

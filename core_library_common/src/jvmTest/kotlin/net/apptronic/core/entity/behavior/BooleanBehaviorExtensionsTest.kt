@@ -1,8 +1,8 @@
 package net.apptronic.core.entity.behavior
 
-import net.apptronic.core.entity.entities.distinctUntilChanged
-import net.apptronic.core.entity.typedEvent
-import net.apptronic.core.entity.value
+import net.apptronic.core.entity.commons.distinctUntilChanged
+import net.apptronic.core.entity.commons.typedEvent
+import net.apptronic.core.entity.commons.value
 import net.apptronic.core.record
 import net.apptronic.core.testutils.createTestContext
 import org.junit.Test

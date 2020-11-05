@@ -1,7 +1,7 @@
 package net.apptronic.core.viewmodel.navigation.models
 
 import net.apptronic.core.entity.Entity
-import net.apptronic.core.entity.functions.map
+import net.apptronic.core.entity.function.map
 import net.apptronic.core.viewmodel.IViewModel
 import net.apptronic.core.viewmodel.ViewModel
 

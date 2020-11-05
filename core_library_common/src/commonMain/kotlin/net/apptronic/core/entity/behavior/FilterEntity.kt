@@ -7,7 +7,7 @@ import net.apptronic.core.context.coroutines.lifecycleCoroutineScope
 import net.apptronic.core.context.coroutines.serialThrottler
 import net.apptronic.core.entity.Entity
 import net.apptronic.core.entity.base.RelayEntity
-import net.apptronic.core.entity.functions.map
+import net.apptronic.core.entity.function.map
 
 fun <T> Entity<T>.filter(filterFunction: (T) -> Boolean): Entity<T> {
     return FilterEntity(this, filterFunction)

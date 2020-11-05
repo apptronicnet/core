@@ -6,14 +6,13 @@ import net.apptronic.core.base.subject.unwrapValueHolder
 import net.apptronic.core.base.subject.wrapValueHolder
 import net.apptronic.core.context.Contextual
 import net.apptronic.core.entity.Entity
-import net.apptronic.core.entity.entities.Property
-import net.apptronic.core.entity.entities.Value
-import net.apptronic.core.entity.entities.setAs
-import net.apptronic.core.entity.entities.withDefaultNull
-import net.apptronic.core.entity.functions.anyValue
-import net.apptronic.core.entity.functions.entityFunction
-import net.apptronic.core.entity.functions.map
-
+import net.apptronic.core.entity.commons.Property
+import net.apptronic.core.entity.commons.Value
+import net.apptronic.core.entity.commons.setAs
+import net.apptronic.core.entity.commons.withDefaultNull
+import net.apptronic.core.entity.function.anyValue
+import net.apptronic.core.entity.function.entityFunction
+import net.apptronic.core.entity.function.map
 
 fun Entity<Boolean>.whenTrue(): Entity<Unit> {
     return filter { it }.map { Unit }

@@ -2,7 +2,7 @@ package net.apptronic.core.entity.composite
 
 import net.apptronic.core.context.component.Component
 import net.apptronic.core.context.terminate
-import net.apptronic.core.entity.typedEvent
+import net.apptronic.core.entity.commons.typedEvent
 import net.apptronic.core.record
 import net.apptronic.core.testutils.createTestContext
 import org.junit.After

@@ -5,7 +5,7 @@ import net.apptronic.core.context.Context
 import net.apptronic.core.context.Contextual
 import net.apptronic.core.entity.Entity
 import net.apptronic.core.entity.base.SubjectEntity
-import net.apptronic.core.entity.entities.asEvent
+import net.apptronic.core.entity.commons.asEvent
 
 /**
  * This creates new Entity which emits Unit signal each time when any of [sources] emits any item. Ignores values

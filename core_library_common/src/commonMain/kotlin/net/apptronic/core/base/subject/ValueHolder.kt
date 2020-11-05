@@ -2,7 +2,7 @@ package net.apptronic.core.base.subject
 
 import net.apptronic.core.entity.Entity
 import net.apptronic.core.entity.ValueNotSetException
-import net.apptronic.core.entity.functions.map
+import net.apptronic.core.entity.function.map
 
 data class ValueHolder<T>(val value: T) {
 

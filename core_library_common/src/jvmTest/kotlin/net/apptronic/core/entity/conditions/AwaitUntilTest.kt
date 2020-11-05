@@ -3,7 +3,7 @@ package net.apptronic.core.entity.conditions
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.launch
 import net.apptronic.core.context.coroutines.contextCoroutineScope
-import net.apptronic.core.entity.value
+import net.apptronic.core.entity.commons.value
 import net.apptronic.core.testutils.createTestContext
 import kotlin.test.Test
 

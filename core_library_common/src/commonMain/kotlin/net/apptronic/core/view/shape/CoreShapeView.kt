@@ -2,7 +2,7 @@ package net.apptronic.core.view.shape
 
 import net.apptronic.core.UnderDevelopment
 import net.apptronic.core.entity.Entity
-import net.apptronic.core.entity.functions.mapOrNull
+import net.apptronic.core.entity.function.mapOrNull
 import net.apptronic.core.view.CoreView
 import net.apptronic.core.view.ViewProperty
 import net.apptronic.core.view.dimension.CoreDimension

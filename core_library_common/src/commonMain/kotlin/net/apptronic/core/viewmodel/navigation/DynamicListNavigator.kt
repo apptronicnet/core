@@ -5,7 +5,7 @@ import net.apptronic.core.base.collections.lazyListOf
 import net.apptronic.core.base.collections.simpleLazyListOf
 import net.apptronic.core.context.Context
 import net.apptronic.core.entity.Entity
-import net.apptronic.core.entity.value
+import net.apptronic.core.entity.commons.value
 import net.apptronic.core.viewmodel.IViewModel
 import net.apptronic.core.viewmodel.ViewModel
 import net.apptronic.core.viewmodel.navigation.adapters.ViewModelListAdapter

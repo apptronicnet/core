@@ -4,7 +4,7 @@ import kotlinx.coroutines.CoroutineScope
 import net.apptronic.core.context.Contextual
 import net.apptronic.core.context.coroutines.lifecycleCoroutineScope
 import net.apptronic.core.entity.Entity
-import net.apptronic.core.entity.functions.not
+import net.apptronic.core.entity.function.not
 
 class OrElseSubscription {
 

@@ -6,8 +6,8 @@ import net.apptronic.core.context.coroutines.lifecycleCoroutineScope
 import net.apptronic.core.context.coroutines.serialThrottler
 import net.apptronic.core.entity.Entity
 import net.apptronic.core.entity.base.UpdateEntity
-import net.apptronic.core.entity.functions.map
-import net.apptronic.core.entity.functions.mapSuspend
+import net.apptronic.core.entity.function.map
+import net.apptronic.core.entity.function.mapSuspend
 
 fun <T> tryCatching(block: () -> T): TryCatchResult<T> {
     return try {

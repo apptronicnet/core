@@ -12,7 +12,7 @@ import net.apptronic.core.context.lifecycle.LifecycleStageDefinition
 import net.apptronic.core.entity.Entity
 import net.apptronic.core.entity.behavior.doWhen
 import net.apptronic.core.entity.bindContext
-import net.apptronic.core.entity.genericEvent
+import net.apptronic.core.entity.commons.genericEvent
 
 interface IViewModel : IComponent {
 

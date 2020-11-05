@@ -1,9 +1,9 @@
 package net.apptronic.core.entity.exceptions
 
-import net.apptronic.core.entity.entities.Property
-import net.apptronic.core.entity.entities.asProperty
-import net.apptronic.core.entity.functions.mapSuspend
-import net.apptronic.core.entity.value
+import net.apptronic.core.entity.commons.Property
+import net.apptronic.core.entity.commons.asProperty
+import net.apptronic.core.entity.commons.value
+import net.apptronic.core.entity.function.mapSuspend
 import net.apptronic.core.testutils.createTestContext
 import org.junit.Test
 import kotlin.test.*

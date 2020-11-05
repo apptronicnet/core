@@ -7,7 +7,7 @@ import net.apptronic.core.context.Context
 import net.apptronic.core.entity.BaseEntity
 import net.apptronic.core.entity.Entity
 import net.apptronic.core.entity.EntitySubscription
-import net.apptronic.core.entity.entities.performEntitySubscription
+import net.apptronic.core.entity.commons.performEntitySubscription
 
 /**
  * [Entity] which based on using [Observable] as source for subscriptions

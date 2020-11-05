@@ -8,12 +8,12 @@ import net.apptronic.core.base.elapsedRealtimeMillis
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.context.Context
 import net.apptronic.core.context.Contextual
+import net.apptronic.core.context.component.Component
 import net.apptronic.core.context.coroutines.createContextCoroutineScope
 import net.apptronic.core.context.coroutines.createLifecycleCoroutineScope
 import net.apptronic.core.entity.Entity
-import net.apptronic.core.entity.typedEvent
-import net.apptronic.core.entity.value
-
+import net.apptronic.core.entity.commons.typedEvent
+import net.apptronic.core.entity.commons.value
 
 fun Contextual.timer(
         interval: Long,
@@ -28,21 +28,21 @@ fun Contextual.timer(
 }
 
 class Timer internal constructor(
-        private val context: Context,
+        context: Context,
         initialInterval: Long,
         initialLimit: Long = INFINITE,
         private val scopedToStage: Boolean = true
-) {
+) : Component(context) {
 
     companion object {
         val INFINITE = -1L
     }
 
-    private val isRunning = context.value(false)
-    private val limit = context.value(initialLimit)
-    private val interval = context.value(initialInterval)
+    private val isRunning = value(false)
+    private val limit = value(initialLimit)
+    private val interval = value(initialInterval)
 
-    private val timerEvent = context.typedEvent<TimerTick>()
+    private val timerEvent = typedEvent<TimerTick>()
     private var coroutineScope: CoroutineScope? = null
 
     private fun createCoroutineScope(): CoroutineScope {
@@ -90,6 +90,7 @@ class Timer internal constructor(
                 val tick = TimerTick(
                         counter = counter,
                         time = counter * interval,
+                        isFirst = counter == 1L,
                         isLast = counter == limit.get()
                 )
                 timerEvent.sendEvent(tick)

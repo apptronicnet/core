@@ -2,8 +2,8 @@ package net.apptronic.core.entity.behavior
 
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import net.apptronic.core.context.coroutines.CoroutineDispatchers
-import net.apptronic.core.entity.entities.asProperty
-import net.apptronic.core.entity.value
+import net.apptronic.core.entity.commons.asProperty
+import net.apptronic.core.entity.commons.value
 import net.apptronic.core.testutils.createTestContext
 import org.junit.Test
 import kotlin.test.assertEquals

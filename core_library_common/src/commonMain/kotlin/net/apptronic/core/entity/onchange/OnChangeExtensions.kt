@@ -2,8 +2,8 @@ package net.apptronic.core.entity.onchange
 
 import kotlinx.coroutines.CoroutineScope
 import net.apptronic.core.entity.Entity
-import net.apptronic.core.entity.functions.map
-import net.apptronic.core.entity.functions.mapSuspend
+import net.apptronic.core.entity.function.map
+import net.apptronic.core.entity.function.mapSuspend
 
 fun <T, E> Entity<Next<T, E>>.takeValue(): Entity<T> {
     return map { it.value }

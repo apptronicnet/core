@@ -9,7 +9,7 @@ import net.apptronic.core.context.coroutines.lifecycleCoroutineScope
 import net.apptronic.core.entity.Entity
 import net.apptronic.core.entity.base.EntityValue
 import net.apptronic.core.entity.base.RelayEntity
-import net.apptronic.core.entity.entities.asProperty
+import net.apptronic.core.entity.commons.asProperty
 
 /**
  * Creates new [Entity] which re-emits items from source, but applying filtering to prevent emitting items

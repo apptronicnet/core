@@ -16,7 +16,7 @@ import net.apptronic.core.context.coroutines.mainDispatcher
 import net.apptronic.core.entity.BaseEntity
 import net.apptronic.core.entity.Entity
 import net.apptronic.core.entity.EntitySubscription
-import net.apptronic.core.entity.entities.performEntitySubscription
+import net.apptronic.core.entity.commons.performEntitySubscription
 
 /**
  * Takes [Flow] and creates new [Entity] from all values emitted by this flow for each new [Observer].

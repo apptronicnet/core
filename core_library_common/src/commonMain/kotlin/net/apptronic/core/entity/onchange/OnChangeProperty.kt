@@ -8,9 +8,9 @@ import net.apptronic.core.context.Contextual
 import net.apptronic.core.entity.Entity
 import net.apptronic.core.entity.base.EntityValue
 import net.apptronic.core.entity.base.ObservableEntity
-import net.apptronic.core.entity.entities.setAs
-import net.apptronic.core.entity.typedEvent
-import net.apptronic.core.entity.value
+import net.apptronic.core.entity.commons.setAs
+import net.apptronic.core.entity.commons.typedEvent
+import net.apptronic.core.entity.commons.value
 
 fun <T, E> Entity<Next<T, E>>.asOnChangeProperty(): OnChangeProperty<T, E> {
     return OnChangeValueImpl<T, E>(context).setAs(this)

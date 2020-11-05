@@ -4,9 +4,9 @@ import net.apptronic.core.base.subject.ValueHolder
 import net.apptronic.core.context.Context
 import net.apptronic.core.entity.Entity
 import net.apptronic.core.entity.base.UpdateEntity
-import net.apptronic.core.entity.entities.Value
-import net.apptronic.core.entity.entities.setAs
-import net.apptronic.core.entity.value
+import net.apptronic.core.entity.commons.Value
+import net.apptronic.core.entity.commons.setAs
+import net.apptronic.core.entity.commons.value
 
 interface OnChangeValue<T, E> : OnChangeProperty<T, E>, Entity<Next<T, E>>, UpdateEntity<Next<T, E>> {
 

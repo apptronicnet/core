@@ -1,8 +1,8 @@
 package net.apptronic.core.view.binder
 
-import net.apptronic.core.entity.functions.map
-import net.apptronic.core.entity.genericEvent
-import net.apptronic.core.entity.value
+import net.apptronic.core.entity.commons.genericEvent
+import net.apptronic.core.entity.commons.value
+import net.apptronic.core.entity.function.map
 import net.apptronic.core.testutils.createTestContext
 import net.apptronic.core.view.commons.ICoreButtonView
 import net.apptronic.core.view.commons.ICoreTextView

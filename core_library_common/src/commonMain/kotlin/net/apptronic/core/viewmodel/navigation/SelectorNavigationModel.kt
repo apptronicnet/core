@@ -1,8 +1,8 @@
 package net.apptronic.core.viewmodel.navigation
 
 import net.apptronic.core.context.Context
-import net.apptronic.core.entity.entities.asProperty
-import net.apptronic.core.entity.functions.map
+import net.apptronic.core.entity.commons.asProperty
+import net.apptronic.core.entity.function.map
 import net.apptronic.core.viewmodel.IViewModel
 import net.apptronic.core.viewmodel.navigation.adapters.SingleViewModelAdapter
 import net.apptronic.core.viewmodel.navigation.adapters.SingleViewModelListAdapter

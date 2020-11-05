@@ -2,7 +2,7 @@ package net.apptronic.core.commons.routing
 
 import net.apptronic.core.context.*
 import net.apptronic.core.context.component.Component
-import net.apptronic.core.entity.typedEvent
+import net.apptronic.core.entity.commons.typedEvent
 import net.apptronic.core.record
 import org.junit.After
 import org.junit.Test

@@ -4,17 +4,17 @@ import net.apptronic.core.assertListEquals
 import net.apptronic.core.context.Context
 import net.apptronic.core.context.childContext
 import net.apptronic.core.context.component.Component
-import net.apptronic.core.context.component.terminate
 import net.apptronic.core.context.dependencyModule
 import net.apptronic.core.context.di.inject
+import net.apptronic.core.context.terminate
 import net.apptronic.core.entity.Entity
 import net.apptronic.core.entity.behavior.filter
 import net.apptronic.core.entity.behavior.filterNotNull
 import net.apptronic.core.entity.behavior.resendWhen
-import net.apptronic.core.entity.entities.asProperty
-import net.apptronic.core.entity.functions.map
-import net.apptronic.core.entity.newChain
-import net.apptronic.core.entity.typedEvent
+import net.apptronic.core.entity.commons.asProperty
+import net.apptronic.core.entity.commons.typedEvent
+import net.apptronic.core.entity.commons.unitEntity
+import net.apptronic.core.entity.function.map
 import net.apptronic.core.testutils.createTestContext
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -57,7 +57,7 @@ class DataProviderTest {
 
         private val repository = inject<Repository>()
 
-        override val entity: Entity<String> = newChain()
+        override val entity: Entity<String> = unitEntity()
                 .resendWhen(
                         repository.observeUpdatedById(context).filter { it == id }
                 ).map {

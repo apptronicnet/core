@@ -1,7 +1,7 @@
 package net.apptronic.core.commons.routing
 
 import net.apptronic.core.context.Contextual
-import net.apptronic.core.entity.typedEvent
+import net.apptronic.core.entity.commons.typedEvent
 import net.apptronic.core.record
 import net.apptronic.core.testutils.createTestContext
 import net.apptronic.core.viewmodel.ViewModel

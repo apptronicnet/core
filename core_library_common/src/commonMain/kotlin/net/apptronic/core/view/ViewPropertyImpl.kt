@@ -4,8 +4,8 @@ import net.apptronic.core.UnderDevelopment
 import net.apptronic.core.context.Context
 import net.apptronic.core.entity.Entity
 import net.apptronic.core.entity.behavior.watch
-import net.apptronic.core.entity.entities.setAs
-import net.apptronic.core.entity.value
+import net.apptronic.core.entity.commons.setAs
+import net.apptronic.core.entity.commons.value
 
 @UnderDevelopment
 class ViewProperty<T> internal constructor(

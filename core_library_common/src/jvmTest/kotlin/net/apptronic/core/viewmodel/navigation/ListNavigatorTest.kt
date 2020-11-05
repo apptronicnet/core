@@ -1,9 +1,9 @@
 package net.apptronic.core.viewmodel.navigation
 
-import net.apptronic.core.context.component.terminate
 import net.apptronic.core.context.lifecycle.enterStage
 import net.apptronic.core.context.lifecycle.exitStage
-import net.apptronic.core.entity.value
+import net.apptronic.core.context.terminate
+import net.apptronic.core.entity.commons.value
 import net.apptronic.core.testutils.createTestContext
 import net.apptronic.core.viewmodel.IViewModel
 import net.apptronic.core.viewmodel.ViewModel

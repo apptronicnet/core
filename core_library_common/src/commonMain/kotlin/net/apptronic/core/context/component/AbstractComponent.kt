@@ -103,7 +103,3 @@ abstract class AbstractComponent : IComponent {
     }
 
 }
-
-fun IComponent.terminate() {
-    context.lifecycle.terminate()
-}
