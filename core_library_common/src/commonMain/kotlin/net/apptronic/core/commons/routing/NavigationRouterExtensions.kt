@@ -2,7 +2,6 @@ package net.apptronic.core.commons.routing
 
 import net.apptronic.core.context.Contextual
 import net.apptronic.core.context.childContext
-import net.apptronic.core.context.component.inject
 import net.apptronic.core.context.di.ModuleDefinition
 import net.apptronic.core.context.di.SingleScope
 
@@ -51,7 +50,7 @@ fun Contextual.injectNavigationRouter(): NavigationRouter<Any> {
 }
 
 fun <T> Contextual.injectNavigationRouter(descriptor: NavigationRouterDescriptor<T>): NavigationRouter<T> {
-    return inject(descriptor.dependencyDescriptor)
+    return dependencyProvider.inject(descriptor.dependencyDescriptor)
 }
 
 fun Contextual.registerNavigationHandler(handler: DefaultNavigationHandler) {
@@ -59,6 +58,6 @@ fun Contextual.registerNavigationHandler(handler: DefaultNavigationHandler) {
 }
 
 fun <T> Contextual.registerNavigationHandler(descriptor: NavigationRouterDescriptor<T>, handler: NavigationHandler<T>) {
-    val router = inject(descriptor.dependencyDescriptor)
+    val router = dependencyProvider.inject(descriptor.dependencyDescriptor)
     router.registerHandler(context, handler)
 }

@@ -4,9 +4,9 @@ import net.apptronic.core.assertListEquals
 import net.apptronic.core.context.Context
 import net.apptronic.core.context.childContext
 import net.apptronic.core.context.component.Component
-import net.apptronic.core.context.component.inject
 import net.apptronic.core.context.component.terminate
 import net.apptronic.core.context.dependencyModule
+import net.apptronic.core.context.di.inject
 import net.apptronic.core.entity.Entity
 import net.apptronic.core.entity.behavior.filter
 import net.apptronic.core.entity.behavior.filterNotNull
@@ -87,7 +87,7 @@ class DataProviderTest {
 
     @Test
     fun verifySharedProvider() {
-        val repository = context.inject<Repository>()
+        val repository = context.dependencyProvider.inject<Repository>()
         repository.saveById(1, "One Thing")
 
         val uses1_1 = UsesStringComponent(context.childContext(), 1)

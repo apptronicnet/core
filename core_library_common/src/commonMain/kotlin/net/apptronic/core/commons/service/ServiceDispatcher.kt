@@ -1,7 +1,6 @@
 package net.apptronic.core.commons.service
 
 import net.apptronic.core.context.Contextual
-import net.apptronic.core.context.component.inject
 import net.apptronic.core.context.di.ModuleDefinition
 import net.apptronic.core.context.di.SharedScope
 
@@ -29,5 +28,5 @@ fun <T : Any, R : Any> ModuleDefinition.service(
 }
 
 fun <T : Any, R : Any> Contextual.injectService(descriptor: ServiceDescriptor<T, R>): ServiceDispatcher<T, R> {
-    return inject(descriptor.holderDescriptor)
+    return dependencyProvider.inject(descriptor.holderDescriptor)
 }

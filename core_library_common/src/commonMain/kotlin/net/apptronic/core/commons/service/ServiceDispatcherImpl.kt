@@ -4,7 +4,6 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.launch
 import net.apptronic.core.context.Context
 import net.apptronic.core.context.component.Component
-import net.apptronic.core.context.component.inject
 import net.apptronic.core.context.coroutines.lifecycleCoroutineScope
 import net.apptronic.core.context.di.DependencyDescriptor
 import net.apptronic.core.context.lifecycle.enterStage

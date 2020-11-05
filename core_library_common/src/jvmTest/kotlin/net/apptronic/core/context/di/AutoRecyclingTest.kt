@@ -3,7 +3,6 @@ package net.apptronic.core.context.di
 import net.apptronic.core.context.Context
 import net.apptronic.core.context.EmptyContext
 import net.apptronic.core.context.component.Component
-import net.apptronic.core.context.component.inject
 import net.apptronic.core.context.terminate
 import net.apptronic.core.testutils.createTestContext
 import org.junit.Test

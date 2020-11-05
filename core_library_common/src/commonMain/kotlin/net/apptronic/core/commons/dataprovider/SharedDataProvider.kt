@@ -2,7 +2,6 @@ package net.apptronic.core.commons.dataprovider
 
 import net.apptronic.core.commons.cache.CacheComponent
 import net.apptronic.core.context.Contextual
-import net.apptronic.core.context.component.inject
 import net.apptronic.core.context.di.ModuleDefinition
 import net.apptronic.core.context.di.SharedScope
 import net.apptronic.core.context.di.SingleScope
@@ -10,11 +9,11 @@ import net.apptronic.core.context.di.parameters
 import net.apptronic.core.entity.Entity
 
 fun <T : Any> Contextual.injectData(descriptor: DataProviderDescriptor<T, Unit>): Entity<T> {
-    return inject(descriptor.holderDescriptor, parameters { add(descriptor.keyDescriptor, Unit) }).provideData(context)
+    return dependencyProvider.inject(descriptor.holderDescriptor, parameters { add(descriptor.keyDescriptor, Unit) }).provideData(context)
 }
 
 fun <T : Any, K : Any> Contextual.injectData(descriptor: DataProviderDescriptor<T, K>, key: K): Entity<T> {
-    return inject(descriptor.holderDescriptor, parameters { add(descriptor.keyDescriptor, key) }).provideData(context)
+    return dependencyProvider.inject(descriptor.holderDescriptor, parameters { add(descriptor.keyDescriptor, key) }).provideData(context)
 }
 
 fun <T : Any, K : Any> ModuleDefinition.sharedCache(

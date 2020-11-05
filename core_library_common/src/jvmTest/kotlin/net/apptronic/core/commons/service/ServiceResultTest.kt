@@ -4,10 +4,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import net.apptronic.core.context.Context
 import net.apptronic.core.context.component.Component
-import net.apptronic.core.context.component.inject
 import net.apptronic.core.context.coroutines.ManualDispatcher
 import net.apptronic.core.context.coroutines.contextCoroutineScope
 import net.apptronic.core.context.dependencyModule
+import net.apptronic.core.context.di.inject
 import net.apptronic.core.entity.value
 import net.apptronic.core.testutils.createTestContext
 import org.junit.Test
@@ -88,7 +88,7 @@ class ServiceResultTest {
 
     @Test
     fun shouldReturnResults() {
-        val user1 = context.inject<UserComponent>()
+        val user1 = context.dependencyProvider.inject<UserComponent>()
         assertEquals(0, launches)
 
         user1.source.set("1")
@@ -116,7 +116,7 @@ class ServiceResultTest {
 
     @Test
     fun shouldReuseServiceForRequests() {
-        val user1 = context.inject<UserComponent>()
+        val user1 = context.dependencyProvider.inject<UserComponent>()
         assertEquals(0, launches)
 
         user1.source.set("1")
@@ -136,7 +136,7 @@ class ServiceResultTest {
 
     @Test
     fun shouldReturnErrorsCorrectly() {
-        val user1 = context.inject<UserComponent>()
+        val user1 = context.dependencyProvider.inject<UserComponent>()
         user1.source.set("Not an int")
 
         manualDispatcher.runAll()
@@ -149,10 +149,10 @@ class ServiceResultTest {
 
     @Test
     fun shouldShareServiceForDifferentClients() {
-        val user1 = context.inject<UserComponent>()
-        val user2 = context.inject<UserComponent>()
-        val user3 = context.inject<UserComponent>()
-        val user4 = context.inject<UserComponent>()
+        val user1 = context.dependencyProvider.inject<UserComponent>()
+        val user2 = context.dependencyProvider.inject<UserComponent>()
+        val user3 = context.dependencyProvider.inject<UserComponent>()
+        val user4 = context.dependencyProvider.inject<UserComponent>()
         user1.source.set("11")
         user2.source.set("22")
         user3.source.set("33")

@@ -1,6 +1,5 @@
 package net.apptronic.core.context.di
 
-import net.apptronic.core.context.component.inject
 import net.apptronic.core.testutils.BaseTestComponent
 import org.junit.Test
 

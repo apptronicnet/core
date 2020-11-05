@@ -1,6 +1,5 @@
 package net.apptronic.core.context.plugin
 
-import net.apptronic.core.context.component.inject
 import net.apptronic.core.context.dependencyModule
 import net.apptronic.core.context.di.dependencyDescriptor
 import net.apptronic.core.context.di.parameters
@@ -22,9 +21,9 @@ class PluginOnDependencySharedDescriptorTest : PluginOnDependencyTest() {
 
     @Test
     fun verifyInject() {
-        val instance1 = inject(descriptor, parameters { add(1) }) as SomeDependencyImpl
-        val instance2 = inject(descriptor, parameters { add(1) }) as SomeDependencyImpl
-        val instance3 = inject(descriptor, parameters { add(2) }) as SomeDependencyImpl
+        val instance1 = dependencyProvider.inject(descriptor, parameters { add(1) }) as SomeDependencyImpl
+        val instance2 = dependencyProvider.inject(descriptor, parameters { add(1) }) as SomeDependencyImpl
+        val instance3 = dependencyProvider.inject(descriptor, parameters { add(2) }) as SomeDependencyImpl
 
         assertSame(instance1, instance2)
         assertNotSame(instance1, instance3)
@@ -35,9 +34,9 @@ class PluginOnDependencySharedDescriptorTest : PluginOnDependencyTest() {
     fun verifyProvideWrap() {
         enableProvideWrap = true
 
-        val provide1 = inject(descriptor, parameters { add(1) }) as ProvideWrapper
-        val provide2 = inject(descriptor, parameters { add(1) }) as ProvideWrapper
-        val provide3 = inject(descriptor, parameters { add(2) }) as ProvideWrapper
+        val provide1 = dependencyProvider.inject(descriptor, parameters { add(1) }) as ProvideWrapper
+        val provide2 = dependencyProvider.inject(descriptor, parameters { add(1) }) as ProvideWrapper
+        val provide3 = dependencyProvider.inject(descriptor, parameters { add(2) }) as ProvideWrapper
 
         assertSame(provide1, provide2)
         assertNotSame(provide1, provide3)
@@ -56,9 +55,9 @@ class PluginOnDependencySharedDescriptorTest : PluginOnDependencyTest() {
     fun verifyInjectedWrap() {
         enableInjectWrap = true
 
-        val inject1 = inject(descriptor, parameters { add(1) }) as InjectWrapper
-        val inject2 = inject(descriptor, parameters { add(1) }) as InjectWrapper
-        val inject3 = inject(descriptor, parameters { add(2) }) as InjectWrapper
+        val inject1 = dependencyProvider.inject(descriptor, parameters { add(1) }) as InjectWrapper
+        val inject2 = dependencyProvider.inject(descriptor, parameters { add(1) }) as InjectWrapper
+        val inject3 = dependencyProvider.inject(descriptor, parameters { add(2) }) as InjectWrapper
 
         assertNotSame(inject1, inject2)
         assertNotSame(inject1, inject3)
@@ -78,9 +77,9 @@ class PluginOnDependencySharedDescriptorTest : PluginOnDependencyTest() {
         enableProvideWrap = true
         enableInjectWrap = true
 
-        val inject1 = inject(descriptor, parameters { add(1) }) as InjectWrapper
-        val inject2 = inject(descriptor, parameters { add(1) }) as InjectWrapper
-        val inject3 = inject(descriptor, parameters { add(2) }) as InjectWrapper
+        val inject1 = dependencyProvider.inject(descriptor, parameters { add(1) }) as InjectWrapper
+        val inject2 = dependencyProvider.inject(descriptor, parameters { add(1) }) as InjectWrapper
+        val inject3 = dependencyProvider.inject(descriptor, parameters { add(2) }) as InjectWrapper
 
         assertNotSame(inject1, inject2)
         assertNotSame(inject1, inject3)

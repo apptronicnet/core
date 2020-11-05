@@ -1,7 +1,7 @@
 package net.apptronic.core.context.plugin
 
-import net.apptronic.core.context.component.inject
 import net.apptronic.core.context.dependencyModule
+import net.apptronic.core.context.di.inject
 import org.junit.Test
 import kotlin.test.assertNotSame
 
@@ -17,9 +17,9 @@ class PluginOnDependencyFactoryTypedTest : PluginOnDependencyTest() {
 
     @Test
     fun verifyInject() {
-        val instance1 = inject<SomeDependency>() as SomeDependencyImpl
-        val instance2 = inject<SomeDependency>() as SomeDependencyImpl
-        val instance3 = inject<SomeDependency>() as SomeDependencyImpl
+        val instance1 = dependencyProvider.inject<SomeDependency>() as SomeDependencyImpl
+        val instance2 = dependencyProvider.inject<SomeDependency>() as SomeDependencyImpl
+        val instance3 = dependencyProvider.inject<SomeDependency>() as SomeDependencyImpl
 
         assertNotSame(instance1, instance2)
         assertNotSame(instance1, instance3)
@@ -30,9 +30,9 @@ class PluginOnDependencyFactoryTypedTest : PluginOnDependencyTest() {
     fun verifyProvideWrap() {
         enableProvideWrap = true
 
-        val provide1 = inject<SomeDependency>() as ProvideWrapper
-        val provide2 = inject<SomeDependency>() as ProvideWrapper
-        val provide3 = inject<SomeDependency>() as ProvideWrapper
+        val provide1 = dependencyProvider.inject<SomeDependency>() as ProvideWrapper
+        val provide2 = dependencyProvider.inject<SomeDependency>() as ProvideWrapper
+        val provide3 = dependencyProvider.inject<SomeDependency>() as ProvideWrapper
 
         assertNotSame(provide1, provide2)
         assertNotSame(provide1, provide3)
@@ -51,9 +51,9 @@ class PluginOnDependencyFactoryTypedTest : PluginOnDependencyTest() {
     fun verifyInjectedWrap() {
         enableInjectWrap = true
 
-        val inject1 = inject<SomeDependency>() as InjectWrapper
-        val inject2 = inject<SomeDependency>() as InjectWrapper
-        val inject3 = inject<SomeDependency>() as InjectWrapper
+        val inject1 = dependencyProvider.inject<SomeDependency>() as InjectWrapper
+        val inject2 = dependencyProvider.inject<SomeDependency>() as InjectWrapper
+        val inject3 = dependencyProvider.inject<SomeDependency>() as InjectWrapper
 
         assertNotSame(inject1, inject2)
         assertNotSame(inject1, inject3)
@@ -73,9 +73,9 @@ class PluginOnDependencyFactoryTypedTest : PluginOnDependencyTest() {
         enableProvideWrap = true
         enableInjectWrap = true
 
-        val inject1 = inject<SomeDependency>() as InjectWrapper
-        val inject2 = inject<SomeDependency>() as InjectWrapper
-        val inject3 = inject<SomeDependency>() as InjectWrapper
+        val inject1 = dependencyProvider.inject<SomeDependency>() as InjectWrapper
+        val inject2 = dependencyProvider.inject<SomeDependency>() as InjectWrapper
+        val inject3 = dependencyProvider.inject<SomeDependency>() as InjectWrapper
 
         assertNotSame(inject1, inject2)
         assertNotSame(inject1, inject3)
