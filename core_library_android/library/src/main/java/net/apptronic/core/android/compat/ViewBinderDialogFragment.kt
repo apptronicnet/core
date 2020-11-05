@@ -8,7 +8,7 @@ import net.apptronic.core.android.plugins.getViewBinderFactoryFromExtension
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.view.DefaultDialogViewAdapter
 import net.apptronic.core.android.viewmodel.view.DialogViewAdapter
-import net.apptronic.core.mvvm.viewmodel.IViewModel
+import net.apptronic.core.viewmodel.IViewModel
 
 abstract class ViewBinderDialogFragment<T : IViewModel> : CoreCompatDialogFragment<T>() {
 

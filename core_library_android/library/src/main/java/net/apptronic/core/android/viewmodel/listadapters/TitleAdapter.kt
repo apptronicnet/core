@@ -1,7 +1,7 @@
 package net.apptronic.core.android.viewmodel.listadapters
 
 import android.content.Context
-import net.apptronic.core.mvvm.viewmodel.IViewModel
+import net.apptronic.core.viewmodel.IViewModel
 
 class TitleProvider(
     private val context: Context,

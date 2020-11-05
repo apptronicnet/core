@@ -4,8 +4,8 @@ import net.apptronic.core.android.anim.animations.ViewAnimation_Fade
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.bindings.bindVisibleGone
 import net.apptronic.core.android.viewmodel.bindings.navigation.bindNavigator
-import net.apptronic.core.component.entity.functions.isNotNull
-import net.apptronic.core.mvvm.viewmodel.navigation.models.viewModel
+import net.apptronic.core.entity.functions.isNotNull
+import net.apptronic.core.viewmodel.navigation.models.viewModel
 import net.apptronic.test.commons_sample_app.ApplicationScreenViewModel
 import net.apptronic.test.commons_sample_app.R
 import net.apptronic.test.commons_sample_app.databinding.ActivityMainBinding

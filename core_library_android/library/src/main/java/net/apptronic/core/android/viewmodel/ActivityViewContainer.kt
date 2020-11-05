@@ -4,10 +4,10 @@ import android.app.Activity
 import net.apptronic.core.android.plugins.getViewBinderFactoryFromExtension
 import net.apptronic.core.android.viewmodel.view.ActivityViewProvider
 import net.apptronic.core.android.viewmodel.view.DefaultActivityViewProvider
-import net.apptronic.core.mvvm.viewmodel.IViewModel
-import net.apptronic.core.mvvm.viewmodel.dispatcher.ViewContainer
-import net.apptronic.core.mvvm.viewmodel.dispatcher.ViewModelDispatcher
-import net.apptronic.core.mvvm.viewmodel.navigation.ViewModelLifecycleController
+import net.apptronic.core.viewmodel.IViewModel
+import net.apptronic.core.viewmodel.dispatcher.ViewContainer
+import net.apptronic.core.viewmodel.dispatcher.ViewModelDispatcher
+import net.apptronic.core.viewmodel.navigation.ViewModelLifecycleController
 
 fun <T : IViewModel> Activity.activityContainer(
     dispatcher: ViewModelDispatcher<T>,

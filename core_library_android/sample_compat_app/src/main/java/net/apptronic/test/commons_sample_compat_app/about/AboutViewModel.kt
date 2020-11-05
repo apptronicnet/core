@@ -1,14 +1,14 @@
 package net.apptronic.test.commons_sample_compat_app.about
 
-import net.apptronic.core.component.context.Contextual
-import net.apptronic.core.component.context.viewModelContext
-import net.apptronic.core.component.entity.functions.map
-import net.apptronic.core.component.entity.operators.increment
-import net.apptronic.core.component.property
-import net.apptronic.core.component.timer
-import net.apptronic.core.component.value
-import net.apptronic.core.mvvm.viewmodel.ViewModel
-import net.apptronic.core.mvvm.viewmodel.ViewModelContext
+import net.apptronic.core.commons.timer.timer
+import net.apptronic.core.context.Contextual
+import net.apptronic.core.entity.functions.map
+import net.apptronic.core.entity.operators.increment
+import net.apptronic.core.entity.property
+import net.apptronic.core.entity.value
+import net.apptronic.core.viewmodel.ViewModel
+import net.apptronic.core.viewmodel.ViewModelContext
+import net.apptronic.core.viewmodel.viewModelContext
 
 fun Contextual.aboutViewModel() = AboutViewModel(viewModelContext())
 

@@ -1,17 +1,16 @@
 package net.apptronic.test.commons_sample_compat_app.fragments.enterdata.name
 
 import android.util.Log
-import net.apptronic.core.component.context.Contextual
-import net.apptronic.core.component.context.viewModelContext
-import net.apptronic.core.component.entity.functions.and
-import net.apptronic.core.component.entity.functions.isNotEmpty
-import net.apptronic.core.component.genericEvent
-import net.apptronic.core.component.inject
-import net.apptronic.core.component.property
-import net.apptronic.core.mvvm.common.textInput
-import net.apptronic.core.mvvm.common.withOnUpdate
-import net.apptronic.core.mvvm.viewmodel.ViewModel
-import net.apptronic.core.mvvm.viewmodel.ViewModelContext
+import net.apptronic.core.context.Contextual
+import net.apptronic.core.entity.functions.and
+import net.apptronic.core.entity.functions.isNotEmpty
+import net.apptronic.core.entity.genericEvent
+import net.apptronic.core.entity.property
+import net.apptronic.core.viewmodel.ViewModel
+import net.apptronic.core.viewmodel.ViewModelContext
+import net.apptronic.core.viewmodel.commons.textInput
+import net.apptronic.core.viewmodel.commons.withOnUpdate
+import net.apptronic.core.viewmodel.viewModelContext
 import net.apptronic.test.commons_sample_compat_app.fragments.enterdata.DataRepository
 import net.apptronic.test.commons_sample_compat_app.fragments.enterdata.EnterDataRouter
 

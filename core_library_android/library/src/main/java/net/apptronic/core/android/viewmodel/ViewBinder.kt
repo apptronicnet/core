@@ -10,12 +10,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import net.apptronic.core.android.viewmodel.view.ViewAdapter
-import net.apptronic.core.component.plugin.extensionDescriptor
-import net.apptronic.core.debugError
-import net.apptronic.core.mvvm.viewmodel.IViewModel
-import net.apptronic.core.mvvm.viewmodel.ViewModel
-import net.apptronic.core.mvvm.viewmodel.ViewModelLifecycle
-import net.apptronic.core.mvvm.viewmodel.navigation.ViewModelItem
+import net.apptronic.core.base.platform.debugError
+import net.apptronic.core.context.plugin.extensionDescriptor
+import net.apptronic.core.viewmodel.IViewModel
+import net.apptronic.core.viewmodel.ViewModel
+import net.apptronic.core.viewmodel.ViewModelLifecycle
+import net.apptronic.core.viewmodel.navigation.ViewModelItem
 
 private class SavedInstanceState(
     val hierarchyState: SparseArray<Parcelable>,

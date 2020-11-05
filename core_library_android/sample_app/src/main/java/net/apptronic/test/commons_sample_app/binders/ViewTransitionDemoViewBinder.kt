@@ -16,7 +16,7 @@ import net.apptronic.core.android.anim.transition.ViewTransitionDirection
 import net.apptronic.core.android.anim.transition.ViewTransitionDirectionSpec
 import net.apptronic.core.android.anim.transition.viewTransition
 import net.apptronic.core.android.viewmodel.ViewBinder
-import net.apptronic.core.mvvm.viewmodel.navigation.BasicTransition
+import net.apptronic.core.viewmodel.navigation.BasicTransition
 import net.apptronic.test.commons_sample_app.R
 import net.apptronic.test.commons_sample_app.animation.ViewTransitionDemoViewModel
 import net.apptronic.test.commons_sample_app.databinding.ViewSwitchDemoBinding

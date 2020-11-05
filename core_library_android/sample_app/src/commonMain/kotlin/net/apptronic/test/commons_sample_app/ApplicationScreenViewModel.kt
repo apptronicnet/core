@@ -1,15 +1,15 @@
 package net.apptronic.test.commons_sample_app
 
-import net.apptronic.core.commons.navigation.DefaultNavigationHandler
-import net.apptronic.core.commons.navigation.navigationRouter
-import net.apptronic.core.commons.navigation.registerNavigationHandler
-import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.context.Contextual
-import net.apptronic.core.component.context.dependencyModule
-import net.apptronic.core.mvvm.viewmodel.ViewModel
-import net.apptronic.core.mvvm.viewmodel.defineViewModelContext
-import net.apptronic.core.mvvm.viewmodel.navigation.BasicTransition
-import net.apptronic.core.mvvm.viewmodel.navigation.stackNavigator
+import net.apptronic.core.commons.routing.DefaultNavigationHandler
+import net.apptronic.core.commons.routing.navigationRouter
+import net.apptronic.core.commons.routing.registerNavigationHandler
+import net.apptronic.core.context.Context
+import net.apptronic.core.context.Contextual
+import net.apptronic.core.context.dependencyModule
+import net.apptronic.core.viewmodel.ViewModel
+import net.apptronic.core.viewmodel.defineViewModelContext
+import net.apptronic.core.viewmodel.navigation.BasicTransition
+import net.apptronic.core.viewmodel.navigation.stackNavigator
 import net.apptronic.test.commons_sample_app.animation.animationDemoViewModel
 import net.apptronic.test.commons_sample_app.animation.viewTransitionDemoViewModel
 import net.apptronic.test.commons_sample_app.bottomsheet.bottomSheetViewModel

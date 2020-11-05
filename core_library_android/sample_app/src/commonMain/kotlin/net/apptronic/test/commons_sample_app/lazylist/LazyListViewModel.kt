@@ -3,13 +3,13 @@ package net.apptronic.test.commons_sample_app.lazylist
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import net.apptronic.core.component.context.Contextual
-import net.apptronic.core.component.context.viewModelContext
-import net.apptronic.core.component.coroutines.contextCoroutineScope
-import net.apptronic.core.component.coroutines.serialThrottler
-import net.apptronic.core.mvvm.viewmodel.ViewModel
-import net.apptronic.core.mvvm.viewmodel.ViewModelContext
-import net.apptronic.core.mvvm.viewmodel.navigation.listDynamicNavigator
+import net.apptronic.core.context.Contextual
+import net.apptronic.core.context.coroutines.contextCoroutineScope
+import net.apptronic.core.context.coroutines.serialThrottler
+import net.apptronic.core.viewmodel.ViewModel
+import net.apptronic.core.viewmodel.ViewModelContext
+import net.apptronic.core.viewmodel.navigation.listDynamicNavigator
+import net.apptronic.core.viewmodel.viewModelContext
 import kotlin.random.Random
 
 private const val CHARS = "qwertyuiopasdfghjklzxcvbnm1234567890"

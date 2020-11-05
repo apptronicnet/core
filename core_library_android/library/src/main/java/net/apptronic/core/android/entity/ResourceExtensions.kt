@@ -1,11 +1,11 @@
-package net.apptronic.core.android.component.functions
+package net.apptronic.core.android.entity
 
 import android.content.Context
 import android.content.res.Resources
 import android.os.Build
 import androidx.core.content.ContextCompat
-import net.apptronic.core.component.entity.Entity
-import net.apptronic.core.component.entity.functions.map
+import net.apptronic.core.entity.Entity
+import net.apptronic.core.entity.functions.map
 
 fun Entity<Int>.resourceToColor(resources: Resources): Entity<Int> {
     return map { colorResId ->

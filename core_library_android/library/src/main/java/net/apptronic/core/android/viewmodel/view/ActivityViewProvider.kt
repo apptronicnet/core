@@ -3,7 +3,7 @@ package net.apptronic.core.android.viewmodel.view
 import android.app.Activity
 import android.view.View
 import net.apptronic.core.android.viewmodel.ViewBinder
-import net.apptronic.core.mvvm.viewmodel.IViewModel
+import net.apptronic.core.viewmodel.IViewModel
 
 interface ActivityViewProvider : ViewAdapter {
 

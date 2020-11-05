@@ -2,7 +2,7 @@ package net.apptronic.test.commons_sample_compat_app.fragments.dialog
 
 import net.apptronic.core.android.compat.ViewBinderDialogFragment
 import net.apptronic.core.android.viewmodel.ViewBinder
-import net.apptronic.core.component.context.Context
+import net.apptronic.core.context.Context
 
 class SampleDialog : ViewBinderDialogFragment<DialogViewModel>() {
 

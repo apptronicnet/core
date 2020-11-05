@@ -1,7 +1,7 @@
 package net.apptronic.core.android.viewmodel.style.list
 
 import android.view.View
-import net.apptronic.core.mvvm.viewmodel.IViewModel
+import net.apptronic.core.viewmodel.IViewModel
 
 interface ViewStyleAdapter {
 

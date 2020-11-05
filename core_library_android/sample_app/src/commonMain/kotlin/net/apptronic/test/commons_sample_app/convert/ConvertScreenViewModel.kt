@@ -1,13 +1,13 @@
 package net.apptronic.test.commons_sample_app.convert
 
-import net.apptronic.core.component.context.Contextual
-import net.apptronic.core.component.context.viewModelContext
-import net.apptronic.core.component.entity.functions.map
-import net.apptronic.core.component.entity.functions.mapOrNull
-import net.apptronic.core.component.entity.functions.merge
-import net.apptronic.core.component.value
-import net.apptronic.core.mvvm.viewmodel.ViewModel
-import net.apptronic.core.mvvm.viewmodel.ViewModelContext
+import net.apptronic.core.context.Contextual
+import net.apptronic.core.entity.functions.map
+import net.apptronic.core.entity.functions.mapOrNull
+import net.apptronic.core.entity.functions.merge
+import net.apptronic.core.entity.value
+import net.apptronic.core.viewmodel.ViewModel
+import net.apptronic.core.viewmodel.ViewModelContext
+import net.apptronic.core.viewmodel.viewModelContext
 
 fun Contextual.convertScreenViewModel() = ConvertScreenViewModel(viewModelContext())
 

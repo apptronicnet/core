@@ -1,10 +1,10 @@
 package net.apptronic.test.commons_sample_app.pager
 
-import net.apptronic.core.component.context.Contextual
-import net.apptronic.core.component.context.viewModelContext
-import net.apptronic.core.mvvm.viewmodel.ViewModel
-import net.apptronic.core.mvvm.viewmodel.ViewModelContext
-import net.apptronic.core.mvvm.viewmodel.navigation.listNavigator
+import net.apptronic.core.context.Contextual
+import net.apptronic.core.viewmodel.ViewModel
+import net.apptronic.core.viewmodel.ViewModelContext
+import net.apptronic.core.viewmodel.navigation.listNavigator
+import net.apptronic.core.viewmodel.viewModelContext
 import net.apptronic.test.commons_sample_app.pager.pages.ImagePageViewModel
 import net.apptronic.test.commons_sample_app.pager.pages.TextPageViewModel
 

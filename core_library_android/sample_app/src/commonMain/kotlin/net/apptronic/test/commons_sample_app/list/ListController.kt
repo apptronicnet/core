@@ -1,6 +1,6 @@
 package net.apptronic.test.commons_sample_app.list
 
-import net.apptronic.core.mvvm.viewmodel.IViewModel
+import net.apptronic.core.viewmodel.IViewModel
 
 interface ListController {
 

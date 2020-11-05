@@ -6,11 +6,11 @@ import net.apptronic.core.android.anim.factory.ViewTransitionFactory
 import net.apptronic.core.android.viewmodel.ViewBinderFactory
 import net.apptronic.core.android.viewmodel.requireBoundView
 import net.apptronic.core.android.viewmodel.transitions.TransitionBuilder
-import net.apptronic.core.component.IComponent
-import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.plugin.Plugin
-import net.apptronic.core.component.plugin.pluginDescriptor
-import net.apptronic.core.mvvm.viewmodel.IViewModel
+import net.apptronic.core.context.Context
+import net.apptronic.core.context.component.IComponent
+import net.apptronic.core.context.plugin.Plugin
+import net.apptronic.core.context.plugin.pluginDescriptor
+import net.apptronic.core.viewmodel.IViewModel
 import kotlin.reflect.KClass
 
 val AndroidApplicationPluginDescriptor = pluginDescriptor<AndroidApplicationPlugin>()

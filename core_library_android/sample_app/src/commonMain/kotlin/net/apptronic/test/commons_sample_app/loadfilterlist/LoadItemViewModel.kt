@@ -1,15 +1,15 @@
 package net.apptronic.test.commons_sample_app.loadfilterlist
 
-import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.entity.behavior.delay
-import net.apptronic.core.component.entity.behavior.whenTrue
-import net.apptronic.core.component.entity.entities.setAs
-import net.apptronic.core.component.entity.functions.anyValue
-import net.apptronic.core.component.entity.functions.not
-import net.apptronic.core.component.value
-import net.apptronic.core.mvvm.viewmodel.EmptyViewModelContext
-import net.apptronic.core.mvvm.viewmodel.ViewModel
-import net.apptronic.core.mvvm.viewmodel.navigation.OnReadyForLoad
+import net.apptronic.core.context.Context
+import net.apptronic.core.entity.behavior.delay
+import net.apptronic.core.entity.behavior.whenTrue
+import net.apptronic.core.entity.entities.setAs
+import net.apptronic.core.entity.functions.anyValue
+import net.apptronic.core.entity.functions.not
+import net.apptronic.core.entity.value
+import net.apptronic.core.viewmodel.EmptyViewModelContext
+import net.apptronic.core.viewmodel.ViewModel
+import net.apptronic.core.viewmodel.navigation.OnReadyForLoad
 
 class LoadItemViewModel(
     parent: Context, index: Int, time: Long, initialReady: Boolean

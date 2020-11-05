@@ -1,6 +1,6 @@
 package net.apptronic.core.android.viewmodel
 
-import net.apptronic.core.mvvm.viewmodel.IViewModel
+import net.apptronic.core.viewmodel.IViewModel
 
 interface BindingContainer {
 

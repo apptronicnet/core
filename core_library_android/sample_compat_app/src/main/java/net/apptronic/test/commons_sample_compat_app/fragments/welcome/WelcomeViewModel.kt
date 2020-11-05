@@ -1,12 +1,11 @@
 package net.apptronic.test.commons_sample_compat_app.fragments.welcome
 
-import net.apptronic.core.component.context.Contextual
-import net.apptronic.core.component.context.viewModelContext
-import net.apptronic.core.component.genericEvent
-import net.apptronic.core.component.inject
-import net.apptronic.core.component.property
-import net.apptronic.core.mvvm.viewmodel.ViewModel
-import net.apptronic.core.mvvm.viewmodel.ViewModelContext
+import net.apptronic.core.context.Contextual
+import net.apptronic.core.entity.genericEvent
+import net.apptronic.core.entity.property
+import net.apptronic.core.viewmodel.ViewModel
+import net.apptronic.core.viewmodel.ViewModelContext
+import net.apptronic.core.viewmodel.viewModelContext
 import net.apptronic.test.commons_sample_compat_app.Router
 
 fun Contextual.welcomeViewModel() =

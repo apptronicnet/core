@@ -8,9 +8,9 @@ import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.ViewBinderFactory
 import net.apptronic.core.android.viewmodel.navigation.PopupAnchorProvider
 import net.apptronic.core.android.viewmodel.navigation.PopupBinderStackAdapter
-import net.apptronic.core.mvvm.viewmodel.IViewModel
-import net.apptronic.core.mvvm.viewmodel.navigation.StackNavigationModel
-import net.apptronic.core.mvvm.viewmodel.navigation.models.SupportsSingleViewModelAdapter
+import net.apptronic.core.viewmodel.IViewModel
+import net.apptronic.core.viewmodel.navigation.StackNavigationModel
+import net.apptronic.core.viewmodel.navigation.models.SupportsSingleViewModelAdapter
 
 private class ConcreteAnchorProvider(val anchor: View) : PopupAnchorProvider {
 

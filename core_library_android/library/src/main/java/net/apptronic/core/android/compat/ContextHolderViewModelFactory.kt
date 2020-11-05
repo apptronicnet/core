@@ -2,7 +2,7 @@ package net.apptronic.core.android.compat
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import net.apptronic.core.component.context.Context
+import net.apptronic.core.context.Context
 
 class ContextHolderViewModelFactory(
     private val builder: () -> Context

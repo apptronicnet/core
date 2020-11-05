@@ -5,8 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import net.apptronic.core.android.viewmodel.ViewBinder
-import net.apptronic.core.mvvm.viewmodel.IViewModel
-import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.viewmodel.IViewModel
+import net.apptronic.core.viewmodel.ViewModel
 
 interface ViewContainerViewAdapter : ViewAdapter {
 

@@ -1,19 +1,19 @@
 package net.apptronic.test.commons_sample_app.stackloading
 
 import kotlinx.coroutines.launch
-import net.apptronic.core.component.context.Contextual
-import net.apptronic.core.component.context.viewModelContext
-import net.apptronic.core.component.coroutines.contextCoroutineScope
-import net.apptronic.core.component.entity.conditions.awaitUntilSet
-import net.apptronic.core.component.entity.functions.map
-import net.apptronic.core.component.genericEvent
-import net.apptronic.core.component.value
-import net.apptronic.core.mvvm.viewmodel.ViewModel
-import net.apptronic.core.mvvm.viewmodel.ViewModelContext
-import net.apptronic.core.mvvm.viewmodel.navigation.BasicTransition
-import net.apptronic.core.mvvm.viewmodel.navigation.models.size
-import net.apptronic.core.mvvm.viewmodel.navigation.models.viewModel
-import net.apptronic.core.mvvm.viewmodel.navigation.stackNavigator
+import net.apptronic.core.context.Contextual
+import net.apptronic.core.context.coroutines.contextCoroutineScope
+import net.apptronic.core.entity.conditions.awaitUntilSet
+import net.apptronic.core.entity.functions.map
+import net.apptronic.core.entity.genericEvent
+import net.apptronic.core.entity.value
+import net.apptronic.core.viewmodel.ViewModel
+import net.apptronic.core.viewmodel.ViewModelContext
+import net.apptronic.core.viewmodel.navigation.BasicTransition
+import net.apptronic.core.viewmodel.navigation.models.size
+import net.apptronic.core.viewmodel.navigation.models.viewModel
+import net.apptronic.core.viewmodel.navigation.stackNavigator
+import net.apptronic.core.viewmodel.viewModelContext
 
 fun Contextual.stackLoadingViewModel() = StackLoadingViewModel(viewModelContext())
 

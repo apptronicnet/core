@@ -1,7 +1,7 @@
 package net.apptronic.test.commons_sample_app.lazylistfiltering
 
-import net.apptronic.core.component.context.Context
-import net.apptronic.core.mvvm.viewmodel.navigation.ViewModelBuilder
+import net.apptronic.core.context.Context
+import net.apptronic.core.viewmodel.navigation.ViewModelBuilder
 
 class StaticItem(
     val id: String,

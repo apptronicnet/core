@@ -1,14 +1,14 @@
 package net.apptronic.test.commons_sample_app.staknavigation
 
-import net.apptronic.core.component.context.Contextual
-import net.apptronic.core.component.context.viewModelContext
-import net.apptronic.core.component.entity.operators.increment
-import net.apptronic.core.component.toggle
-import net.apptronic.core.component.value
-import net.apptronic.core.mvvm.viewmodel.ViewModel
-import net.apptronic.core.mvvm.viewmodel.ViewModelContext
-import net.apptronic.core.mvvm.viewmodel.navigation.BasicTransition
-import net.apptronic.core.mvvm.viewmodel.navigation.stackNavigator
+import net.apptronic.core.context.Contextual
+import net.apptronic.core.entity.operators.increment
+import net.apptronic.core.entity.toggle
+import net.apptronic.core.entity.value
+import net.apptronic.core.viewmodel.ViewModel
+import net.apptronic.core.viewmodel.ViewModelContext
+import net.apptronic.core.viewmodel.navigation.BasicTransition
+import net.apptronic.core.viewmodel.navigation.stackNavigator
+import net.apptronic.core.viewmodel.viewModelContext
 
 fun Contextual.prevNextNavigationViewModel() = PrevNextNavigationViewModel(viewModelContext())
 

@@ -11,7 +11,7 @@ import net.apptronic.core.android.anim.viewAnimation
 const val FORWARD_BACKWARD_OVERLAP = 0.5f
 const val MAX_OVERLAY_ALPHA = 0.7f
 
-val Transition_Next = viewTransition {
+val ViewTransition_Next = viewTransition {
     enter(AccelerateDecelerateInterpolator()) {
         translateXToParent(1f, 0f)
     }
@@ -20,7 +20,7 @@ val Transition_Next = viewTransition {
     }
 }
 
-val Transition_Previous = viewTransition {
+val ViewTransition_Previous = viewTransition {
     enter(AccelerateDecelerateInterpolator()) {
         translateXToParent(-1f, 0f)
     }
@@ -29,7 +29,7 @@ val Transition_Previous = viewTransition {
     }
 }
 
-val Transition_Forward = viewTransition {
+val ViewTransition_Forward = viewTransition {
     enter(AccelerateDecelerateInterpolator()) {
         translateXToParent(1f, 0f)
     }
@@ -40,7 +40,7 @@ val Transition_Forward = viewTransition {
     order = ViewTransitionDirectionSpec.EnteringOnFront
 }
 
-val Transition_Backward = viewTransition {
+val ViewTransition_Backward = viewTransition {
     enter(AccelerateDecelerateInterpolator()) {
         translateXToParent(-FORWARD_BACKWARD_OVERLAP, 0f)
         foregroundAlpha(MAX_OVERLAY_ALPHA, 0f, ColorDrawable(Color.BLACK))
@@ -69,7 +69,7 @@ private val Transition_Fade_Exit = viewAnimation(AccelerateDecelerateInterpolato
     alpha(1f, 0f)
 }
 
-val Transition_Fade = viewTransition {
+val ViewTransition_Fade = viewTransition {
     enterFront = Transition_Fade_Enter
     exitFront = Transition_Fade_Exit
     exitBack = Transition_Fade_Exit_Back

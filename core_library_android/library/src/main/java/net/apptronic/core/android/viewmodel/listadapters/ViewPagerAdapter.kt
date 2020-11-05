@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.viewpager.widget.PagerAdapter
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.navigation.ViewBinderListAdapter
-import net.apptronic.core.mvvm.viewmodel.navigation.ViewModelItem
+import net.apptronic.core.viewmodel.navigation.ViewModelItem
 
 class ViewPagerAdapter(
     private val binderAdapter: ViewBinderListAdapter

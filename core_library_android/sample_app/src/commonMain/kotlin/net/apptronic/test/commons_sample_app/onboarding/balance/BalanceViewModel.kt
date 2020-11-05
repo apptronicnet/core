@@ -1,13 +1,12 @@
 package net.apptronic.test.commons_sample_app.onboarding.balance
 
-import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.entity.entities.setAs
-import net.apptronic.core.component.entity.functions.map
-import net.apptronic.core.component.genericEvent
-import net.apptronic.core.component.inject
-import net.apptronic.core.component.value
-import net.apptronic.core.mvvm.viewmodel.ViewModel
-import net.apptronic.core.mvvm.viewmodel.defineViewModelContext
+import net.apptronic.core.context.Context
+import net.apptronic.core.entity.entities.setAs
+import net.apptronic.core.entity.functions.map
+import net.apptronic.core.entity.genericEvent
+import net.apptronic.core.entity.value
+import net.apptronic.core.viewmodel.ViewModel
+import net.apptronic.core.viewmodel.defineViewModelContext
 import net.apptronic.test.commons_sample_app.app.HttpClientDescriptor
 import net.apptronic.test.commons_sample_app.onboarding.OnboardingDataDescriptor
 

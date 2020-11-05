@@ -5,9 +5,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.navigation.ViewBinderListAdapter
-import net.apptronic.core.mvvm.viewmodel.IViewModel
-import net.apptronic.core.mvvm.viewmodel.navigation.ListUpdateSpec
-import net.apptronic.core.mvvm.viewmodel.navigation.ViewModelItem
+import net.apptronic.core.viewmodel.IViewModel
+import net.apptronic.core.viewmodel.navigation.ListUpdateSpec
+import net.apptronic.core.viewmodel.navigation.ViewModelItem
 
 private const val NO_TYPE = -1
 private const val NO_ID = -1L

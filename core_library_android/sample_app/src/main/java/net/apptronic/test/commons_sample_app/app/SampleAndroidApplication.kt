@@ -4,7 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.util.Log
 import net.apptronic.core.android.plugins.installAndroidApplicationPlugin
-import net.apptronic.core.plugins.installViewModelLogPlugin
+import net.apptronic.core.viewmodel.installViewModelLogPlugin
 import net.apptronic.test.commons_sample_app.AppBinderFactory
 import net.apptronic.test.commons_sample_app.AppTransitionFactory
 import net.apptronic.test.commons_sample_app.ApplicationScreenViewModel

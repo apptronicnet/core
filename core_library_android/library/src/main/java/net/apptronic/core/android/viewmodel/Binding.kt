@@ -1,8 +1,8 @@
 package net.apptronic.core.android.viewmodel
 
 import android.view.View
-import net.apptronic.core.mvvm.viewmodel.IViewModel
-import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.viewmodel.IViewModel
+import net.apptronic.core.viewmodel.ViewModel
 
 /**
  * Binding is part of [ViewBinder] some pair of [View] part

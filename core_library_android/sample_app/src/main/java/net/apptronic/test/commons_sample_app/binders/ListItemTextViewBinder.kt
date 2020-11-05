@@ -3,7 +3,7 @@ package net.apptronic.test.commons_sample_app.binders
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.bindings.bindClickListener
 import net.apptronic.core.android.viewmodel.bindings.bindText
-import net.apptronic.core.component.entity.functions.map
+import net.apptronic.core.entity.functions.map
 import net.apptronic.test.commons_sample_app.R
 import net.apptronic.test.commons_sample_app.databinding.ListItemTextBinding
 import net.apptronic.test.commons_sample_app.list.ListItemTextViewModel

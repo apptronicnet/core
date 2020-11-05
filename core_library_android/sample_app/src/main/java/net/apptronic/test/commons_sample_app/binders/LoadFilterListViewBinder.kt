@@ -6,7 +6,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.bindings.navigation.bindNavigator
-import net.apptronic.core.component.entity.base.UpdateEntity
+import net.apptronic.core.entity.base.UpdateEntity
 import net.apptronic.test.commons_sample_app.R
 import net.apptronic.test.commons_sample_app.databinding.LoadFilterListBinding
 import net.apptronic.test.commons_sample_app.loadfilterlist.LoadFilterListViewModel

@@ -1,11 +1,10 @@
 package net.apptronic.test.commons_sample_app.onboarding.currency
 
-import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.genericEvent
-import net.apptronic.core.component.inject
-import net.apptronic.core.component.value
-import net.apptronic.core.mvvm.viewmodel.EmptyViewModelContext
-import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.context.Context
+import net.apptronic.core.entity.genericEvent
+import net.apptronic.core.entity.value
+import net.apptronic.core.viewmodel.EmptyViewModelContext
+import net.apptronic.core.viewmodel.ViewModel
 import net.apptronic.test.commons_sample_app.onboarding.OnboardingDataDescriptor
 
 class CurrencyViewModel(parent: Context, private val router: CurrencyRouter) :

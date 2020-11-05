@@ -1,13 +1,12 @@
 package net.apptronic.test.commons_sample_app.lazylist
 
-import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.di.dependencyDescriptor
-import net.apptronic.core.component.entity.functions.map
-import net.apptronic.core.component.genericEvent
-import net.apptronic.core.component.inject
-import net.apptronic.core.component.value
-import net.apptronic.core.mvvm.viewmodel.EmptyViewModelContext
-import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.context.Context
+import net.apptronic.core.context.di.dependencyDescriptor
+import net.apptronic.core.entity.functions.map
+import net.apptronic.core.entity.genericEvent
+import net.apptronic.core.entity.value
+import net.apptronic.core.viewmodel.EmptyViewModelContext
+import net.apptronic.core.viewmodel.ViewModel
 
 val LazyListItemClickListenerDescriptor = dependencyDescriptor<LazyListItemClickListener>()
 

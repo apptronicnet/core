@@ -6,7 +6,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import net.apptronic.core.android.viewmodel.ViewBinder
-import net.apptronic.core.mvvm.viewmodel.IViewModel
+import net.apptronic.core.viewmodel.IViewModel
 
 interface DialogViewAdapter : ViewAdapter {
 

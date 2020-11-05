@@ -7,7 +7,7 @@ import net.apptronic.core.android.plugins.getDefaultViewTransitionFactoryFromPlu
 import net.apptronic.core.android.plugins.getViewBinderFactoryFromExtension
 import net.apptronic.core.android.viewmodel.ViewBinderFactory
 import net.apptronic.core.android.viewmodel.composeViewBinderFactory
-import net.apptronic.core.mvvm.viewmodel.IViewModel
+import net.apptronic.core.viewmodel.IViewModel
 
 fun getComposedViewBinderFactory(
     provided: ViewBinderFactory?,

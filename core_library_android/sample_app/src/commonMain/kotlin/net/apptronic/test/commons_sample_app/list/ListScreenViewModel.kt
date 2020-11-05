@@ -1,14 +1,13 @@
 package net.apptronic.test.commons_sample_app.list
 
-import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.context.Contextual
-import net.apptronic.core.component.entity.functions.map
-import net.apptronic.core.component.entity.functions.merge
-import net.apptronic.core.component.inject
-import net.apptronic.core.component.mutableValue
-import net.apptronic.core.mvvm.viewmodel.IViewModel
-import net.apptronic.core.mvvm.viewmodel.ViewModel
-import net.apptronic.core.mvvm.viewmodel.navigation.listNavigator
+import net.apptronic.core.context.Context
+import net.apptronic.core.context.Contextual
+import net.apptronic.core.entity.functions.map
+import net.apptronic.core.entity.functions.merge
+import net.apptronic.core.entity.mutableValue
+import net.apptronic.core.viewmodel.IViewModel
+import net.apptronic.core.viewmodel.ViewModel
+import net.apptronic.core.viewmodel.navigation.listNavigator
 
 fun Contextual.listScreenViewModel() = ListScreenViewModel(context)
 

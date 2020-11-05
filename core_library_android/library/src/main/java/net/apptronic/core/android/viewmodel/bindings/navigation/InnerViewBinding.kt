@@ -10,7 +10,7 @@ import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.ViewBinderFactory
 import net.apptronic.core.android.viewmodel.view.DefaultViewContainerViewAdapter
 import net.apptronic.core.android.viewmodel.view.ViewContainerViewAdapter
-import net.apptronic.core.mvvm.viewmodel.IViewModel
+import net.apptronic.core.viewmodel.IViewModel
 
 enum class BindingType(
     internal val detectAndCreate: Boolean,

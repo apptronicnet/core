@@ -5,7 +5,7 @@ import net.apptronic.core.android.plugins.getViewBinderFactoryFromExtension
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.view.ActivityViewProvider
 import net.apptronic.core.android.viewmodel.view.DefaultActivityViewProvider
-import net.apptronic.core.mvvm.viewmodel.IViewModel
+import net.apptronic.core.viewmodel.IViewModel
 
 abstract class ViewBinderActivity<T : IViewModel> : CoreCompatActivity<T>() {
 

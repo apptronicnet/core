@@ -4,8 +4,8 @@ import android.widget.TextView
 import net.apptronic.core.android.viewmodel.Binding
 import net.apptronic.core.android.viewmodel.BindingContainer
 import net.apptronic.core.android.viewmodel.ViewBinder
-import net.apptronic.core.component.entity.Entity
-import net.apptronic.core.mvvm.viewmodel.IViewModel
+import net.apptronic.core.entity.Entity
+import net.apptronic.core.viewmodel.IViewModel
 
 fun BindingContainer.bindText(textView: TextView, target: Entity<String>) {
     add(TextBinding(textView, target))

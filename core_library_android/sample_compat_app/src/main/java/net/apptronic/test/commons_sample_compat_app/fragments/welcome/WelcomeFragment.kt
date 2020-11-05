@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import net.apptronic.core.android.compat.CoreCompatFragment
-import net.apptronic.core.component.context.Context
+import net.apptronic.core.context.Context
 import net.apptronic.test.commons_sample_compat_app.R
 import net.apptronic.test.commons_sample_compat_app.databinding.FragmentWelcomeBinding
 

@@ -5,8 +5,8 @@ import android.view.ViewGroup
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.transitions.TransitionBuilder
 import net.apptronic.core.android.viewmodel.transitions.ViewSwitch
-import net.apptronic.core.mvvm.viewmodel.IViewModel
-import net.apptronic.core.mvvm.viewmodel.navigation.*
+import net.apptronic.core.viewmodel.IViewModel
+import net.apptronic.core.viewmodel.navigation.*
 
 @Deprecated("Will be replaced")
 class StackNavigationFrameAdapter(

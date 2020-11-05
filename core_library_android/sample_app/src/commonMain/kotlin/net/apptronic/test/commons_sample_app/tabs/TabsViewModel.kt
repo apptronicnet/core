@@ -1,12 +1,12 @@
 package net.apptronic.test.commons_sample_app.tabs
 
-import net.apptronic.core.component.context.Contextual
-import net.apptronic.core.component.context.viewModelContext
-import net.apptronic.core.mvvm.viewmodel.ViewModel
-import net.apptronic.core.mvvm.viewmodel.ViewModelContext
-import net.apptronic.core.mvvm.viewmodel.navigation.BasicTransition
-import net.apptronic.core.mvvm.viewmodel.navigation.selectorNavigator
+import net.apptronic.core.context.Contextual
 import net.apptronic.core.view.properties.CoreColor
+import net.apptronic.core.viewmodel.ViewModel
+import net.apptronic.core.viewmodel.ViewModelContext
+import net.apptronic.core.viewmodel.navigation.BasicTransition
+import net.apptronic.core.viewmodel.navigation.selectorNavigator
+import net.apptronic.core.viewmodel.viewModelContext
 
 fun Contextual.tabsViewModel() = TabsViewModel(viewModelContext())
 

@@ -132,7 +132,7 @@ open class ViewRenderingEngine(
         }
     }
 
-    private inner class Renderer(override val context: net.apptronic.core.component.context.Context) :
+    private inner class Renderer(override val context: net.apptronic.core.context.Context) :
         IViewRenderingEngine {
 
         override val androidContext: Context = this@ViewRenderingEngine.androidContext

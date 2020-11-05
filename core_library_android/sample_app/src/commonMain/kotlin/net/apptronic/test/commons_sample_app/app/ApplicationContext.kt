@@ -1,9 +1,9 @@
 package net.apptronic.test.commons_sample_app.app
 
-import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.context.coreContext
-import net.apptronic.core.component.di.declareModule
-import net.apptronic.core.component.di.dependencyDescriptor
+import net.apptronic.core.context.Context
+import net.apptronic.core.context.coreContext
+import net.apptronic.core.context.di.declareModule
+import net.apptronic.core.context.di.dependencyDescriptor
 
 val HttpClientFactoryDescriptor = dependencyDescriptor<HttpClientFactory>()
 val HttpClientDescriptor = dependencyDescriptor<HttpClient>()

@@ -1,10 +1,9 @@
 package net.apptronic.test.commons_sample_app.list
 
-import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.inject
-import net.apptronic.core.component.value
-import net.apptronic.core.mvvm.viewmodel.EmptyViewModelContext
-import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.context.Context
+import net.apptronic.core.entity.value
+import net.apptronic.core.viewmodel.EmptyViewModelContext
+import net.apptronic.core.viewmodel.ViewModel
 
 abstract class ListItemBaseViewModel(
     private val indexNumber: Int, parent: Context

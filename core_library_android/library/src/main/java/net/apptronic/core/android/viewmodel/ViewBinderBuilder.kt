@@ -1,8 +1,8 @@
 package net.apptronic.core.android.viewmodel
 
 import net.apptronic.core.UnderDevelopment
-import net.apptronic.core.component.plugin.extensionDescriptor
-import net.apptronic.core.mvvm.viewmodel.IViewModel
+import net.apptronic.core.context.plugin.extensionDescriptor
+import net.apptronic.core.viewmodel.IViewModel
 
 @UnderDevelopment
 private val ViewBinderBuilderExtension = extensionDescriptor<() -> ViewBinder<*>>()

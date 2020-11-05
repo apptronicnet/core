@@ -4,8 +4,8 @@ import android.widget.CompoundButton
 import net.apptronic.core.android.viewmodel.Binding
 import net.apptronic.core.android.viewmodel.BindingContainer
 import net.apptronic.core.android.viewmodel.ViewBinder
-import net.apptronic.core.mvvm.common.SwitchViewModel
-import net.apptronic.core.mvvm.viewmodel.IViewModel
+import net.apptronic.core.viewmodel.IViewModel
+import net.apptronic.core.viewmodel.commons.SwitchViewModel
 
 fun BindingContainer.bindSwitch(
     button: CompoundButton,

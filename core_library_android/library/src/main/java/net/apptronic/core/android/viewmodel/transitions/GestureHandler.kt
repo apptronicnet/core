@@ -6,7 +6,7 @@ import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.view.animation.Interpolator
 import net.apptronic.core.android.anim.Progress
-import net.apptronic.core.mvvm.viewmodel.navigation.BackNavigationStatus
+import net.apptronic.core.viewmodel.navigation.BackNavigationStatus
 
 @Deprecated("Replaced by net.apptronic.core.android.anim.*")
 internal class GestureHandler(

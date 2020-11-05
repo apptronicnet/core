@@ -6,12 +6,12 @@ import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcherOwner
 import net.apptronic.core.android.viewmodel.activityContainer
-import net.apptronic.core.component.IComponent
-import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.plugin.Plugin
-import net.apptronic.core.component.plugin.pluginDescriptor
-import net.apptronic.core.mvvm.viewmodel.IViewModel
-import net.apptronic.core.mvvm.viewmodel.dispatcher.ViewModelDispatcher
+import net.apptronic.core.context.Context
+import net.apptronic.core.context.component.IComponent
+import net.apptronic.core.context.plugin.Plugin
+import net.apptronic.core.context.plugin.pluginDescriptor
+import net.apptronic.core.viewmodel.IViewModel
+import net.apptronic.core.viewmodel.dispatcher.ViewModelDispatcher
 import kotlin.reflect.KClass
 
 val ActivityBindingPluginDescriptor = pluginDescriptor<ActivityBindingPlugin>()

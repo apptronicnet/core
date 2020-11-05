@@ -1,7 +1,7 @@
 package net.apptronic.core.android.viewmodel
 
 import android.widget.TextView
-import net.apptronic.core.mvvm.viewmodel.IViewModel
+import net.apptronic.core.viewmodel.IViewModel
 
 internal class GenericViewBinder<T : IViewModel> : ViewBinder<T>() {
 

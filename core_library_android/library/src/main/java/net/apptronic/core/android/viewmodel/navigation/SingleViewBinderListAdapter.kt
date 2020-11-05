@@ -7,9 +7,9 @@ import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.ViewBinderFactory
 import net.apptronic.core.android.viewmodel.view.DefaultViewContainerViewAdapter
 import net.apptronic.core.android.viewmodel.view.ViewContainerViewAdapter
-import net.apptronic.core.mvvm.viewmodel.navigation.TransitionInfo
-import net.apptronic.core.mvvm.viewmodel.navigation.ViewModelItem
-import net.apptronic.core.mvvm.viewmodel.navigation.adapters.SingleViewModelListAdapter
+import net.apptronic.core.viewmodel.navigation.TransitionInfo
+import net.apptronic.core.viewmodel.navigation.ViewModelItem
+import net.apptronic.core.viewmodel.navigation.adapters.SingleViewModelListAdapter
 
 class SingleViewBinderListAdapter(
     private val container: ViewGroup,

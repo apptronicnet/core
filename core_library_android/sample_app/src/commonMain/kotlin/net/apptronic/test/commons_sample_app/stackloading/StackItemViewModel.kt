@@ -2,13 +2,12 @@ package net.apptronic.test.commons_sample_app.stackloading
 
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.coroutines.contextCoroutineScope
-import net.apptronic.core.component.genericEvent
-import net.apptronic.core.component.inject
-import net.apptronic.core.component.value
-import net.apptronic.core.mvvm.viewmodel.EmptyViewModelContext
-import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.context.Context
+import net.apptronic.core.context.coroutines.contextCoroutineScope
+import net.apptronic.core.entity.genericEvent
+import net.apptronic.core.entity.value
+import net.apptronic.core.viewmodel.EmptyViewModelContext
+import net.apptronic.core.viewmodel.ViewModel
 
 class StackItemViewModel(parent: Context, val name: String) :
     ViewModel(parent, EmptyViewModelContext) {

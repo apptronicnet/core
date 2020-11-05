@@ -1,13 +1,13 @@
 package net.apptronic.test.commons_sample_app.lazylistfiltering
 
-import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.entity.Entity
-import net.apptronic.core.component.entity.behavior.delay
-import net.apptronic.core.component.newChain
-import net.apptronic.core.component.value
-import net.apptronic.core.mvvm.viewmodel.EmptyViewModelContext
-import net.apptronic.core.mvvm.viewmodel.ViewModel
-import net.apptronic.core.mvvm.viewmodel.navigation.ViewModelWithVisibility
+import net.apptronic.core.context.Context
+import net.apptronic.core.entity.Entity
+import net.apptronic.core.entity.behavior.delay
+import net.apptronic.core.entity.newChain
+import net.apptronic.core.entity.value
+import net.apptronic.core.viewmodel.EmptyViewModelContext
+import net.apptronic.core.viewmodel.ViewModel
+import net.apptronic.core.viewmodel.navigation.ViewModelWithVisibility
 
 class StaticFilteredItemViewModel(
     parent: Context,

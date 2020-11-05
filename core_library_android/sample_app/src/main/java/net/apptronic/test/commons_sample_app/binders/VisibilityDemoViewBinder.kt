@@ -3,8 +3,8 @@ package net.apptronic.test.commons_sample_app.binders
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
-import net.apptronic.core.android.anim.animations.Transition_Next
 import net.apptronic.core.android.anim.animations.ViewAnimation_Fade
+import net.apptronic.core.android.anim.animations.ViewTransition_Next
 import net.apptronic.core.android.anim.transformations.*
 import net.apptronic.core.android.anim.transition.viewTransition
 import net.apptronic.core.android.anim.viewAnimation
@@ -100,7 +100,7 @@ class VisibilityDemoViewBinder : ViewBinder<VisibilityDemoViewModel>() {
             isVisibleTransitionBuilder2Content,
             viewModel.isVisibleTransitionBuilder2.observeState()
         ) {
-            viewTransition = Transition_Next
+            viewTransition = ViewTransition_Next
             duration = this@VisibilityDemoViewBinder.duration
             intercept(viewModel.isInterceptAnimations.observeState())
         }

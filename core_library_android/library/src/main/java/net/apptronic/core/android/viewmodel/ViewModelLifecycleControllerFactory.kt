@@ -4,8 +4,8 @@ import android.app.Activity
 import android.view.View
 import net.apptronic.core.android.viewmodel.view.ActivityViewProvider
 import net.apptronic.core.android.viewmodel.view.DefaultActivityViewProvider
-import net.apptronic.core.mvvm.viewmodel.IViewModel
-import net.apptronic.core.mvvm.viewmodel.navigation.ViewModelLifecycleController
+import net.apptronic.core.viewmodel.IViewModel
+import net.apptronic.core.viewmodel.navigation.ViewModelLifecycleController
 
 fun <T : IViewModel> lifecycleController(
     viewModel: T,

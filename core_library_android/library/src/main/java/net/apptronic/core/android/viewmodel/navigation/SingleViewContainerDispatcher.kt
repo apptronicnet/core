@@ -8,8 +8,8 @@ import net.apptronic.core.android.anim.transition.ViewTransitionDirection
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.view.DefaultViewContainerViewAdapter
 import net.apptronic.core.android.viewmodel.view.ViewContainerViewAdapter
-import net.apptronic.core.mvvm.viewmodel.IViewModel
-import net.apptronic.core.mvvm.viewmodel.navigation.TransitionInfo
+import net.apptronic.core.viewmodel.IViewModel
+import net.apptronic.core.viewmodel.navigation.TransitionInfo
 
 internal class SingleViewContainerDispatcher(
     private val container: ViewGroup,

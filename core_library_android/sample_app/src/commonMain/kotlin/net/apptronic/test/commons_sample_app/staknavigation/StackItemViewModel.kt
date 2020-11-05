@@ -1,16 +1,16 @@
 package net.apptronic.test.commons_sample_app.staknavigation
 
-import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.context.ContextDefinition
-import net.apptronic.core.component.entity.functions.map
-import net.apptronic.core.component.genericEvent
-import net.apptronic.core.component.property
-import net.apptronic.core.component.value
-import net.apptronic.core.mvvm.viewmodel.EmptyViewModelContext
-import net.apptronic.core.mvvm.viewmodel.ViewModel
-import net.apptronic.core.mvvm.viewmodel.ViewModelContext
-import net.apptronic.core.mvvm.viewmodel.navigation.BackNavigationStatus
-import net.apptronic.core.mvvm.viewmodel.navigation.HasBackNavigation
+import net.apptronic.core.context.Context
+import net.apptronic.core.context.ContextDefinition
+import net.apptronic.core.entity.functions.map
+import net.apptronic.core.entity.genericEvent
+import net.apptronic.core.entity.property
+import net.apptronic.core.entity.value
+import net.apptronic.core.viewmodel.EmptyViewModelContext
+import net.apptronic.core.viewmodel.ViewModel
+import net.apptronic.core.viewmodel.ViewModelContext
+import net.apptronic.core.viewmodel.navigation.BackNavigationStatus
+import net.apptronic.core.viewmodel.navigation.HasBackNavigation
 
 class StackItemViewModel(
     parent: Context, contextDefinition: ContextDefinition<ViewModelContext> = EmptyViewModelContext,

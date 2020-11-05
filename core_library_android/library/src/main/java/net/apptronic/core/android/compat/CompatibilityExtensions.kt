@@ -4,9 +4,9 @@ import android.app.Activity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
-import net.apptronic.core.component.context.Context
-import net.apptronic.core.component.context.childContext
-import net.apptronic.core.component.lifecycle.BASE_LIFECYCLE
+import net.apptronic.core.context.Context
+import net.apptronic.core.context.childContext
+import net.apptronic.core.context.lifecycle.BASE_LIFECYCLE
 
 internal fun Activity.getParentContext(): Context {
     return (application as? CoreCompatContextHolder)?.componentContext

@@ -1,8 +1,8 @@
 package net.apptronic.test.commons_sample_app.onboarding
 
-import net.apptronic.core.component.di.declareModule
-import net.apptronic.core.component.di.dependencyDescriptor
-import net.apptronic.core.mvvm.viewmodel.defineViewModelContext
+import net.apptronic.core.context.di.declareModule
+import net.apptronic.core.context.di.dependencyDescriptor
+import net.apptronic.core.viewmodel.defineViewModelContext
 
 val OnboardingDataDescriptor = dependencyDescriptor<OnboadingData>()
 

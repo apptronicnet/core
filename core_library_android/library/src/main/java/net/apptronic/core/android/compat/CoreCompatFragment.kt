@@ -4,10 +4,10 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import net.apptronic.core.component.context.Context
-import net.apptronic.core.mvvm.viewmodel.IViewModel
-import net.apptronic.core.mvvm.viewmodel.ViewModelContext
-import net.apptronic.core.mvvm.viewmodel.navigation.ViewModelLifecycleController
+import net.apptronic.core.context.Context
+import net.apptronic.core.viewmodel.IViewModel
+import net.apptronic.core.viewmodel.ViewModelContext
+import net.apptronic.core.viewmodel.navigation.ViewModelLifecycleController
 
 abstract class CoreCompatFragment<T : IViewModel> : Fragment(), ICoreCompatFragment<T> {
 

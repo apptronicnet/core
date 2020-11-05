@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import net.apptronic.core.android.compat.ViewBinderActivity
 import net.apptronic.core.android.viewmodel.ViewBinder
-import net.apptronic.core.component.context.Context
+import net.apptronic.core.context.Context
 import net.apptronic.test.commons_sample_compat_app.fragments.welcome.WelcomeFragment
 
 class MainActivity : ViewBinderActivity<MainViewModel>() {

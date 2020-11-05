@@ -4,10 +4,10 @@ import android.widget.CompoundButton
 import net.apptronic.core.android.viewmodel.Binding
 import net.apptronic.core.android.viewmodel.BindingContainer
 import net.apptronic.core.android.viewmodel.ViewBinder
-import net.apptronic.core.component.entity.Entity
-import net.apptronic.core.component.entity.base.UpdateEntity
-import net.apptronic.core.component.entity.entities.Value
-import net.apptronic.core.mvvm.viewmodel.IViewModel
+import net.apptronic.core.entity.Entity
+import net.apptronic.core.entity.base.UpdateEntity
+import net.apptronic.core.entity.entities.Value
+import net.apptronic.core.viewmodel.IViewModel
 
 fun BindingContainer.bindSwitch(button: CompoundButton, value: Value<Boolean>) {
     +SwitchBinding(button, value, value::set)

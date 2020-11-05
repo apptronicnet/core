@@ -9,9 +9,9 @@ import net.apptronic.core.android.viewmodel.style.list.ViewStyleAdapter
 import net.apptronic.core.android.viewmodel.view.DefaultViewContainerViewAdapter
 import net.apptronic.core.android.viewmodel.view.ViewContainerViewAdapter
 import net.apptronic.core.base.collections.simpleLazyListOf
-import net.apptronic.core.mvvm.viewmodel.IViewModel
-import net.apptronic.core.mvvm.viewmodel.navigation.ViewModelItem
-import net.apptronic.core.mvvm.viewmodel.navigation.adapters.ViewModelListAdapter
+import net.apptronic.core.viewmodel.IViewModel
+import net.apptronic.core.viewmodel.navigation.ViewModelItem
+import net.apptronic.core.viewmodel.navigation.adapters.ViewModelListAdapter
 
 class ViewBinderListAdapter(
     private val container: ViewGroup,

@@ -3,7 +3,7 @@ package net.apptronic.core.android.compat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 
-class ModelHolderViewModelFactory<VM : net.apptronic.core.mvvm.viewmodel.IViewModel>(
+class ModelHolderViewModelFactory<VM : net.apptronic.core.viewmodel.IViewModel>(
     private val builder: () -> VM
 ) : ViewModelProvider.Factory {
 

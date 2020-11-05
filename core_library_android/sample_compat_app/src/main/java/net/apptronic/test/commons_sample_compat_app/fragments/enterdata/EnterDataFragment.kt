@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import net.apptronic.core.android.compat.CoreCompatContextHolder
 import net.apptronic.core.android.compat.componentContext
-import net.apptronic.core.component.context.dependencyModule
-import net.apptronic.core.component.inject
+import net.apptronic.core.context.dependencyModule
+import net.apptronic.core.context.di.inject
 import net.apptronic.test.commons_sample_compat_app.R
 import net.apptronic.test.commons_sample_compat_app.Router
 import net.apptronic.test.commons_sample_compat_app.fragments.enterdata.location.EnterLocationFragment
@@ -30,8 +30,8 @@ class EnterDataFragment : Fragment(), CoreCompatContextHolder {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        router = componentContext.inject()
-        repository = componentContext.inject()
+        router = componentContext.dependencyProvider.inject()
+        repository = componentContext.dependencyProvider.inject()
         componentContext.dependencyDispatcher.addInstance<EnterDataRouter>(dataRouter)
     }
 

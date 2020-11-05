@@ -10,8 +10,8 @@ import net.apptronic.core.android.viewmodel.listadapters.RecyclerViewAdapter
 import net.apptronic.core.android.viewmodel.navigation.ViewBinderListAdapter
 import net.apptronic.core.android.viewmodel.style.list.ViewStyleAdapter
 import net.apptronic.core.android.viewmodel.style.list.emptyViewStyleAdapter
-import net.apptronic.core.mvvm.viewmodel.IViewModel
-import net.apptronic.core.mvvm.viewmodel.navigation.models.SupportsViewModelListAdapter
+import net.apptronic.core.viewmodel.IViewModel
+import net.apptronic.core.viewmodel.navigation.models.SupportsViewModelListAdapter
 
 fun BindingContainer.bindNavigator(
     container: RecyclerView,

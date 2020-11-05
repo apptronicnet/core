@@ -16,10 +16,10 @@ import net.apptronic.core.android.viewmodel.transitions.GestureTarget
 import net.apptronic.core.android.viewmodel.transitions.NavigationGestureDetector
 import net.apptronic.core.android.viewmodel.transitions.TransitionBuilder
 import net.apptronic.core.android.viewmodel.transitions.gestures.BackwardTransitionGestureDetector
-import net.apptronic.core.mvvm.viewmodel.IViewModel
-import net.apptronic.core.mvvm.viewmodel.navigation.BackNavigationStatus
-import net.apptronic.core.mvvm.viewmodel.navigation.StackNavigationModel
-import net.apptronic.core.mvvm.viewmodel.navigation.ViewModelItem
+import net.apptronic.core.viewmodel.IViewModel
+import net.apptronic.core.viewmodel.navigation.BackNavigationStatus
+import net.apptronic.core.viewmodel.navigation.StackNavigationModel
+import net.apptronic.core.viewmodel.navigation.ViewModelItem
 
 @Deprecated("Will be replaced")
 fun BindingContainer.bindStackNavigator(

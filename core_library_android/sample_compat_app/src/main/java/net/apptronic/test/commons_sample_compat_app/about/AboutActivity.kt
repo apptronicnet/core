@@ -2,7 +2,7 @@ package net.apptronic.test.commons_sample_compat_app.about
 
 import android.os.Bundle
 import net.apptronic.core.android.compat.CoreCompatActivity
-import net.apptronic.core.component.context.Context
+import net.apptronic.core.context.Context
 import net.apptronic.test.commons_sample_compat_app.databinding.ActivityAboutBinding
 
 class AboutActivity : CoreCompatActivity<AboutViewModel>() {

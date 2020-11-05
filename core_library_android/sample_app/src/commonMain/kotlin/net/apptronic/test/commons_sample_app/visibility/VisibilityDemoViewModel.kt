@@ -1,10 +1,10 @@
 package net.apptronic.test.commons_sample_app.visibility
 
-import net.apptronic.core.component.context.Contextual
-import net.apptronic.core.component.context.viewModelContext
-import net.apptronic.core.mvvm.common.switchModel
-import net.apptronic.core.mvvm.viewmodel.ViewModel
-import net.apptronic.core.mvvm.viewmodel.ViewModelContext
+import net.apptronic.core.context.Contextual
+import net.apptronic.core.viewmodel.ViewModel
+import net.apptronic.core.viewmodel.ViewModelContext
+import net.apptronic.core.viewmodel.commons.switchModel
+import net.apptronic.core.viewmodel.viewModelContext
 
 fun Contextual.visibilityDemoViewModel() = VisibilityDemoViewModel(viewModelContext())
 

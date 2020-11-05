@@ -11,8 +11,8 @@ import net.apptronic.core.android.viewmodel.listadapters.ViewPagerAdapter
 import net.apptronic.core.android.viewmodel.navigation.ViewBinderListAdapter
 import net.apptronic.core.android.viewmodel.style.list.ViewStyleAdapter
 import net.apptronic.core.android.viewmodel.style.list.emptyViewStyleAdapter
-import net.apptronic.core.mvvm.viewmodel.IViewModel
-import net.apptronic.core.mvvm.viewmodel.navigation.StaticListNavigator
+import net.apptronic.core.viewmodel.IViewModel
+import net.apptronic.core.viewmodel.navigation.StaticListNavigator
 
 fun BindingContainer.bindNavigator(
     container: ViewPager,

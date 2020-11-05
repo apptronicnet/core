@@ -2,7 +2,7 @@ package net.apptronic.core.android.viewmodel.transitions
 
 import android.view.animation.AccelerateDecelerateInterpolator
 import net.apptronic.core.android.viewmodel.transitions.viewswitches.*
-import net.apptronic.core.mvvm.viewmodel.navigation.BasicTransition
+import net.apptronic.core.viewmodel.navigation.BasicTransition
 
 /**
  * Base class for animations implementation. Allows to animate changes for [StackNavigator]

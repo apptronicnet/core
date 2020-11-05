@@ -5,11 +5,11 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.widget.ViewPager2
 import net.apptronic.core.android.viewmodel.BindingContainer
-import net.apptronic.core.mvvm.viewmodel.navigation.ListNavigator
-import net.apptronic.core.mvvm.viewmodel.navigation.StaticListNavigator
-import net.apptronic.core.mvvm.viewmodel.navigation.models.IListNavigationModel
-import net.apptronic.core.mvvm.viewmodel.navigation.models.ISelectorNavigationModel
-import net.apptronic.core.mvvm.viewmodel.navigation.models.IStackNavigationModel
+import net.apptronic.core.viewmodel.navigation.ListNavigator
+import net.apptronic.core.viewmodel.navigation.StaticListNavigator
+import net.apptronic.core.viewmodel.navigation.models.IListNavigationModel
+import net.apptronic.core.viewmodel.navigation.models.ISelectorNavigationModel
+import net.apptronic.core.viewmodel.navigation.models.IStackNavigationModel
 
 /**
  * Default binding for [IStackNavigationModel]

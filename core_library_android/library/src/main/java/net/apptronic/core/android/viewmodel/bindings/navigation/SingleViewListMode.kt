@@ -7,8 +7,8 @@ import net.apptronic.core.android.viewmodel.BindingContainer
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.ViewBinderFactory
 import net.apptronic.core.android.viewmodel.navigation.SingleViewBinderListAdapter
-import net.apptronic.core.mvvm.viewmodel.IViewModel
-import net.apptronic.core.mvvm.viewmodel.navigation.models.SupportsSingleViewModelListAdapter
+import net.apptronic.core.viewmodel.IViewModel
+import net.apptronic.core.viewmodel.navigation.models.SupportsSingleViewModelListAdapter
 
 fun BindingContainer.bindNavigator(
     container: ViewGroup,

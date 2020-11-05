@@ -2,8 +2,8 @@ package net.apptronic.core.android.viewmodel
 
 import androidx.annotation.LayoutRes
 import net.apptronic.core.base.SerialIdGenerator
-import net.apptronic.core.mvvm.viewmodel.IViewModel
-import net.apptronic.core.mvvm.viewmodel.ViewModel
+import net.apptronic.core.viewmodel.IViewModel
+import net.apptronic.core.viewmodel.ViewModel
 import kotlin.reflect.KClass
 import kotlin.reflect.full.superclasses
 

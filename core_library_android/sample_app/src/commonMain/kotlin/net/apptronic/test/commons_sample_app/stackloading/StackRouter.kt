@@ -1,6 +1,6 @@
 package net.apptronic.test.commons_sample_app.stackloading
 
-import net.apptronic.core.component.di.dependencyDescriptor
+import net.apptronic.core.context.di.dependencyDescriptor
 
 val StackRouterDescriptor = dependencyDescriptor<StackRouter>()
 
