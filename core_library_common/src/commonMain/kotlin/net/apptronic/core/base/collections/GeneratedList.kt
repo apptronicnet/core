@@ -3,9 +3,10 @@ package net.apptronic.core.base.collections
 fun <E> generatedList(
         minValue: Int = 0,
         maxValue: Int = 0,
+        reversed: Boolean = false,
         generator: (Int) -> E
 ): GeneratedList<E> {
-    return GeneratedList(minValue, maxValue, generator)
+    return GeneratedList(minValue, maxValue, reversed, generator)
 }
 
 /**
@@ -22,6 +23,10 @@ class GeneratedList<E>(
          */
         val maxValue: Int,
         /**
+         * Defines is list should be generated as reversed.
+         */
+        val reversed: Boolean,
+        /**
          * Generator function which converts integer value to list item
          */
         val generator: (Int) -> E
@@ -30,7 +35,11 @@ class GeneratedList<E>(
     /**
      * Defines index of item which matches zero value
      */
-    val indexOfZeroValue: Int = -minValue
+    val indexOfZeroValue: Int = if (reversed) {
+        size + minValue - 1
+    } else {
+        -minValue
+    }
 
     /**
      * Get item base on value instead of index
@@ -43,7 +52,11 @@ class GeneratedList<E>(
     }
 
     override fun get(index: Int): E {
-        val value = minValue + index
+        val value = if (reversed) {
+            minValue + (size - index - 1)
+        } else {
+            minValue + index
+        }
         return getAtValue(value)
     }
 
