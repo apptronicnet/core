@@ -14,6 +14,16 @@ fun <T : Any, Id : Any, VM : IViewModel> IViewModel.listDynamicNavigator(
 }
 
 fun <T : Any, Id : Any, VM : IViewModel> IViewModel.listDynamicNavigator(
+        items: List<T>,
+        builder: ViewModelBuilder<in T, in Id, in VM>,
+        navigatorContext: Context = this.context
+): StatelessDynamicListNavigator<T, Id, VM> {
+    val navigator = listDynamicNavigator(builder, navigatorContext)
+    navigator.setItems(items)
+    return navigator
+}
+
+fun <T : Any, Id : Any, VM : IViewModel> IViewModel.listDynamicNavigator(
         source: Entity<out List<T>>,
         builder: ViewModelBuilder<in T, in Id, in VM>,
         navigatorContext: Context = this.context

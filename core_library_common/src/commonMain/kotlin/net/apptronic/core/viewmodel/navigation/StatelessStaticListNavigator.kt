@@ -24,6 +24,20 @@ fun <T, Id, VM : IViewModel> IViewModel.listNavigator(
     return navigator
 }
 
+fun <T, Id, VM : IViewModel> IViewModel.listNavigator(
+        items: List<T>,
+        builder: ViewModelBuilder<T, Id, VM>,
+        navigatorContext: Context = this.context
+): StatelessStaticListNavigator {
+    val listBuilder = listBuilder(builder)
+    listBuilder.update(items)
+    val navigator = listNavigator(navigatorContext)
+    listBuilder.subscribe {
+        navigator.set(it.value, it.change)
+    }
+    return navigator
+}
+
 fun <T, Id, VM : IViewModel> IViewModel.listNavigatorOnChange(
         source: Entity<Next<out List<T>, out Any>>,
         builder: ViewModelBuilder<T, Id, VM>,
