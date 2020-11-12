@@ -122,6 +122,10 @@ class SwitchViewModel internal constructor(context: ViewModelContext) : ViewMode
         }
     }
 
+    fun toggleState() {
+        updateState(state.getOr(false).not())
+    }
+
     fun setEnabled(enabled: Boolean) {
         isEnabled.set(enabled)
     }
