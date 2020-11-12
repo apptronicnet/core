@@ -77,3 +77,8 @@ val ViewTransition_Fade = viewTransition {
     exitSingle = Transition_Fade_Exit
     order = ViewTransitionDirectionSpec.Bidirectional
 }
+
+val ViewTransition_Crossfade = viewTransition {
+    enter(Transition_Fade_Enter)
+    exit(Transition_Fade_Exit)
+}

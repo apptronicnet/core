@@ -5,6 +5,7 @@ import net.apptronic.core.viewmodel.navigation.BasicTransition
 
 val BasicViewTransitionFactory = viewTransitionFactory {
     bindTransition(BasicTransition.Fade, ViewTransition_Fade)
+    bindTransition(BasicTransition.Crossfade, ViewTransition_Crossfade)
     bindTransition(BasicTransition.Previous, ViewTransition_Previous)
     bindTransition(BasicTransition.Next, ViewTransition_Next)
     bindTransition(BasicTransition.Forward, ViewTransition_Forward)
