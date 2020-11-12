@@ -3,9 +3,14 @@ package net.apptronic.core.viewmodel.navigation
 sealed class BasicTransition {
 
     /**
-     * Defines transition with fade in / fade out
+     * Defines transition with fade in / fade out of view which is on front.
      */
     object Fade : BasicTransition()
+
+    /**
+     * Defines transition when exiting view fading out when entering view fading in.
+     */
+    object Crossfade : BasicTransition()
 
     /**
      * Defines transition with opening new screen overlapping current
