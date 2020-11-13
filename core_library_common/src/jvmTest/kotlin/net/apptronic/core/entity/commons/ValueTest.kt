@@ -1,53 +1,56 @@
 package net.apptronic.core.entity.commons
 
-import net.apptronic.core.assertListEquals
-import net.apptronic.core.context.component.Component
-import net.apptronic.core.testutils.createTestContext
+import net.apptronic.core.BaseContextTest
+import net.apptronic.core.record
 import org.junit.Test
 
-class ValueTest {
+class ValueTest : BaseContextTest() {
 
-    val component = Component(createTestContext())
-    val source = component.value<String>()
-    val results = mutableListOf<String>()
-
-    init {
-        source.subscribe {
-            results.add(it)
-        }
-    }
+    private val source = value<String>()
+    private val results = source.record()
+    private val updates = source.updates.record()
 
     @Test
     fun verifyDistinctUntilChanged() {
         source.set("One")
-        assertListEquals(results, listOf("One"))
+        results.assertItems("One")
+        updates.assertItems()
 
         source.set("Two")
-        assertListEquals(results, listOf("One", "Two"))
+        results.assertItems("One", "Two")
+        updates.assertItems()
 
         source.set("Two")
-        assertListEquals(results, listOf("One", "Two"))
+        results.assertItems("One", "Two")
+        updates.assertItems()
+
+        source.update("Three")
+        results.assertItems("One", "Two", "Three")
+        updates.assertItems("Three")
 
         source.set("Three")
-        assertListEquals(results, listOf("One", "Two", "Three"))
+        results.assertItems("One", "Two", "Three")
+        updates.assertItems("Three")
+
+        source.update("Three")
+        results.assertItems("One", "Two", "Three")
+        updates.assertItems("Three")
 
         source.set("Three")
-        assertListEquals(results, listOf("One", "Two", "Three"))
-
-        source.set("Three")
-        assertListEquals(results, listOf("One", "Two", "Three"))
-
-        source.set("Three")
-        assertListEquals(results, listOf("One", "Two", "Three"))
+        results.assertItems("One", "Two", "Three")
+        updates.assertItems("Three")
 
         source.set("Two")
-        assertListEquals(results, listOf("One", "Two", "Three", "Two"))
+        results.assertItems("One", "Two", "Three", "Two")
+        updates.assertItems("Three")
 
-        source.set("Two")
-        assertListEquals(results, listOf("One", "Two", "Three", "Two"))
+        source.update("Two")
+        results.assertItems("One", "Two", "Three", "Two")
+        updates.assertItems("Three")
 
-        source.set("One")
-        assertListEquals(results, listOf("One", "Two", "Three", "Two", "One"))
+        source.update("One")
+        results.assertItems("One", "Two", "Three", "Two", "One")
+        updates.assertItems("Three", "One")
     }
 
 }

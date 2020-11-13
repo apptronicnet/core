@@ -4,17 +4,22 @@ import net.apptronic.core.base.observable.Observable
 import net.apptronic.core.base.observable.distinctUntilChanged
 import net.apptronic.core.base.subject.BehaviorSubject
 import net.apptronic.core.base.subject.ValueHolder
+import net.apptronic.core.base.utils.EqComparator
+import net.apptronic.core.base.utils.SimpleEqComparator
 import net.apptronic.core.context.Context
 import net.apptronic.core.entity.base.EntityValue
 import net.apptronic.core.entity.base.ObservableEntity
 
-abstract class Property<T>(override val context: Context) : ObservableEntity<T>(), EntityValue<T> {
+abstract class Property<T>(
+        override val context: Context,
+        private val eqComparator: EqComparator<T> = SimpleEqComparator<T>()
+) : ObservableEntity<T>(), EntityValue<T> {
 
     protected val subject = BehaviorSubject<T>()
 
-    override val observable: Observable<T> = subject.distinctUntilChanged()
+    final override val observable: Observable<T> = subject.distinctUntilChanged(eqComparator)
 
-    override fun getValueHolder(): ValueHolder<T>? {
+    final override fun getValueHolder(): ValueHolder<T>? {
         return subject.getValue()
     }
 

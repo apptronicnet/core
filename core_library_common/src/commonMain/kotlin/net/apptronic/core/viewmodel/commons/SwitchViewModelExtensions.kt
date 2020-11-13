@@ -4,17 +4,17 @@ import net.apptronic.core.UnderDevelopment
 import net.apptronic.core.entity.behavior.filter
 
 @UnderDevelopment
-fun groupSwitches(vararg switches: SwitchViewModel) {
+fun groupSwitches(vararg switches: SwitchModel) {
     groupSwitches(switches.toList())
 }
 
 @UnderDevelopment
-fun groupSwitches(switches: List<SwitchViewModel>) {
+fun groupSwitches(switches: List<SwitchModel>) {
     switches.forEach { switch ->
-        switch.observeState().filter { it }.subscribe {
+        switch.filter { it }.subscribe {
             switches.forEach { item ->
                 if (item != switch) {
-                    item.updateState(false)
+                    item.update(false)
                 }
             }
         }

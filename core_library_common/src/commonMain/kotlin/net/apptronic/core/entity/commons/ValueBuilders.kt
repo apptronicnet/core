@@ -1,5 +1,6 @@
 package net.apptronic.core.entity.commons
 
+import net.apptronic.core.base.utils.NeverEqComparator
 import net.apptronic.core.context.Contextual
 import net.apptronic.core.entity.Entity
 
@@ -24,4 +25,14 @@ fun <T> Contextual.valueSet() = mutableValue<MutableSet<T>>(mutableSetOf<T>())
 fun <K, V> Contextual.valueMap() = mutableValue<MutableMap<K, V>>(mutableMapOf<K, V>())
 
 fun <T> Contextual.valueList() = mutableValue<MutableList<T>>(mutableListOf<T>())
+
+fun <T> Contextual.mutableValue(): Value<T> {
+    return Value(context, NeverEqComparator<T>())
+}
+
+fun <T> Contextual.mutableValue(defaultValue: T): Value<T> {
+    return mutableValue<T>().apply {
+        set(defaultValue)
+    }
+}
 

@@ -1,6 +1,8 @@
 package net.apptronic.core
 
 import net.apptronic.core.base.subject.ValueHolder
+import net.apptronic.core.base.utils.EqComparator
+import net.apptronic.core.base.utils.SimpleEqComparator
 import net.apptronic.core.context.Context
 import net.apptronic.core.entity.Entity
 import net.apptronic.core.entity.EntitySubscription
@@ -8,13 +10,14 @@ import net.apptronic.core.entity.subscriptions.EntitySubscriptionListener
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
-inline fun <reified T> Entity<T>.record(): EntityRecorder<T> {
-    return EntityRecorder(T::class.java, this)
+inline fun <reified T> Entity<T>.record(eqComparator: EqComparator<T> = SimpleEqComparator()): EntityRecorder<T> {
+    return EntityRecorder(T::class.java, this, eqComparator)
 }
 
-class EntityRecorder<T> constructor(
+class EntityRecorder<T>(
         private val clazz: Class<T>,
-        private val source: Entity<T>
+        private val source: Entity<T>,
+        private val eqComparator: EqComparator<T> = SimpleEqComparator()
 ) : EntitySubscriptionListener {
 
     private val items = mutableListOf<T>()
@@ -62,15 +65,11 @@ class EntityRecorder<T> constructor(
     }
 
     fun assertItems(expected: List<T>) {
-        val sizeEquals = items.size == expected.size
-        val contentEquals = if (sizeEquals) {
-            items.mapIndexed { index, value ->
-                expected[index] == value
-            }.all { it }
-        } else {
-            false
-        }
-        assert(sizeEquals && contentEquals) {
+        assertSize(expected.size)
+        val contentEquals = items.mapIndexed { index, value ->
+            eqComparator.isEqualsNullable(expected[index], value)
+        }.all { it }
+        assert(contentEquals) {
             val expectedText = expected.map { it.toString() }.joinToString(separator = ", ")
             val actualText = items.map { it.toString() }.joinToString(separator = ", ")
             "Content con equals:\n" +

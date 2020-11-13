@@ -33,6 +33,30 @@ fun <T> Entity<T>.filterNotSuspend(filterNotFunction: (T) -> Boolean): Entity<T>
     }
 }
 
+fun <T> Entity<T>.filterEquals(vararg values: T): Entity<T> {
+    return FilterEntity(this) {
+        values.contains(it)
+    }
+}
+
+fun <T> Entity<T>.filterEquals(values: Collection<T>): Entity<T> {
+    return FilterEntity(this) {
+        values.contains(it)
+    }
+}
+
+fun <T> Entity<T>.filterNotEquals(vararg values: T): Entity<T> {
+    return FilterEntity(this) {
+        values.contains(it).not()
+    }
+}
+
+fun <T> Entity<T>.filterNotEquals(values: Collection<T>): Entity<T> {
+    return FilterEntity(this) {
+        values.contains(it).not()
+    }
+}
+
 private class FilterEntity<T>(
         source: Entity<T>,
         private val filterFunction: (T) -> Boolean

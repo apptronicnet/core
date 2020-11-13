@@ -1,8 +1,8 @@
 package net.apptronic.core.entity.operators
 
-import net.apptronic.core.entity.base.EntityValue
-import net.apptronic.core.entity.base.UpdateEntity
+import net.apptronic.core.entity.commons.MutableEntity
 
-fun <T> T.updateNot() where T : UpdateEntity<Boolean>, T : EntityValue<Boolean> {
+fun MutableEntity<Boolean>.toggle() {
     update((getOrNull() ?: false).not())
 }
+

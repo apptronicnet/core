@@ -10,6 +10,9 @@ interface EqComparator<T> {
 
 }
 
+/**
+ * Uses default language-level equals
+ */
 class SimpleEqComparator<T> : EqComparator<T> {
 
     override fun isEquals(left: T, right: T): Boolean {
@@ -22,6 +25,17 @@ class ReferenceEqComparator<T> : EqComparator<T> {
 
     override fun isEquals(left: T, right: T): Boolean {
         return left === right
+    }
+
+}
+
+/**
+ * Never returns true
+ */
+class NeverEqComparator<T> : EqComparator<T> {
+
+    override fun isEquals(left: T, right: T): Boolean {
+        return false
     }
 
 }

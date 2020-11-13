@@ -1,5 +1,6 @@
 package net.apptronic.core.entity
 
+import kotlinx.coroutines.CoroutineScope
 import net.apptronic.core.base.observable.Observable
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.context.Context
@@ -77,6 +78,22 @@ abstract class BaseEntity<T> : Entity<T> {
 
     final override fun switchContext(targetContext: Context): Entity<T> {
         return super.switchContext(targetContext)
+    }
+
+    final override fun subscribe(callback: (T) -> Unit): EntitySubscription {
+        return super.subscribe(callback)
+    }
+
+    final override fun subscribe(context: Context, callback: (T) -> Unit): EntitySubscription {
+        return super.subscribe(context, callback)
+    }
+
+    final override fun subscribeSuspend(callback: suspend CoroutineScope.(T) -> Unit): EntitySubscription {
+        return super.subscribeSuspend(callback)
+    }
+
+    final override fun subscribeSuspend(context: Context, callback: suspend CoroutineScope.(T) -> Unit): EntitySubscription {
+        return super.subscribeSuspend(context, callback)
     }
 
 }

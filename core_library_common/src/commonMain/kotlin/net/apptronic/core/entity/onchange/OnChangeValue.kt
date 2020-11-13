@@ -4,6 +4,7 @@ import net.apptronic.core.base.subject.ValueHolder
 import net.apptronic.core.context.Context
 import net.apptronic.core.entity.Entity
 import net.apptronic.core.entity.base.UpdateEntity
+import net.apptronic.core.entity.commons.TypedEvent
 import net.apptronic.core.entity.commons.Value
 import net.apptronic.core.entity.commons.setAs
 import net.apptronic.core.entity.commons.value
@@ -45,9 +46,12 @@ class OnChangeValueImpl<T, E> internal constructor(
         context: Context
 ) : OnChangePropertyImpl<T, E>(context), OnChangeValue<T, E>, UpdateEntity<Next<T, E>> {
 
+    private val updateEvent = TypedEvent<Next<T, E>>(context)
+
     override fun update(value: Next<T, E>) {
         this.change = value.change?.let { ValueHolder(it) }
         this.value.update(value.value)
+        updateEvent.send(value)
     }
 
 }
