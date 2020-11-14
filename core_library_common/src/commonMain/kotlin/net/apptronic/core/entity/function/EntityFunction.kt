@@ -3,13 +3,16 @@ package net.apptronic.core.entity.function
 import kotlinx.coroutines.CoroutineScope
 import net.apptronic.core.base.subject.BehaviorSubject
 import net.apptronic.core.base.subject.ValueHolder
+import net.apptronic.core.base.utils.EqComparator
 import net.apptronic.core.context.Context
 import net.apptronic.core.context.coroutines.lifecycleCoroutineScope
 import net.apptronic.core.context.coroutines.serialThrottler
 import net.apptronic.core.entity.Entity
+import net.apptronic.core.entity.base.FunctionProperty
 import net.apptronic.core.entity.base.Property
 import net.apptronic.core.entity.collectContext
 import net.apptronic.core.entity.commons.BaseProperty
+import net.apptronic.core.entity.commons.SourceProperty
 
 interface FunctionAction<T, R> {
 
@@ -54,12 +57,16 @@ private fun <T, R> suspendAction(context: Context, calculation: suspend Coroutin
 
 private abstract class EntityFunction<T>(
         override val context: Context
-) : BaseProperty<T>(context) {
+) : BaseProperty<T>(context), FunctionProperty<T> {
 
-    override val observable = BehaviorSubject<T>()
+    override val observable = subject
 
-    internal fun update(value: T) {
-        observable.update(value)
+    fun update(value: T) {
+        subject.update(value)
+    }
+
+    override fun distinct(eqComparator: EqComparator<T>): Property<T> {
+        return SourceProperty(context, this, eqComparator)
     }
 
 }
@@ -67,7 +74,7 @@ private abstract class EntityFunction<T>(
 fun <T, A> entityFunction(
         source: Entity<A>,
         method: (A) -> T
-): Property<T> {
+): FunctionProperty<T> {
     val context = source.context
     val functionAction = syncAction(method)
     return SingleFunction(context, source, functionAction)
@@ -76,7 +83,7 @@ fun <T, A> entityFunction(
 fun <T, A> entityFunctionSuspend(
         source: Entity<A>,
         method: suspend CoroutineScope.(A) -> T
-): Property<T> {
+): FunctionProperty<T> {
     val context = source.context
     val functionAction = suspendAction(context, method)
     return SingleFunction(context, source, functionAction)
@@ -85,7 +92,7 @@ fun <T, A> entityFunctionSuspend(
 fun <T> entityArrayFunction(
         source: Array<out Entity<*>>,
         method: (Array<Any?>) -> T
-): Property<T> {
+): FunctionProperty<T> {
     val context = collectContext(*source)
     val functionAction = syncAction(method)
     return ArrayFunction(context, source, functionAction)
@@ -94,7 +101,7 @@ fun <T> entityArrayFunction(
 fun <T> entityArrayFunctionSuspend(
         source: Array<Entity<*>>,
         method: suspend CoroutineScope.(Array<Any?>) -> T
-): Property<T> {
+): FunctionProperty<T> {
     val context = collectContext(*source)
     val functionAction = suspendAction(context, method)
     return ArrayFunction(context, source, functionAction)
@@ -104,7 +111,7 @@ fun <T, A, B> entityFunction(
         left: Entity<A>,
         right: Entity<B>,
         method: (A, B) -> T
-): Property<T> {
+): FunctionProperty<T> {
     val context = collectContext(left, right)
     val functionAction = syncAction<Pair<A, B>, T> {
         method(it.first, it.second)
@@ -116,7 +123,7 @@ fun <T, A, B> entityFunctionSuspend(
         left: Entity<A>,
         right: Entity<B>,
         method: suspend CoroutineScope.(A, B) -> T
-): Property<T> {
+): FunctionProperty<T> {
     val context = collectContext(left, right)
     val functionAction = suspendAction<Pair<A, B>, T>(context) {
         method(it.first, it.second)
@@ -130,7 +137,7 @@ fun <T, A, B, C> entityFunction(
         b: Entity<B>,
         c: Entity<C>,
         method: (A, B, C) -> T
-): Property<T> {
+): FunctionProperty<T> {
     val context = collectContext(a, b, c)
     val functionAction = syncAction<Array<Any?>, T> {
         method(it[0] as A, it[1] as B, it[2] as C)
@@ -144,7 +151,7 @@ fun <T, A, B, C> entityFunctionSuspend(
         b: Entity<B>,
         c: Entity<C>,
         method: suspend CoroutineScope.(A, B, C) -> T
-): Property<T> {
+): FunctionProperty<T> {
     val context = collectContext(a, b, c)
     val functionAction = suspendAction<Array<Any?>, T>(context) {
         method(it[0] as A, it[1] as B, it[2] as C)
@@ -159,7 +166,7 @@ fun <T, A, B, C, D> entityFunction(
         c: Entity<C>,
         d: Entity<D>,
         method: (A, B, C, D) -> T
-): Property<T> {
+): FunctionProperty<T> {
     val context = collectContext(a, b, c, d)
     val functionAction = syncAction<Array<Any?>, T> {
         method(it[0] as A, it[1] as B, it[2] as C, it[3] as D)
@@ -174,7 +181,7 @@ fun <T, A, B, C, D> entityFunctionSuspend(
         c: Entity<C>,
         d: Entity<D>,
         method: suspend CoroutineScope.(A, B, C, D) -> T
-): Property<T> {
+): FunctionProperty<T> {
     val context = collectContext(a, b, c, d)
     val functionAction = suspendAction<Array<Any?>, T>(context) {
         method(it[0] as A, it[1] as B, it[2] as C, it[3] as D)
@@ -190,7 +197,7 @@ fun <T, A, B, C, D, E> entityFunction(
         d: Entity<D>,
         e: Entity<E>,
         method: (A, B, C, D, E) -> T
-): Property<T> {
+): FunctionProperty<T> {
     val context = collectContext(a, b, c, d, e)
     val functionAction = syncAction<Array<Any?>, T> {
         method(it[0] as A, it[1] as B, it[2] as C, it[3] as D, it[4] as E)
@@ -206,7 +213,7 @@ fun <T, A, B, C, D, E> entityFunctionSuspend(
         d: Entity<D>,
         e: Entity<E>,
         method: suspend CoroutineScope.(A, B, C, D, E) -> T
-): Property<T> {
+): FunctionProperty<T> {
     val context = collectContext(a, b, c, d, e)
     val functionAction = suspendAction<Array<Any?>, T>(context) {
         method(it[0] as A, it[1] as B, it[2] as C, it[3] as D, it[4] as E)

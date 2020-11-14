@@ -1,14 +1,14 @@
 package net.apptronic.core.entity.function
 
 import net.apptronic.core.entity.Entity
-import net.apptronic.core.entity.base.Property
+import net.apptronic.core.entity.base.FunctionProperty
 
-fun <T> Entity<T>.isNull(): Property<Boolean> =
+fun <T> Entity<T>.isNull(): FunctionProperty<Boolean> =
         entityFunction(this) {
             it == null
         }
 
-fun <T> Entity<T>.isNotNull(): Property<Boolean> =
+fun <T> Entity<T>.isNotNull(): FunctionProperty<Boolean> =
         entityFunction(this) {
             it != null
         }
@@ -17,87 +17,87 @@ fun <T> Entity<T>.isNotNull(): Property<Boolean> =
  * Function which emits single true signal when source entity emits any item. Good for usage when needed to
  * observe when entity without value receives it's first value
  */
-fun <T> Entity<T>.anyValue(): Property<Boolean> =
+fun <T> Entity<T>.anyValue(): FunctionProperty<Boolean> =
         entityFunction(this) {
             true
         }
 
-fun Entity<Boolean>.isTrue(): Property<Boolean> =
+fun Entity<Boolean>.isTrue(): FunctionProperty<Boolean> =
         entityFunction(this) {
             it
         }
 
-fun Entity<Boolean>.isFalse(): Property<Boolean> =
+fun Entity<Boolean>.isFalse(): FunctionProperty<Boolean> =
         entityFunction(this) {
             it.not()
         }
 
-fun Entity<Boolean>.not(): Property<Boolean> =
+fun Entity<Boolean>.not(): FunctionProperty<Boolean> =
         entityFunction(this) {
             it.not()
         }
 
-fun Entity<Boolean?>.isTrueOrNull(): Property<Boolean> =
+fun Entity<Boolean?>.isTrueOrNull(): FunctionProperty<Boolean> =
         entityFunction(this) {
             it == null || it
         }
 
-fun Entity<Boolean?>.isFalseOrNull(): Property<Boolean> =
+fun Entity<Boolean?>.isFalseOrNull(): FunctionProperty<Boolean> =
         entityFunction(this) {
             it == null || it.not()
         }
 
-infix fun <A, B> Entity<A>.isEqualsTo(another: Entity<B>): Property<Boolean> =
+infix fun <A, B> Entity<A>.isEqualsTo(another: Entity<B>): FunctionProperty<Boolean> =
         entityFunction(this, another) { left, right ->
             left == right
         }
 
-infix fun <A, B> Entity<A>.isEqualsTo(another: B): Property<Boolean> =
+infix fun <A, B> Entity<A>.isEqualsTo(another: B): FunctionProperty<Boolean> =
         entityFunction(this) {
             it == another
         }
 
-infix fun <A, B> Entity<A>.isNotEqualsTo(another: Entity<B>): Property<Boolean> =
+infix fun <A, B> Entity<A>.isNotEqualsTo(another: Entity<B>): FunctionProperty<Boolean> =
         entityFunction(this, another) { left, right ->
             left != right
         }
 
-infix fun <A, B> Entity<A>.isNotEqualsTo(another: B): Property<Boolean> =
+infix fun <A, B> Entity<A>.isNotEqualsTo(another: B): FunctionProperty<Boolean> =
         entityFunction(this) {
             it != another
         }
 
-infix fun Entity<Boolean>.and(another: Entity<Boolean>): Property<Boolean> =
+infix fun Entity<Boolean>.and(another: Entity<Boolean>): FunctionProperty<Boolean> =
         entityFunction(this, another) { left, right ->
             left and right
         }
 
-infix fun Entity<Boolean>.or(another: Entity<Boolean>): Property<Boolean> =
+infix fun Entity<Boolean>.or(another: Entity<Boolean>): FunctionProperty<Boolean> =
         entityFunction(this, another) { left, right ->
             left or right
         }
 
-infix fun Entity<Boolean>.xor(another: Entity<Boolean>): Property<Boolean> =
+infix fun Entity<Boolean>.xor(another: Entity<Boolean>): FunctionProperty<Boolean> =
         entityFunction(this, another) { left, right ->
             left xor right
         }
 
-fun <T : CharSequence> Entity<T>.isEmpty(): Property<Boolean> =
+fun <T : CharSequence> Entity<T>.isEmpty(): FunctionProperty<Boolean> =
         entityFunction(this) {
             it.isEmpty()
         }
 
-fun <T : CharSequence> Entity<T>.isNotEmpty(): Property<Boolean> =
+fun <T : CharSequence> Entity<T>.isNotEmpty(): FunctionProperty<Boolean> =
         entityFunction(this) {
             it.isNotEmpty()
         }
 
-fun <T : CharSequence> Entity<T>.isBlank(): Property<Boolean> =
+fun <T : CharSequence> Entity<T>.isBlank(): FunctionProperty<Boolean> =
         entityFunction(this) {
             it.isBlank()
         }
 
-fun <T : CharSequence> Entity<T>.isNotBlank(): Property<Boolean> =
+fun <T : CharSequence> Entity<T>.isNotBlank(): FunctionProperty<Boolean> =
         entityFunction(this) {
             it.isNotBlank()
         }
@@ -105,7 +105,7 @@ fun <T : CharSequence> Entity<T>.isNotBlank(): Property<Boolean> =
 fun <T> allOf(
         vararg entity: Entity<out T>,
         transformation: (Entity<out T>) -> Entity<Boolean>
-): Property<Boolean> {
+): FunctionProperty<Boolean> {
     val sources = entity.map {
         transformation.invoke(it)
     }.toTypedArray<Entity<*>>()
@@ -118,7 +118,7 @@ fun <T> allOf(
 fun <T> allOfValues(
         vararg entity: Entity<out T>,
         transformation: (T) -> Boolean
-): Property<Boolean> {
+): FunctionProperty<Boolean> {
     val sources = entity.map { it as Entity<*> }.toTypedArray()
     return entityArrayFunction(sources) { args ->
         args.all { transformation.invoke(it as T) }
@@ -128,7 +128,7 @@ fun <T> allOfValues(
 fun <T> anyOf(
         vararg entity: Entity<out T>,
         transformation: (Entity<out T>) -> Entity<Boolean>
-): Property<Boolean> {
+): FunctionProperty<Boolean> {
     val sources = entity.map {
         transformation.invoke(it)
     }.toTypedArray<Entity<*>>()
@@ -141,7 +141,7 @@ fun <T> anyOf(
 fun <T> anyOfValues(
         vararg entity: Entity<out T>,
         transformation: (T) -> Boolean
-): Property<Boolean> {
+): FunctionProperty<Boolean> {
     val sources = entity.map { it as Entity<*> }.toTypedArray()
     return entityArrayFunction(sources) { args ->
         args.any { transformation.invoke(it as T) }
@@ -151,7 +151,7 @@ fun <T> anyOfValues(
 fun <T> noneOf(
         vararg entity: Entity<out T>,
         transformation: (Entity<out T>) -> Entity<Boolean>
-): Property<Boolean> {
+): FunctionProperty<Boolean> {
     val sources = entity.map {
         transformation.invoke(it)
     }.toTypedArray<Entity<*>>()
@@ -164,7 +164,7 @@ fun <T> noneOf(
 fun <T> noneOfValues(
         vararg entity: Entity<out T>,
         transformation: (T) -> Boolean
-): Property<Boolean> {
+): FunctionProperty<Boolean> {
     val sources = entity.map { it as Entity<*> }.toTypedArray()
     return entityArrayFunction(sources) { args ->
         args.none { transformation.invoke(it as T) }

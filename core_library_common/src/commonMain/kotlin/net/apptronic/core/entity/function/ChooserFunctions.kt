@@ -1,7 +1,7 @@
 package net.apptronic.core.entity.function
 
 import net.apptronic.core.entity.Entity
-import net.apptronic.core.entity.base.Property
+import net.apptronic.core.entity.base.FunctionProperty
 import net.apptronic.core.entity.behavior.filter
 
 class LeftRight<A, B>(
@@ -25,7 +25,7 @@ infix fun <T> Whenever.then(leftRight: LeftRight<T, T>) =
         if (condition) pair.first else pair.second
     }
 
-infix fun <T> Whenever.then(entity: Entity<T>): Property<T> {
+infix fun <T> Whenever.then(entity: Entity<T>): FunctionProperty<T> {
     return pair(this.condition, entity)
             .filter {
                 it.first

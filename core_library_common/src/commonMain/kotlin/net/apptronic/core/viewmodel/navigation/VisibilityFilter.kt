@@ -1,7 +1,7 @@
 package net.apptronic.core.viewmodel.navigation
 
 import net.apptronic.core.entity.Entity
-import net.apptronic.core.entity.function.ofValue
+import net.apptronic.core.entity.commons.ofValue
 import net.apptronic.core.viewmodel.IViewModel
 import net.apptronic.core.viewmodel.ViewModel
 
