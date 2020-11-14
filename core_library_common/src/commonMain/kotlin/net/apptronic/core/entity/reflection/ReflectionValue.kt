@@ -1,4 +1,4 @@
-package net.apptronic.core.entity.commons
+package net.apptronic.core.entity.reflection
 
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.base.subject.*
@@ -8,10 +8,22 @@ import net.apptronic.core.entity.Entity
 import net.apptronic.core.entity.EntitySubscription
 import net.apptronic.core.entity.base.MutableValue
 import net.apptronic.core.entity.base.Value
+import net.apptronic.core.entity.commons.asEvent
 import net.apptronic.core.entity.function.map
 
+private class LambdaMirror<T, E>(
+        private val directMethod: (E) -> T,
+        private val reverseMethod: (T) -> E
+) : Mirror<T, E> {
+
+    override fun direct(value: E): T = directMethod(value)
+
+    override fun reverse(value: T): E = reverseMethod(value)
+
+}
+
 /**
- * Created new [MutableValue] which reflects source [MutableValue] with converted value.
+ * Created new [Value] which reflects source [Value] with converted value.
  * Any changes made to source automatically reflected on reflection, and any changes, made to
  * reflection, automatically reflected on source.
  */
@@ -19,29 +31,36 @@ fun <T, E> Value<E>.reflect(
         direct: (E) -> T,
         reverse: (T) -> E,
 ): Value<T> {
-    return ReflectionValue(this, direct, reverse)
+    return ReflectionValue(this, LambdaMirror(direct, reverse))
 }
 
 fun <T, E> MutableValue<E>.reflect(
         direct: (E) -> T,
         reverse: (T) -> E,
 ): MutableValue<T> {
-    return ReflectionValue(this, direct, reverse)
+    return ReflectionValue(this, LambdaMirror(direct, reverse))
+}
+
+fun <T, E> Value<E>.reflect(mirror: Mirror<T, E>): Value<T> {
+    return ReflectionValue(this, mirror)
+}
+
+fun <T, E> MutableValue<E>.reflect(mirror: Mirror<T, E>): MutableValue<T> {
+    return ReflectionValue(this, mirror)
 }
 
 private class ReflectionValue<T, E>(
         private val target: Value<E>,
-        private val directReflection: (E) -> T,
-        private val reverseReflection: (T) -> E,
+        private val mirror: Mirror<T, E>
 ) : BaseEntity<T>(), MutableValue<T> {
 
     override val context: Context = target.context
 
     val E.directReflection: T
-        get() = directReflection(this)
+        get() = mirror.direct(this)
 
     val T.reverseReflection: E
-        get() = reverseReflection(this)
+        get() = mirror.reverse(this)
 
     override fun onSubscribeObserver(targetContext: Context, targetObserver: Observer<T>): EntitySubscription {
         return target.subscribe(context) {
@@ -58,7 +77,7 @@ private class ReflectionValue<T, E>(
     }
 
     override fun getValueHolder(): ValueHolder<T>? {
-        return target.getValueHolder().map(directReflection)
+        return target.getValueHolder().map(mirror::direct)
     }
 
     override val changes: Entity<MutableValue.Change<T>> =
@@ -70,31 +89,31 @@ private class ReflectionValue<T, E>(
 
     override val updates: Entity<T> =
             if (target is MutableValue<E>) {
-                target.updates.map(directReflection)
+                target.updates.map(mirror::direct)
             } else {
-                target.map(directReflection)
+                target.map(mirror::direct)
             }.asEvent()
 
     override fun applyChange(change: MutableValue.Change<T>) {
         if (change.isUpdate) {
-            target.update(reverseReflection(change.value))
+            target.update(mirror.reverse(change.value))
         } else {
-            target.set(reverseReflection(change.value))
+            target.set(mirror.reverse(change.value))
         }
     }
 
     override fun applyChange(value: T, isUpdate: Boolean) {
         if (isUpdate) {
-            target.update(reverseReflection(value))
+            target.update(mirror.reverse(value))
         } else {
-            target.set(reverseReflection(value))
+            target.set(mirror.reverse(value))
         }
     }
 
     override fun updateValue(updateCall: (T) -> T) {
-        val current = directReflection(target.get())
+        val current = mirror.direct(target.get())
         val next = updateCall(current)
-        target.update(reverseReflection(next))
+        target.update(mirror.reverse(next))
     }
 
     override fun get() = getValueHolder().getOrThrow()

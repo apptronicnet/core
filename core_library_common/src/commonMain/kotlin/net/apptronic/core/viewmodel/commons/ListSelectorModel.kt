@@ -5,7 +5,7 @@ import net.apptronic.core.context.Contextual
 import net.apptronic.core.entity.base.MutableValue
 import net.apptronic.core.entity.commons.BaseMutableValue
 import net.apptronic.core.entity.commons.mutableValue
-import net.apptronic.core.entity.commons.reflect
+import net.apptronic.core.entity.reflection.reflect
 
 fun <T, Id> Contextual.listSelector(getId: (T) -> Id): ListSelectorModel<T, Id> {
     return ListSelectorModel(context, getId)

@@ -7,9 +7,9 @@ import net.apptronic.core.context.Context
 import net.apptronic.core.entity.Entity
 import net.apptronic.core.entity.base.ObservableEntity
 import net.apptronic.core.entity.base.Value
-import net.apptronic.core.entity.commons.reflect
 import net.apptronic.core.entity.commons.typedEvent
 import net.apptronic.core.entity.commons.value
+import net.apptronic.core.entity.reflection.reflect
 
 /**
  * This variant of [Entity] designed to be property, which should pass additional information to observers when it's

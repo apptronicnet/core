@@ -1,6 +1,7 @@
-package net.apptronic.core.entity.commons
+package net.apptronic.core.entity.reflection
 
 import net.apptronic.core.BaseContextTest
+import net.apptronic.core.entity.commons.mutableValue
 import net.apptronic.core.record
 import org.junit.Test
 
