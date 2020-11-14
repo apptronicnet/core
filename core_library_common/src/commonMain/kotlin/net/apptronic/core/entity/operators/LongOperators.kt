@@ -1,20 +1,19 @@
 package net.apptronic.core.entity.operators
 
-import net.apptronic.core.entity.base.EntityValue
-import net.apptronic.core.entity.base.UpdateEntity
+import net.apptronic.core.entity.base.Value
 
-fun <T> T.increment() where T : UpdateEntity<Long>, T : EntityValue<Long> {
+fun Value<Long>.increment() {
     update((getOrNull() ?: 0) + 1)
 }
 
-fun <T> T.decrement() where T : UpdateEntity<Long>, T : EntityValue<Long> {
+fun Value<Long>.decrement() {
     update((getOrNull() ?: 0) - 1)
 }
 
-fun <T> T.add(value: Long) where T : UpdateEntity<Long>, T : EntityValue<Long> {
+fun Value<Long>.add(value: Long) {
     update((getOrNull() ?: 0) + value)
 }
 
-fun <T> T.subtract(value: Long) where T : UpdateEntity<Long>, T : EntityValue<Long> {
+fun Value<Long>.subtract(value: Long) {
     update((getOrNull() ?: 0) - value)
 }

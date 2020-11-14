@@ -4,14 +4,15 @@ import net.apptronic.core.base.subject.PublishSubject
 import net.apptronic.core.base.utils.EqComparator
 import net.apptronic.core.base.utils.SimpleEqComparator
 import net.apptronic.core.context.Context
+import net.apptronic.core.entity.base.MutableValue
 import net.apptronic.core.entity.bindContext
 
-class Value<T>(
-        final override val context: Context,
+class SimpleMutableValue<T> internal constructor(
+        context: Context,
         private val eqComparator: EqComparator<T> = SimpleEqComparator()
-) : Property<T>(context), MutableEntity<T> {
+) : SimpleProperty<T>(context), MutableValue<T> {
 
-    private val notificationsSubject = PublishSubject<MutableEntity.Notification<T>>()
+    private val notificationsSubject = PublishSubject<MutableValue.Notification<T>>()
 
     override val notifications = notificationsSubject.bindContext(context)
 
@@ -20,11 +21,11 @@ class Value<T>(
         if (holder != null) {
             if (!eqComparator.isEqualsNullable(holder.value, value)) {
                 subject.update(value)
-                notificationsSubject.update(MutableEntity.Notification(value, isUpdate))
+                notificationsSubject.update(MutableValue.Notification(value, isUpdate))
             }
         } else {
             subject.update(value)
-            notificationsSubject.update(MutableEntity.Notification(value, isUpdate))
+            notificationsSubject.update(MutableValue.Notification(value, isUpdate))
         }
     }
 

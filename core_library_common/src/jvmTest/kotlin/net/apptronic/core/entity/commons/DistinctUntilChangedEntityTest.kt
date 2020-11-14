@@ -19,34 +19,34 @@ class DistinctUntilChangedEntityTest {
 
     @Test
     fun verifyDistinctUntilChanged() {
-        source.sendEvent("One")
+        source.update("One")
         assertListEquals(results, listOf("One"))
 
-        source.sendEvent("Two")
+        source.update("Two")
         assertListEquals(results, listOf("One", "Two"))
 
-        source.sendEvent("Two")
+        source.update("Two")
         assertListEquals(results, listOf("One", "Two"))
 
-        source.sendEvent("Three")
+        source.update("Three")
         assertListEquals(results, listOf("One", "Two", "Three"))
 
-        source.sendEvent("Three")
+        source.update("Three")
         assertListEquals(results, listOf("One", "Two", "Three"))
 
-        source.sendEvent("Three")
+        source.update("Three")
         assertListEquals(results, listOf("One", "Two", "Three"))
 
-        source.sendEvent("Three")
+        source.update("Three")
         assertListEquals(results, listOf("One", "Two", "Three"))
 
-        source.sendEvent("Two")
+        source.update("Two")
         assertListEquals(results, listOf("One", "Two", "Three", "Two"))
 
-        source.sendEvent("Two")
+        source.update("Two")
         assertListEquals(results, listOf("One", "Two", "Three", "Two"))
 
-        source.sendEvent("One")
+        source.update("One")
         assertListEquals(results, listOf("One", "Two", "Three", "Two", "One"))
     }
 

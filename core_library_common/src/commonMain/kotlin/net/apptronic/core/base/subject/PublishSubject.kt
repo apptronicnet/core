@@ -7,7 +7,7 @@ import net.apptronic.core.base.observable.Subscriptions
 /**
  * Base subject which can receive some values and resent if to subscribers
  */
-open class PublishSubject<T> : Subject<T> {
+class PublishSubject<T> : Subject<T> {
 
     private val subscriptions = Subscriptions<T>()
 

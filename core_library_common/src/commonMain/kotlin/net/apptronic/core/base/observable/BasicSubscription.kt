@@ -9,9 +9,9 @@ class BasicSubscription<T>(private val target: Observer<T>) : Observer<T>, Subsc
         return isUnsubscribed
     }
 
-    override fun notify(value: T) {
+    override fun update(value: T) {
         if (!isUnsubscribed) {
-            target.notify(value)
+            target.update(value)
         }
     }
 

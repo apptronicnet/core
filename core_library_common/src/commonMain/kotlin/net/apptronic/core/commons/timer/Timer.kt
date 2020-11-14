@@ -93,7 +93,7 @@ class Timer internal constructor(
                         isFirst = counter == 1L,
                         isLast = counter == limit.get()
                 )
-                timerEvent.sendEvent(tick)
+                timerEvent.update(tick)
             }
             counter++;
             val limit = limit.get()

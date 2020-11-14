@@ -32,13 +32,13 @@ private class DelayEntity<T>(
             private val timeInMillisProvider: (T) -> Long
     ) : Observer<T> {
 
-        override fun notify(value: T) {
+        override fun update(value: T) {
             coroutineScope.launch {
                 val timeInMillis = timeInMillisProvider.invoke(value)
                 if (timeInMillis > 0L) {
                     kotlinx.coroutines.delay(timeInMillis)
                 }
-                target.notify(value)
+                target.update(value)
             }
         }
 

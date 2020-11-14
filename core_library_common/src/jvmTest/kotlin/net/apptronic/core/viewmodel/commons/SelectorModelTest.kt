@@ -2,8 +2,8 @@ package net.apptronic.core.viewmodel.commons
 
 import net.apptronic.core.BaseContextTest
 import net.apptronic.core.EntityRecorder
-import net.apptronic.core.entity.commons.MutableEntity
-import net.apptronic.core.entity.commons.updates
+import net.apptronic.core.entity.base.MutableValue
+import net.apptronic.core.entity.base.updates
 import net.apptronic.core.record
 import net.apptronic.core.viewmodel.commons.SelectableValue.*
 import org.junit.Test
@@ -16,9 +16,9 @@ class SelectorModelTest : BaseContextTest() {
     private lateinit var state: EntityRecorder<SelectableValue?>
     private lateinit var updates: EntityRecorder<SelectableValue?>
 
-    private lateinit var sw1: MutableEntity<Boolean>
-    private lateinit var sw2: MutableEntity<Boolean>
-    private lateinit var sw3: MutableEntity<Boolean>
+    private lateinit var sw1: MutableValue<Boolean>
+    private lateinit var sw2: MutableValue<Boolean>
+    private lateinit var sw3: MutableValue<Boolean>
 
     private lateinit var sw1state: EntityRecorder<Boolean>
     private lateinit var sw1updates: EntityRecorder<Boolean>

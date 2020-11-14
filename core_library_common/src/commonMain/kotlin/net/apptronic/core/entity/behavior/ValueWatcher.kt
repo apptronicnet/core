@@ -54,7 +54,7 @@ private class ValueWatcherImpl<T>(
 
     private class ValueActionHolder<T>(val action: (T) -> Unit) : Observer<T> {
         private var valueHolder: ValueHolder<T>? = null
-        override fun notify(value: T) {
+        override fun update(value: T) {
             val current = valueHolder
             if (current == null || current.value !== value) {
                 action.invoke(value)
@@ -71,7 +71,7 @@ private class ValueWatcherImpl<T>(
 
     private class NewValueActionHolder<T>(val action: (T) -> Unit) : Observer<T> {
         private var valueHolder: ValueHolder<T>? = null
-        override fun notify(value: T) {
+        override fun update(value: T) {
             val current = valueHolder
             valueHolder = ValueHolder(value)
             if (current != null && current.value !== value) {
@@ -97,7 +97,7 @@ private class ValueWatcherImpl<T>(
 
     private class OldValueActionHolder<T>(val action: (T) -> Unit) : Observer<T> {
         private var valueHolder: ValueHolder<T>? = null
-        override fun notify(value: T) {
+        override fun update(value: T) {
             valueHolder?.let {
                 if (value !== it.value) {
                     action.invoke(it.value)

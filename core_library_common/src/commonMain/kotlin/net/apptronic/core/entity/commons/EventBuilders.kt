@@ -9,7 +9,7 @@ import net.apptronic.core.entity.function.onNextSuspend
 fun <T> Contextual.event(source: Entity<T>): Event<T> {
     return typedEvent<T>().also { event ->
         source.subscribe(context) {
-            event.sendEvent(it)
+            event.update(it)
         }
     }
 }

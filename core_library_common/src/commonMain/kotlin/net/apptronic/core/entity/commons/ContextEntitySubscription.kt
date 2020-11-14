@@ -42,7 +42,7 @@ internal class ContextEntitySubscription<T>(
 
     fun notify(value: T) {
         if (!isUnsubscribed()) {
-            observer.notify(value)
+            observer.update(value)
         }
     }
 

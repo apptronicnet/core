@@ -5,7 +5,7 @@ import net.apptronic.core.context.Context
 class ToggleProperty<T>(
         context: Context,
         private val values: List<T>
-) : Property<T>(context) {
+) : SimpleProperty<T>(context) {
 
     private var index = -1
 

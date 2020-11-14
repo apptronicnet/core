@@ -46,7 +46,7 @@ class FlowEntity<T> internal constructor(
             val job = scope.launch {
                 flow.collect { next ->
                     withContext(mainDispatcher) {
-                        subscription.notify(next)
+                        subscription.update(next)
                     }
                 }
             }

@@ -5,10 +5,6 @@ import net.apptronic.core.base.observable.Observer
 
 interface Subject<T> : Observable<T>, Observer<T> {
 
-    fun update(value: T)
-
-    override fun notify(value: T) {
-        update(value)
-    }
+    override fun update(value: T)
 
 }

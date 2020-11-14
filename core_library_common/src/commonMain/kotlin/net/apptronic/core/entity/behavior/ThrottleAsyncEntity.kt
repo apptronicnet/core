@@ -33,14 +33,14 @@ private class ThrottleAsyncEntity<T>(
         private var nextValue: ValueHolder<T>? = null
         private var isProcessing = false
 
-        override fun notify(value: T) {
+        override fun update(value: T) {
             nextValue = ValueHolder(value)
             if (!isProcessing) {
                 isProcessing = true
                 coroutineScope.launch {
                     isProcessing = false
                     nextValue?.let { valueHolder ->
-                        target.notify(valueHolder.value)
+                        target.update(valueHolder.value)
                     }
                     nextValue = null
                 }

@@ -7,8 +7,8 @@ import net.apptronic.core.context.Context
 import net.apptronic.core.context.coroutines.lifecycleCoroutineScope
 import net.apptronic.core.context.coroutines.serialThrottler
 import net.apptronic.core.entity.Entity
-import net.apptronic.core.entity.base.EntityValue
 import net.apptronic.core.entity.base.ObservableEntity
+import net.apptronic.core.entity.base.Property
 import net.apptronic.core.entity.collectContext
 
 interface FunctionAction<T, R> {
@@ -54,7 +54,7 @@ private fun <T, R> suspendAction(context: Context, calculation: suspend Coroutin
 
 abstract class EntityFunction<T>(
         override val context: Context
-) : ObservableEntity<T>(), EntityValue<T> {
+) : ObservableEntity<T>(), Property<T> {
 
     override val observable = BehaviorSubject<T>()
 

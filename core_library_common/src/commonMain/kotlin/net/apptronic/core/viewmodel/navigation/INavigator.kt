@@ -1,7 +1,7 @@
 package net.apptronic.core.viewmodel.navigation
 
 import net.apptronic.core.context.Context
-import net.apptronic.core.entity.base.EntityValue
+import net.apptronic.core.entity.base.Property
 import net.apptronic.core.viewmodel.IViewModel
 import net.apptronic.core.viewmodel.ViewModel
 
@@ -27,7 +27,7 @@ interface INavigator<Content> {
         }
     }
 
-    val content: EntityValue<Content>
+    val content: Property<Content>
 
 }
 

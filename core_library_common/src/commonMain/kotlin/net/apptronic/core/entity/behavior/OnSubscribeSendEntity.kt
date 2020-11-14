@@ -20,7 +20,7 @@ private class OnSubscribeSendEntity<T>(
 ) : RelayEntity<T>(source.asEvent()) {
 
     override fun onNewObserver(targetContext: Context, observer: Observer<T>): Observer<T> {
-        observer.notify(onSubscribeValueProvider.invoke())
+        observer.update(onSubscribeValueProvider.invoke())
         return super.onNewObserver(targetContext, observer)
     }
 

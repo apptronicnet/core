@@ -6,9 +6,13 @@ import net.apptronic.core.context.Context
 import net.apptronic.core.context.Contextual
 import net.apptronic.core.context.coroutines.lifecycleCoroutineScope
 import net.apptronic.core.entity.Entity
-import net.apptronic.core.entity.base.UpdateEntity
+import net.apptronic.core.entity.base.MutableValue
+import net.apptronic.core.entity.base.Value
+import net.apptronic.core.entity.base.updates
 import net.apptronic.core.entity.behavior.whenAnyValue
-import net.apptronic.core.entity.commons.*
+import net.apptronic.core.entity.commons.SimpleMutableValue
+import net.apptronic.core.entity.commons.setTo
+import net.apptronic.core.entity.commons.value
 import net.apptronic.core.entity.function.and
 import net.apptronic.core.entity.function.onNext
 import net.apptronic.core.entity.function.onNextSuspend
@@ -65,7 +69,7 @@ fun SwitchModel.withOnUpdateSuspend(onUpdate: suspend CoroutineScope.(Boolean) -
 }
 
 
-fun SwitchModel.withSendUpdates(target: UpdateEntity<Boolean>): SwitchModel {
+fun SwitchModel.withSendUpdates(target: Value<Boolean>): SwitchModel {
     updates.setTo(target)
     return this
 }
@@ -77,7 +81,7 @@ fun SwitchModel.withIsEnabled(isEnabledSource: Entity<Boolean>): SwitchModel {
     return this
 }
 
-class SwitchModel internal constructor(context: Context) : MutableEntity<Boolean> by Value<Boolean>(context) {
+class SwitchModel internal constructor(context: Context) : MutableValue<Boolean> by SimpleMutableValue<Boolean>(context) {
 
     private val isFilled = whenAnyValue()
 

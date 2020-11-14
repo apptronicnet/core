@@ -32,21 +32,21 @@ class LifecycleEventsTest {
         component.typedEvent.subscribe {
             typedCalls++
         }
-        component.genericEvent.sendEvent()
-        component.typedEvent.sendEvent(74)
+        component.genericEvent.update()
+        component.typedEvent.update(74)
 
         assert(genericCalls == 1)
         assert(typedCalls == 1)
 
         lifecycle.exitStage(TestLifecycle.STAGE_CREATED)
-        component.genericEvent.sendEvent()
-        component.typedEvent.sendEvent(74)
+        component.genericEvent.update()
+        component.typedEvent.update(74)
         assert(genericCalls == 1)
         assert(typedCalls == 1)
 
         lifecycle.enterStage(TestLifecycle.STAGE_CREATED)
-        component.genericEvent.sendEvent()
-        component.typedEvent.sendEvent(74)
+        component.genericEvent.update()
+        component.typedEvent.update(74)
         assert(genericCalls == 1)
         assert(typedCalls == 1)
 
@@ -68,8 +68,8 @@ class LifecycleEventsTest {
                 assert(it == 74)
             }
         }
-        component.genericEvent.sendEvent()
-        component.typedEvent.sendEvent(74)
+        component.genericEvent.update()
+        component.typedEvent.update(74)
 
         assert(genericCalls == 1)
         assert(typedCalls == 1)
@@ -92,8 +92,8 @@ class LifecycleEventsTest {
 
         lifecycle.exitStage(TestLifecycle.STAGE_CREATED)
 
-        component.genericEvent.sendEvent()
-        component.typedEvent.sendEvent(74)
+        component.genericEvent.update()
+        component.typedEvent.update(74)
 
         assert(genericCalls == 0)
         assert(typedCalls == 0)

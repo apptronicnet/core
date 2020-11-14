@@ -2,7 +2,11 @@ package net.apptronic.core.viewmodel.commons
 
 import net.apptronic.core.context.Context
 import net.apptronic.core.context.Contextual
-import net.apptronic.core.entity.commons.*
+import net.apptronic.core.entity.base.MutableValue
+import net.apptronic.core.entity.base.mapNotification
+import net.apptronic.core.entity.base.mutateUsingNotification
+import net.apptronic.core.entity.commons.mutableValue
+import net.apptronic.core.entity.commons.typedEvent
 
 fun <T> Contextual.selector(): SelectorModel<T> {
     return SelectorModel<T>(context, true).apply {
@@ -22,8 +26,8 @@ fun <T> Contextual.selector(defaultValue: T?, supportsUnselect: Boolean = true):
 class SelectorModel<T> internal constructor(
         context: Context,
         private val supportsUnselect: Boolean,
-        private val selection: Value<T?> = context.value<T?>()
-) : MutableEntity<T?> by selection, SwitchableSelector<T> {
+        private val selection: MutableValue<T?> = context.mutableValue()
+) : MutableValue<T?> by selection, SwitchableSelector<T> {
 
     private val reselectEvent = context.typedEvent<T>()
 
@@ -35,13 +39,13 @@ class SelectorModel<T> internal constructor(
                 if (get() == selection && supportsUnselect) {
                     mutateUsingNotification(null, isUpdate)
                 } else {
-                    reselectEvent.sendEvent(selection)
+                    reselectEvent.update(selection)
                 }
             }
         }
     }
 
-    private inner class Switch(val selection: T, val holder: MutableEntity<Boolean>) : MutableEntity<Boolean> by holder {
+    private inner class Switch(val selection: T, val holder: MutableValue<Boolean>) : MutableValue<Boolean> by holder {
 
         override fun set(value: Boolean) {
             setSelectionInternal(selection, value, false)
@@ -73,8 +77,8 @@ class SelectorModel<T> internal constructor(
 
     }
 
-    override fun getSwitch(selection: T): MutableEntity<Boolean> {
-        val value = context.value(get() == selection)
+    override fun getSwitch(selection: T): MutableValue<Boolean> {
+        val value = context.mutableValue(get() == selection)
         val switch = Switch(selection, value)
         value.notifications.subscribe {
             setSelectionInternal(selection, it.value, it.isUpdate)

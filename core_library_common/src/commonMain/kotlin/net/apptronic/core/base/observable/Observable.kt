@@ -9,7 +9,7 @@ interface Observable<T> {
 
     fun subscribe(callback: (T) -> Unit): Subscription {
         return subscribe(object : Observer<T> {
-            override fun notify(value: T) {
+            override fun update(value: T) {
                 callback.invoke(value)
             }
         })

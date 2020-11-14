@@ -20,19 +20,19 @@ class ResendOnSignalEntityTest {
         val results = resendable.resendWhen(value, event).record()
         results.assertItems()
 
-        resendable.sendEvent(1)
+        resendable.update(1)
         results.assertItems(1)
 
         value.set("1")
         results.assertItems(1, 1)
 
-        event.sendEvent()
+        event.update()
         results.assertItems(1, 1, 1)
 
-        resendable.sendEvent(2)
+        resendable.update(2)
         results.assertItems(1, 1, 1, 2)
 
-        event.sendEvent()
+        event.update()
         results.assertItems(1, 1, 1, 2, 2)
 
         value.set("1")

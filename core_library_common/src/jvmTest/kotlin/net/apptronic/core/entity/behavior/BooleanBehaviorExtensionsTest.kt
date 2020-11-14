@@ -17,13 +17,13 @@ class BooleanBehaviorExtensionsTest {
         val source = context.typedEvent<Boolean>()
         val result = source.whenTrue().record()
 
-        source.sendEvent(false)
+        source.update(false)
         result.assertItems()
-        source.sendEvent(true)
+        source.update(true)
         result.assertItems(Unit)
-        source.sendEvent(false)
+        source.update(false)
         result.assertItems(Unit)
-        source.sendEvent(true)
+        source.update(true)
         result.assertItems(Unit, Unit)
     }
 
@@ -32,13 +32,13 @@ class BooleanBehaviorExtensionsTest {
         val source = context.typedEvent<Boolean>()
         val result = source.whenFalse().record()
 
-        source.sendEvent(false)
+        source.update(false)
         result.assertItems(Unit)
-        source.sendEvent(true)
+        source.update(true)
         result.assertItems(Unit)
-        source.sendEvent(false)
+        source.update(false)
         result.assertItems(Unit, Unit)
-        source.sendEvent(true)
+        source.update(true)
         result.assertItems(Unit, Unit)
     }
 
@@ -47,13 +47,13 @@ class BooleanBehaviorExtensionsTest {
         val source = context.typedEvent<Boolean?>()
         val result = source.whenTrueNotNull().record()
 
-        source.sendEvent(false)
+        source.update(false)
         result.assertItems()
-        source.sendEvent(true)
+        source.update(true)
         result.assertItems(Unit)
-        source.sendEvent(null)
+        source.update(null)
         result.assertItems(Unit)
-        source.sendEvent(true)
+        source.update(true)
         result.assertItems(Unit, Unit)
     }
 
@@ -62,13 +62,13 @@ class BooleanBehaviorExtensionsTest {
         val source = context.typedEvent<Boolean?>()
         val result = source.whenFalseNotNull().record()
 
-        source.sendEvent(false)
+        source.update(false)
         result.assertItems(Unit)
-        source.sendEvent(true)
+        source.update(true)
         result.assertItems(Unit)
-        source.sendEvent(null)
+        source.update(null)
         result.assertItems(Unit)
-        source.sendEvent(true)
+        source.update(true)
         result.assertItems(Unit)
     }
 
@@ -77,13 +77,13 @@ class BooleanBehaviorExtensionsTest {
         val source = context.typedEvent<Boolean?>()
         val result = source.whenTrueOrNull().record()
 
-        source.sendEvent(false)
+        source.update(false)
         result.assertItems()
-        source.sendEvent(true)
+        source.update(true)
         result.assertItems(true)
-        source.sendEvent(null)
+        source.update(null)
         result.assertItems(true, null)
-        source.sendEvent(true)
+        source.update(true)
         result.assertItems(true, null, true)
     }
 
@@ -92,13 +92,13 @@ class BooleanBehaviorExtensionsTest {
         val source = context.typedEvent<Boolean?>()
         val result = source.whenFalseOrNull().record()
 
-        source.sendEvent(false)
+        source.update(false)
         result.assertItems(false)
-        source.sendEvent(true)
+        source.update(true)
         result.assertItems(false)
-        source.sendEvent(null)
+        source.update(null)
         result.assertItems(false, null)
-        source.sendEvent(true)
+        source.update(true)
         result.assertItems(false, null)
     }
 
@@ -110,20 +110,20 @@ class BooleanBehaviorExtensionsTest {
             calls++
         }
 
-        source.sendEvent(false)
+        source.update(false)
         assertEquals(calls, 0)
 
-        source.sendEvent(true)
+        source.update(true)
         assertEquals(calls, 1)
 
-        source.sendEvent(false)
-        source.sendEvent(false)
-        source.sendEvent(false)
+        source.update(false)
+        source.update(false)
+        source.update(false)
         assertEquals(calls, 1)
 
-        source.sendEvent(true)
-        source.sendEvent(true)
-        source.sendEvent(true)
+        source.update(true)
+        source.update(true)
+        source.update(true)
         assertEquals(calls, 4)
     }
 
@@ -135,20 +135,20 @@ class BooleanBehaviorExtensionsTest {
             calls++
         }
 
-        source.sendEvent(false)
+        source.update(false)
         assertEquals(calls, 1)
 
-        source.sendEvent(true)
+        source.update(true)
         assertEquals(calls, 1)
 
-        source.sendEvent(false)
-        source.sendEvent(false)
-        source.sendEvent(false)
+        source.update(false)
+        source.update(false)
+        source.update(false)
         assertEquals(calls, 4)
 
-        source.sendEvent(true)
-        source.sendEvent(true)
-        source.sendEvent(true)
+        source.update(true)
+        source.update(true)
+        source.update(true)
         assertEquals(calls, 4)
     }
 
@@ -160,20 +160,20 @@ class BooleanBehaviorExtensionsTest {
             calls++
         }
 
-        source.sendEvent(false)
+        source.update(false)
         assertEquals(calls, 0)
 
-        source.sendEvent(true)
+        source.update(true)
         assertEquals(calls, 1)
 
-        source.sendEvent(false)
-        source.sendEvent(false)
-        source.sendEvent(false)
+        source.update(false)
+        source.update(false)
+        source.update(false)
         assertEquals(calls, 1)
 
-        source.sendEvent(true)
-        source.sendEvent(true)
-        source.sendEvent(true)
+        source.update(true)
+        source.update(true)
+        source.update(true)
         assertEquals(calls, 4)
     }
 
@@ -185,20 +185,20 @@ class BooleanBehaviorExtensionsTest {
             calls++
         }
 
-        source.sendEvent(false)
+        source.update(false)
         assertEquals(calls, 1)
 
-        source.sendEvent(true)
+        source.update(true)
         assertEquals(calls, 1)
 
-        source.sendEvent(false)
-        source.sendEvent(false)
-        source.sendEvent(false)
+        source.update(false)
+        source.update(false)
+        source.update(false)
         assertEquals(calls, 4)
 
-        source.sendEvent(true)
-        source.sendEvent(true)
-        source.sendEvent(true)
+        source.update(true)
+        source.update(true)
+        source.update(true)
         assertEquals(calls, 4)
     }
 

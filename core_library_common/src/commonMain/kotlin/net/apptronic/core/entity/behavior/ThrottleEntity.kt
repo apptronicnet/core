@@ -7,7 +7,7 @@ import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.context.Context
 import net.apptronic.core.context.coroutines.lifecycleCoroutineScope
 import net.apptronic.core.entity.Entity
-import net.apptronic.core.entity.base.EntityValue
+import net.apptronic.core.entity.base.Property
 import net.apptronic.core.entity.base.RelayEntity
 import net.apptronic.core.entity.commons.asProperty
 
@@ -29,7 +29,7 @@ fun <T> Entity<T>.throttle(
 fun <T> Entity<T>.throttleAndStore(
         interval: Long,
         delay: Long = 0
-): EntityValue<T> {
+): Property<T> {
     return throttle(interval, delay).asProperty()
 }
 
@@ -58,7 +58,7 @@ private class ThrottleObserver<T>(
     private var update: Update<T>? = null
     private var isWaiting = false
 
-    override fun notify(value: T) {
+    override fun update(value: T) {
         onNext(value)
     }
 
@@ -74,7 +74,7 @@ private class ThrottleObserver<T>(
                     sendNext()
                 }
             } else {
-                target.notify(value)
+                target.update(value)
             }
         } else {
             update = Update(lastUpdate.time, value)
@@ -97,7 +97,7 @@ private class ThrottleObserver<T>(
         isWaiting = true
         val next = update
         if (next != null) {
-            target.notify(next.value)
+            target.update(next.value)
         }
     }
 

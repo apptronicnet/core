@@ -33,7 +33,7 @@ class DataProviderTest {
 
         fun saveById(id: Int, data: String) {
             storage[id] = data
-            onUpdateById.sendEvent(id)
+            onUpdateById.update(id)
         }
 
         fun loadById(id: Int): String? {

@@ -30,7 +30,7 @@ class MultipleNavigationRoutersTest {
         }
 
         override fun onNavigationCommand(command: T): Boolean {
-            events.sendEvent(command)
+            events.update(command)
             return true
         }
 

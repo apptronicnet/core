@@ -13,7 +13,7 @@ class Subscriptions<T> {
     fun notifyObservers(value: T) {
         val targets = subscriptions.toTypedArray()
         targets.forEach {
-            it.observer.notify(value)
+            it.observer.update(value)
         }
     }
 

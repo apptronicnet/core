@@ -7,7 +7,7 @@ import net.apptronic.core.base.observable.Subscriptions
 /**
  * Entity which is store values
  */
-open class BehaviorSubject<T> : Subject<T> {
+class BehaviorSubject<T> : Subject<T> {
 
     private val subscriptions = Subscriptions<T>()
 
@@ -24,7 +24,7 @@ open class BehaviorSubject<T> : Subject<T> {
 
     override fun subscribe(observer: Observer<T>): Subscription {
         valueHolder?.let {
-            observer.notify(it.value)
+            observer.update(it.value)
         }
         return subscriptions.createSubscription(observer)
     }

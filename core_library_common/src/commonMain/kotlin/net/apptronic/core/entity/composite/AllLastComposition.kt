@@ -24,7 +24,7 @@ private class AllLastOfHandler<T> : ComposeHandler<T, List<T>> {
             list[it.index] = ValueHolder(it.value)
             val next = list.filterNotNull().map { it.value }
             if (next.size == count) {
-                subject.notify(next)
+                subject.update(next)
             }
         }
         return subject

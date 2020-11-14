@@ -29,7 +29,7 @@ class NavigationRouterBroadcastTest {
         val router = injectNavigationRouter()
 
         override fun onNavigationCommand(command: Any): Boolean {
-            navigationEvents.sendEvent(command)
+            navigationEvents.update(command)
             return true
         }
 
@@ -48,7 +48,7 @@ class NavigationRouterBroadcastTest {
         }
 
         override fun onNavigationCommand(command: Any): Boolean {
-            navigationEvents.sendEvent(command)
+            navigationEvents.update(command)
             return true
         }
 

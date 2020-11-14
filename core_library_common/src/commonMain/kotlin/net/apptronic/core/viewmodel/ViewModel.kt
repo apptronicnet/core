@@ -248,7 +248,7 @@ open class ViewModel : AbstractComponent, IViewModel {
     private fun whenEntered(observable: Observable<Boolean>): Entity<Unit> {
         return genericEvent().also { event ->
             doWhen(observable.bindContext(context)) {
-                event.sendEvent()
+                event.update()
             }
         }
     }

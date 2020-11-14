@@ -40,7 +40,7 @@ class ViewModelDispatcherComponent<T : IViewModel>(
         }
 
         override fun onViewModelRequestedCloseSelf() {
-            closeSelfEvent.sendEvent()
+            closeSelfEvent.update()
             dispatcher.recycleViewModel()
             detachUi()
         }

@@ -2,6 +2,6 @@ package net.apptronic.core.base.observable
 
 interface Observer<T> {
 
-    fun notify(value: T)
+    fun update(value: T)
 
 }

@@ -4,7 +4,7 @@ import net.apptronic.core.base.subject.PublishSubject
 import net.apptronic.core.context.Context
 import net.apptronic.core.context.Contextual
 import net.apptronic.core.entity.Entity
-import net.apptronic.core.entity.base.SubjectEntity
+import net.apptronic.core.entity.base.ObservableSubjectEntity
 import net.apptronic.core.entity.commons.asEvent
 
 /**
@@ -18,7 +18,7 @@ fun Contextual.whenAnyUpdates(vararg sources: Entity<*>): Entity<Unit> {
 private class WhenAnyUpdatesEntity(
         override val context: Context,
         private val sources: Array<out Entity<*>>
-) : SubjectEntity<Unit>() {
+) : ObservableSubjectEntity<Unit>() {
 
     override val subject = PublishSubject<Unit>()
 

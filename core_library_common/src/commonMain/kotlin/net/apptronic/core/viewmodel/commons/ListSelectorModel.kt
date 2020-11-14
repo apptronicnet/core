@@ -2,8 +2,8 @@ package net.apptronic.core.viewmodel.commons
 
 import net.apptronic.core.context.Context
 import net.apptronic.core.context.Contextual
-import net.apptronic.core.entity.commons.MutableEntity
-import net.apptronic.core.entity.commons.Value
+import net.apptronic.core.entity.base.MutableValue
+import net.apptronic.core.entity.commons.SimpleMutableValue
 import net.apptronic.core.entity.commons.mutableValue
 import net.apptronic.core.entity.commons.reflect
 
@@ -21,8 +21,8 @@ fun <T> Contextual.listSelector(): ListSelectorModel<T, T> {
 class ListSelectorModel<T, Id> internal constructor(
         context: Context,
         private val getId: (T) -> Id,
-        private val value: Value<T?> = Value<T?>(context)
-) : MutableEntity<T?> by value {
+        private val value: SimpleMutableValue<T?> = SimpleMutableValue<T?>(context)
+) : MutableValue<T?> by value {
 
     private val T?.id: Id?
         get() = if (this != null) getId(this) else null
@@ -32,8 +32,8 @@ class ListSelectorModel<T, Id> internal constructor(
             getId(it) == this
         }
 
-    val items: MutableEntity<List<T>> = context.mutableValue()
-    val id: MutableEntity<Id?> = reflect(direct = { it.id }, reverse = { it.item })
+    val items: MutableValue<List<T>> = context.mutableValue()
+    val id: MutableValue<Id?> = reflect(direct = { it.id }, reverse = { it.item })
 
     init {
         items.set(emptyList())

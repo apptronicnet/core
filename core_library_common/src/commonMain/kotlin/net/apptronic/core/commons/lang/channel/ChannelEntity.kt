@@ -39,7 +39,7 @@ class ChannelEntity<T>(override val context: Context, private val channel: Recei
                 try {
                     while (true) {
                         val next = channel.receive()
-                        subscription.notify(next)
+                        subscription.update(next)
                     }
                 } catch (e: ClosedReceiveChannelException) {
                     // ignore

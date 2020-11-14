@@ -19,7 +19,7 @@ private class LastItemOfHandler<T> : ComposeHandler<T, T> {
     override fun compose(queue: Queue<ComposedNext<T>>, count: Int): Subject<T> {
         val subject = BehaviorSubject<T>()
         queue.setConsumer {
-            subject.notify(it.value)
+            subject.update(it.value)
         }
         return subject
     }

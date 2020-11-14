@@ -4,7 +4,7 @@ import net.apptronic.core.base.subject.ValueHolder
 import net.apptronic.core.base.subject.asValueHolder
 import net.apptronic.core.base.subject.doIfSet
 import net.apptronic.core.entity.Entity
-import net.apptronic.core.entity.base.EntityValue
+import net.apptronic.core.entity.base.Property
 import net.apptronic.core.entity.base.RelayEntity
 
 fun <T> Entity<T>.asResendable(): ResendEntity<T> {
@@ -15,7 +15,7 @@ fun <T> Entity<T>.resendWhen(vararg entities: Entity<*>): ResendEntity<T> {
     return asResendable().signalWhen(*entities)
 }
 
-interface ResendEntity<T> : EntityValue<T> {
+interface ResendEntity<T> : Property<T> {
 
     fun resendSignal()
 
@@ -38,7 +38,7 @@ private class ResendOnSignalEntity<T>(wrappedEntity: Entity<T>) : RelayEntity<T>
     override fun resendSignal() {
         lastValue.doIfSet { value ->
             getObservers().forEach {
-                it.notify(value)
+                it.update(value)
             }
         }
     }

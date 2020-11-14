@@ -20,30 +20,30 @@ class ActionExtensionsTest {
             callsElse++
         }
 
-        source.sendEvent(true)
+        source.update(true)
         assertEquals(callsWhen, 1)
         assertEquals(callsElse, 0)
 
-        source.sendEvent(true)
+        source.update(true)
         assertEquals(callsWhen, 2)
         assertEquals(callsElse, 0)
 
-        source.sendEvent(false)
+        source.update(false)
         assertEquals(callsWhen, 2)
         assertEquals(callsElse, 1)
 
-        source.sendEvent(false)
+        source.update(false)
         assertEquals(callsWhen, 2)
         assertEquals(callsElse, 2)
 
-        source.sendEvent(false)
-        source.sendEvent(false)
-        source.sendEvent(false)
-        source.sendEvent(false)
+        source.update(false)
+        source.update(false)
+        source.update(false)
+        source.update(false)
         assertEquals(callsWhen, 2)
         assertEquals(callsElse, 6)
 
-        source.sendEvent(true)
+        source.update(true)
         assertEquals(callsWhen, 3)
         assertEquals(callsElse, 6)
     }
@@ -56,12 +56,12 @@ class ActionExtensionsTest {
             callsElse++
         }
 
-        source.sendEvent(true)
+        source.update(true)
         assertEquals(callsWhen, 0)
         assertEquals(callsElse, 1)
 
-        source.sendEvent(false)
-        source.sendEvent(false)
+        source.update(false)
+        source.update(false)
         assertEquals(callsWhen, 2)
         assertEquals(callsElse, 1)
     }
@@ -74,30 +74,30 @@ class ActionExtensionsTest {
             callsElse++
         }
 
-        source.sendEvent(true)
+        source.update(true)
         assertEquals(callsWhen, 1)
         assertEquals(callsElse, 0)
 
-        source.sendEvent(true)
+        source.update(true)
         assertEquals(callsWhen, 2)
         assertEquals(callsElse, 0)
 
-        source.sendEvent(false)
+        source.update(false)
         assertEquals(callsWhen, 2)
         assertEquals(callsElse, 1)
 
-        source.sendEvent(false)
+        source.update(false)
         assertEquals(callsWhen, 2)
         assertEquals(callsElse, 2)
 
-        source.sendEvent(false)
-        source.sendEvent(false)
-        source.sendEvent(false)
-        source.sendEvent(false)
+        source.update(false)
+        source.update(false)
+        source.update(false)
+        source.update(false)
         assertEquals(callsWhen, 2)
         assertEquals(callsElse, 6)
 
-        source.sendEvent(true)
+        source.update(true)
         assertEquals(callsWhen, 3)
         assertEquals(callsElse, 6)
     }
@@ -110,12 +110,12 @@ class ActionExtensionsTest {
             callsElse++
         }
 
-        source.sendEvent(true)
+        source.update(true)
         assertEquals(callsWhen, 0)
         assertEquals(callsElse, 1)
 
-        source.sendEvent(false)
-        source.sendEvent(false)
+        source.update(false)
+        source.update(false)
         assertEquals(callsWhen, 2)
         assertEquals(callsElse, 1)
     }

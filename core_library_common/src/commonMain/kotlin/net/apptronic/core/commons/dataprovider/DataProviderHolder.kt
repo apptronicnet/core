@@ -31,7 +31,7 @@ class DataProviderHolder<T, K>(
         }
     }
 
-    override fun notify(value: T) {
+    override fun update(value: T) {
         getCacheJob?.cancel(CancellationException("Cache not needed"))
         getCacheJob = null
         data.set(value)

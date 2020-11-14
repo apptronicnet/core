@@ -41,10 +41,10 @@ private class TakeCountEntity<T>(
                 }
             }
 
-        override fun notify(value: T) {
+        override fun update(value: T) {
             if (count < max) {
                 count++
-                target.notify(value)
+                target.update(value)
             }
             if (count >= max) {
                 subscription?.unsubscribe()

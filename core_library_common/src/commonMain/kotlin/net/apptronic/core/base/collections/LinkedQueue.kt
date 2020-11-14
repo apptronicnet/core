@@ -82,7 +82,7 @@ class LinkedQueue<T> : Queue<T>, Observer<T> {
         }
     }
 
-    override fun notify(value: T) {
+    override fun update(value: T) {
         add(value)
     }
 

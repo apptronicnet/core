@@ -6,8 +6,8 @@ import net.apptronic.core.base.subject.ValueHolder
 import net.apptronic.core.context.Context
 import net.apptronic.core.context.Contextual
 import net.apptronic.core.entity.Entity
-import net.apptronic.core.entity.base.EntityValue
 import net.apptronic.core.entity.base.ObservableEntity
+import net.apptronic.core.entity.base.Property
 import net.apptronic.core.entity.commons.setAs
 import net.apptronic.core.entity.commons.typedEvent
 import net.apptronic.core.entity.commons.value
@@ -34,7 +34,7 @@ fun <T, E> Contextual.onChangeValue(initValue: T): OnChangeValue<T, E> {
     }
 }
 
-interface OnChangeProperty<T, E> : Entity<Next<T, E>>, EntityValue<Next<T, E>> {
+interface OnChangeProperty<T, E> : Entity<Next<T, E>>, Property<Next<T, E>> {
 
     fun getValue(): T {
         return get().value
@@ -77,13 +77,13 @@ abstract class OnChangePropertyImpl<T, E> internal constructor(
     override fun onObserverSubscribed(observer: Observer<Next<T, E>>) {
         super.onObserverSubscribed(observer)
         value.getValueHolder()?.let {
-            observer.notify(Next(it.value, null))
+            observer.update(Next(it.value, null))
         }
     }
 
     init {
         value.subscribe {
-            updateEvent.sendEvent(Next(it, change?.value))
+            updateEvent.update(Next(it, change?.value))
             change = null
         }
     }

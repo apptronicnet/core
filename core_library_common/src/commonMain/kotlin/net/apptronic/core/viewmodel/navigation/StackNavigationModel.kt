@@ -1,7 +1,7 @@
 package net.apptronic.core.viewmodel.navigation
 
 import net.apptronic.core.context.Context
-import net.apptronic.core.entity.base.EntityValue
+import net.apptronic.core.entity.base.Property
 import net.apptronic.core.entity.commons.asProperty
 import net.apptronic.core.entity.function.map
 import net.apptronic.core.viewmodel.IViewModel
@@ -30,7 +30,7 @@ class StackNavigationModel internal constructor(
 
     private val listNavigator = StatelessStaticListNavigator(parent, navigatorContext)
 
-    override val content: EntityValue<SingleItemNavigatorContent> = listNavigator.content.map {
+    override val content: Property<SingleItemNavigatorContent> = listNavigator.content.map {
         SingleItemNavigatorContent(it.all.lastIndex, it.all)
     }.asProperty()
 

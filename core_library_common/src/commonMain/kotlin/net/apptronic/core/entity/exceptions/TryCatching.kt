@@ -5,7 +5,7 @@ import kotlinx.coroutines.coroutineScope
 import net.apptronic.core.context.coroutines.lifecycleCoroutineScope
 import net.apptronic.core.context.coroutines.serialThrottler
 import net.apptronic.core.entity.Entity
-import net.apptronic.core.entity.base.UpdateEntity
+import net.apptronic.core.entity.base.SubjectEntity
 import net.apptronic.core.entity.function.map
 import net.apptronic.core.entity.function.mapSuspend
 
@@ -112,7 +112,7 @@ fun <T> Entity<TryCatchResult<T>>.onExceptionSuspend(block: suspend CoroutineSco
     }
 }
 
-fun <T> Entity<TryCatchResult<T>>.sendException(handler: UpdateEntity<Exception>): Entity<T> {
+fun <T> Entity<TryCatchResult<T>>.sendException(handler: SubjectEntity<Exception>): Entity<T> {
     return OnExceptionEntity(this) { exception ->
         handler.update(exception)
     }

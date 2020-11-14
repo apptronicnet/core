@@ -5,6 +5,8 @@ import net.apptronic.core.context.lifecycle.Lifecycle
 import net.apptronic.core.context.lifecycle.enterStage
 import net.apptronic.core.context.lifecycle.exitStage
 import net.apptronic.core.context.terminate
+import net.apptronic.core.entity.base.Property
+import net.apptronic.core.entity.base.Value
 import net.apptronic.core.entity.commons.*
 import net.apptronic.core.testutils.TEST_LIFECYCLE
 import net.apptronic.core.testutils.TestLifecycle
@@ -125,7 +127,7 @@ class SetFromOnContextTest : ContextSwitchTest() {
 
 class PropertyAsContextTest : ContextSwitchTest() {
 
-    override fun createResult(): Property<String> {
+    override fun createResult(): SimpleProperty<String> {
         return targetContext.property(source)
     }
 

@@ -23,7 +23,7 @@ abstract class RelayEntity<T>(val source: Entity<T>) : BaseEntity<T>() {
      * Notify [observer] by [nextValue] if needed
      */
     open fun onNext(nextValue: T, observer: Observer<T>) {
-        observer.notify(nextValue)
+        observer.update(nextValue)
     }
 
 }

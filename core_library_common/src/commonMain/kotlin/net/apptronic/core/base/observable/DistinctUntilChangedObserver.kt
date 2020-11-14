@@ -11,11 +11,11 @@ class DistinctUntilChangedObserver<T>(
 
     private var lastValue: ValueHolder<T>? = null
 
-    override fun notify(value: T) {
+    override fun update(value: T) {
         val last = this.lastValue
         if (last == null || eqComparator.isEquals(last.value, value).not()) {
             this.lastValue = ValueHolder(value)
-            target.notify(value)
+            target.update(value)
         }
     }
 

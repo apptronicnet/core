@@ -3,7 +3,7 @@ package net.apptronic.core.entity.behavior
 import net.apptronic.core.base.subject.PublishSubject
 import net.apptronic.core.base.subject.ValueHolder
 import net.apptronic.core.entity.Entity
-import net.apptronic.core.entity.base.SubjectEntity
+import net.apptronic.core.entity.base.ObservableSubjectEntity
 import net.apptronic.core.entity.collectContext
 
 /**
@@ -33,9 +33,9 @@ fun <T> Entity<T>.sendWhen(signal: Entity<*>, action: (T) -> Unit): Entity<T> {
 }
 
 private class EventFromEntity<T>(
-    signal: Entity<*>,
-    source: Entity<T>
-) : SubjectEntity<T>() {
+        signal: Entity<*>,
+        source: Entity<T>
+) : ObservableSubjectEntity<T>() {
 
     override val context = collectContext(signal, source)
     private var value: ValueHolder<T>? = null

@@ -1,12 +1,13 @@
 package net.apptronic.core.entity.commons
 
 import net.apptronic.core.BaseContextTest
+import net.apptronic.core.entity.base.updates
 import net.apptronic.core.record
 import org.junit.Test
 
 class ValueTest : BaseContextTest() {
 
-    private val source = value<String>()
+    private val source = mutableValue<String>()
     private val results = source.record()
     private val updates = source.updates.record()
 

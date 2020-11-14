@@ -15,9 +15,9 @@ internal class OnExceptionEntity<T>(
             private val target: Observer<T>
     ) : Observer<TryCatchResult<T>> {
 
-        override fun notify(value: TryCatchResult<T>) {
+        override fun update(value: TryCatchResult<T>) {
             if (value is TryCatchResult.Success) {
-                target.notify(value.result)
+                target.update(value.result)
             }
         }
 

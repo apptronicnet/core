@@ -34,20 +34,20 @@ class CombineSignalEntityTest {
         source2.set(3)
         result.assertSize(5)
 
-        source3.sendEvent(true)
-        source3.sendEvent(false)
+        source3.update(true)
+        source3.update(false)
         result.assertSize(7)
 
-        source4.sendEvent()
+        source4.update()
         result.assertSize(8)
 
-        source4.sendEvent()
+        source4.update()
         result.assertSize(9)
 
         source1.set("Another")
         source2.set(123)
-        source3.sendEvent(true)
-        source4.sendEvent()
+        source3.update(true)
+        source4.update()
         result.assertSize(13)
     }
 

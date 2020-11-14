@@ -64,7 +64,7 @@ private class FilterEntity<T>(
 
     override fun onNext(nextValue: T, observer: Observer<T>) {
         if (filterFunction(nextValue)) {
-            observer.notify(nextValue)
+            observer.update(nextValue)
         }
     }
 
@@ -90,10 +90,10 @@ private class FilterSuspendObserver<T>(
 
     private val coroutineThrottler = coroutineScope.serialThrottler()
 
-    override fun notify(value: T) {
+    override fun update(value: T) {
         coroutineThrottler.launch {
             if (filterFunction(value)) {
-                target.notify(value)
+                target.update(value)
             }
         }
     }

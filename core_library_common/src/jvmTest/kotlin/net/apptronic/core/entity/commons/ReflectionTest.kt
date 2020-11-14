@@ -1,12 +1,13 @@
 package net.apptronic.core.entity.commons
 
 import net.apptronic.core.BaseContextTest
+import net.apptronic.core.entity.base.updates
 import net.apptronic.core.record
 import org.junit.Test
 
 class ReflectionTest : BaseContextTest() {
 
-    private val source = value<Int>()
+    private val source = mutableValue<Int>()
     private val reflection = source.reflect(direct = { it.toString() }, reverse = { it.toInt() })
 
     private val sourceRecord = source.record()

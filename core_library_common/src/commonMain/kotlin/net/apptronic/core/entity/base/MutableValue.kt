@@ -1,16 +1,14 @@
-package net.apptronic.core.entity.commons
+package net.apptronic.core.entity.base
 
 import net.apptronic.core.entity.Entity
 import net.apptronic.core.entity.ValueNotSetException
-import net.apptronic.core.entity.base.EntityValue
-import net.apptronic.core.entity.base.UpdateEntity
 import net.apptronic.core.entity.behavior.filter
 import net.apptronic.core.entity.function.map
 
 /**
- * Type of [EntityValue] which can be mutated by setting new value
+ * Type of [Property] which can be mutated by setting new value
  */
-interface MutableEntity<T> : EntityValue<T>, UpdateEntity<T> {
+interface MutableValue<T> : Value<T> {
 
     data class Notification<T>(
             /**
@@ -44,7 +42,7 @@ interface MutableEntity<T> : EntityValue<T>, UpdateEntity<T> {
      * Set [value] and notify all observers of it. Does not send notification to [updates],
      * send notification to [notifications] with [Notification::isUpdate] = false
      */
-    fun set(value: T)
+    override fun set(value: T)
 
 }
 
@@ -52,7 +50,7 @@ interface MutableEntity<T> : EntityValue<T>, UpdateEntity<T> {
  * Set current value from given [source]
  * @return true if value set, false if no value set inside [source]
  */
-fun <T> MutableEntity<T>.setFrom(source: EntityValue<T>): Boolean {
+fun <T> MutableValue<T>.setFrom(source: Property<T>): Boolean {
     return try {
         set(source.get())
         true
@@ -61,10 +59,10 @@ fun <T> MutableEntity<T>.setFrom(source: EntityValue<T>): Boolean {
     }
 }
 
-val <T> MutableEntity<T>.updates: Entity<T>
+val <T> MutableValue<T>.updates: Entity<T>
     get() = notifications.filter { it.isUpdate }.map { it.value }
 
-fun <T> MutableEntity<T>.mutateUsingNotification(notification: MutableEntity.Notification<T>) {
+fun <T> MutableValue<T>.mutateUsingNotification(notification: MutableValue.Notification<T>) {
     if (notification.isUpdate) {
         update(notification.value)
     } else {
@@ -72,7 +70,7 @@ fun <T> MutableEntity<T>.mutateUsingNotification(notification: MutableEntity.Not
     }
 }
 
-fun <T> MutableEntity<T>.mutateUsingNotification(value: T, isUpdate: Boolean) {
+fun <T> MutableValue<T>.mutateUsingNotification(value: T, isUpdate: Boolean) {
     if (isUpdate) {
         update(value)
     } else {
@@ -80,8 +78,8 @@ fun <T> MutableEntity<T>.mutateUsingNotification(value: T, isUpdate: Boolean) {
     }
 }
 
-fun <T, E> Entity<MutableEntity.Notification<T>>.mapNotification(
+fun <T, E> Entity<MutableValue.Notification<T>>.mapNotification(
         function: (T) -> E
-): Entity<MutableEntity.Notification<E>> {
+): Entity<MutableValue.Notification<E>> {
     return map { it.map(function) }
 }

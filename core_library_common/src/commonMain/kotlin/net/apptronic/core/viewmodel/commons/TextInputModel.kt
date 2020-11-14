@@ -2,9 +2,9 @@ package net.apptronic.core.viewmodel.commons
 
 import net.apptronic.core.context.Context
 import net.apptronic.core.context.Contextual
-import net.apptronic.core.entity.base.UpdateEntity
-import net.apptronic.core.entity.commons.MutableEntity
-import net.apptronic.core.entity.commons.Value
+import net.apptronic.core.entity.base.MutableValue
+import net.apptronic.core.entity.base.SubjectEntity
+import net.apptronic.core.entity.commons.SimpleMutableValue
 import net.apptronic.core.entity.commons.value
 
 private fun IntRange.normalize(text: String): IntRange {
@@ -22,7 +22,7 @@ private fun IntRange.normalize(text: String): IntRange {
     )
 }
 
-fun TextInputModel.withOnUpdate(target: UpdateEntity<String>): TextInputModel {
+fun TextInputModel.withOnUpdate(target: SubjectEntity<String>): TextInputModel {
     subscribe(target)
     return this
 }
@@ -40,8 +40,8 @@ fun Contextual.textInput(defaultValue: String = ""): TextInputModel {
 
 class TextInputModel internal constructor(
         context: Context,
-        private val value: Value<String> = Value(context)
-) : MutableEntity<String> by value {
+        private val value: SimpleMutableValue<String> = SimpleMutableValue(context)
+) : MutableValue<String> by value {
 
     val selection = context.value<IntRange>(0..0)
 

@@ -23,7 +23,7 @@ interface Entity<T> : Observable<T> {
 
     override fun subscribe(callback: (T) -> Unit): EntitySubscription {
         return subscribe(object : Observer<T> {
-            override fun notify(value: T) {
+            override fun update(value: T) {
                 callback.invoke(value)
             }
         })
@@ -32,7 +32,7 @@ interface Entity<T> : Observable<T> {
     fun subscribeSuspend(callback: suspend CoroutineScope.(T) -> Unit): EntitySubscription {
         val coroutineThrottler = context.lifecycleCoroutineScope.serialThrottler()
         return subscribe(object : Observer<T> {
-            override fun notify(value: T) {
+            override fun update(value: T) {
                 coroutineThrottler.launch {
                     callback(value)
                 }
@@ -42,7 +42,7 @@ interface Entity<T> : Observable<T> {
 
     fun subscribe(context: Context, callback: (T) -> Unit): EntitySubscription {
         return subscribe(context, object : Observer<T> {
-            override fun notify(value: T) {
+            override fun update(value: T) {
                 callback.invoke(value)
             }
         })
@@ -51,7 +51,7 @@ interface Entity<T> : Observable<T> {
     fun subscribeSuspend(context: Context, callback: suspend CoroutineScope.(T) -> Unit): EntitySubscription {
         val coroutineThrottler = context.lifecycleCoroutineScope.serialThrottler()
         return subscribe(context, object : Observer<T> {
-            override fun notify(value: T) {
+            override fun update(value: T) {
                 coroutineThrottler.launch {
                     callback(value)
                 }

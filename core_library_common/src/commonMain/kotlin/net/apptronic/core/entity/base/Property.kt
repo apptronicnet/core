@@ -7,7 +7,7 @@ import net.apptronic.core.entity.ValueNotSetException
 /**
  * Type of [Entity] which holds value.
  */
-interface EntityValue<T> : Entity<T> {
+interface Property<T> : Entity<T> {
 
     fun getValueHolder(): ValueHolder<T>?
 

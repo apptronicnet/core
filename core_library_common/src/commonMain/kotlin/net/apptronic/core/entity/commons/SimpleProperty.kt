@@ -7,13 +7,13 @@ import net.apptronic.core.base.subject.ValueHolder
 import net.apptronic.core.base.utils.EqComparator
 import net.apptronic.core.base.utils.SimpleEqComparator
 import net.apptronic.core.context.Context
-import net.apptronic.core.entity.base.EntityValue
 import net.apptronic.core.entity.base.ObservableEntity
+import net.apptronic.core.entity.base.Property
 
-abstract class Property<T>(
+abstract class SimpleProperty<T>(
         override val context: Context,
         private val eqComparator: EqComparator<T> = SimpleEqComparator<T>()
-) : ObservableEntity<T>(), EntityValue<T> {
+) : ObservableEntity<T>(), Property<T> {
 
     protected val subject = BehaviorSubject<T>()
 

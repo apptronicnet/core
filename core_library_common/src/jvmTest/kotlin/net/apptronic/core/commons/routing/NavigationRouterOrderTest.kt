@@ -26,7 +26,7 @@ class NavigationRouterOrderTest {
         }
 
         override fun onNavigationCommand(command: Any): Boolean {
-            events.sendEvent(command)
+            events.update(command)
             return true
         }
 

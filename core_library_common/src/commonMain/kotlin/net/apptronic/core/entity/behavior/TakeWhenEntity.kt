@@ -24,7 +24,7 @@ private class TakeWhenEntity<T>(
 
     override fun onNext(nextValue: T, observer: Observer<T>) {
         if (isShouldTake) {
-            observer.notify(nextValue)
+            observer.update(nextValue)
         }
     }
 
