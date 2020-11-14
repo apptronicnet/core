@@ -7,8 +7,8 @@ package net.apptronic.core.entity.reflection
  */
 interface Mirror<T, E> {
 
-    fun direct(value: E): T
+    fun direct(value: T): E
 
-    fun reverse(value: T): E
+    fun reverse(value: E): T
 
 }
