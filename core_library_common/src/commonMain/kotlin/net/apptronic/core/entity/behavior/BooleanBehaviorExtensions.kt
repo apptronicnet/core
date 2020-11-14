@@ -6,8 +6,8 @@ import net.apptronic.core.base.subject.unwrapValueHolder
 import net.apptronic.core.base.subject.wrapValueHolder
 import net.apptronic.core.context.Contextual
 import net.apptronic.core.entity.Entity
+import net.apptronic.core.entity.base.Property
 import net.apptronic.core.entity.commons.BaseMutableValue
-import net.apptronic.core.entity.commons.BaseProperty
 import net.apptronic.core.entity.commons.setAs
 import net.apptronic.core.entity.commons.withDefaultNull
 import net.apptronic.core.entity.function.anyValue
@@ -88,7 +88,7 @@ fun <E> Entity<Boolean>.selectIf(ifTrue: E, ifFalse: Entity<E>): Entity<E> {
  * Emits new [Entity] which emit false until no value set is source [Entity]
  * and emits true when source [Entity] emitted any value.
  */
-fun <T> Entity<T>.whenAnyValue(): BaseProperty<Boolean> {
+fun <T> Entity<T>.whenAnyValue(): Property<Boolean> {
     return BaseMutableValue<Boolean>(context).also {
         it.set(false)
         it.setAs(anyValue())
@@ -100,14 +100,14 @@ fun <T> Entity<T>.whenAnyValue(): BaseProperty<Boolean> {
  * Emits new [Entity] which emit false until no value set is source [Entity]
  * and emits true when [filterFunction] returned true for [Entity] value.
  */
-fun <T> Entity<T>.whenAny(filterFunction: (T) -> Boolean): BaseProperty<Boolean> {
+fun <T> Entity<T>.whenAny(filterFunction: (T) -> Boolean): Property<Boolean> {
     return BaseMutableValue<Boolean>(context).also {
         it.set(false)
         it.setAs(filter(filterFunction).anyValue())
     }
 }
 
-fun <T> Entity<T>.whenAnySuspend(filterFunction: suspend CoroutineScope.(T) -> Boolean): BaseProperty<Boolean> {
+fun <T> Entity<T>.whenAnySuspend(filterFunction: suspend CoroutineScope.(T) -> Boolean): Property<Boolean> {
     return BaseMutableValue<Boolean>(context).also {
         it.set(false)
         it.setAs(filterSuspend(filterFunction).anyValue())

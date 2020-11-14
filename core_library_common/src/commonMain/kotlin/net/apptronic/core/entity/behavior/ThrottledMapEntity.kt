@@ -9,8 +9,8 @@ import net.apptronic.core.entity.BaseEntity
 import net.apptronic.core.entity.Entity
 import net.apptronic.core.entity.EntitySubscription
 import net.apptronic.core.entity.commons.BaseMutableValue
+import net.apptronic.core.entity.commons.onNext
 import net.apptronic.core.entity.function.mapSuspend
-import net.apptronic.core.entity.function.onNext
 
 /**
  * Throttles source observable to prevent parallel processing many items at same time. Emits next item for processing

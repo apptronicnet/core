@@ -21,7 +21,7 @@ fun <T> Contextual.listSelector(): ListSelectorModel<T, T> {
 class ListSelectorModel<T, Id> internal constructor(
         context: Context,
         private val getId: (T) -> Id,
-        private val value: BaseMutableValue<T?> = BaseMutableValue<T?>(context)
+        private val value: MutableValue<T?> = BaseMutableValue<T?>(context)
 ) : MutableValue<T?> by value {
 
     private val T?.id: Id?

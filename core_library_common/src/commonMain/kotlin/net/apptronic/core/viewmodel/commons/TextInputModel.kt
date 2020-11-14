@@ -40,7 +40,7 @@ fun Contextual.textInput(defaultValue: String = ""): TextInputModel {
 
 class TextInputModel internal constructor(
         context: Context,
-        private val value: BaseMutableValue<String> = BaseMutableValue(context)
+        private val value: MutableValue<String> = BaseMutableValue(context)
 ) : MutableValue<String> by value {
 
     val selection = context.value<IntRange>(0..0)

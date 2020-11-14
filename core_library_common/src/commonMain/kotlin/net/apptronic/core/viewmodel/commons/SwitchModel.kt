@@ -9,12 +9,8 @@ import net.apptronic.core.entity.Entity
 import net.apptronic.core.entity.base.MutableValue
 import net.apptronic.core.entity.base.Value
 import net.apptronic.core.entity.behavior.whenAnyValue
-import net.apptronic.core.entity.commons.BaseMutableValue
-import net.apptronic.core.entity.commons.setTo
-import net.apptronic.core.entity.commons.value
+import net.apptronic.core.entity.commons.*
 import net.apptronic.core.entity.function.and
-import net.apptronic.core.entity.function.onNext
-import net.apptronic.core.entity.function.onNextSuspend
 
 fun Contextual.switchModel(): SwitchModel {
     return SwitchModel(context)
