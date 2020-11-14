@@ -37,14 +37,16 @@ class ListScreenViewModel internal constructor(parent: Context) : ViewModel(pare
     }
 
     override fun onVisible(name: String) {
-        itemNames.update {
+        itemNames.updateValue {
             it.add(name)
+            it
         }
     }
 
     override fun onNotVisible(name: String) {
-        itemNames.update {
+        itemNames.updateValue {
             it.remove(name)
+            it
         }
     }
 

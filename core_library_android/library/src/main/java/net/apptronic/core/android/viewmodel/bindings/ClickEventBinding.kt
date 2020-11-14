@@ -18,7 +18,7 @@ class ClickEventBinding(
 
     override fun onBind(viewModel: IViewModel, viewBinder: ViewBinder<*>) {
         view.setOnClickListener {
-            target.sendEvent(Unit)
+            target.update(Unit)
         }
         onUnbind {
             view.setOnClickListener(null)

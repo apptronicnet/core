@@ -1,7 +1,6 @@
 package net.apptronic.test.commons_sample_app.tabs
 
 import net.apptronic.core.context.Contextual
-import net.apptronic.core.view.properties.CoreColor
 import net.apptronic.core.viewmodel.ViewModel
 import net.apptronic.core.viewmodel.ViewModelContext
 import net.apptronic.core.viewmodel.navigation.BasicTransition
@@ -17,10 +16,10 @@ class TabsViewModel(context: ViewModelContext) : ViewModel(context) {
     init {
         tabNavigator.set(
             listOf(
-                tabPageViewModel("Tab 1", CoreColor.rgbHex(0xFF9080)),
-                tabPageViewModel("Tab 2", CoreColor.rgbHex(0xA8FFC8)),
-                tabPageViewModel("Tab 3", CoreColor.rgbHex(0x40FFFF)),
-                tabPageViewModel("Tab 4", CoreColor.rgbHex(0xD4C0FF))
+                tabPageViewModel("Tab 1", 0xFFFF9080.toInt()),
+                tabPageViewModel("Tab 2", 0xFFA8FFC8.toInt()),
+                tabPageViewModel("Tab 3", 0xFF40FFFF.toInt()),
+                tabPageViewModel("Tab 4", 0xFFD4C0FF.toInt())
             ), selectorIndex = 0
         )
     }

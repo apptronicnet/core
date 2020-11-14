@@ -27,33 +27,33 @@ class VisibilityDemoViewBinder : ViewBinder<VisibilityDemoViewModel>() {
         bindSwitch(chkInterceptAnimations, viewModel.isInterceptAnimations)
 
         bindSwitch(swSimple, viewModel.isSimplyVisible)
-        bindVisibleInvisible(contentSimple, viewModel.isSimplyVisible.observeState())
+        bindVisibleInvisible(contentSimple, viewModel.isSimplyVisible)
 
         bindSwitch(swSimpleFadeIn, viewModel.isSimplyFadeIn)
-        bindVisibleInvisible(contentSimpleFadeIn, viewModel.isSimplyFadeIn.observeState()) {
+        bindVisibleInvisible(contentSimpleFadeIn, viewModel.isSimplyFadeIn) {
             enter = ViewAnimation_Fade
             duration = this@VisibilityDemoViewBinder.duration
-            intercept(viewModel.isInterceptAnimations.observeState())
+            intercept(viewModel.isInterceptAnimations)
         }
 
         bindSwitch(swSimpleFadeOut, viewModel.isSimplyFadeOut)
-        bindVisibleInvisible(contentSimpleFadeOut, viewModel.isSimplyFadeOut.observeState()) {
+        bindVisibleInvisible(contentSimpleFadeOut, viewModel.isSimplyFadeOut) {
             exit = ViewAnimation_Fade.reversed()
             duration = this@VisibilityDemoViewBinder.duration
-            intercept(viewModel.isInterceptAnimations.observeState())
+            intercept(viewModel.isInterceptAnimations)
         }
 
         bindSwitch(swSimpleFades, viewModel.isSimplyFades)
-        bindVisibleInvisible(contentSimpleFades, viewModel.isSimplyFades.observeState()) {
+        bindVisibleInvisible(contentSimpleFades, viewModel.isSimplyFades) {
             animation = ViewAnimation_Fade
             duration = this@VisibilityDemoViewBinder.duration
-            intercept(viewModel.isInterceptAnimations.observeState())
+            intercept(viewModel.isInterceptAnimations)
         }
 
         bindSwitch(isVisibleAnimatedSwitch1, viewModel.isVisibleAnimatedSwitch1)
         bindVisibleInvisible(
             isVisibleAnimatedSwitch1Content,
-            viewModel.isVisibleAnimatedSwitch1.observeState()
+            viewModel.isVisibleAnimatedSwitch1
         ) {
             enter = viewAnimation(DecelerateInterpolator()) {
                 scaleX(0.5f, 1f)
@@ -65,13 +65,13 @@ class VisibilityDemoViewBinder : ViewBinder<VisibilityDemoViewModel>() {
                 translateXToParent(0f, 1f)
             }
             duration = this@VisibilityDemoViewBinder.duration
-            intercept(viewModel.isInterceptAnimations.observeState())
+            intercept(viewModel.isInterceptAnimations)
         }
 
         bindSwitch(isVisibleAnimatedSwitch2, viewModel.isVisibleAnimatedSwitch2)
         bindVisibleInvisible(
             isVisibleAnimatedSwitch2Content,
-            viewModel.isVisibleAnimatedSwitch2.observeState()
+            viewModel.isVisibleAnimatedSwitch2
         ) {
             enter = viewAnimation {
                 rotate(-180f, 0f, DecelerateInterpolator())
@@ -82,27 +82,27 @@ class VisibilityDemoViewBinder : ViewBinder<VisibilityDemoViewModel>() {
                 alpha(1f, 0f)
             }
             duration = this@VisibilityDemoViewBinder.duration
-            intercept(viewModel.isInterceptAnimations.observeState())
+            intercept(viewModel.isInterceptAnimations)
         }
 
         bindSwitch(isVisibleTransitionBuilder1, viewModel.isVisibleTransitionBuilder1)
         bindVisibleInvisible(
             isVisibleTransitionBuilder1Content,
-            viewModel.isVisibleTransitionBuilder1.observeState()
+            viewModel.isVisibleTransitionBuilder1
         ) {
             viewTransition = ScaleTransition
             duration = this@VisibilityDemoViewBinder.duration
-            intercept(viewModel.isInterceptAnimations.observeState())
+            intercept(viewModel.isInterceptAnimations)
         }
 
         bindSwitch(isVisibleTransitionBuilder2, viewModel.isVisibleTransitionBuilder2)
         bindVisibleInvisible(
             isVisibleTransitionBuilder2Content,
-            viewModel.isVisibleTransitionBuilder2.observeState()
+            viewModel.isVisibleTransitionBuilder2
         ) {
             viewTransition = ViewTransition_Next
             duration = this@VisibilityDemoViewBinder.duration
-            intercept(viewModel.isInterceptAnimations.observeState())
+            intercept(viewModel.isInterceptAnimations)
         }
     }
 

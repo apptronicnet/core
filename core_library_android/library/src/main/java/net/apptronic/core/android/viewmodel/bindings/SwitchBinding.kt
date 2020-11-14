@@ -5,8 +5,8 @@ import net.apptronic.core.android.viewmodel.Binding
 import net.apptronic.core.android.viewmodel.BindingContainer
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.entity.Entity
-import net.apptronic.core.entity.base.UpdateEntity
-import net.apptronic.core.entity.commons.Value
+import net.apptronic.core.entity.base.SubjectEntity
+import net.apptronic.core.entity.base.Value
 import net.apptronic.core.viewmodel.IViewModel
 
 fun BindingContainer.bindSwitch(button: CompoundButton, value: Value<Boolean>) {
@@ -16,7 +16,7 @@ fun BindingContainer.bindSwitch(button: CompoundButton, value: Value<Boolean>) {
 fun BindingContainer.bindSwitch(
     button: CompoundButton,
     source: Entity<Boolean>,
-    update: UpdateEntity<Boolean>
+    update: SubjectEntity<Boolean>
 ) {
     +SwitchBinding(button, source, update::update)
 }

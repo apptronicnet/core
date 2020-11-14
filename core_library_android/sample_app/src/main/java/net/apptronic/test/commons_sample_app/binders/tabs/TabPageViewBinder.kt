@@ -1,7 +1,6 @@
 package net.apptronic.test.commons_sample_app.binders.tabs
 
 import androidx.recyclerview.widget.LinearLayoutManager
-import net.apptronic.core.android.view.platform.colorInt
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.bindings.bindText
 import net.apptronic.core.android.viewmodel.bindings.navigation.bindNavigator
@@ -20,7 +19,7 @@ class TabPageViewBinder : ViewBinder<TabPageViewModel>() {
             bindText(tabTitle, viewModel.title)
             tabItemsList.layoutManager = LinearLayoutManager(context)
             bindNavigator(tabItemsList, viewModel.listNavigator)
-            tabItemsList.setBackgroundColor(viewModel.backgroundColor.colorInt)
+            tabItemsList.setBackgroundColor(viewModel.backgroundColor)
         }
     }
 

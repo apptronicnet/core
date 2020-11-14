@@ -18,9 +18,9 @@ class SampleModelTest : LifecycleHolder<FragmentLifecycle> {
     fun shouldSetTitleAfterEachClick() {
         lifecycle.createdStage.enter()
         lifecycle.viewCreatedStage.enter()
-        model.onClickRefreshTitle.sendEvent()
+        model.onClickRefreshTitle.update()
         assertEquals(model.title.get(), "Title changes 1")
-        model.onClickRefreshTitle.sendEvent()
+        model.onClickRefreshTitle.update()
         assertEquals(model.title.get(), "Title changes 2")
     }
 

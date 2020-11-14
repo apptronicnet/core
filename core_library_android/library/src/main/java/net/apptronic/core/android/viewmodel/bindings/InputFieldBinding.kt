@@ -6,7 +6,7 @@ import android.widget.EditText
 import net.apptronic.core.android.viewmodel.Binding
 import net.apptronic.core.android.viewmodel.BindingContainer
 import net.apptronic.core.android.viewmodel.ViewBinder
-import net.apptronic.core.entity.commons.Value
+import net.apptronic.core.entity.base.Value
 import net.apptronic.core.viewmodel.IViewModel
 
 fun BindingContainer.bindTextInput(editText: EditText, target: Value<String>) {

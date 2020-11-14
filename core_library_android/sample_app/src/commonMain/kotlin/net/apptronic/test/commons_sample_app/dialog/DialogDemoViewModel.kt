@@ -13,7 +13,7 @@ class DialogDemoViewModel(parent: Context) : ViewModel(parent, EmptyViewModelCon
     val dialogNavigator = stackNavigator()
 
     fun onShowDialogClick() {
-        dialogNavigator.add(MessageDialogViewModel(context, message.getText()))
+        dialogNavigator.add(MessageDialogViewModel(context, message.get()))
     }
 
 }

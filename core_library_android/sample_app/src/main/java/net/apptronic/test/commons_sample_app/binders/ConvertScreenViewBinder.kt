@@ -6,7 +6,7 @@ import net.apptronic.core.android.viewmodel.Binding
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.bindings.bindText
 import net.apptronic.core.android.viewmodel.bindings.bindTextInput
-import net.apptronic.core.entity.commons.Value
+import net.apptronic.core.entity.base.Value
 import net.apptronic.core.entity.function.map
 import net.apptronic.core.entity.function.mapToString
 import net.apptronic.core.viewmodel.IViewModel

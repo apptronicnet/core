@@ -28,7 +28,7 @@ class WelcomeFragment : CoreCompatFragment<WelcomeViewModel>() {
                 welcomeMessage.text = it
             }
             btnNext.setOnClickListener {
-                viewModel.onClickNext.sendEvent()
+                viewModel.onClickNext.update()
             }
         }
     }

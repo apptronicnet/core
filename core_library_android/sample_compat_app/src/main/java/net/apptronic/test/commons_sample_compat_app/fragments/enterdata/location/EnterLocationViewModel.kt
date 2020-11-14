@@ -28,7 +28,7 @@ class EnterLocationViewModel(context: ViewModelContext) : ViewModel(context) {
             repository.city = it
         }
 
-    val isSubmitEnabled = property(country.text().isNotEmpty() and city.text().isNotEmpty())
+    val isSubmitEnabled = property(country.isNotEmpty() and city.isNotEmpty())
     val onSubmitClick = genericEvent()
 
     init {

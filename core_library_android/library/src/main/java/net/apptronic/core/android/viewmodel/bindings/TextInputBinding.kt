@@ -7,35 +7,39 @@ import net.apptronic.core.android.viewmodel.Binding
 import net.apptronic.core.android.viewmodel.BindingContainer
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.viewmodel.IViewModel
-import net.apptronic.core.viewmodel.commons.TextInputViewModel
+import net.apptronic.core.viewmodel.commons.TextInputModel
 
-fun BindingContainer.bindTextInput(source: EditText, target: TextInputViewModel) {
+fun BindingContainer.bindTextInput(source: EditText, target: TextInputModel) {
     add(TextInputBinding(source, target))
 }
 
 private class TextInputBinding(
     private val source: EditText,
-    private val target: TextInputViewModel
+    private val target: TextInputModel
 ) : Binding(), TextWatcher {
-
-    private val bindingModel = target.getBindingModel()
 
     override fun onBind(viewModel: IViewModel, viewBinder: ViewBinder<*>) {
         source.isSaveEnabled = false
-        bindingModel.observeUpdates().subscribe {
-            source.setText(it.text)
-            source.setSelection(it.selection.start, it.selection.endInclusive)
+        target.subscribe {
+            if (source.text.toString() != it) {
+                source.setText(it)
+            }
+        }
+        target.selection.subscribe {
+            if (source.selectionStart != it.first || source.selectionEnd != it.last) {
+                source.setSelection(it.first, it.last)
+            }
         }
         source.addTextChangedListener(this)
         onUnbind {
             source.removeTextChangedListener(this)
-            bindingModel.onSelectionChanged(source.selectionStart..source.selectionEnd)
+            target.selection.set(source.selectionStart..source.selectionEnd)
         }
     }
 
     override fun afterTextChanged(s: Editable) {
-        bindingModel.onTextChanged(s.toString())
-        bindingModel.onSelectionChanged(source.selectionStart..source.selectionEnd)
+        target.update(s.toString())
+        target.selection.update(source.selectionStart..source.selectionEnd)
     }
 
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {

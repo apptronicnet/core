@@ -29,7 +29,7 @@ class EnterNameViewModel(context: ViewModelContext) : ViewModel(context) {
             repository.lastName = it
         }
 
-    val isContinueEnabled = property(firstName.text().isNotEmpty() and lastName.text().isNotEmpty())
+    val isContinueEnabled = property(firstName.isNotEmpty() and lastName.isNotEmpty())
     val onContinueClick = genericEvent()
 
     private val routers = mutableListOf<EnterDataRouter>()

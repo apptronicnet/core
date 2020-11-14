@@ -41,7 +41,7 @@ class StackItemViewModel(
 
     override fun onBackNavigationRestrictedEvent() {
         super.onBackNavigationRestrictedEvent()
-        onCantGoBack.sendEvent()
+        onCantGoBack.update()
     }
 
     override fun onBackNavigationConfirmedEvent() {
