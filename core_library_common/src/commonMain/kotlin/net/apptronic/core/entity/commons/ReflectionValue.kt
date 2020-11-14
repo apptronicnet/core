@@ -1,7 +1,7 @@
 package net.apptronic.core.entity.commons
 
 import net.apptronic.core.base.observable.Observer
-import net.apptronic.core.base.subject.ValueHolder
+import net.apptronic.core.base.subject.*
 import net.apptronic.core.context.Context
 import net.apptronic.core.entity.BaseEntity
 import net.apptronic.core.entity.Entity
@@ -16,6 +16,13 @@ import net.apptronic.core.entity.function.map
  * reflection, automatically reflected on source.
  */
 fun <T, E> Value<E>.reflect(
+        direct: (E) -> T,
+        reverse: (T) -> E,
+): Value<T> {
+    return ReflectionValue(this, direct, reverse)
+}
+
+fun <T, E> MutableValue<E>.reflect(
         direct: (E) -> T,
         reverse: (T) -> E,
 ): MutableValue<T> {
@@ -51,14 +58,55 @@ private class ReflectionValue<T, E>(
     }
 
     override fun getValueHolder(): ValueHolder<T>? {
-        return target.getValueHolder()?.let { ValueHolder(it.value.directReflection) }
+        return target.getValueHolder().map(directReflection)
     }
 
-    override val notifications: Entity<MutableValue.Notification<T>> =
+    override val changes: Entity<MutableValue.Change<T>> =
             if (target is MutableValue<E>) {
-                target.notifications.map { MutableValue.Notification(it.value.directReflection, it.isUpdate) }
+                target.changes.map { MutableValue.Change(it.value.directReflection, it.isUpdate) }
             } else {
-                map { MutableValue.Notification(it, true) }
-            }
+                map { MutableValue.Change(it, true) }
+            }.asEvent()
+
+    override val updates: Entity<T> =
+            if (target is MutableValue<E>) {
+                target.updates.map(directReflection)
+            } else {
+                target.map(directReflection)
+            }.asEvent()
+
+    override fun applyChange(change: MutableValue.Change<T>) {
+        if (change.isUpdate) {
+            target.update(reverseReflection(change.value))
+        } else {
+            target.set(reverseReflection(change.value))
+        }
+    }
+
+    override fun applyChange(value: T, isUpdate: Boolean) {
+        if (isUpdate) {
+            target.update(reverseReflection(value))
+        } else {
+            target.set(reverseReflection(value))
+        }
+    }
+
+    override fun updateValue(updateCall: (T) -> T) {
+        val current = directReflection(target.get())
+        val next = updateCall(current)
+        target.update(reverseReflection(next))
+    }
+
+    override fun get() = getValueHolder().getOrThrow()
+
+    override fun getOrNull() = getValueHolder().getOrNull()
+
+    override fun getOr(fallbackValue: T) = getValueHolder().getOr(fallbackValue)
+
+    override fun getOr(fallbackValueProvider: () -> T) = getValueHolder().getOr(fallbackValueProvider)
+
+    override fun isSet() = getValueHolder().isSet()
+
+    override fun doIfSet(action: (T) -> Unit) = getValueHolder().doIfSet(action)
 
 }

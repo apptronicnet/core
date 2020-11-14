@@ -1,7 +1,7 @@
 package net.apptronic.core.base.observable
 
 /**
- * [Observable] is basic subscription provider
+ * [Observable] is a basic subscription provider
  */
 interface Observable<T> {
 

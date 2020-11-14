@@ -3,7 +3,7 @@ package net.apptronic.core.viewmodel.commons
 import net.apptronic.core.context.Context
 import net.apptronic.core.context.Contextual
 import net.apptronic.core.entity.base.MutableValue
-import net.apptronic.core.entity.commons.SimpleMutableValue
+import net.apptronic.core.entity.commons.BaseMutableValue
 import net.apptronic.core.entity.commons.mutableValue
 import net.apptronic.core.entity.commons.reflect
 
@@ -21,7 +21,7 @@ fun <T> Contextual.listSelector(): ListSelectorModel<T, T> {
 class ListSelectorModel<T, Id> internal constructor(
         context: Context,
         private val getId: (T) -> Id,
-        private val value: SimpleMutableValue<T?> = SimpleMutableValue<T?>(context)
+        private val value: BaseMutableValue<T?> = BaseMutableValue<T?>(context)
 ) : MutableValue<T?> by value {
 
     private val T?.id: Id?

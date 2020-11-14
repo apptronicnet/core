@@ -8,9 +8,8 @@ import net.apptronic.core.context.coroutines.lifecycleCoroutineScope
 import net.apptronic.core.entity.Entity
 import net.apptronic.core.entity.base.MutableValue
 import net.apptronic.core.entity.base.Value
-import net.apptronic.core.entity.base.updates
 import net.apptronic.core.entity.behavior.whenAnyValue
-import net.apptronic.core.entity.commons.SimpleMutableValue
+import net.apptronic.core.entity.commons.BaseMutableValue
 import net.apptronic.core.entity.commons.setTo
 import net.apptronic.core.entity.commons.value
 import net.apptronic.core.entity.function.and
@@ -81,7 +80,7 @@ fun SwitchModel.withIsEnabled(isEnabledSource: Entity<Boolean>): SwitchModel {
     return this
 }
 
-class SwitchModel internal constructor(context: Context) : MutableValue<Boolean> by SimpleMutableValue<Boolean>(context) {
+class SwitchModel internal constructor(context: Context) : MutableValue<Boolean> by BaseMutableValue<Boolean>(context) {
 
     private val isFilled = whenAnyValue()
 

@@ -1,7 +1,6 @@
 package net.apptronic.core.entity.commons
 
 import net.apptronic.core.BaseContextTest
-import net.apptronic.core.entity.base.updates
 import net.apptronic.core.record
 import org.junit.Test
 

@@ -3,8 +3,7 @@ package net.apptronic.core.viewmodel.commons
 import net.apptronic.core.context.Context
 import net.apptronic.core.context.Contextual
 import net.apptronic.core.entity.base.MutableValue
-import net.apptronic.core.entity.base.mapNotification
-import net.apptronic.core.entity.base.mutateUsingNotification
+import net.apptronic.core.entity.base.mapChange
 import net.apptronic.core.entity.commons.mutableValue
 import net.apptronic.core.entity.commons.typedEvent
 
@@ -33,11 +32,11 @@ class SelectorModel<T> internal constructor(
 
     private fun setSelectionInternal(selection: T, isSelected: Boolean, isUpdate: Boolean) {
         if (isSelected) {
-            mutateUsingNotification(selection, isUpdate)
+            applyChange(selection, isUpdate)
         } else {
             if (get() == selection) {
                 if (get() == selection && supportsUnselect) {
-                    mutateUsingNotification(null, isUpdate)
+                    applyChange(null, isUpdate)
                 } else {
                     reselectEvent.update(selection)
                 }
@@ -57,14 +56,14 @@ class SelectorModel<T> internal constructor(
 
         private fun setSelectionInternal(selection: T, isSelected: Boolean, isUpdate: Boolean) {
             if (isSelected) {
-                this@SelectorModel.mutateUsingNotification(selection, isUpdate)
-                holder.mutateUsingNotification(true, isUpdate)
+                this@SelectorModel.applyChange(selection, isUpdate)
+                holder.applyChange(true, isUpdate)
             } else {
                 val currentSelection = this@SelectorModel.get()
                 if (currentSelection == selection) {
                     if (currentSelection == selection && supportsUnselect) {
-                        holder.mutateUsingNotification(false, isUpdate)
-                        this@SelectorModel.mutateUsingNotification(null, isUpdate)
+                        holder.applyChange(false, isUpdate)
+                        this@SelectorModel.applyChange(null, isUpdate)
                     } else {
                         // state should be changed but immediately reverted
                         // for UI: in this case UI will receive notification that state is changed
@@ -80,13 +79,13 @@ class SelectorModel<T> internal constructor(
     override fun getSwitch(selection: T): MutableValue<Boolean> {
         val value = context.mutableValue(get() == selection)
         val switch = Switch(selection, value)
-        value.notifications.subscribe {
+        value.changes.subscribe {
             setSelectionInternal(selection, it.value, it.isUpdate)
         }
-        notifications.mapNotification {
+        changes.mapChange {
             it == selection
         }.subscribe {
-            value.mutateUsingNotification(it)
+            value.applyChange(it)
         }
         return switch
     }

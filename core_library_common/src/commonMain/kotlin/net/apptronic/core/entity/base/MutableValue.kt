@@ -1,16 +1,14 @@
 package net.apptronic.core.entity.base
 
 import net.apptronic.core.entity.Entity
-import net.apptronic.core.entity.ValueNotSetException
-import net.apptronic.core.entity.behavior.filter
 import net.apptronic.core.entity.function.map
 
 /**
- * Type of [Property] which can be mutated by setting new value
+ * Type of [Value] which can distinct between set and update actions.
  */
 interface MutableValue<T> : Value<T> {
 
-    data class Notification<T>(
+    data class Change<T>(
             /**
              * Next value emitted by this entity
              */
@@ -22,64 +20,47 @@ interface MutableValue<T> : Value<T> {
             val isUpdate: Boolean
     ) {
 
-        fun <E> map(function: (T) -> E): Notification<E> {
-            return Notification(function(value), isUpdate)
+        fun <E> map(function: (T) -> E): Change<E> {
+            return Change(function(value), isUpdate)
         }
 
     }
 
     /**
-     * Get [Entity] which emits [Notification] instead of [T]
+     * Get [Entity] which emits [Change] instead of [T]
      */
-    val notifications: Entity<Notification<T>>
+    val changes: Entity<Change<T>>
 
     /**
-     * Send entity update. Will emit new item and send [Notification] with [Notification.isUpdate] = true
+     * Get [Entity] which emits only changes made by [update] call
+     */
+    val updates: Entity<T>
+
+    /**
+     * Send entity update. Will emit new item and send [Change] with [Change.isUpdate] = true
      */
     override fun update(value: T)
 
     /**
      * Set [value] and notify all observers of it. Does not send notification to [updates],
-     * send notification to [notifications] with [Notification::isUpdate] = false
+     * send notification to [changes] with [Notification::isUpdate] = false
      */
     override fun set(value: T)
 
+    /**
+     * Apply [change] to this [MutableValue]
+     */
+    fun applyChange(change: Change<T>)
+
+    /**
+     * Apply [Change] to this [MutableValue] with composing [value] and [isUpdate]
+     */
+    fun applyChange(value: T, isUpdate: Boolean)
+
 }
 
-/**
- * Set current value from given [source]
- * @return true if value set, false if no value set inside [source]
- */
-fun <T> MutableValue<T>.setFrom(source: Property<T>): Boolean {
-    return try {
-        set(source.get())
-        true
-    } catch (e: ValueNotSetException) {
-        false
-    }
-}
-
-val <T> MutableValue<T>.updates: Entity<T>
-    get() = notifications.filter { it.isUpdate }.map { it.value }
-
-fun <T> MutableValue<T>.mutateUsingNotification(notification: MutableValue.Notification<T>) {
-    if (notification.isUpdate) {
-        update(notification.value)
-    } else {
-        set(notification.value)
-    }
-}
-
-fun <T> MutableValue<T>.mutateUsingNotification(value: T, isUpdate: Boolean) {
-    if (isUpdate) {
-        update(value)
-    } else {
-        set(value)
-    }
-}
-
-fun <T, E> Entity<MutableValue.Notification<T>>.mapNotification(
+fun <T, E> Entity<MutableValue.Change<T>>.mapChange(
         function: (T) -> E
-): Entity<MutableValue.Notification<E>> {
+): Entity<MutableValue.Change<E>> {
     return map { it.map(function) }
 }

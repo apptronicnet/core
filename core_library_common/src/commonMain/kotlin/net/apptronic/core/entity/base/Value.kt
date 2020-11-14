@@ -1,7 +1,7 @@
 package net.apptronic.core.entity.base
 
 /**
- * Type of [Property] which holds value and supports it's updating
+ * Type of [Property] which holds value and supports it's set (or update)
  */
 interface Value<T> : Property<T>, SubjectEntity<T> {
 
@@ -10,9 +10,15 @@ interface Value<T> : Property<T>, SubjectEntity<T> {
      */
     fun set(value: T)
 
-    override fun update(value: T) {
-        set(value)
-    }
+    /**
+     * Update simply sets new value
+     */
+    override fun update(value: T)
+
+    /**
+     * Update to new value based on current value
+     */
+    fun updateValue(updateCall: (T) -> T)
 
 }
 

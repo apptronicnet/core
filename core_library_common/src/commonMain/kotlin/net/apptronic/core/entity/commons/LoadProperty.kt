@@ -36,7 +36,7 @@ fun <R, T> IComponent.loadProperty(requestSource: Entity<R>, lazy: Boolean = fal
 }
 
 /**
- * [SimpleProperty] which loads it's value from [loadFunction].
+ * [BaseProperty] which loads it's value from [loadFunction].
  *
  * This is useful when source for data is not another [Entity] but some external resource like database, file or remote
  * network API. In this case it is possible to trigger reloading of data when needed.
@@ -48,7 +48,7 @@ class LoadProperty<R, T>(
         context: Context,
         private val delay: Long = 0L,
         private val loadFunction: suspend CoroutineScope.(R) -> T
-) : SimpleProperty<T>(context) {
+) : BaseProperty<T>(context) {
 
     private val coroutineScope = context.lifecycleCoroutineScope
 
@@ -65,8 +65,8 @@ class LoadProperty<R, T>(
         throw it
     }
 
-    private val isLazy = SimpleMutableValue<Boolean>(context).also { it.set(true) }
-    private val haveObservers = SimpleMutableValue<Boolean>(context).also { it.set(false) }
+    private val isLazy = BaseMutableValue<Boolean>(context).also { it.set(true) }
+    private val haveObservers = BaseMutableValue<Boolean>(context).also { it.set(false) }
     private val canLoad = (isLazy.not() or haveObservers).asProperty()
 
     private var scheduleReload = false

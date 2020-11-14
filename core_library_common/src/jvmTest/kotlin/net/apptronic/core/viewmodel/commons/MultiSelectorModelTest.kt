@@ -2,7 +2,6 @@ package net.apptronic.core.viewmodel.commons
 
 import net.apptronic.core.BaseContextTest
 import net.apptronic.core.base.utils.SetEqComparator
-import net.apptronic.core.entity.base.updates
 import net.apptronic.core.record
 import net.apptronic.core.viewmodel.commons.SelectableValue.*
 import org.junit.Test

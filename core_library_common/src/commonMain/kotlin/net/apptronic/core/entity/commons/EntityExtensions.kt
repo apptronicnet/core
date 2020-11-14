@@ -7,6 +7,17 @@ import net.apptronic.core.entity.base.Value
 import net.apptronic.core.entity.function.toNullable
 
 /**
+ * Set current value from given [source]
+ * @return true if value set, false if no value set inside [source]
+ */
+fun <T> Value<T>.setFrom(source: Property<T>): Boolean {
+    return source.getValueHolder()?.let {
+        set(it.value)
+        true
+    } ?: false
+}
+
+/**
  * Subscribe to updates of [source] and set all new values automatically
  */
 fun <E : Value<T>, T> E.setAs(source: Entity<out T>): E {
@@ -43,14 +54,14 @@ fun Entity<*>.mirrorGenericEvent(context: Context): Event<Unit> {
 }
 
 fun <T> Entity<T>.withDefault(defaultValue: T): Property<T> {
-    return SimpleMutableValue<T>(context).also {
+    return BaseMutableValue<T>(context).also {
         it.set(defaultValue)
         it.setAs(this)
     }
 }
 
 fun <T> Entity<T>.withDefaultNull(): Property<T?> {
-    return SimpleMutableValue<T?>(context).also {
+    return BaseMutableValue<T?>(context).also {
         it.set(null)
         it.setAs(this.toNullable())
     }

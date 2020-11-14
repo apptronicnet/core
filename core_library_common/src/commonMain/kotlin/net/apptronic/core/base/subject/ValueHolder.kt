@@ -25,7 +25,7 @@ fun <T> Entity<ValueHolder<T>>.unwrapValueHolder(): Entity<T> {
 }
 
 
-fun <T> ValueHolder<T>?.get(): T {
+fun <T> ValueHolder<T>?.getOrThrow(): T {
     if (this != null) {
         return this.value
     } else {
@@ -38,8 +38,26 @@ fun <T> ValueHolder<T>?.getOrNull(): T? {
     return this?.value
 }
 
+fun <T> ValueHolder<T>?.getOr(fallbackValue: T): T {
+    return if (this != null) {
+        value
+    } else fallbackValue
+}
+
+fun <T> ValueHolder<T>?.getOr(fallbackValueProvider: () -> T): T {
+    return if (this != null) {
+        value
+    } else fallbackValueProvider()
+}
+
 fun <T> ValueHolder<T>?.isSet(): Boolean {
     return this != null
+}
+
+fun <T, E> ValueHolder<T>?.map(mapper: (T) -> E): ValueHolder<E>? {
+    return if (this != null) {
+        ValueHolder(mapper(value))
+    } else null
 }
 
 fun <T> ValueHolder<T>?.doIfSet(action: (T) -> Unit): Boolean {

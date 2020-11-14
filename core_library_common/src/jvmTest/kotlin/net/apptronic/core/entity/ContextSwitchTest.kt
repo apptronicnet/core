@@ -127,7 +127,7 @@ class SetFromOnContextTest : ContextSwitchTest() {
 
 class PropertyAsContextTest : ContextSwitchTest() {
 
-    override fun createResult(): SimpleProperty<String> {
+    override fun createResult(): BaseProperty<String> {
         return targetContext.property(source)
     }
 

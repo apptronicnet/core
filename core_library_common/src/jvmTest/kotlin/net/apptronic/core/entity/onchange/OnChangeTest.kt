@@ -1,16 +1,14 @@
 package net.apptronic.core.entity.onchange
 
+import net.apptronic.core.BaseContextTest
 import net.apptronic.core.record
-import net.apptronic.core.testutils.createTestContext
 import kotlin.test.Test
 
-class OnChangeTest {
-
-    val context = createTestContext()
+class OnChangeTest : BaseContextTest() {
 
     @Test
     fun verifySendChangesToExistingSubscribers() {
-        val changeValue = context.onChangeValue<Int, String>()
+        val changeValue = onChangeValue<Int, String>()
         val changes = changeValue.record()
         changeValue.set(1)
         changes.assertItems(
@@ -38,7 +36,7 @@ class OnChangeTest {
 
     @Test
     fun verifyDoNotSendChangesToNewSubscriber() {
-        val changeValue = context.onChangeValue<Int, String>()
+        val changeValue = onChangeValue<Int, String>()
         changeValue.set(1)
         changeValue.set(2, "1 -> 2")
         val changes = changeValue.record()
@@ -53,8 +51,8 @@ class OnChangeTest {
     }
 
     @Test
-    fun verifyReflectiveValueWithSetFirstfromValue() {
-        val changeValue = context.onChangeValue<Int, String>()
+    fun verifyReflectiveValueWithSetFirstFromValue() {
+        val changeValue = onChangeValue<Int, String>()
         val changesRecords = changeValue.record()
         val value = changeValue.getValueEntity()
         val valueRecords = value.record()
@@ -83,8 +81,8 @@ class OnChangeTest {
     }
 
     @Test
-    fun verifyReflectiveValueWithSetFirstfromChangeable() {
-        val changeValue = context.onChangeValue<Int, String>()
+    fun verifyReflectiveValueWithSetFirstFromChangeable() {
+        val changeValue = onChangeValue<Int, String>()
         val changesRecords = changeValue.record()
         val value = changeValue.getValueEntity()
         val valueRecords = value.record()

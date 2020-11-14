@@ -4,9 +4,8 @@ import net.apptronic.core.base.utils.SetEqComparator
 import net.apptronic.core.context.Context
 import net.apptronic.core.context.Contextual
 import net.apptronic.core.entity.base.MutableValue
-import net.apptronic.core.entity.base.mapNotification
-import net.apptronic.core.entity.base.mutateUsingNotification
-import net.apptronic.core.entity.commons.SimpleMutableValue
+import net.apptronic.core.entity.base.mapChange
+import net.apptronic.core.entity.commons.BaseMutableValue
 import net.apptronic.core.entity.commons.mutableValue
 
 fun <T> Contextual.multiSelector(): MultiSelectorModel<T> {
@@ -26,7 +25,7 @@ fun <T> Contextual.multiSelector(initialSelection: Collection<T>): MultiSelector
  */
 class MultiSelectorModel<T> internal constructor(
         context: Context
-) : MutableValue<Set<T>> by SimpleMutableValue<Set<T>>(context, SetEqComparator<T>()), SwitchableSelector<T> {
+) : MutableValue<Set<T>> by BaseMutableValue<Set<T>>(context, SetEqComparator<T>()), SwitchableSelector<T> {
 
     init {
         set(emptySet())
@@ -76,17 +75,17 @@ class MultiSelectorModel<T> internal constructor(
 
     override fun getSwitch(selection: T): MutableValue<Boolean> {
         val switchModel = context.mutableValue(get().contains(selection))
-        switchModel.notifications.subscribe {
+        switchModel.changes.subscribe {
             if (it.value) {
-                mutateUsingNotification(withAdded(selection), it.isUpdate)
+                applyChange(withAdded(selection), it.isUpdate)
             } else {
-                mutateUsingNotification(withRemoved(selection), it.isUpdate)
+                applyChange(withRemoved(selection), it.isUpdate)
             }
         }
-        notifications.mapNotification {
+        changes.mapChange {
             it.contains(selection)
         }.subscribe {
-            switchModel.mutateUsingNotification(it)
+            switchModel.applyChange(it)
         }
         return switchModel
     }

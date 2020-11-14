@@ -8,7 +8,7 @@ import net.apptronic.core.context.Context
 import net.apptronic.core.entity.BaseEntity
 import net.apptronic.core.entity.Entity
 import net.apptronic.core.entity.EntitySubscription
-import net.apptronic.core.entity.commons.SimpleMutableValue
+import net.apptronic.core.entity.commons.BaseMutableValue
 import net.apptronic.core.entity.function.mapSuspend
 import net.apptronic.core.entity.function.onNext
 
@@ -43,7 +43,7 @@ private class ThrottledMapEntity<Source, Result>(
 
     override val context: Context = sourceEntity.context
 
-    private val resultObservable = SimpleMutableValue<Result>(context)
+    private val resultObservable = BaseMutableValue<Result>(context)
 
     init {
         val throttledTransformationResult = ThrottledTransformation(context, mapping)
@@ -68,7 +68,7 @@ private class ThrottledTransformation<Source, Result>(
         mapping: suspend CoroutineScope.(Source) -> Result
 ) {
 
-    private val sourceEntity = SimpleMutableValue<Source>(context)
+    private val sourceEntity = BaseMutableValue<Source>(context)
     private val resultObservable = BehaviorSubject<Result>()
 
     private var awaitingValue: ValueHolder<Source>? = null

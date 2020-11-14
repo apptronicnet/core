@@ -8,7 +8,7 @@ import net.apptronic.core.entity.base.MutableValue
 import net.apptronic.core.entity.base.Value
 
 fun <T> Contextual.value(): Value<T> {
-    return SimpleValue(context)
+    return BaseValue(context)
 }
 
 fun <T> Contextual.value(defaultValue: T): Value<T> {
@@ -18,7 +18,7 @@ fun <T> Contextual.value(defaultValue: T): Value<T> {
 }
 
 fun <T> Contextual.valueWithComparator(eqComparator: EqComparator<T>): Value<T> {
-    return SimpleValue(context, eqComparator)
+    return BaseValue(context, eqComparator)
 }
 
 fun <T> Contextual.valueAs(source: Entity<T>): Value<T> {
@@ -28,7 +28,7 @@ fun <T> Contextual.valueAs(source: Entity<T>): Value<T> {
 }
 
 fun <T> Contextual.mutableValue(): MutableValue<T> {
-    return SimpleMutableValue(context)
+    return BaseMutableValue(context)
 }
 
 fun <T> Contextual.mutableValue(defaultValue: T): MutableValue<T> {
@@ -44,7 +44,7 @@ fun <T> Contextual.mutableValue(source: Entity<T>): MutableValue<T> {
 }
 
 fun <T> Contextual.mutableValueWithComparator(eqComparator: EqComparator<T>): MutableValue<T> {
-    return SimpleMutableValue(context, eqComparator)
+    return BaseMutableValue(context, eqComparator)
 }
 
 fun <T> Contextual.valueSet() = valueMutator<MutableSet<T>>(mutableSetOf<T>())
@@ -54,11 +54,11 @@ fun <K, V> Contextual.valueMap() = valueMutator<MutableMap<K, V>>(mutableMapOf<K
 fun <T> Contextual.valueList() = valueMutator<MutableList<T>>(mutableListOf<T>())
 
 fun <T> Contextual.valueMutator(): Value<T> {
-    return SimpleValue(context, NeverEqComparator())
+    return BaseValue(context, NeverEqComparator())
 }
 
 fun <T> Contextual.valueMutator(defaultValue: T): Value<T> {
-    return SimpleValue<T>(context, NeverEqComparator()).apply {
+    return BaseValue<T>(context, NeverEqComparator()).apply {
         set(defaultValue)
     }
 }

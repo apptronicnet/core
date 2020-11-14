@@ -1,19 +1,12 @@
 package net.apptronic.core.entity.onchange
 
-import net.apptronic.core.base.observable.Observable
-import net.apptronic.core.base.observable.Observer
-import net.apptronic.core.base.subject.ValueHolder
-import net.apptronic.core.context.Context
 import net.apptronic.core.context.Contextual
 import net.apptronic.core.entity.Entity
-import net.apptronic.core.entity.base.ObservableEntity
 import net.apptronic.core.entity.base.Property
 import net.apptronic.core.entity.commons.setAs
-import net.apptronic.core.entity.commons.typedEvent
-import net.apptronic.core.entity.commons.value
 
 fun <T, E> Entity<Next<T, E>>.asOnChangeProperty(): OnChangeProperty<T, E> {
-    return OnChangeValueImpl<T, E>(context).setAs(this)
+    return OnChangeImpl<T, E>(context).setAs(this)
 }
 
 fun <T, E> Contextual.onChangeProperty(source: Entity<Next<T, E>>): OnChangeProperty<T, E> {
@@ -25,75 +18,26 @@ fun <T, E> Contextual.onChangeProperty(initValue: T): OnChangeProperty<T, E> {
 }
 
 fun <T, E> Contextual.onChangeValue(): OnChangeValue<T, E> {
-    return OnChangeValueImpl<T, E>(context)
+    return OnChangeImpl<T, E>(context)
 }
 
 fun <T, E> Contextual.onChangeValue(initValue: T): OnChangeValue<T, E> {
-    return OnChangeValueImpl<T, E>(context).apply {
+    return OnChangeImpl<T, E>(context).apply {
         set(initValue)
     }
 }
 
-interface OnChangeProperty<T, E> : Entity<Next<T, E>>, Property<Next<T, E>> {
+interface OnChangeProperty<T, E> : Property<Next<T, E>> {
 
-    fun getValue(): T {
-        return get().value
-    }
+    fun getValue(): T
 
-    fun getValueOrNull(): T? {
-        return getOrNull()?.value
-    }
+    fun getValueOrNull(): T?
 
-    fun doIfValueSet(action: (T) -> Unit): Boolean {
-        return doIfSet {
-            action.invoke(it.value)
-        }
-    }
+    fun doIfValueSet(action: (T) -> Unit): Boolean
 
-    fun getValueOr(fallbackValue: T): T {
-        val valueHolder = getValueHolder()
-        return valueHolder?.value?.value ?: fallbackValue
-    }
+    fun getValueOr(fallbackValue: T): T
 
-    fun getValueOr(fallbackValueProvider: () -> T): T {
-        val valueHolder = getValueHolder()
-        return valueHolder?.value?.value ?: fallbackValueProvider()
-    }
+    fun getValueOr(fallbackValueProvider: () -> T): T
 
 }
 
-/**
- * This variant of [Entity] designed to be property, which should pass additional information to observers when it's
- * changes, but not to store this information for new observers.
- */
-abstract class OnChangePropertyImpl<T, E> internal constructor(
-        final override val context: Context
-) : ObservableEntity<Next<T, E>>(), OnChangeProperty<T, E> {
-
-    internal val value = context.value<T>()
-    internal var change: ValueHolder<E>? = null
-    private val updateEvent = context.typedEvent<Next<T, E>>()
-
-    override fun onObserverSubscribed(observer: Observer<Next<T, E>>) {
-        super.onObserverSubscribed(observer)
-        value.getValueHolder()?.let {
-            observer.update(Next(it.value, null))
-        }
-    }
-
-    init {
-        value.subscribe {
-            updateEvent.update(Next(it, change?.value))
-            change = null
-        }
-    }
-
-    override val observable: Observable<Next<T, E>> = updateEvent
-
-    override fun getValueHolder(): ValueHolder<Next<T, E>>? {
-        return value.getValueHolder()?.let {
-            ValueHolder<Next<T, E>>(Next(it.value, null))
-        }
-    }
-
-}

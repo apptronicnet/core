@@ -1,8 +1,6 @@
 package net.apptronic.core.entity.behavior
 
-import net.apptronic.core.base.subject.ValueHolder
-import net.apptronic.core.base.subject.asValueHolder
-import net.apptronic.core.base.subject.doIfSet
+import net.apptronic.core.base.subject.*
 import net.apptronic.core.entity.Entity
 import net.apptronic.core.entity.base.Property
 import net.apptronic.core.entity.base.RelayEntity
@@ -42,6 +40,18 @@ private class ResendOnSignalEntity<T>(wrappedEntity: Entity<T>) : RelayEntity<T>
             }
         }
     }
+
+    override fun doIfSet(action: (T) -> Unit) = lastValue.doIfSet(action)
+
+    override fun get() = lastValue.getOrThrow()
+
+    override fun getOr(fallbackValue: T) = lastValue.getOr(fallbackValue)
+
+    override fun getOr(fallbackValueProvider: () -> T) = lastValue.getOr(fallbackValueProvider)
+
+    override fun getOrNull() = lastValue.getOrNull()
+
+    override fun isSet() = lastValue.isSet()
 
 }
 

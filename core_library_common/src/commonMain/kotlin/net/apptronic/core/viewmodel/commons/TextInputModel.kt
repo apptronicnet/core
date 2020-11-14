@@ -4,7 +4,7 @@ import net.apptronic.core.context.Context
 import net.apptronic.core.context.Contextual
 import net.apptronic.core.entity.base.MutableValue
 import net.apptronic.core.entity.base.SubjectEntity
-import net.apptronic.core.entity.commons.SimpleMutableValue
+import net.apptronic.core.entity.commons.BaseMutableValue
 import net.apptronic.core.entity.commons.value
 
 private fun IntRange.normalize(text: String): IntRange {
@@ -40,7 +40,7 @@ fun Contextual.textInput(defaultValue: String = ""): TextInputModel {
 
 class TextInputModel internal constructor(
         context: Context,
-        private val value: SimpleMutableValue<String> = SimpleMutableValue(context)
+        private val value: BaseMutableValue<String> = BaseMutableValue(context)
 ) : MutableValue<String> by value {
 
     val selection = context.value<IntRange>(0..0)

@@ -1,6 +1,6 @@
 package net.apptronic.core.entity.base
 
-import net.apptronic.core.base.subject.*
+import net.apptronic.core.base.subject.ValueHolder
 import net.apptronic.core.entity.Entity
 import net.apptronic.core.entity.ValueNotSetException
 
@@ -9,53 +9,42 @@ import net.apptronic.core.entity.ValueNotSetException
  */
 interface Property<T> : Entity<T> {
 
+    /**
+     * Get [ValueHolder] of this property. Returns null if values is not set.
+     */
     fun getValueHolder(): ValueHolder<T>?
 
     /**
      * Get value
      * @throws [ValueNotSetException] is value is not set
      */
-    fun get(): T {
-        return getValueHolder().get()
-    }
+    fun get(): T
 
     /**
      * Get value or return null if value is not set
      */
-    fun getOrNull(): T? {
-        return getValueHolder().getOrNull()
-    }
+    fun getOrNull(): T?
 
     /**
      * Get value or return [fallbackValue] if value is not set
      */
-    fun getOr(fallbackValue: T): T {
-        val valueHolder = getValueHolder()
-        return if (valueHolder != null) valueHolder.value else fallbackValue
-    }
+    fun getOr(fallbackValue: T): T
 
     /**
      * Get value or return  instance returned by [fallbackValueProvider] if value is not set
      */
-    fun getOr(fallbackValueProvider: () -> T): T {
-        val valueHolder = getValueHolder()
-        return if (valueHolder != null) valueHolder.value else fallbackValueProvider.invoke()
-    }
+    fun getOr(fallbackValueProvider: () -> T): T
 
     /**
      * Check is value is set
      */
-    fun isSet(): Boolean {
-        return getValueHolder().isSet()
-    }
+    fun isSet(): Boolean
 
     /**
      * Do [action] with value if it is set
      * @return true if action performed, false if value is not set
      */
-    fun doIfSet(action: (T) -> Unit): Boolean {
-        return getValueHolder().doIfSet(action)
-    }
+    fun doIfSet(action: (T) -> Unit): Boolean
 
 }
 
