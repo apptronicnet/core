@@ -3,6 +3,7 @@ package net.apptronic.test.commons_sample_app.registration
 import net.apptronic.core.commons.routing.injectNavigationRouter
 import net.apptronic.core.context.Contextual
 import net.apptronic.core.entity.commons.genericEvent
+import net.apptronic.core.entity.commons.nullValue
 import net.apptronic.core.entity.commons.setAs
 import net.apptronic.core.entity.commons.value
 import net.apptronic.core.entity.extensions.forEachChangeAnyOf
