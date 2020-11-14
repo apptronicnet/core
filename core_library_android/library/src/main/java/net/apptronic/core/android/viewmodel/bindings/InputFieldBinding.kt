@@ -6,16 +6,16 @@ import android.widget.EditText
 import net.apptronic.core.android.viewmodel.Binding
 import net.apptronic.core.android.viewmodel.BindingContainer
 import net.apptronic.core.android.viewmodel.ViewBinder
-import net.apptronic.core.entity.base.Value
+import net.apptronic.core.entity.base.SubjectEntity
 import net.apptronic.core.viewmodel.IViewModel
 
-fun BindingContainer.bindTextInput(editText: EditText, target: Value<String>) {
+fun BindingContainer.bindTextInput(editText: EditText, target: SubjectEntity<String>) {
     add(InputFieldBinding(editText, target))
 }
 
 class InputFieldBinding(
     private val view: EditText,
-    private val target: Value<String>
+    private val target: SubjectEntity<String>
 ) : Binding() {
 
     override fun onBind(viewModel: IViewModel, viewBinder: ViewBinder<*>) {

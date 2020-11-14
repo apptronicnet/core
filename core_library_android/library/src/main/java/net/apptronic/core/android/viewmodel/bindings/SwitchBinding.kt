@@ -6,11 +6,10 @@ import net.apptronic.core.android.viewmodel.BindingContainer
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.entity.Entity
 import net.apptronic.core.entity.base.SubjectEntity
-import net.apptronic.core.entity.base.Value
 import net.apptronic.core.viewmodel.IViewModel
 
-fun BindingContainer.bindSwitch(button: CompoundButton, value: Value<Boolean>) {
-    +SwitchBinding(button, value, value::set)
+fun BindingContainer.bindSwitch(button: CompoundButton, value: SubjectEntity<Boolean>) {
+    +SwitchBinding(button, value, value::update)
 }
 
 fun BindingContainer.bindSwitch(
