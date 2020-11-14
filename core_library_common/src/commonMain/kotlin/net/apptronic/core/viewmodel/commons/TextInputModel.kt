@@ -23,12 +23,12 @@ private fun IntRange.normalize(text: String): IntRange {
 }
 
 fun TextInputModel.withOnUpdate(target: SubjectEntity<String>): TextInputModel {
-    subscribe(target)
+    updates.subscribe(target)
     return this
 }
 
 fun TextInputModel.withOnUpdate(callback: (String) -> Unit): TextInputModel {
-    subscribe(callback)
+    updates.subscribe(callback)
     return this
 }
 

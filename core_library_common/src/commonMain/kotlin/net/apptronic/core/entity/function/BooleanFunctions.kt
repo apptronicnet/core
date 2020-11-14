@@ -92,6 +92,11 @@ fun <T : CharSequence> Entity<T>.isNotEmpty(): Property<Boolean> =
             it.isNotEmpty()
         }
 
+fun <T : CharSequence> Entity<T>.isBlank(): Property<Boolean> =
+        entityFunction(this) {
+            it.isBlank()
+        }
+
 fun <T : CharSequence> Entity<T>.isNotBlank(): Property<Boolean> =
         entityFunction(this) {
             it.isNotBlank()
