@@ -1,7 +1,6 @@
 package net.apptronic.core.context.plugin
 
 import net.apptronic.core.context.dependencyModule
-import net.apptronic.core.context.di.inject
 import org.junit.Test
 import kotlin.test.assertNotSame
 import kotlin.test.assertSame

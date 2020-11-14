@@ -5,7 +5,6 @@ import net.apptronic.core.context.Context
 import net.apptronic.core.context.childContext
 import net.apptronic.core.context.component.Component
 import net.apptronic.core.context.dependencyModule
-import net.apptronic.core.context.di.inject
 import net.apptronic.core.context.terminate
 import net.apptronic.core.entity.Entity
 import net.apptronic.core.entity.behavior.filter

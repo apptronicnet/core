@@ -7,7 +7,6 @@ import net.apptronic.core.context.component.Component
 import net.apptronic.core.context.coroutines.ManualDispatcher
 import net.apptronic.core.context.coroutines.contextCoroutineScope
 import net.apptronic.core.context.dependencyModule
-import net.apptronic.core.context.di.inject
 import net.apptronic.core.entity.commons.value
 import net.apptronic.core.testutils.createTestContext
 import org.junit.Test

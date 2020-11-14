@@ -2,68 +2,68 @@ package net.apptronic.core.context.di
 
 import kotlin.reflect.KClass
 
-inline fun <reified TypeDeclaration : Any> DependencyProvider.inject(
-        params: Parameters = emptyParameters()
-): TypeDeclaration {
-    return inject(TypeDeclaration::class, params)
-}
+abstract class DependencyProvider {
 
-inline fun <reified TypeDeclaration : Any> DependencyProvider.optional(
-        params: Parameters = emptyParameters()
-): TypeDeclaration? {
-    return optional(TypeDeclaration::class, params)
-}
+    inline fun <reified TypeDeclaration : Any> inject(
+            params: Parameters = emptyParameters()
+    ): TypeDeclaration {
+        return inject(TypeDeclaration::class, params)
+    }
 
-inline fun <reified TypeDeclaration : Any> DependencyProvider.injectLazy(
-        params: Parameters = emptyParameters()
-): Lazy<TypeDeclaration> {
-    return injectLazy(TypeDeclaration::class, params)
-}
+    inline fun <reified TypeDeclaration : Any> optional(
+            params: Parameters = emptyParameters()
+    ): TypeDeclaration? {
+        return optional(TypeDeclaration::class, params)
+    }
 
-inline fun <reified TypeDeclaration : Any> DependencyProvider.optionalLazy(
-        params: Parameters = emptyParameters()
-): Lazy<TypeDeclaration?> {
-    return optionalLazy(TypeDeclaration::class, params)
-}
+    inline fun <reified TypeDeclaration : Any> injectLazy(
+            params: Parameters = emptyParameters()
+    ): Lazy<TypeDeclaration> {
+        return injectLazy(TypeDeclaration::class, params)
+    }
 
-interface DependencyProvider {
+    inline fun <reified TypeDeclaration : Any> optionalLazy(
+            params: Parameters = emptyParameters()
+    ): Lazy<TypeDeclaration?> {
+        return optionalLazy(TypeDeclaration::class, params)
+    }
 
-    fun <TypeDeclaration : Any> inject(
+    abstract fun <TypeDeclaration : Any> inject(
             clazz: KClass<TypeDeclaration>,
             params: Parameters = emptyParameters()
     ): TypeDeclaration
 
-    fun <TypeDeclaration : Any> optional(
+    abstract fun <TypeDeclaration : Any> optional(
             clazz: KClass<TypeDeclaration>,
             params: Parameters = emptyParameters()
     ): TypeDeclaration?
 
-    fun <TypeDeclaration : Any> injectLazy(
+    abstract fun <TypeDeclaration : Any> injectLazy(
             clazz: KClass<TypeDeclaration>,
             params: Parameters = emptyParameters()
     ): Lazy<TypeDeclaration>
 
-    fun <TypeDeclaration : Any> optionalLazy(
+    abstract fun <TypeDeclaration : Any> optionalLazy(
             clazz: KClass<TypeDeclaration>,
             params: Parameters = emptyParameters()
     ): Lazy<TypeDeclaration?>
 
-    fun <TypeDeclaration> inject(
+    abstract fun <TypeDeclaration> inject(
             descriptor: DependencyDescriptor<TypeDeclaration>,
             params: Parameters = emptyParameters()
     ): TypeDeclaration
 
-    fun <TypeDeclaration> optional(
+    abstract fun <TypeDeclaration> optional(
             descriptor: DependencyDescriptor<TypeDeclaration>,
             params: Parameters = emptyParameters()
     ): TypeDeclaration?
 
-    fun <TypeDeclaration> injectLazy(
+    abstract fun <TypeDeclaration> injectLazy(
             descriptor: DependencyDescriptor<TypeDeclaration>,
             params: Parameters = emptyParameters()
     ): Lazy<TypeDeclaration>
 
-    fun <TypeDeclaration> optionalLazy(
+    abstract fun <TypeDeclaration> optionalLazy(
             descriptor: DependencyDescriptor<TypeDeclaration>,
             params: Parameters = emptyParameters()
     ): Lazy<TypeDeclaration?>

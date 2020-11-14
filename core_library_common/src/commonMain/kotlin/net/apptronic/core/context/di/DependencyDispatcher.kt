@@ -11,7 +11,7 @@ fun Context.dependencyDispatcher(): DependencyDispatcher {
 /**
  * Class for providing dependencies
  */
-abstract class DependencyDispatcher : DependencyProvider {
+abstract class DependencyDispatcher : DependencyProvider() {
 
     abstract val context: Context
 
