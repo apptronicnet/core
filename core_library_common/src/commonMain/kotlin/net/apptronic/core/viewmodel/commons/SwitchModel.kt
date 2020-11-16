@@ -1,15 +1,12 @@
 package net.apptronic.core.viewmodel.commons
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import net.apptronic.core.context.Context
 import net.apptronic.core.context.Contextual
-import net.apptronic.core.context.coroutines.lifecycleCoroutineScope
 import net.apptronic.core.entity.Entity
 import net.apptronic.core.entity.base.MutableValue
-import net.apptronic.core.entity.base.Value
 import net.apptronic.core.entity.behavior.whenAnyValue
-import net.apptronic.core.entity.commons.*
+import net.apptronic.core.entity.commons.BaseMutableValue
+import net.apptronic.core.entity.commons.value
 import net.apptronic.core.entity.function.and
 
 fun Contextual.switchModel(): SwitchModel {
@@ -28,45 +25,6 @@ fun Contextual.switchModel(sourceValue: Entity<Boolean>, defaultValue: Boolean =
             set(it)
         }
     }
-}
-
-/**
- * Load initial state of switch. If [load] returns null state will no be set
- */
-fun SwitchModel.withLoadState(load: () -> Boolean?): SwitchModel {
-    load()?.let {
-        set(it)
-    }
-    return this
-}
-
-
-/**
- * Load initial state of switch. If [load] returns null state will no be set
- */
-fun SwitchModel.withLoadStateSuspend(load: suspend CoroutineScope.() -> Boolean?): SwitchModel {
-    context.lifecycleCoroutineScope.launch {
-        load()?.let {
-            set(it)
-        }
-    }
-    return this
-}
-
-fun SwitchModel.withOnUpdate(onUpdate: (Boolean) -> Unit): SwitchModel {
-    updates.onNext(onUpdate)
-    return this
-}
-
-fun SwitchModel.withOnUpdateSuspend(onUpdate: suspend CoroutineScope.(Boolean) -> Unit): SwitchModel {
-    updates.onNextSuspend(onUpdate)
-    return this
-}
-
-
-fun SwitchModel.withSendUpdates(target: Value<Boolean>): SwitchModel {
-    updates.setTo(target)
-    return this
 }
 
 fun SwitchModel.withIsEnabled(isEnabledSource: Entity<Boolean>): SwitchModel {

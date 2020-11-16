@@ -3,7 +3,6 @@ package net.apptronic.core.viewmodel.commons
 import net.apptronic.core.context.Context
 import net.apptronic.core.context.Contextual
 import net.apptronic.core.entity.base.MutableValue
-import net.apptronic.core.entity.base.SubjectEntity
 import net.apptronic.core.entity.commons.BaseMutableValue
 import net.apptronic.core.entity.commons.value
 
@@ -20,16 +19,6 @@ private fun IntRange.normalize(text: String): IntRange {
                 else -> endInclusive
             }
     )
-}
-
-fun TextInputModel.withOnUpdate(target: SubjectEntity<String>): TextInputModel {
-    updates.subscribe(target)
-    return this
-}
-
-fun TextInputModel.withOnUpdate(callback: (String) -> Unit): TextInputModel {
-    updates.subscribe(callback)
-    return this
 }
 
 fun Contextual.textInput(defaultValue: String = ""): TextInputModel {

@@ -36,7 +36,7 @@ fun Contextual.genericEvent(callback: () -> Unit): GenericEvent {
 
 fun Contextual.genericEventSuspend(callback: suspend CoroutineScope.() -> Unit): GenericEvent {
     return GenericEvent(context).apply {
-        onNextSuspend {
+        subscribeSuspend {
             callback()
         }
     }
@@ -63,7 +63,7 @@ fun <T> Contextual.typedEvent(callback: (T) -> Unit): Event<T> {
 
 fun <T> Contextual.typedEventSuspend(callback: suspend CoroutineScope.(T) -> Unit): Event<T> {
     return TypedEvent<T>(context).apply {
-        onNextSuspend {
+        subscribeSuspend {
             callback(it)
         }
     }

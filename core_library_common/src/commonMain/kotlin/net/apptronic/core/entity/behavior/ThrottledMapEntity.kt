@@ -9,7 +9,6 @@ import net.apptronic.core.entity.BaseEntity
 import net.apptronic.core.entity.Entity
 import net.apptronic.core.entity.EntitySubscription
 import net.apptronic.core.entity.commons.BaseMutableValue
-import net.apptronic.core.entity.commons.onNext
 import net.apptronic.core.entity.function.mapSuspend
 
 /**
@@ -48,8 +47,8 @@ private class ThrottledMapEntity<Source, Result>(
     init {
         val throttledTransformationResult = ThrottledTransformation(context, mapping)
         throttledTransformationResult.observe(this@ThrottledMapEntity)
-        sourceEntity.onNext { nextValue ->
-            throttledTransformationResult.onNext(nextValue)
+        sourceEntity.subscribe {
+            throttledTransformationResult.onNext(it)
         }
     }
 
