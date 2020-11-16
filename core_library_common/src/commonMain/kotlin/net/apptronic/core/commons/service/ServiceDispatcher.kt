@@ -1,32 +1,70 @@
 package net.apptronic.core.commons.service
 
-import net.apptronic.core.context.Contextual
-import net.apptronic.core.context.di.ModuleDefinition
-import net.apptronic.core.context.di.SharedScope
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.launch
+import net.apptronic.core.context.Context
+import net.apptronic.core.context.component.Component
+import net.apptronic.core.context.coroutines.lifecycleCoroutineScope
+import net.apptronic.core.context.di.DependencyDescriptor
+import net.apptronic.core.context.lifecycle.enterStage
+import net.apptronic.core.context.lifecycle.exitStage
+import net.apptronic.core.entity.Entity
+import net.apptronic.core.entity.commons.value
 
-interface ServiceDispatcher<T : Any, R : Any> {
+internal class ServiceDispatcher<T : Any, R : Any>(
+        context: Context,
+        private val serviceInstanceDescriptor: DependencyDescriptor<Service<T, R>>
+) : Component(context) {
 
-    /**
-     * Send request to service wait for response. Service may throw an exception
-     */
-    suspend fun sendRequest(request: T): R
-
-    /**
-     * Send request to service and do not wait for response
-     */
-    fun postRequest(request: T)
-
-}
-
-fun <T : Any, R : Any> ModuleDefinition.service(
-        descriptor: ServiceDescriptor<T, R>,
-        builder: SharedScope.() -> Service<T, R>) {
-    shared(descriptor.serviceInstanceDescriptor, builder = builder)
-    single(descriptor.holderDescriptor) {
-        ServiceDispatcherImpl(scopedContext(lifecycleDefinition = ServiceDispatcherLifecycle), descriptor.serviceInstanceDescriptor)
+    interface PendingRequest<T, R> {
+        val request: T
+        suspend fun await(): R
     }
-}
 
-fun <T : Any, R : Any> Contextual.injectService(descriptor: ServiceDescriptor<T, R>): ServiceDispatcher<T, R> {
-    return dependencyProvider.inject(descriptor.holderDescriptor)
+    private inner class PendingRequestImpl(override val request: T) : PendingRequest<T, R> {
+        val responseDeferred = CompletableDeferred<R>()
+        override suspend fun await(): R {
+            return responseDeferred.await()
+        }
+    }
+
+    private val pendingRequests = mutableListOf<PendingRequestImpl>()
+
+    private val isProcessingRequests = value(false)
+
+    fun observeProcessingRequests(targetContext: Context): Entity<Boolean> {
+        return isProcessingRequests.switchContext(targetContext)
+    }
+
+    fun nextRequest(request: T): PendingRequest<T, R> {
+        val pending = PendingRequestImpl(request)
+        pendingRequests.add(pending)
+        enterStage(STAGE_SERVICE_RUNNING)
+        return pending
+    }
+
+    init {
+        onEnterStage(STAGE_SERVICE_RUNNING) {
+            isProcessingRequests.set(true)
+            onExit {
+                isProcessingRequests.set(false)
+            }
+            val service = inject(serviceInstanceDescriptor)
+            val coroutineScope = lifecycleCoroutineScope
+            coroutineScope.launch {
+                while (pendingRequests.isNotEmpty()) {
+                    val next = pendingRequests.removeAt(0)
+                    try {
+                        val response: R = service.onNext(next.request)
+                        next.responseDeferred.complete(response)
+                    } catch (e: Exception) {
+                        service.onError(next.request, e)
+                        next.responseDeferred.completeExceptionally(e)
+                    }
+                }
+                exitStage(STAGE_SERVICE_RUNNING)
+            }
+        }
+    }
+
 }

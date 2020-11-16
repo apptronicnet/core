@@ -35,7 +35,7 @@ class ServiceTest {
         }
     }
 
-    private fun ServiceDispatcher<String, Unit>.nextRequest(request: String) {
+    private fun ServiceClient<String, Unit>.nextRequest(request: String) {
         awaitSignals[request] = CompletableDeferred()
         completeSignals[request] = CompletableDeferred()
         postRequest(request)
