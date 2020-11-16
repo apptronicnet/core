@@ -27,7 +27,7 @@ fun <E : Value<T>, T> E.withLoadState(action: () -> T): E {
     return this
 }
 
-fun <E : Value<T>, T> E.withLoadStateSuspend(action: () -> T): E {
+fun <E : Value<T>, T> E.withLoadStateSuspend(action: suspend CoroutineScope.() -> T): E {
     context.contextCoroutineScope.launch {
         set(action())
     }
