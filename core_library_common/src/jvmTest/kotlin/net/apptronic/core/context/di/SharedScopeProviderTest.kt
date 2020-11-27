@@ -9,7 +9,7 @@ import net.apptronic.core.testutils.TestLifecycle
 import net.apptronic.core.testutils.createTestContext
 import org.junit.Test
 
-class SharedDataProviderTest {
+class SharedScopeProviderTest {
 
     private class Shared : AutoRecycling {
         var isRecycled = false

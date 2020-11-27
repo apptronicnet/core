@@ -5,7 +5,7 @@ import kotlinx.coroutines.launch
 import net.apptronic.core.context.coroutines.contextCoroutineScope
 import net.apptronic.core.entity.Entity
 
-fun <E : Entity<T>, T> E.withOnnNext(action: (T) -> Unit): E {
+fun <E : Entity<T>, T> E.withOnNext(action: (T) -> Unit): E {
     subscribe(action)
     return this
 }

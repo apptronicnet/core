@@ -7,9 +7,10 @@ import kotlin.test.assertNull
 
 private fun <T> Entity<T>.retrieveValue(): T {
     lateinit var valueHolder: ValueHolder<T>
-    subscribe {
+    val subscription = subscribe {
         valueHolder = ValueHolder(it)
     }
+    subscription.unsubscribe()
     return valueHolder.value
 }
 

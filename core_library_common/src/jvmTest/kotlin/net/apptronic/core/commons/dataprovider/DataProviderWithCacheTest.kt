@@ -8,7 +8,6 @@ import net.apptronic.core.context.component.Component
 import net.apptronic.core.context.coroutines.ManualDispatcher
 import net.apptronic.core.context.dependencyModule
 import net.apptronic.core.context.terminate
-import net.apptronic.core.entity.Entity
 import net.apptronic.core.entity.commons.asProperty
 import net.apptronic.core.entity.commons.unitEntity
 import net.apptronic.core.entity.function.mapSuspend
@@ -27,11 +26,11 @@ class DataProviderWithCacheTest {
 
     inner class Provider(context: Context, key: Int) : DataProvider<Data, Int>(context, key) {
 
-        override val entity: Entity<Data> = unitEntity().mapSuspend {
+        override val entity = unitEntity().mapSuspend {
             withContext(manualDispatcher) {
                 Data(key.toString())
             }
-        }
+        }.asProperty()
 
     }
 
@@ -49,7 +48,7 @@ class DataProviderWithCacheTest {
     private fun userComponent(id: Int) = UserComponent(context.childContext(), id)
 
     class UserComponent(context: Context, val id: Int) : Component(context) {
-        val data = injectData(DataProviderDescriptor, id).asProperty()
+        val data = injectData(DataProviderDescriptor, id).data
     }
 
     @Test

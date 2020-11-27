@@ -56,12 +56,12 @@ class DataProviderTest {
 
         private val repository = inject<Repository>()
 
-        override val entity: Entity<String> = unitEntity()
+        override val entity = unitEntity()
                 .resendWhen(
                         repository.observeUpdatedById(context).filter { it == id }
                 ).map {
                     repository.loadById(id)
-                }.filterNotNull()
+                }.filterNotNull().asProperty()
 
     }
 
@@ -80,7 +80,7 @@ class DataProviderTest {
 
     private inner class UsesStringComponent(context: Context, val id: Int) : Component(context) {
 
-        val data = injectData(StringProviderDescriptor, id).asProperty()
+        val data = injectData(StringProviderDescriptor, id).data
 
     }
 

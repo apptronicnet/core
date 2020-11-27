@@ -6,10 +6,11 @@ import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.commons.cache.CacheComponent
 import net.apptronic.core.context.Context
 import net.apptronic.core.context.component.Component
-import net.apptronic.core.entity.Entity
+import net.apptronic.core.entity.base.Property
+import net.apptronic.core.entity.commons.asProperty
 import net.apptronic.core.entity.commons.value
 
-class DataProviderHolder<T, K>(
+internal class DataProviderHolder<T, K>(
         context: Context,
         private val key: K,
         private val dataProvider: DataProvider<T, K>,
@@ -38,8 +39,13 @@ class DataProviderHolder<T, K>(
         cache?.set(key, value)
     }
 
-    fun provideData(targetContext: Context): Entity<T> {
-        return data.switchContext(targetContext)
+    fun provideData(targetContext: Context): Property<T> {
+        dataProvider.onNewSubscriberSubject.update(Unit)
+        return data.switchContext(targetContext).asProperty()
+    }
+
+    suspend fun executeReloadRequest() {
+        data.set(dataProvider.processLoadDataRequest())
     }
 
 }
