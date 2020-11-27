@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import net.apptronic.core.android.viewmodel.ViewBinder
-import net.apptronic.core.android.viewmodel.ViewBinderFactory
+import net.apptronic.core.android.viewmodel.ViewBinderAdapter
 import net.apptronic.core.android.viewmodel.style.list.ViewStyleAdapter
 import net.apptronic.core.android.viewmodel.view.DefaultViewContainerViewAdapter
 import net.apptronic.core.android.viewmodel.view.ViewContainerViewAdapter
@@ -15,7 +15,7 @@ import net.apptronic.core.viewmodel.navigation.adapters.ViewModelListAdapter
 
 class ViewBinderListAdapter(
     private val container: ViewGroup,
-    private val viewBinderFactory: ViewBinderFactory,
+    private val viewBinderAdapter: ViewBinderAdapter,
     private val styleAdapter: ViewStyleAdapter
 ) : ViewModelListAdapter<Any?> {
 
@@ -67,12 +67,12 @@ class ViewBinderListAdapter(
 
     private val boundViews = mutableMapOf<Long, ViewBinder<*>>()
 
-    fun bindings(setup: ViewBinderFactory.() -> Unit) {
-        setup.invoke(viewBinderFactory)
+    fun bindings(setup: ViewBinderAdapter.() -> Unit) {
+        setup.invoke(viewBinderAdapter)
     }
 
     fun createView(typeId: Int, container: ViewGroup? = null): View {
-        val binder = viewBinderFactory.getBinder(typeId)
+        val binder = viewBinderAdapter.getBinder(typeId)
         val viewAdapter = binder as? ViewContainerViewAdapter ?: DefaultViewContainerViewAdapter
         return viewAdapter.onCreateDetachedView(
             this.container.context, binder, layoutInflater, container ?: this.container
@@ -80,7 +80,7 @@ class ViewBinderListAdapter(
     }
 
     fun createView(viewModel: IViewModel, container: ViewGroup? = null): View {
-        val binder = viewBinderFactory.getBinder(viewModel)
+        val binder = viewBinderAdapter.getBinder(viewModel)
         val viewAdapter = binder as? ViewContainerViewAdapter ?: DefaultViewContainerViewAdapter
         return viewAdapter.onCreateDetachedView(
             this.container.context, binder, layoutInflater, container ?: this.container
@@ -88,11 +88,11 @@ class ViewBinderListAdapter(
     }
 
     fun getViewType(position: Int): Int {
-        return viewBinderFactory.getType(items[position].viewModel)
+        return viewBinderAdapter.getType(items[position].viewModel)
     }
 
     fun getViewType(viewModel: IViewModel): Int {
-        return viewBinderFactory.getType(viewModel)
+        return viewBinderAdapter.getType(viewModel)
     }
 
     fun bindView(position: Int, view: View): ViewBinder<*> {
@@ -128,7 +128,7 @@ class ViewBinderListAdapter(
     }
 
     private fun performNewBinding(item: ViewModelItem, view: View): ViewBinder<*> {
-        val binder = viewBinderFactory.getBinder(item.viewModel)
+        val binder = viewBinderAdapter.getBinder(item.viewModel)
         item.setBound(true)
         binder.performViewBinding(item, view)
         return binder

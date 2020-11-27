@@ -5,7 +5,7 @@ import net.apptronic.core.android.anim.factory.ViewTransitionFactory
 import net.apptronic.core.android.viewmodel.Binding
 import net.apptronic.core.android.viewmodel.BindingContainer
 import net.apptronic.core.android.viewmodel.ViewBinder
-import net.apptronic.core.android.viewmodel.ViewBinderFactory
+import net.apptronic.core.android.viewmodel.ViewBinderAdapter
 import net.apptronic.core.android.viewmodel.navigation.SingleViewBinderListAdapter
 import net.apptronic.core.viewmodel.IViewModel
 import net.apptronic.core.viewmodel.navigation.models.SupportsSingleViewModelListAdapter
@@ -25,7 +25,7 @@ private class SingleViewListModeBinding(
 ) : Binding() {
 
     override fun onBind(viewModel: IViewModel, viewBinder: ViewBinder<*>) {
-        val binderFactory = getComposedViewBinderFactory(mode.binderFactory, viewModel)
+        val binderFactory = getComposedViewBinderFactory(mode.binderAdapter, viewModel)
         val transitionFactory = getComposedViewTransitionFactory(
             mode.transitionFactory, viewModel
         )
@@ -45,7 +45,7 @@ private class SingleViewListModeBinding(
 }
 
 class SingleViewListMode(
-    val binderFactory: ViewBinderFactory? = null,
+    val binderAdapter: ViewBinderAdapter? = null,
     val transitionFactory: ViewTransitionFactory? = null,
     val defaultAnimationTime: Long? = null,
     val maxCachedViews: Int = 5

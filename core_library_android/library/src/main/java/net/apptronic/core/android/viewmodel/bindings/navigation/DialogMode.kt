@@ -4,7 +4,7 @@ import android.content.Context
 import net.apptronic.core.android.viewmodel.Binding
 import net.apptronic.core.android.viewmodel.BindingContainer
 import net.apptronic.core.android.viewmodel.ViewBinder
-import net.apptronic.core.android.viewmodel.ViewBinderFactory
+import net.apptronic.core.android.viewmodel.ViewBinderAdapter
 import net.apptronic.core.android.viewmodel.navigation.DialogBinderStackAdapter
 import net.apptronic.core.viewmodel.IViewModel
 import net.apptronic.core.viewmodel.navigation.StackNavigationModel
@@ -31,7 +31,7 @@ class DialogNavigatorBinding(
 ) : Binding() {
 
     override fun onBind(viewModel: IViewModel, viewBinder: ViewBinder<*>) {
-        val binderFactory = getComposedViewBinderFactory(mode.binderFactory, viewModel)
+        val binderFactory = getComposedViewBinderFactory(mode.binderAdapter, viewModel)
         navigator.setAdapter(
             DialogBinderStackAdapter(context, binderFactory)
         )
@@ -40,5 +40,5 @@ class DialogNavigatorBinding(
 }
 
 class DialogMode(
-    val binderFactory: ViewBinderFactory? = null
+    val binderAdapter: ViewBinderAdapter? = null
 )

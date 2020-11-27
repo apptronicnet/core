@@ -5,14 +5,14 @@ import net.apptronic.core.context.Contextual
 import net.apptronic.core.entity.commons.value
 import net.apptronic.core.viewmodel.ViewModel
 import net.apptronic.core.viewmodel.ViewModelContext
-import net.apptronic.core.viewmodel.navigation.ViewModelBuilder
+import net.apptronic.core.viewmodel.navigation.ViewModelAdapter
 import net.apptronic.core.viewmodel.viewModelContext
 
-object TabListItemViewModelBuilder : ViewModelBuilder<String, String, TabListItemViewModel> {
+object TabListItemViewModelBuilder : ViewModelAdapter<String, String, TabListItemViewModel> {
 
-    override fun getId(item: String): String = item
+    override fun getItemId(item: String): String = item
 
-    override fun onCreateViewModel(parent: Context, item: String): TabListItemViewModel {
+    override fun createViewModel(parent: Context, item: String): TabListItemViewModel {
         return parent.tabListItemViewModel(item)
     }
 

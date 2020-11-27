@@ -7,7 +7,7 @@ import net.apptronic.core.android.plugins.getViewBinderFactoryFromExtension
 import net.apptronic.core.android.viewmodel.Binding
 import net.apptronic.core.android.viewmodel.BindingContainer
 import net.apptronic.core.android.viewmodel.ViewBinder
-import net.apptronic.core.android.viewmodel.ViewBinderFactory
+import net.apptronic.core.android.viewmodel.ViewBinderAdapter
 import net.apptronic.core.android.viewmodel.view.DefaultViewContainerViewAdapter
 import net.apptronic.core.android.viewmodel.view.ViewContainerViewAdapter
 import net.apptronic.core.viewmodel.IViewModel
@@ -50,10 +50,10 @@ fun BindingContainer.bindInnerViewModel(
 fun BindingContainer.bindInnerViewModel(
     view: View,
     viewModel: IViewModel,
-    factory: ViewBinderFactory? = null,
+    adapter: ViewBinderAdapter? = null,
     bindingType: BindingType = BindingType.AUTO
 ) {
-    val resultFactory = factory
+    val resultFactory = adapter
         ?: viewModel.getViewBinderFactoryFromExtension()
         ?: throw IllegalArgumentException("BinderFactory should be provided by parameters or Context.installViewFactoryPlugin()")
     +InnerViewBinding(view, viewModel, resultFactory::getBinder, bindingType)

@@ -4,7 +4,7 @@ import androidx.viewpager2.widget.ViewPager2
 import net.apptronic.core.android.viewmodel.Binding
 import net.apptronic.core.android.viewmodel.BindingContainer
 import net.apptronic.core.android.viewmodel.ViewBinder
-import net.apptronic.core.android.viewmodel.ViewBinderFactory
+import net.apptronic.core.android.viewmodel.ViewBinderAdapter
 import net.apptronic.core.android.viewmodel.listadapters.BindingStrategy
 import net.apptronic.core.android.viewmodel.listadapters.RecyclerViewAdapter
 import net.apptronic.core.android.viewmodel.navigation.ViewBinderListAdapter
@@ -30,7 +30,7 @@ private class ViewPager2NavigatorBinding(
     override fun onBind(viewModel: IViewModel, viewBinder: ViewBinder<*>) {
         val viewModelAdapter = ViewBinderListAdapter(
             container,
-            getComposedViewBinderFactory(mode.binderFactory, viewModel),
+            getComposedViewBinderFactory(mode.binderAdapter, viewModel),
             mode.styleAdapter ?: emptyViewStyleAdapter()
         )
         val adapter = RecyclerViewAdapter(viewModelAdapter, mode.bindingStrategy)
@@ -45,7 +45,7 @@ private class ViewPager2NavigatorBinding(
 }
 
 class ViewPager2Mode(
-    val binderFactory: ViewBinderFactory? = null,
+    val binderAdapter: ViewBinderAdapter? = null,
     val styleAdapter: ViewStyleAdapter? = null,
     val bindingStrategy: BindingStrategy = BindingStrategy.MatchRecycle
 )

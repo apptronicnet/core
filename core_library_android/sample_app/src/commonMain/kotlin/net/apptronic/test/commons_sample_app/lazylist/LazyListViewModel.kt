@@ -27,7 +27,7 @@ class LazyListViewModel internal constructor(context: ViewModelContext) : ViewMo
 
     private val throttler = contextCoroutineScope.serialThrottler()
 
-    val navigator = listDynamicNavigator(LazyListBuilder())
+    val navigator = listDynamicNavigator(LazyListAdapter())
 
     init {
         context.dependencyDispatcher.addInstance(LazyListItemClickListenerDescriptor, this)

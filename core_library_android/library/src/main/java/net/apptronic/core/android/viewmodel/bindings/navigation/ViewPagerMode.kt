@@ -4,7 +4,7 @@ import androidx.viewpager.widget.ViewPager
 import net.apptronic.core.android.viewmodel.Binding
 import net.apptronic.core.android.viewmodel.BindingContainer
 import net.apptronic.core.android.viewmodel.ViewBinder
-import net.apptronic.core.android.viewmodel.ViewBinderFactory
+import net.apptronic.core.android.viewmodel.ViewBinderAdapter
 import net.apptronic.core.android.viewmodel.listadapters.TitleAdapter
 import net.apptronic.core.android.viewmodel.listadapters.TitleProvider
 import net.apptronic.core.android.viewmodel.listadapters.ViewPagerAdapter
@@ -31,7 +31,7 @@ private class ViewPagerNavigatorBinding(
     override fun onBind(viewModel: IViewModel, viewBinder: ViewBinder<*>) {
         val viewModelAdapter = ViewBinderListAdapter(
             container,
-            getComposedViewBinderFactory(mode.binderFactory, viewModel),
+            getComposedViewBinderFactory(mode.binderAdapter, viewModel),
             mode.styleAdapter ?: emptyViewStyleAdapter()
         )
         container.adapter = ViewPagerAdapter(viewModelAdapter).apply {
@@ -45,7 +45,7 @@ private class ViewPagerNavigatorBinding(
 }
 
 class ViewPagerMode(
-    val binderFactory: ViewBinderFactory? = null,
+    val binderAdapter: ViewBinderAdapter? = null,
     val titleAdapter: TitleAdapter? = null,
     val styleAdapter: ViewStyleAdapter? = null
 )

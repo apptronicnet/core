@@ -25,12 +25,12 @@ fun <T : IViewModel> Activity.activityContainer(
 
 fun <T : IViewModel> Activity.activityContainer(
     dispatcher: ViewModelDispatcher<T>,
-    factory: ViewBinderFactory? = null
+    adapter: ViewBinderAdapter? = null
 ): ActivityViewContainer<T> {
     return ActivityViewContainerImpl<T>(
         this, dispatcher
     ) {
-        val useFactory = factory
+        val useFactory = adapter
             ?: it.getViewBinderFactoryFromExtension()
             ?: throw IllegalArgumentException("ViewBinderFactory should be provided by parameters or Context.installViewFactoryPlugin()")
 

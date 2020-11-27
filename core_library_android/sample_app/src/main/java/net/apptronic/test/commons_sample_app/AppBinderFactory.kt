@@ -1,12 +1,12 @@
 package net.apptronic.test.commons_sample_app
 
-import net.apptronic.core.android.viewmodel.viewBinderFactory
+import net.apptronic.core.android.viewmodel.viewBinderAdapter
 import net.apptronic.test.commons_sample_app.binders.*
 import net.apptronic.test.commons_sample_app.binders.tabs.TabListItemViewBinder
 import net.apptronic.test.commons_sample_app.binders.tabs.TabPageViewBinder
 import net.apptronic.test.commons_sample_app.binders.tabs.TabsViewBinder
 
-val AppBinderFactory = viewBinderFactory {
+val AppBinderFactory = viewBinderAdapter {
     add(::MainActivityViewBinder)
     add(::LoginScreenViewBinder)
     add(::RegistrationScreenViewBinder)

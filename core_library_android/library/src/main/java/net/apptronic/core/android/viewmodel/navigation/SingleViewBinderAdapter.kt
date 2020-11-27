@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import net.apptronic.core.android.anim.factory.ViewTransitionFactory
 import net.apptronic.core.android.viewmodel.ViewBinder
-import net.apptronic.core.android.viewmodel.ViewBinderFactory
+import net.apptronic.core.android.viewmodel.ViewBinderAdapter
 import net.apptronic.core.android.viewmodel.view.DefaultViewContainerViewAdapter
 import net.apptronic.core.android.viewmodel.view.ViewContainerViewAdapter
 import net.apptronic.core.viewmodel.ViewModel
@@ -17,12 +17,12 @@ import net.apptronic.core.viewmodel.navigation.adapters.SingleViewModelAdapter
  * Adapter for [StackNavigator]
  *
  * @param container in which [View] should be added
- * @param viewBinderFactory to create [ViewBinder] for [ViewModel]
+ * @param viewBinderAdapter to create [ViewBinder] for [ViewModel]
  * @param viewTransitionFactory for creating animations
  */
 class SingleViewBinderAdapter(
     private val container: ViewGroup,
-    private val viewBinderFactory: ViewBinderFactory,
+    private val viewBinderAdapter: ViewBinderAdapter,
     private val viewTransitionFactory: ViewTransitionFactory,
     private val defaultAnimationTime: Long,
 ) : SingleViewModelAdapter {
@@ -33,8 +33,8 @@ class SingleViewBinderAdapter(
         container, viewTransitionFactory, defaultAnimationTime
     )
 
-    fun bindings(setup: ViewBinderFactory.() -> Unit) {
-        setup.invoke(viewBinderFactory)
+    fun bindings(setup: ViewBinderAdapter.() -> Unit) {
+        setup.invoke(viewBinderAdapter)
     }
 
     private var currentBinder: ViewBinder<*>? = null
@@ -45,7 +45,7 @@ class SingleViewBinderAdapter(
         }
         val oldBinder = currentBinder
         val newModel = item?.viewModel
-        val newBinder = if (newModel != null) viewBinderFactory.getBinder(newModel) else null
+        val newBinder = if (newModel != null) viewBinderAdapter.getBinder(newModel) else null
         if (newBinder != null && newModel != null) {
             val viewAdapter =
                 newBinder as? ViewContainerViewAdapter ?: DefaultViewContainerViewAdapter

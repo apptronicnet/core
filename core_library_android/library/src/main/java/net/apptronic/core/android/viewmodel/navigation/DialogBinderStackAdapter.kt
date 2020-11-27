@@ -3,7 +3,7 @@ package net.apptronic.core.android.viewmodel.navigation
 import android.app.Dialog
 import android.content.Context
 import net.apptronic.core.android.viewmodel.ViewBinder
-import net.apptronic.core.android.viewmodel.ViewBinderFactory
+import net.apptronic.core.android.viewmodel.ViewBinderAdapter
 import net.apptronic.core.android.viewmodel.view.DefaultDialogViewAdapter
 import net.apptronic.core.android.viewmodel.view.DialogViewAdapter
 import net.apptronic.core.viewmodel.navigation.TransitionInfo
@@ -12,11 +12,11 @@ import net.apptronic.core.viewmodel.navigation.adapters.SingleViewModelAdapter
 
 open class DialogBinderStackAdapter(
     private val context: Context,
-    private val viewBinderFactory: ViewBinderFactory
+    private val viewBinderAdapter: ViewBinderAdapter
 ) : SingleViewModelAdapter {
 
-    fun bindings(setup: ViewBinderFactory.() -> Unit) {
-        setup.invoke(viewBinderFactory)
+    fun bindings(setup: ViewBinderAdapter.() -> Unit) {
+        setup.invoke(viewBinderAdapter)
     }
 
     class DialogAndBinder(
@@ -29,7 +29,7 @@ open class DialogBinderStackAdapter(
     override fun onInvalidate(item: ViewModelItem?, transitionInfo: TransitionInfo) {
         val newModel = item?.viewModel
         val newBinder =
-            if (newModel != null) viewBinderFactory.getBinder(newModel) else null
+            if (newModel != null) viewBinderAdapter.getBinder(newModel) else null
         val next = if (newBinder != null && newModel != null) {
             val viewAdapter = newBinder as? DialogViewAdapter ?: DefaultDialogViewAdapter
             val dialog = viewAdapter.onCreateDialog(newModel, newBinder, context)

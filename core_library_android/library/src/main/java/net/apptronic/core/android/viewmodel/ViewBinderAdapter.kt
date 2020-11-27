@@ -7,24 +7,24 @@ import net.apptronic.core.viewmodel.ViewModel
 import kotlin.reflect.KClass
 import kotlin.reflect.full.superclasses
 
-fun composeViewBinderFactory(vararg factories: ViewBinderFactory?): ViewBinderFactory {
-    val list = factories.filterNotNull()
-    return ChainViewBinderFactory(list)
+fun composeViewBinderAdapter(vararg adapters: ViewBinderAdapter?): ViewBinderAdapter {
+    val list = adapters.filterNotNull()
+    return ChainViewBinderAdapter(list)
 }
 
-fun viewBinderFactory(initializer: ConcreteViewBinderFactory.() -> Unit): ViewBinderFactory {
-    return ConcreteViewBinderFactory().apply(initializer)
+fun viewBinderAdapter(initializer: ConcreteViewBinderAdapter.() -> Unit): ViewBinderAdapter {
+    return ConcreteViewBinderAdapter().apply(initializer)
 }
 
-inline fun <reified ViewModelType : IViewModel> viewBinder(
+inline fun <reified ViewModelType : IViewModel> singleViewBinderAdapter(
     noinline builder: () -> ViewBinder<ViewModelType>
-): ViewBinderFactory {
-    return viewBinderFactory {
+): ViewBinderAdapter {
+    return viewBinderAdapter {
         add(builder)
     }
 }
 
-abstract class ViewBinderFactory {
+abstract class ViewBinderAdapter {
 
     fun getBinder(typeId: Int): ViewBinder<*> {
         @Suppress("UNCHECKED_CAST")
@@ -52,7 +52,7 @@ abstract class ViewBinderFactory {
  * This class is [ViewBinder] registry, which allows to build [ViewBinder] to corresponding
  * [ViewModel] when needed by adapters.
  */
-class ConcreteViewBinderFactory internal constructor() : ViewBinderFactory() {
+class ConcreteViewBinderAdapter internal constructor() : ViewBinderAdapter() {
 
     companion object {
         val typeIdGenerator = SerialIdGenerator()
@@ -153,17 +153,17 @@ class ConcreteViewBinderFactory internal constructor() : ViewBinderFactory() {
     }
 
     /**
-     * Create new [ViewBinderFactory] which inherits all bindings from current but with possibility
-     * to add new bindings which have no affecting for initial [ViewBinderFactory]
+     * Create new [ViewBinderAdapter] which inherits all bindings from current but with possibility
+     * to add new bindings which have no affecting for initial [ViewBinderAdapter]
      */
-    fun override(initializer: ViewBinderFactory.() -> Unit): ViewBinderFactory {
-        return composeViewBinderFactory(viewBinderFactory(initializer), this)
+    fun override(initializer: ViewBinderAdapter.() -> Unit): ViewBinderAdapter {
+        return composeViewBinderAdapter(viewBinderAdapter(initializer), this)
     }
 
 }
 
-private class ChainViewBinderFactory(private val targets: List<ViewBinderFactory>) :
-    ViewBinderFactory() {
+private class ChainViewBinderAdapter(private val targets: List<ViewBinderAdapter>) :
+    ViewBinderAdapter() {
 
     override fun lookupBinder(typeId: Int): ViewBinder<*>? {
         for (target in targets) {

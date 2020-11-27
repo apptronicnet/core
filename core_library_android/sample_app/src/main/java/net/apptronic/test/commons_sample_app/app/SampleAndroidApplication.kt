@@ -29,7 +29,7 @@ class SampleAndroidApplication : Application() {
                     Log.i("ViewModelLog", it)
                 }
                 installAndroidApplicationPlugin(this@SampleAndroidApplication) {
-                    binderFactory(AppBinderFactory)
+                    viewBinderFactory(AppBinderFactory)
                     viewTransitionFactory(AppTransitionFactory)
                     bindActivity(MainActivity::class, ApplicationScreenViewModel::class) {
                         it.onBackPressed()

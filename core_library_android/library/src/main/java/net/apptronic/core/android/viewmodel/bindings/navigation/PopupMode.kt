@@ -5,7 +5,7 @@ import android.view.View
 import net.apptronic.core.android.viewmodel.Binding
 import net.apptronic.core.android.viewmodel.BindingContainer
 import net.apptronic.core.android.viewmodel.ViewBinder
-import net.apptronic.core.android.viewmodel.ViewBinderFactory
+import net.apptronic.core.android.viewmodel.ViewBinderAdapter
 import net.apptronic.core.android.viewmodel.navigation.PopupAnchorProvider
 import net.apptronic.core.android.viewmodel.navigation.PopupBinderStackAdapter
 import net.apptronic.core.viewmodel.IViewModel
@@ -40,7 +40,7 @@ class PopupNavigatorBinding(
 ) : Binding() {
 
     override fun onBind(viewModel: IViewModel, viewBinder: ViewBinder<*>) {
-        val binderFactory = getComposedViewBinderFactory(mode.binderFactory, viewModel)
+        val binderFactory = getComposedViewBinderFactory(mode.binderAdapter, viewModel)
         navigator.setAdapter(
             PopupBinderStackAdapter(mode.context, container, mode.anchorProvider, binderFactory)
         )
@@ -51,32 +51,32 @@ class PopupNavigatorBinding(
 class PopupMode(
     val context: Context,
     val anchorProvider: PopupAnchorProvider,
-    val binderFactory: ViewBinderFactory? = null
+    val binderAdapter: ViewBinderAdapter? = null
 )
 
 fun PopupMode(
     anchorView: View,
-    binderFactory: ViewBinderFactory? = null
+    binderAdapter: ViewBinderAdapter? = null
 ) = PopupMode(
     anchorView.context,
     ConcreteAnchorProvider(anchorView),
-    binderFactory
+    binderAdapter
 )
 
 fun ViewBinder<*>.PopupMode(
     anchorProvider: PopupAnchorProvider,
-    binderFactory: ViewBinderFactory? = null
+    binderAdapter: ViewBinderAdapter? = null
 ) = PopupMode(
     view.context,
     anchorProvider,
-    binderFactory
+    binderAdapter
 )
 
 fun ViewBinder<*>.PopupMode(
     anchorView: View,
-    binderFactory: ViewBinderFactory? = null
+    binderAdapter: ViewBinderAdapter? = null
 ) = PopupMode(
     view.context,
     ConcreteAnchorProvider(anchorView),
-    binderFactory
+    binderAdapter
 )

@@ -23,11 +23,11 @@ fun <T : IViewModel> lifecycleController(
 
 fun <T : IViewModel> lifecycleController(
     viewModel: T,
-    factory: ViewBinderFactory,
+    adapter: ViewBinderAdapter,
     activity: Activity
 ): ViewModelLifecycleController {
     @Suppress("UNCHECKED_CAST")
-    val binder = factory.getBinder(viewModel)
+    val binder = adapter.getBinder(viewModel)
     return lifecycleController(viewModel, binder, activity)
 }
 
@@ -44,11 +44,11 @@ fun <T : IViewModel> lifecycleController(
 
 fun <T : IViewModel> lifecycleController(
     viewModel: T,
-    factory: ViewBinderFactory,
+    adapter: ViewBinderAdapter,
     contentViewProvider: () -> View
 ): ViewModelLifecycleController {
     @Suppress("UNCHECKED_CAST")
-    val binder = factory.getBinder(viewModel)
+    val binder = adapter.getBinder(viewModel)
     return lifecycleController(viewModel, binder, contentViewProvider)
 }
 
@@ -66,10 +66,10 @@ fun <T : IViewModel> lifecycleController(
 
 fun <T : IViewModel> lifecycleController(
     viewModel: T,
-    factory: ViewBinderFactory,
+    adapter: ViewBinderAdapter,
     contentView: View
 ): ViewModelLifecycleController {
     @Suppress("UNCHECKED_CAST")
-    val binder = factory.getBinder(viewModel)
+    val binder = adapter.getBinder(viewModel)
     return lifecycleController(viewModel, binder, contentView)
 }

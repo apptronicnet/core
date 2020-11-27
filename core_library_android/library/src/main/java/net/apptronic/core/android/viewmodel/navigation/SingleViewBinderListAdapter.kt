@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import net.apptronic.core.android.anim.factory.ViewTransitionFactory
 import net.apptronic.core.android.viewmodel.ViewBinder
-import net.apptronic.core.android.viewmodel.ViewBinderFactory
+import net.apptronic.core.android.viewmodel.ViewBinderAdapter
 import net.apptronic.core.android.viewmodel.view.DefaultViewContainerViewAdapter
 import net.apptronic.core.android.viewmodel.view.ViewContainerViewAdapter
 import net.apptronic.core.viewmodel.navigation.TransitionInfo
@@ -13,7 +13,7 @@ import net.apptronic.core.viewmodel.navigation.adapters.SingleViewModelListAdapt
 
 class SingleViewBinderListAdapter(
     private val container: ViewGroup,
-    private val viewBinderFactory: ViewBinderFactory,
+    private val viewBinderAdapter: ViewBinderAdapter,
     private val viewTransitionFactory: ViewTransitionFactory,
     private val defaultAnimationTime: Long,
     private val maxCachedViews: Int
@@ -25,8 +25,8 @@ class SingleViewBinderListAdapter(
         container, viewTransitionFactory, defaultAnimationTime
     )
 
-    fun bindings(setup: ViewBinderFactory.() -> Unit) {
-        setup.invoke(viewBinderFactory)
+    fun bindings(setup: ViewBinderAdapter.() -> Unit) {
+        setup.invoke(viewBinderAdapter)
     }
 
     private val cachedBinders = mutableListOf<ViewBinder<*>>()
@@ -64,7 +64,7 @@ class SingleViewBinderListAdapter(
     private fun ViewModelItem.getBinder(): ViewBinder<*> {
         return cachedBinders.firstOrNull {
             it.viewModel == viewModel
-        } ?: viewBinderFactory.getBinder(viewModel).also { newBinder ->
+        } ?: viewBinderAdapter.getBinder(viewModel).also { newBinder ->
             val viewAdapter =
                 newBinder as? ViewContainerViewAdapter ?: DefaultViewContainerViewAdapter
             val view = viewAdapter.onCreateView(
