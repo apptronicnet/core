@@ -8,7 +8,7 @@ import org.junit.Test
 class ReflectionTest : BaseContextTest() {
 
     private val source = mutableValue<Int>()
-    private val reflection = source.reflect(direct = { it.toString() }, reverse = { it.toInt() })
+    private val reflection = source.reflectMutable(direct = { it.toString() }, reverse = { it.toInt() })
 
     private val sourceRecord = source.record()
     private val sourceUpdatesRecord = source.updates.record()

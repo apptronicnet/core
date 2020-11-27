@@ -7,17 +7,19 @@ import net.apptronic.core.entity.commons.BaseMutableValue
 import net.apptronic.core.entity.commons.value
 
 private fun IntRange.normalize(text: String): IntRange {
+    val startValue = when {
+        start < 0 -> 0
+        start > text.length -> text.length
+        else -> start
+    }
+    val endValue = maxOf(startValue, when {
+        endInclusive < start -> start
+        endInclusive > text.length -> text.length
+        else -> endInclusive
+    })
     return IntRange(
-            start = when {
-                start < 0 -> 0
-                start > text.length -> text.length
-                else -> start
-            },
-            endInclusive = when {
-                endInclusive < start -> start
-                endInclusive > text.length -> text.length
-                else -> endInclusive
-            }
+            start = startValue,
+            endInclusive = endValue
     )
 }
 
@@ -34,21 +36,24 @@ class TextInputModel internal constructor(
 
     val selection = context.value<IntRange>(0..0)
 
-    private fun setOnlyText(value: String) {
-        this.value.set(value)
-    }
-
     override fun set(value: String) {
         this.value.set(value)
-        if (selection.get().last > value.length) {
-            selection.update(selection.get().normalize(get()))
-        }
+        selection.set(value.length..value.length)
     }
 
     override fun update(value: String) {
         this.value.update(value)
         if (selection.get().last > value.length) {
-            selection.update(selection.get().normalize(get()))
+            selection.set(selection.get().normalize(get()))
+        }
+    }
+
+    fun setTextOnly(text: String) {
+        this.value.set(text)
+        selection.get().let {
+            if (it.first > text.length || it.last > text.length) {
+                selection.update(text.length..text.length)
+            }
         }
     }
 
@@ -61,9 +66,8 @@ class TextInputModel internal constructor(
     }
 
     fun setText(text: String, selection: IntRange) {
-        setOnlyText(text)
-        val realSelection = selection.normalize(text)
-        this.selection.set(realSelection)
+        this.value.set(text)
+        this.selection.set(selection.normalize(text))
     }
 
     fun setSelection(selection: Int) {
@@ -71,8 +75,7 @@ class TextInputModel internal constructor(
     }
 
     fun setSelection(selection: IntRange) {
-        val realSelection = selection.normalize(get())
-        this.selection.set(realSelection)
+        this.selection.set(selection.normalize(get()))
     }
 
 }

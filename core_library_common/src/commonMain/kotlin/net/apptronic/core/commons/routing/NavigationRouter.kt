@@ -5,12 +5,6 @@ import net.apptronic.core.context.Contextual
 
 interface NavigationRouter<T> {
 
-    @Deprecated("No clear interface", replaceWith = ReplaceWith("sendCommandsSync(commands)"))
-    fun sendCommands(vararg commands: T) = sendCommandsSync(*commands)
-
-    @Deprecated("No clear interface", replaceWith = ReplaceWith("sendCommandsBroadcastSync(commands)"))
-    fun sendCommandsBroadcast(vararg commands: T) = sendCommandsBroadcastSync(*commands)
-
     /**
      * Send a set of commands to be handled by registered [NavigationHandler]s.
      *

@@ -34,7 +34,7 @@ fun <T, E> Value<T>.reflect(
     return ReflectionValue(this, LambdaMirror(direct, reverse))
 }
 
-fun <T, E> MutableValue<T>.reflect(
+fun <T, E> MutableValue<T>.reflectMutable(
         direct: (T) -> E,
         reverse: (E) -> T,
 ): MutableValue<E> {
@@ -45,7 +45,7 @@ fun <T, E> Value<T>.reflect(mirror: Mirror<T, E>): Value<E> {
     return ReflectionValue(this, mirror)
 }
 
-fun <T, E> MutableValue<T>.reflect(mirror: Mirror<T, E>): MutableValue<E> {
+fun <T, E> MutableValue<T>.reflectMutable(mirror: Mirror<T, E>): MutableValue<E> {
     return ReflectionValue(this, mirror)
 }
 
