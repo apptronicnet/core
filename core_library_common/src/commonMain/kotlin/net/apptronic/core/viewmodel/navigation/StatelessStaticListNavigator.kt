@@ -12,13 +12,13 @@ fun IViewModel.listNavigator(navigatorContext: Context = this.context): Stateles
 
 fun <T, Id, VM : IViewModel> IViewModel.listNavigator(
         source: Entity<out List<T>>,
-        builder: ViewModelBuilder<T, Id, VM>,
+        adapter: ViewModelAdapter<T, Id, VM>,
         navigatorContext: Context = this.context
 ): StatelessStaticListNavigator {
-    val listBuilder = listBuilder(builder)
-    listBuilder.updateFrom(source.switchContext(navigatorContext))
+    val mapper = viewModelListMapper(adapter)
+    mapper.updateFrom(source.switchContext(navigatorContext))
     val navigator = listNavigator(navigatorContext)
-    listBuilder.subscribe {
+    mapper.subscribe {
         navigator.set(it.value, it.change)
     }
     return navigator
@@ -26,13 +26,13 @@ fun <T, Id, VM : IViewModel> IViewModel.listNavigator(
 
 fun <T, Id, VM : IViewModel> IViewModel.listNavigator(
         items: List<T>,
-        builder: ViewModelBuilder<T, Id, VM>,
+        adapter: ViewModelAdapter<T, Id, VM>,
         navigatorContext: Context = this.context
 ): StatelessStaticListNavigator {
-    val listBuilder = listBuilder(builder)
-    listBuilder.update(items)
+    val mapper = viewModelListMapper(adapter)
+    mapper.update(items)
     val navigator = listNavigator(navigatorContext)
-    listBuilder.subscribe {
+    mapper.subscribe {
         navigator.set(it.value, it.change)
     }
     return navigator
@@ -40,13 +40,13 @@ fun <T, Id, VM : IViewModel> IViewModel.listNavigator(
 
 fun <T, Id, VM : IViewModel> IViewModel.listNavigatorOnChange(
         source: Entity<Next<out List<T>, out Any>>,
-        builder: ViewModelBuilder<T, Id, VM>,
+        adapter: ViewModelAdapter<T, Id, VM>,
         navigatorContext: Context = this.context
 ): StatelessStaticListNavigator {
-    val listBuilder = listBuilder(builder)
+    val mapper = viewModelListMapper(adapter)
     val navigator = listNavigator(navigatorContext)
-    listBuilder.updateFromChanges(source.switchContext(navigatorContext))
-    listBuilder.subscribe {
+    mapper.updateFromChanges(source.switchContext(navigatorContext))
+    mapper.subscribe {
         navigator.set(it.value, it.change)
     }
     return navigator

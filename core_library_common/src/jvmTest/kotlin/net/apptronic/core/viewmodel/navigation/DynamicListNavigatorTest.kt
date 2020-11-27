@@ -35,7 +35,7 @@ class DynamicListNavigatorTest : TestViewModel() {
     private val sources = value<List<Item>>(emptyList())
     private val statics = value<List<Item>>(emptyList())
 
-    private val navigator = listDynamicNavigator(sources, StaticBuilder() + DynamicBuilder())
+    private val navigator = listDynamicNavigator(sources, StaticAdapter() + DynamicAdapter())
 
     val adapter = TestListAdapter()
 
@@ -71,26 +71,26 @@ class DynamicListNavigatorTest : TestViewModel() {
 
     }
 
-    class StaticBuilder : ViewModelBuilder<Item.Static, String, StaticItemViewModel> {
+    class StaticAdapter : ViewModelAdapter<Item.Static, String, StaticItemViewModel> {
 
-        override fun getId(item: Item.Static): String {
+        override fun getItemId(item: Item.Static): String {
             return "Static_" + item.type
         }
 
-        override fun onCreateViewModel(parent: Context, item: Item.Static): StaticItemViewModel {
+        override fun createViewModel(parent: Context, item: Item.Static): StaticItemViewModel {
             val context = parent.viewModelContext()
             return StaticItemViewModel(context, item)
         }
 
     }
 
-    class DynamicBuilder : ViewModelBuilder<Item.Dynamic, String, DynamicItemViewModel> {
+    class DynamicAdapter : ViewModelAdapter<Item.Dynamic, String, DynamicItemViewModel> {
 
-        override fun getId(item: Item.Dynamic): String {
+        override fun getItemId(item: Item.Dynamic): String {
             return "Dynamic:" + item.id
         }
 
-        override fun onCreateViewModel(parent: Context, item: Item.Dynamic): DynamicItemViewModel {
+        override fun createViewModel(parent: Context, item: Item.Dynamic): DynamicItemViewModel {
             val context = parent.viewModelContext()
             return DynamicItemViewModel(context, item)
         }

@@ -11,22 +11,22 @@ import net.apptronic.core.viewmodel.ViewModel
  * for item in updated list already exists - it will not create new [ViewModel] but update
  * existing [ViewModel] and place it in updates list at required place.
  */
-interface ViewModelBuilder<T, Id, VM : IViewModel> {
+interface ViewModelAdapter<T, Id, VM : IViewModel> {
 
     /**
-     * Get id for item. By this id [ViewModelBuilder] defines is item is same or not.
+     * Get id for item. By this id [ViewModelAdapter] defines is item is same or not.
      */
-    fun getId(item: T): Id
+    fun getItemId(item: T): Id
 
     /**
      * Create [ViewModel] fro item
      */
-    fun onCreateViewModel(parent: Context, item: T): VM
+    fun createViewModel(parent: Context, item: T): VM
 
     /**
      * Update already existing [ViewModel] for item
      */
-    fun onUpdateViewModel(viewModel: VM, newItem: T) {
+    fun updateViewModel(viewModel: VM, newItem: T) {
         // do nothing by default
     }
 
@@ -37,7 +37,7 @@ interface ViewModelBuilder<T, Id, VM : IViewModel> {
      * simple check for [List.contains] can be dangerous as requires seeking whole list and loading all of it's elements.
      * Position in list is not provided too as it took to much time to define real position of item on long or lazy list.
      *
-     * @param item item, which represents [viewModel] in [list]
+     * @param item item, which represents [viewModel] in list
      * @param viewModel [ViewModel], used to display this item
      */
     fun shouldRetainInstance(item: T, viewModel: VM): Boolean {

@@ -16,7 +16,7 @@ private const val DEFAULT_SAVED_ITEMS_SIZE = 10
 
 abstract class DynamicListNavigator<T : Any, Id : Any, VM : IViewModel, State>(
         parent: IViewModel,
-        private val builder: ViewModelBuilder<in T, in Id, in VM>,
+        private val builder: ViewModelAdapter<in T, in Id, in VM>,
         override val navigatorContext: Context,
         initialState: State
 ) : ListNavigator<DynamicListNavigatorContent<T, State>, T, State>(parent), VisibilityFilterableNavigator {
@@ -195,12 +195,12 @@ abstract class DynamicListNavigator<T : Any, Id : Any, VM : IViewModel, State>(
     }
 
     private fun T.getId(): RecyclerItemId {
-        val typeId = builder.getId(this) as Any
+        val typeId = builder.getItemId(this) as Any
         return RecyclerItemId(this::class, typeId)
     }
 
     private fun onAdded(key: T): ViewModelContainer {
-        val viewModel: IViewModel = builder.onCreateViewModel(navigatorContext, key) as IViewModel
+        val viewModel: IViewModel = builder.createViewModel(navigatorContext, key) as IViewModel
         viewModel.verifyContext()
         val container = ViewModelContainer(viewModel, parent, visibilityFilters.isReadyToShow(viewModel))
         containers.add(key.getId(), container, key)
@@ -299,7 +299,7 @@ abstract class DynamicListNavigator<T : Any, Id : Any, VM : IViewModel, State>(
                 if (existing.requiresUpdate) {
                     existing.item = key
                     @Suppress("UNCHECKED_CAST")
-                    builder.onUpdateViewModel(existing.container.getViewModel() as VM, key)
+                    builder.updateViewModel(existing.container.getViewModel() as VM, key)
                     existing.requiresUpdate = false
                 }
                 existing.container

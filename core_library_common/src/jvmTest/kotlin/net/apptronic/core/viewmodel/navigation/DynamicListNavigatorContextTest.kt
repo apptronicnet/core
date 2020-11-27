@@ -14,14 +14,14 @@ class DynamicListNavigatorContextTest : TestViewModel() {
 
     val rootModel = TestViewModel()
 
-    class ChildModel(context: ViewModelContext, builder: ViewModelFactory) : ViewModel(context) {
+    class ChildModel(context: ViewModelContext, builder: ViewModelAdapter<Any, Any, IViewModel>) : ViewModel(context) {
 
         val items = value<List<Any>>(emptyList())
         val navigator = listDynamicNavigator(items, builder)
 
     }
 
-    class ChildModelNavigatorContext(context: ViewModelContext, builder: ViewModelFactory) : ViewModel(context) {
+    class ChildModelNavigatorContext(context: ViewModelContext, builder: ViewModelAdapter<Any, Any, IViewModel>) : ViewModel(context) {
 
         val items = value<List<Any>>(emptyList())
         val navigatorContext = childContext()
@@ -31,20 +31,20 @@ class DynamicListNavigatorContextTest : TestViewModel() {
 
     @Test
     fun shouldCreateNavigatorWithNavigatorcontext() {
-        rootModel.listDynamicNavigator(viewModelFactory { })
-        rootModel.listDynamicNavigator(viewModelFactory { }, rootModel.childContext())
+        rootModel.listDynamicNavigator(viewModelAdapter { })
+        rootModel.listDynamicNavigator(viewModelAdapter { }, rootModel.childContext())
     }
 
     @Test(expected = IncorrectContextHierarchyException::class)
     fun shouldFailCreateNavigatorWithIncorrectContext1() {
         val childModel = ViewModel(rootModel.viewModelContext())
-        childModel.listDynamicNavigator(viewModelFactory { }, rootModel.context)
+        childModel.listDynamicNavigator(viewModelAdapter { }, rootModel.context)
     }
 
     @Test(expected = IncorrectContextHierarchyException::class)
     fun shouldFailCreateNavigatorWithIncorrectContext2() {
         val childModel = ViewModel(rootModel.viewModelContext())
-        childModel.listDynamicNavigator(viewModelFactory { }, rootModel.childContext())
+        childModel.listDynamicNavigator(viewModelAdapter { }, rootModel.childContext())
     }
 
     @Test(expected = IncorrectContextHierarchyException::class)
@@ -53,12 +53,12 @@ class DynamicListNavigatorContextTest : TestViewModel() {
         rootModel.bind()
         val childModelContext = rootModel.viewModelContext()
         val childModel = ChildModel(childModelContext,
-                object : ViewModelBuilder<Int, Int, IViewModel> {
-                    override fun getId(item: Int): Int = item
-                    override fun onCreateViewModel(parent: Context, item: Int): IViewModel {
+                object : ViewModelAdapter<Int, Int, IViewModel> {
+                    override fun getItemId(item: Int): Int = item
+                    override fun createViewModel(parent: Context, item: Int): IViewModel {
                         return ViewModel(rootModel.context.viewModelContext())
                     }
-                }.asFactory()
+                }.asComposite()
         )
         childModel.enterStage(ViewModelLifecycle.STAGE_ATTACHED)
         childModel.enterStage(ViewModelLifecycle.STAGE_BOUND)
@@ -72,12 +72,12 @@ class DynamicListNavigatorContextTest : TestViewModel() {
         rootModel.bind()
         val childModelContext = rootModel.viewModelContext()
         val childModel = ChildModelNavigatorContext(childModelContext,
-                object : ViewModelBuilder<Int, Int, IViewModel> {
-                    override fun getId(item: Int): Int = item
-                    override fun onCreateViewModel(parent: Context, item: Int): IViewModel {
+                object : ViewModelAdapter<Int, Int, IViewModel> {
+                    override fun getItemId(item: Int): Int = item
+                    override fun createViewModel(parent: Context, item: Int): IViewModel {
                         return ViewModel(rootModel.context.viewModelContext())
                     }
-                }.asFactory()
+                }.asComposite()
         )
         childModel.enterStage(ViewModelLifecycle.STAGE_ATTACHED)
         childModel.enterStage(ViewModelLifecycle.STAGE_BOUND)
@@ -91,12 +91,12 @@ class DynamicListNavigatorContextTest : TestViewModel() {
         rootModel.bind()
         val childModelContext = rootModel.viewModelContext()
         val childModel = ChildModelNavigatorContext(childModelContext,
-                object : ViewModelBuilder<Int, Int, IViewModel> {
-                    override fun getId(item: Int): Int = item
-                    override fun onCreateViewModel(parent: Context, item: Int): IViewModel {
+                object : ViewModelAdapter<Int, Int, IViewModel> {
+                    override fun getItemId(item: Int): Int = item
+                    override fun createViewModel(parent: Context, item: Int): IViewModel {
                         return ViewModel(childModelContext.viewModelContext())
                     }
-                }.asFactory()
+                }.asComposite()
         )
         childModel.enterStage(ViewModelLifecycle.STAGE_ATTACHED)
         childModel.enterStage(ViewModelLifecycle.STAGE_BOUND)

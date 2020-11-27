@@ -6,14 +6,6 @@ import net.apptronic.core.viewmodel.IViewModel
 import net.apptronic.core.viewmodel.navigation.adapters.ViewModelListAdapter
 import net.apptronic.core.viewmodel.navigation.models.StaticListNavigatorContent
 
-fun <T, Id, VM : IViewModel> IViewModel.listBuilder(builder: ViewModelBuilder<T, Id, VM>): ViewModelListBuilder<T, Id, VM> {
-    return viewModelListBuilder(builder)
-}
-
-fun <T, Id, VM : IViewModel> StaticListNavigator<*>.listBuilder(builder: ViewModelBuilder<T, Id, VM>): ViewModelListBuilder<T, Id, VM> {
-    return navigatorContext.viewModelListBuilder(builder)
-}
-
 abstract class StaticListNavigator<State> internal constructor(
         parent: IViewModel,
         final override val navigatorContext: Context,

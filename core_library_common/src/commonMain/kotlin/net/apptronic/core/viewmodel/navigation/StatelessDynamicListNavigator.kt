@@ -6,29 +6,29 @@ import net.apptronic.core.entity.onchange.Next
 import net.apptronic.core.viewmodel.IViewModel
 
 fun <T : Any, Id : Any, VM : IViewModel> IViewModel.listDynamicNavigator(
-        builder: ViewModelBuilder<in T, in Id, in VM>,
+        adapter: ViewModelAdapter<in T, in Id, in VM>,
         navigatorContext: Context = this.context
 ): StatelessDynamicListNavigator<T, Id, VM> {
     context.verifyNavigatorContext(navigatorContext)
-    return StatelessDynamicListNavigator(this, builder, navigatorContext)
+    return StatelessDynamicListNavigator(this, adapter, navigatorContext)
 }
 
 fun <T : Any, Id : Any, VM : IViewModel> IViewModel.listDynamicNavigator(
         items: List<T>,
-        builder: ViewModelBuilder<in T, in Id, in VM>,
+        adapter: ViewModelAdapter<in T, in Id, in VM>,
         navigatorContext: Context = this.context
 ): StatelessDynamicListNavigator<T, Id, VM> {
-    val navigator = listDynamicNavigator(builder, navigatorContext)
+    val navigator = listDynamicNavigator(adapter, navigatorContext)
     navigator.setItems(items)
     return navigator
 }
 
 fun <T : Any, Id : Any, VM : IViewModel> IViewModel.listDynamicNavigator(
         source: Entity<out List<T>>,
-        builder: ViewModelBuilder<in T, in Id, in VM>,
+        adapter: ViewModelAdapter<in T, in Id, in VM>,
         navigatorContext: Context = this.context
 ): StatelessDynamicListNavigator<T, Id, VM> {
-    val navigator = listDynamicNavigator(builder, navigatorContext)
+    val navigator = listDynamicNavigator(adapter, navigatorContext)
     source.subscribe(navigatorContext) {
         navigator.setItems(it)
     }
@@ -37,10 +37,10 @@ fun <T : Any, Id : Any, VM : IViewModel> IViewModel.listDynamicNavigator(
 
 fun <T : Any, Id : Any, VM : IViewModel> IViewModel.listDynamicNavigatorOnChange(
         source: Entity<Next<out List<T>, Any?>>,
-        builder: ViewModelBuilder<in T, in Id, in VM>,
+        adapter: ViewModelAdapter<in T, in Id, in VM>,
         navigatorContext: Context = this.context
 ): StatelessDynamicListNavigator<T, Id, VM> {
-    val navigator = listDynamicNavigator(builder, navigatorContext)
+    val navigator = listDynamicNavigator(adapter, navigatorContext)
     source.subscribe(navigatorContext) {
         navigator.setItems(it.value, it.change)
     }
@@ -49,9 +49,9 @@ fun <T : Any, Id : Any, VM : IViewModel> IViewModel.listDynamicNavigatorOnChange
 
 class StatelessDynamicListNavigator<T : Any, Id : Any, VM : IViewModel>(
         parent: IViewModel,
-        builder: ViewModelBuilder<in T, in Id, in VM>,
+        adapter: ViewModelAdapter<in T, in Id, in VM>,
         navigatorContext: Context
-) : DynamicListNavigator<T, Id, VM, Unit>(parent, builder, navigatorContext, Unit) {
+) : DynamicListNavigator<T, Id, VM, Unit>(parent, adapter, navigatorContext, Unit) {
 
     fun setItems(value: List<T>, updateSpec: Any? = null, listDescription: Any? = null) {
         set(value, Unit, updateSpec, listDescription)

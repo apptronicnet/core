@@ -5,20 +5,20 @@ import net.apptronic.core.viewmodel.IViewModel
 
 fun <T : Any, VM : IViewModel> singleItemViewModelBuilder(
         id: T, builder: (Context) -> VM
-): ViewModelBuilder<T, T, VM> {
-    return SingleItemViewModelBuilder(id, builder)
+): ViewModelAdapter<T, T, VM> {
+    return SingleItemViewModelAdapter(id, builder)
 }
 
-private class SingleItemViewModelBuilder<T : Any, VM : IViewModel>(
+private class SingleItemViewModelAdapter<T : Any, VM : IViewModel>(
         val id: T,
         val builder: (Context) -> VM
-) : ViewModelBuilder<T, T, VM> {
+) : ViewModelAdapter<T, T, VM> {
 
-    override fun getId(item: T): T {
+    override fun getItemId(item: T): T {
         return id
     }
 
-    override fun onCreateViewModel(parent: Context, item: T): VM {
+    override fun createViewModel(parent: Context, item: T): VM {
         return builder(parent)
     }
 

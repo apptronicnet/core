@@ -44,10 +44,10 @@ class ServiceOnErrorTest {
         val service = context.injectService(Service)
         context.contextCoroutineScope.launch {
             try {
-                service.postRequest("Some")
+                service.sendRequest("Some")
                 fail("Service should throw exception")
-            } catch (e: Exception) {
-                e.printStackTrace()
+            } catch (e: RuntimeException) {
+                // OK
             }
         }
         assertEquals(errors.size, 1)

@@ -28,7 +28,7 @@ private val ViewBinderExtensionsDescriptor = extensionDescriptor<ViewBinder<*>>(
 fun IViewModel.requireBoundView() {
     doOnVisible {
         if (extensions[ViewBinderExtensionsDescriptor] == null) {
-            debugError(Error("$this have no ViewBinder"))
+            debugError(Error("${this@IViewModel} have no ViewBinder"))
         }
     }
 }

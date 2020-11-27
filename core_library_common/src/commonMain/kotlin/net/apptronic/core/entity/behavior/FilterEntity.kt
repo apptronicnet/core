@@ -17,6 +17,13 @@ fun <T> Entity<T>.filterSuspend(filterFunction: suspend CoroutineScope.(T) -> Bo
     return FilterEntitySuspend(this, filterFunction)
 }
 
+inline fun <T, reified E> Entity<T>.filterIs(noinline filterFunction: (E) -> Boolean = { true }): Entity<E> {
+    return filter {
+        it is E && filterFunction(it)
+    }.map { it as E }
+}
+
+
 fun <T> Entity<T?>.filterNotNull(): Entity<T> {
     return filter { it != null }.map { it!! }
 }

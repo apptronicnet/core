@@ -10,8 +10,8 @@ import net.apptronic.core.entity.onchange.onChangeValue
 import net.apptronic.core.viewmodel.IViewModel
 import net.apptronic.core.viewmodel.ViewModel
 
-fun <T, Id, VM : IViewModel> Contextual.viewModelListBuilder(builder: ViewModelBuilder<T, Id, VM>): ViewModelListBuilder<T, Id, VM> {
-    return ViewModelListBuilder(context, builder)
+fun <T, Id, VM : IViewModel> Contextual.viewModelListMapper(adapter: ViewModelAdapter<T, Id, VM>): ViewModelListMapperEntity<T, Id, VM> {
+    return ViewModelListMapperEntity(context, adapter)
 }
 
 /**
@@ -21,11 +21,11 @@ fun <T, Id, VM : IViewModel> Contextual.viewModelListBuilder(builder: ViewModelB
  * for item in updated list already exists - it will not create new [ViewModel] but update
  * existing [ViewModel] and place it in updates list at required place.
  */
-class ViewModelListBuilder<T, Id, VM : IViewModel> internal constructor(
+class ViewModelListMapperEntity<T, Id, VM : IViewModel> internal constructor(
         private val builderContext: Context,
-        private val builder: ViewModelBuilder<T, Id, VM>,
+        private val adapter: ViewModelAdapter<T, Id, VM>,
         private val onChangeValue: OnChangeValue<List<IViewModel>, Any> = builderContext.onChangeValue()
-) : ViewModelBuilder<T, Id, VM> by builder, OnChangeProperty<List<IViewModel>, Any> by onChangeValue {
+) : OnChangeProperty<List<IViewModel>, Any> by onChangeValue {
 
     private inner class ViewModelHolder(
             val id: Id,
@@ -55,11 +55,11 @@ class ViewModelListBuilder<T, Id, VM : IViewModel> internal constructor(
      */
     fun update(newList: List<T>, updateSpec: Any? = null) {
         val oldIds = viewModelHolders.map { it.id }
-        val newIds = newList.map { getId(it) }
+        val newIds = newList.map { adapter.getItemId(it) }
 
         val newMap = hashMapOf<Id, T>()
         newList.forEach {
-            newMap[getId(it)] = it
+            newMap[adapter.getItemId(it)] = it
         }
 
         val same = oldIds.filter {
@@ -73,7 +73,7 @@ class ViewModelListBuilder<T, Id, VM : IViewModel> internal constructor(
         }.toSet()
 
         val addedItems = newList.filter {
-            added.contains(getId(it))
+            added.contains(adapter.getItemId(it))
         }
 
         viewModelHolders.removeAll { removed.contains(it.id) }
@@ -82,13 +82,13 @@ class ViewModelListBuilder<T, Id, VM : IViewModel> internal constructor(
             if (same.contains(id)) {
                 val item = newMap[id]
                 if (item != null) {
-                    onUpdateViewModel(viewModelHolder.viewModel, item)
+                    adapter.updateViewModel(viewModelHolder.viewModel, item)
                 }
             }
         }
         addedItems.forEach { item ->
-            val id = getId(item)
-            val viewModel = onCreateViewModel(context, item)
+            val id = adapter.getItemId(item)
+            val viewModel = adapter.createViewModel(context, item)
             viewModelHolders.add(ViewModelHolder(id, viewModel))
         }
         viewModelHolders.sortWith(PostArrangeComparator(newList))
@@ -103,7 +103,7 @@ class ViewModelListBuilder<T, Id, VM : IViewModel> internal constructor(
 
         init {
             items.forEachIndexed { index, item ->
-                indexes[getId(item)] = index
+                indexes[adapter.getItemId(item)] = index
             }
         }
 

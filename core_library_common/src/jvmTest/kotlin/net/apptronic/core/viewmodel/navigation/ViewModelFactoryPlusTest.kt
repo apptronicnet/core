@@ -2,6 +2,7 @@ package net.apptronic.core.viewmodel.navigation
 
 import net.apptronic.core.context.Context
 import net.apptronic.core.testutils.createTestContext
+import net.apptronic.core.viewmodel.IViewModel
 import net.apptronic.core.viewmodel.ViewModel
 import net.apptronic.core.viewmodel.ViewModelContext
 import net.apptronic.core.viewmodel.viewModelContext
@@ -15,34 +16,34 @@ class ViewModelFactoryPlusTest {
     class StringViewModel(context: ViewModelContext, val id: String) : ViewModel(context)
     class BooleanViewModel(context: ViewModelContext, val id: Boolean) : ViewModel(context)
 
-    object IntBuilder : ViewModelBuilder<Int, Int, IntViewModel> {
-        override fun getId(item: Int): Int = item
-        override fun onCreateViewModel(parent: Context, item: Int): IntViewModel {
+    object IntAdapter : ViewModelAdapter<Int, Int, IntViewModel> {
+        override fun getItemId(item: Int): Int = item
+        override fun createViewModel(parent: Context, item: Int): IntViewModel {
             return IntViewModel(parent.viewModelContext(), item)
         }
     }
 
-    object StringBuilder : ViewModelBuilder<String, String, StringViewModel> {
-        override fun getId(item: String): String = item
-        override fun onCreateViewModel(parent: Context, item: String): StringViewModel {
+    object StringAdapter : ViewModelAdapter<String, String, StringViewModel> {
+        override fun getItemId(item: String): String = item
+        override fun createViewModel(parent: Context, item: String): StringViewModel {
             return StringViewModel(parent.viewModelContext(), item)
         }
     }
 
-    object BooleanBuilder : ViewModelBuilder<Boolean, Boolean, BooleanViewModel> {
-        override fun getId(item: Boolean): Boolean = item
-        override fun onCreateViewModel(parent: Context, item: Boolean): BooleanViewModel {
+    object BooleanAdapter : ViewModelAdapter<Boolean, Boolean, BooleanViewModel> {
+        override fun getItemId(item: Boolean): Boolean = item
+        override fun createViewModel(parent: Context, item: Boolean): BooleanViewModel {
             return BooleanViewModel(parent.viewModelContext(), item)
         }
     }
 
     @Test
     fun shouldCreateNewFactories() {
-        val f1: ViewModelFactory = IntBuilder + StringBuilder
-        val f2: ViewModelFactory = IntBuilder + StringBuilder
-        val f3: ViewModelFactory = IntBuilder + StringBuilder + BooleanBuilder
-        val f4: ViewModelFactory = IntBuilder + StringBuilder + BooleanBuilder
-        val f5: ViewModelFactory = f1 + BooleanBuilder
+        val f1: ViewModelAdapter<Any, Any, IViewModel> = IntAdapter + StringAdapter
+        val f2: ViewModelAdapter<Any, Any, IViewModel> = IntAdapter + StringAdapter
+        val f3: ViewModelAdapter<Any, Any, IViewModel> = IntAdapter + StringAdapter + BooleanAdapter
+        val f4: ViewModelAdapter<Any, Any, IViewModel> = IntAdapter + StringAdapter + BooleanAdapter
+        val f5: ViewModelAdapter<Any, Any, IViewModel> = f1 + BooleanAdapter
         assert(f1 !== f2)
         assert(f1 !== f3)
         assert(f1 !== f4)
@@ -57,12 +58,12 @@ class ViewModelFactoryPlusTest {
 
     @Test
     fun verifyComboFactory() {
-        val factory: ViewModelFactory = IntBuilder + StringBuilder + BooleanBuilder
-        val int1 = factory.onCreateViewModel(context, 1)
+        val factory: ViewModelAdapter<Any, Any, IViewModel> = IntAdapter + StringAdapter + BooleanAdapter
+        val int1 = factory.createViewModel(context, 1)
         assert(int1 is IntViewModel)
-        val str1 = factory.onCreateViewModel(context, "1")
+        val str1 = factory.createViewModel(context, "1")
         assert(str1 is StringViewModel)
-        val bool1 = factory.onCreateViewModel(context, true)
+        val bool1 = factory.createViewModel(context, true)
         assert(bool1 is BooleanViewModel)
     }
 
