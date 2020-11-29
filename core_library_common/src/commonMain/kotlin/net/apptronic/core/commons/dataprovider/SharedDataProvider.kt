@@ -7,16 +7,25 @@ import net.apptronic.core.context.di.SharedScope
 import net.apptronic.core.context.di.SingleScope
 import net.apptronic.core.context.di.parameters
 
+/**
+ * Inject data of type [T] using [descriptor] with [Unit] type.
+ */
 fun <T : Any> Contextual.injectData(descriptor: DataProviderDescriptor<T, Unit>): DataProviderClient<T> {
     val holder = dependencyProvider.inject(descriptor.holderDescriptor, parameters { add(descriptor.keyDescriptor, Unit) })
     return DataProviderClientImpl(context, holder)
 }
 
+/**
+ * Inject data of type [T] using [descriptor] with [key].
+ */
 fun <T : Any, K : Any> Contextual.injectData(descriptor: DataProviderDescriptor<T, K>, key: K): DataProviderClient<T> {
     val holder = dependencyProvider.inject(descriptor.holderDescriptor, parameters { add(descriptor.keyDescriptor, key) })
     return DataProviderClientImpl(context, holder)
 }
 
+/**
+ * Register [CacheComponent] for used with [DataProvider] registered using [DataProviderDescriptor] managed by [SingleScope].
+ */
 fun <T : Any, K : Any> ModuleDefinition.sharedCache(
         descriptor: DataProviderDescriptor<T, K>,
         builder: SingleScope.() -> CacheComponent<T, K>
@@ -24,6 +33,11 @@ fun <T : Any, K : Any> ModuleDefinition.sharedCache(
     single(descriptor.cacheDescriptor, builder)
 }
 
+/**
+ * Add [DataProvider] dependency which managed by [SharedScope],
+ *
+ * To add cache use [sharedCache] with same [DataProviderDescriptor]
+ */
 fun <T : Any, K : Any> ModuleDefinition.sharedDataProvider(
         descriptor: DataProviderDescriptor<T, K>,
         fallbackCount: Int = 0,

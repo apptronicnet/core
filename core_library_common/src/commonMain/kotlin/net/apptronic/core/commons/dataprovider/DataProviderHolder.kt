@@ -8,7 +8,6 @@ import net.apptronic.core.context.Context
 import net.apptronic.core.context.component.Component
 import net.apptronic.core.entity.base.Property
 import net.apptronic.core.entity.commons.asProperty
-import net.apptronic.core.entity.commons.value
 
 internal class DataProviderHolder<T, K>(
         context: Context,
@@ -17,16 +16,15 @@ internal class DataProviderHolder<T, K>(
         private val cache: CacheComponent<T, K>?
 ) : Component(context), Observer<T> {
 
-    private val data = value<T>()
     private var getCacheJob: Job? = null
 
     init {
         getCacheJob = cache?.getAsync(key) {
-            if (data.isSet().not()) {
-                data.set(it)
+            if (dataProvider.dataValue.isSet().not()) {
+                dataProvider.dataValue.set(it)
             }
         }
-        dataProvider.entity.subscribe(context, this)
+        dataProvider.dataProviderEntity.subscribe(context, this)
         doOnTerminate {
             cache?.releaseKey(key)
         }
@@ -35,17 +33,18 @@ internal class DataProviderHolder<T, K>(
     override fun update(value: T) {
         getCacheJob?.cancel(CancellationException("Cache not needed"))
         getCacheJob = null
-        data.set(value)
+        dataProvider.dataValue.set(value)
         cache?.set(key, value)
     }
 
     fun provideData(targetContext: Context): Property<T> {
         dataProvider.onNewSubscriberSubject.update(Unit)
-        return data.switchContext(targetContext).asProperty()
+        return dataProvider.dataValue.switchContext(targetContext).asProperty()
     }
 
     suspend fun executeReloadRequest() {
-        data.set(dataProvider.processLoadDataRequest())
+        val value = dataProvider.loadData()
+        dataProvider.dataValue.set(value)
     }
 
 }

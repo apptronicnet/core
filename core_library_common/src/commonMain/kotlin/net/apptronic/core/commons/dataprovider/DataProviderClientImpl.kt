@@ -21,7 +21,7 @@ internal class DataProviderClientImpl<T>(
     override fun postReload(ignoreErrors: Boolean) {
         contextCoroutineScope.launch {
             try {
-
+                holder.executeReloadRequest()
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {

@@ -26,11 +26,15 @@ class DataProviderWithCacheTest {
 
     inner class Provider(context: Context, key: Int) : DataProvider<Data, Int>(context, key) {
 
-        override val entity = unitEntity().mapSuspend {
+        override val dataProviderEntity = unitEntity().mapSuspend {
             withContext(manualDispatcher) {
-                Data(key.toString())
+                loadData()
             }
         }.asProperty()
+
+        override suspend fun loadData(): Data {
+            return Data(key.toString())
+        }
 
     }
 

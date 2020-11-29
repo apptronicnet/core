@@ -45,7 +45,7 @@ class DataProviderTest {
 
     }
 
-    private inner class StringValueDataProvider(context: Context, id: Int) : DataProvider<String, Int>(context, id) {
+    private inner class StringValueDataProvider(context: Context, val id: Int) : DataProvider<String, Int>(context, id) {
 
         init {
             providersById.add(id)
@@ -56,12 +56,16 @@ class DataProviderTest {
 
         private val repository = inject<Repository>()
 
-        override val entity = unitEntity()
+        override val dataProviderEntity = unitEntity()
                 .resendWhen(
                         repository.observeUpdatedById(context).filter { it == id }
                 ).map {
                     repository.loadById(id)
                 }.filterNotNull().asProperty()
+
+        override suspend fun loadData(): String {
+            return repository.loadById(id).requireNotNull()
+        }
 
     }
 

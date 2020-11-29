@@ -1,21 +1,55 @@
 package net.apptronic.core.commons.dataprovider
 
 import net.apptronic.core.base.subject.PublishSubject
+import net.apptronic.core.commons.cache.CacheComponent
 import net.apptronic.core.context.Context
 import net.apptronic.core.context.component.Component
 import net.apptronic.core.entity.Entity
+import net.apptronic.core.entity.base.Property
 import net.apptronic.core.entity.bindContext
+import net.apptronic.core.entity.commons.value
 
+/**
+ * Provider some data of type [T] with key [K]. This class encapsulates loading of loading an
+ */
 abstract class DataProvider<T, K>(context: Context, val key: K) : Component(context) {
 
     internal val onNewSubscriberSubject = PublishSubject<Unit>()
+    internal val dataValue = value<T>()
 
-    val onNewSubscriber: Entity<Unit> = onNewSubscriberSubject.bindContext(context)
+    /**
+     * Can be used inside [DataProvider] to get current value of data. This value automatically set from
+     * [CacheComponent] if provided, and also from external invocation of [loadData], and also weil be automatically
+     * set from [dataProviderEntity].
+     */
+    val data: Property<T> = dataValue
 
-    abstract val entity: Entity<T>
+    /**
+     * Event emitted when new [DataProviderClient] started to consume data from this [DataProvider].
+     */
+    val onNewClient: Entity<Unit> = onNewSubscriberSubject.bindContext(context)
 
-    suspend fun processLoadDataRequest(): T {
-        throw UnsupportedOperationException("$this does not support client reload requests")
+    /**
+     * Entity for providing data from [DataProviderClient]s.
+     */
+    abstract val dataProviderEntity: Entity<T>
+
+    /**
+     * Can be called externally by [DataProviderClient] to force request data reloading. This method can throw
+     * [UnsupportedOperationException] in case if action is not supported of implement data loading. Also it can be
+     * used as source for [dataProviderEntity].
+     *
+     * In case when loading process supports returning null when [DataProvider] does not supports null values
+     * [requireNotNull] can be called.
+     */
+    abstract suspend fun loadData(): T
+
+    /**
+     * This method can be invoked in [loadData] when load result can be null but [DataProvider] does not supports
+     * providing null data (for example using filtering etc.)
+     */
+    fun T?.requireNotNull(): T {
+        return this ?: throw DataLoadResultIsNullException("Load data for key $key of $this is null")
     }
 
 }
