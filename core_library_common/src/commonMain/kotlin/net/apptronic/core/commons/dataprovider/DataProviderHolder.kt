@@ -25,16 +25,18 @@ internal class DataProviderHolder<T, K>(
             }
         }
         dataProvider.dataProviderEntity.subscribe(context, this)
+        dataProvider.data.subscribe {
+            cache?.set(key, it)
+        }
         doOnTerminate {
             cache?.releaseKey(key)
         }
     }
 
     override fun update(value: T) {
-        getCacheJob?.cancel(CancellationException("Cache not needed"))
+        getCacheJob?.cancel(CancellationException("Cache not needed as data already loaded"))
         getCacheJob = null
         dataProvider.dataValue.set(value)
-        cache?.set(key, value)
     }
 
     fun provideData(targetContext: Context): Property<T> {
