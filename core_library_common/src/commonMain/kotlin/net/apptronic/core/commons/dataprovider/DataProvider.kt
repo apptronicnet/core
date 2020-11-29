@@ -25,17 +25,17 @@ abstract class DataProvider<K, T>(context: Context, val key: K) : Component(cont
     val data: Property<T> = dataValue
 
     /**
-     * Event emitted when new [DataProviderClient] started to consume data from this [DataProvider].
+     * Event emitted when new [DataProviderProperty] started to consume data from this [DataProvider].
      */
     val onNewClient: Entity<Unit> = onNewSubscriberSubject.bindContext(context)
 
     /**
-     * Entity for providing data from [DataProviderClient]s.
+     * Entity for providing data from [DataProviderProperty]s.
      */
     abstract val dataProviderEntity: Entity<T>
 
     /**
-     * Can be called externally by [DataProviderClient] to force request data reloading. This method can throw
+     * Can be called externally by [DataProviderProperty] to force request data reloading. This method can throw
      * [UnsupportedOperationException] in case if action is not supported of implement data loading. Also it can be
      * used as source for [dataProviderEntity].
      *

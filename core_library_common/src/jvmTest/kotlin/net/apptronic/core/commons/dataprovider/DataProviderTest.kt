@@ -84,7 +84,7 @@ class DataProviderTest {
 
     private inner class UsesStringComponent(context: Context, val id: Int) : Component(context) {
 
-        val data = injectData(StringProviderDescriptor, id).data
+        val data = injectData(StringProviderDescriptor, id)
 
     }
 

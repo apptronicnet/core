@@ -3,11 +3,9 @@ package net.apptronic.core.commons.dataprovider
 import net.apptronic.core.entity.base.Property
 
 /**
- * Data provider client. Provides instance of [Property] containing data and allows to request data reload.
+ * Property which contains data provided by [DataProvider]. Allows to request data reload.
  */
-interface DataProviderClient<T> {
-
-    val data: Property<T>
+interface DataProviderProperty<T> : Property<T> {
 
     suspend fun reload()
 

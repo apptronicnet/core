@@ -56,7 +56,7 @@ class DataProviderWithCacheTest {
     private fun userComponent(id: Int) = UserComponent(context.childContext(), id)
 
     class UserComponent(context: Context, val id: Int) : Component(context) {
-        val data = injectData(DataProviderDescriptor, id).data
+        val data = injectData(DataProviderDescriptor, id)
     }
 
     @Test

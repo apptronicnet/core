@@ -3,23 +3,24 @@ package net.apptronic.core.commons.dataprovider
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 import net.apptronic.core.context.Context
-import net.apptronic.core.context.component.Component
 import net.apptronic.core.context.coroutines.contextCoroutineScope
-import net.apptronic.core.entity.base.Property
+import net.apptronic.core.entity.commons.BaseProperty
 
-internal class DataProviderClientImpl<T>(
-        context: Context,
+internal class DataProviderPropertyImpl<T>(
+        override val context: Context,
         private val holder: DataProviderHolder<*, T>
-) : Component(context), DataProviderClient<T> {
+) : BaseProperty<T>(context), DataProviderProperty<T> {
 
-    override val data: Property<T> = holder.provideData(context)
+    init {
+        holder.provideData(context).subscribe(subject)
+    }
 
     override suspend fun reload() {
         holder.executeReloadRequest()
     }
 
     override fun postReload(ignoreErrors: Boolean) {
-        contextCoroutineScope.launch {
+        context.contextCoroutineScope.launch {
             try {
                 holder.executeReloadRequest()
             } catch (e: CancellationException) {

@@ -10,17 +10,17 @@ import net.apptronic.core.context.di.parameters
 /**
  * Inject data of type [T] using [descriptor] with [Unit] type.
  */
-fun <T : Any> Contextual.injectData(descriptor: DataProviderDescriptor<Unit, T>): DataProviderClient<T> {
+fun <T : Any> Contextual.injectData(descriptor: DataProviderDescriptor<Unit, T>): DataProviderProperty<T> {
     val holder = dependencyProvider.inject(descriptor.holderDescriptor, parameters { add(descriptor.keyDescriptor, Unit) })
-    return DataProviderClientImpl(context, holder)
+    return DataProviderPropertyImpl(context, holder)
 }
 
 /**
  * Inject data of type [T] using [descriptor] with [key].
  */
-fun <T : Any, K : Any> Contextual.injectData(descriptor: DataProviderDescriptor<K, T>, key: K): DataProviderClient<T> {
+fun <T : Any, K : Any> Contextual.injectData(descriptor: DataProviderDescriptor<K, T>, key: K): DataProviderProperty<T> {
     val holder = dependencyProvider.inject(descriptor.holderDescriptor, parameters { add(descriptor.keyDescriptor, key) })
-    return DataProviderClientImpl(context, holder)
+    return DataProviderPropertyImpl(context, holder)
 }
 
 /**
