@@ -7,11 +7,11 @@ import net.apptronic.core.base.subject.ValueHolder
 import net.apptronic.core.context.Context
 
 @UnderDevelopment
-class SimpleCache<T, K>(
+class SimpleCache<K, T>(
         context: Context,
         private val maxCount: Int = 32,
-        private val targetCache: CacheComponent<T, K>? = null
-) : CacheComponent<T, K>(context) {
+        private val targetCache: CacheComponent<K, T>? = null
+) : CacheComponent<K, T>(context) {
 
     private inner class CacheEntry(val value: T, var lastUsed: Long = elapsedRealtimeMillis())
 

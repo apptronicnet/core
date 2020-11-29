@@ -9,11 +9,11 @@ import net.apptronic.core.context.component.Component
 import net.apptronic.core.entity.base.Property
 import net.apptronic.core.entity.commons.asProperty
 
-internal class DataProviderHolder<T, K>(
+internal class DataProviderHolder<K, T>(
         context: Context,
         private val key: K,
-        private val dataProvider: DataProvider<T, K>,
-        private val cache: CacheComponent<T, K>?
+        private val dataProvider: DataProvider<K, T>,
+        private val cache: CacheComponent<K, T>?
 ) : Component(context), Observer<T> {
 
     private var getCacheJob: Job? = null

@@ -21,7 +21,7 @@ import kotlin.test.assertFalse
 
 class DataProviderTest {
 
-    val StringProviderDescriptor = dataProviderDescriptor<String, Int>()
+    val StringProviderDescriptor = dataProviderDescriptor<Int, String>()
 
     private val providersById = mutableListOf<Int>()
 
@@ -45,7 +45,7 @@ class DataProviderTest {
 
     }
 
-    private inner class StringValueDataProvider(context: Context, val id: Int) : DataProvider<String, Int>(context, id) {
+    private inner class StringValueDataProvider(context: Context, val id: Int) : DataProvider<Int, String>(context, id) {
 
         init {
             providersById.add(id)

@@ -16,7 +16,7 @@ import org.junit.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-private val DataProviderDescriptor = dataProviderDescriptor<DataProviderWithCacheTest.Data, Int>()
+private val DataProviderDescriptor = dataProviderDescriptor<Int, DataProviderWithCacheTest.Data>()
 
 class DataProviderWithCacheTest {
 
@@ -24,7 +24,7 @@ class DataProviderWithCacheTest {
 
     val manualDispatcher = ManualDispatcher()
 
-    inner class Provider(context: Context, key: Int) : DataProvider<Data, Int>(context, key) {
+    inner class Provider(context: Context, key: Int) : DataProvider<Int, Data>(context, key) {
 
         override val dataProviderEntity = unitEntity().mapSuspend {
             withContext(manualDispatcher) {
@@ -38,10 +38,14 @@ class DataProviderWithCacheTest {
 
     }
 
+    lateinit var cache: SimpleCache<Int, Data>
+
     val context = createTestContext {
         dependencyModule {
             sharedCache(DataProviderDescriptor) {
-                SimpleCache(scopedContext(), maxCount = 2)
+                SimpleCache<Int, Data>(scopedContext(), maxCount = 2).also {
+                    cache = it
+                }
             }
             sharedDataProvider(DataProviderDescriptor) {
                 Provider(scopedContext(), it)

@@ -4,14 +4,14 @@ import net.apptronic.core.commons.cache.CacheComponent
 import net.apptronic.core.context.di.dependencyDescriptor
 import kotlin.reflect.KClass
 
-inline fun <reified T : Any, reified K : Any> dataProviderDescriptor() = dataProviderDescriptor(T::class, K::class)
+inline fun <reified K : Any, reified T : Any> dataProviderDescriptor() = dataProviderDescriptor(K::class, T::class)
 
-fun <T : Any, K : Any> dataProviderDescriptor(type: KClass<T>, keyType: KClass<K>) = DataProviderDescriptor(type, keyType)
+fun <K : Any, T : Any> dataProviderDescriptor(keyType: KClass<K>, type: KClass<T>) = DataProviderDescriptor(keyType, type)
 
-data class DataProviderDescriptor<T : Any, K : Any> internal constructor(
-        val type: KClass<T>, val keyType: KClass<K>
+data class DataProviderDescriptor<K : Any, T : Any> internal constructor(
+        val keyType: KClass<K>, val type: KClass<T>,
 ) {
-    internal val holderDescriptor = dependencyDescriptor<DataProviderHolder<T, K>>()
+    internal val holderDescriptor = dependencyDescriptor<DataProviderHolder<K, T>>()
     internal val keyDescriptor = dependencyDescriptor(keyType)
-    internal val cacheDescriptor = dependencyDescriptor<CacheComponent<T, K>>()
+    internal val cacheDescriptor = dependencyDescriptor<CacheComponent<K, T>>()
 }

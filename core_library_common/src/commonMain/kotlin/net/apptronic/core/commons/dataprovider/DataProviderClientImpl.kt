@@ -9,7 +9,7 @@ import net.apptronic.core.entity.base.Property
 
 internal class DataProviderClientImpl<T>(
         context: Context,
-        private val holder: DataProviderHolder<T, *>
+        private val holder: DataProviderHolder<*, T>
 ) : Component(context), DataProviderClient<T> {
 
     override val data: Property<T> = holder.provideData(context)

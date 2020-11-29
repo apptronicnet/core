@@ -7,7 +7,7 @@ import net.apptronic.core.context.Context
 import net.apptronic.core.context.component.Component
 
 @UnderDevelopment
-abstract class CacheComponent<T, K>(context: Context) : Component(context) {
+abstract class CacheComponent<K, T>(context: Context) : Component(context) {
 
     abstract operator fun set(key: K, value: T)
 

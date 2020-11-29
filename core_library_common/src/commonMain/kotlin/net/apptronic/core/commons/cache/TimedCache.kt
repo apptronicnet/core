@@ -7,12 +7,12 @@ import net.apptronic.core.base.subject.ValueHolder
 import net.apptronic.core.context.Context
 
 @UnderDevelopment
-class TimedCache<T, K>(
+class TimedCache<K, T>(
         context: Context,
         private val maxFallbackCount: Int = 32,
         private val fallbackLifetimeMillis: Long = 60000L, // 1 minute
-        private val targetCache: CacheComponent<T, K>? = null
-) : CacheComponent<T, K>(context) {
+        private val targetCache: CacheComponent<K, T>? = null
+) : CacheComponent<K, T>(context) {
 
     private inner class ExpirationKey(val key: K, val expirationTimestamp: Long) : Comparable<ExpirationKey> {
         override fun compareTo(other: ExpirationKey): Int {

@@ -12,7 +12,7 @@ import net.apptronic.core.entity.commons.value
 /**
  * Provider some data of type [T] with key [K]. This class encapsulates loading of loading an
  */
-abstract class DataProvider<T, K>(context: Context, val key: K) : Component(context) {
+abstract class DataProvider<K, T>(context: Context, val key: K) : Component(context) {
 
     internal val onNewSubscriberSubject = PublishSubject<Unit>()
     internal val dataValue = value<T>()
