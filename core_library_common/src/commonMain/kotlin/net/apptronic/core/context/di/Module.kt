@@ -92,6 +92,12 @@ class ModuleDefinition internal constructor(
         return shared(TypeDeclaration::class, fallbackCount, fallbackLifetime, builder)
     }
 
+    inline fun <reified TypeDeclaration : Any> instance(
+            instance: TypeDeclaration
+    ): ProviderDefinition<TypeDeclaration> {
+        return instance(TypeDeclaration::class, instance)
+    }
+
     fun <TypeDeclaration : Any> factory(
             clazz: KClass<TypeDeclaration>,
             builder: FactoryScope.() -> TypeDeclaration
@@ -178,6 +184,27 @@ class ModuleDefinition internal constructor(
     ): ProviderDefinition<To> {
         return addDefinition {
             bindProvider<To>(bindDefinition.to)
+        }
+    }
+
+    fun <TypeDeclaration : Any> instance(
+            clazz: KClass<TypeDeclaration>,
+            instance: TypeDeclaration
+    ): ProviderDefinition<TypeDeclaration> {
+        if (clazz::class == Context::class) {
+            throw IllegalArgumentException("Cannot register [Context] provider. Please use Descriptors.")
+        }
+        return addDefinition {
+            instanceProvider(objectKey(clazz), instance)
+        }
+    }
+
+    fun <TypeDeclaration : Any> instance(
+            descriptor: DependencyDescriptor<TypeDeclaration>,
+            instance: TypeDeclaration
+    ): ProviderDefinition<TypeDeclaration> {
+        return addDefinition {
+            instanceProvider(objectKey(descriptor), instance)
         }
     }
 

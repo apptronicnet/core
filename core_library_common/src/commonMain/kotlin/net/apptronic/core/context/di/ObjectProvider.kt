@@ -75,6 +75,12 @@ internal fun <TypeDeclaration : Any> bindProvider(
     return BindProvider(objectKey)
 }
 
+internal fun <TypeDeclaration : Any> instanceProvider(
+        objectKey: ObjectKey, instance: TypeDeclaration
+): ObjectProvider<TypeDeclaration> {
+    return InstanceProvider(objectKey, instance)
+}
+
 private class SingleProvider<TypeDeclaration : Any>(
         objectKey: ObjectKey,
         builder: BuilderMethod<TypeDeclaration, SingleScope>
@@ -239,6 +245,19 @@ private class BindProvider<TypeDeclaration>(
 
     override fun provide(definitionContext: Context, dispatcher: DependencyDispatcher, searchSpec: SearchSpec): TypeDeclaration {
         return dispatcher.inject(objectKey, emptyParameters()) as TypeDeclaration
+    }
+
+}
+
+private class InstanceProvider<TypeDeclaration>(
+        private val objectKey: ObjectKey,
+        private val instance: TypeDeclaration
+) : ObjectProvider<TypeDeclaration>(objectKey) {
+
+    override val typeName: String = "instance"
+
+    override fun provide(definitionContext: Context, dispatcher: DependencyDispatcher, searchSpec: SearchSpec): TypeDeclaration {
+        return instance
     }
 
 }
