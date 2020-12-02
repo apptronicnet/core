@@ -15,7 +15,7 @@ class BottomSheetViewModel(context: ViewModelContext) : ViewModel(context) {
     private val router = injectNavigationRouter()
 
     fun onClickReplace() {
-        router.sendCommands(ReplaceBottomSheet())
+        router.sendCommandsSync(ReplaceBottomSheet())
     }
 
     fun onClickHide() {

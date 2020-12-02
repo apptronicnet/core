@@ -1,31 +1,31 @@
 package net.apptronic.core.android.viewmodel.bindings.navigation
 
-import net.apptronic.core.android.anim.factory.BasicViewTransitionFactory
-import net.apptronic.core.android.anim.factory.ViewTransitionFactory
-import net.apptronic.core.android.anim.factory.compositeViewTransitionFactory
-import net.apptronic.core.android.plugins.getDefaultViewTransitionFactoryFromPlugin
-import net.apptronic.core.android.plugins.getViewBinderFactoryFromExtension
+import net.apptronic.core.android.anim.adapter.BasicViewTransitionAdapter
+import net.apptronic.core.android.anim.adapter.ViewTransitionAdapter
+import net.apptronic.core.android.anim.adapter.compositeViewTransitionAdapter
+import net.apptronic.core.android.plugins.getDefaultViewTransitionAdapterFromPlugin
+import net.apptronic.core.android.plugins.getViewBinderAdapterFromExtension
 import net.apptronic.core.android.viewmodel.ViewBinderAdapter
 import net.apptronic.core.android.viewmodel.composeViewBinderAdapter
 import net.apptronic.core.viewmodel.IViewModel
 
-fun getComposedViewBinderFactory(
+fun getComposedViewBinderAdapter(
     provided: ViewBinderAdapter?,
     viewModel: IViewModel?
 ): ViewBinderAdapter {
     return composeViewBinderAdapter(
         provided,
-        viewModel?.getViewBinderFactoryFromExtension()
+        viewModel?.getViewBinderAdapterFromExtension()
     )
 }
 
-fun getComposedViewTransitionFactory(
-    provided: ViewTransitionFactory?,
+fun getComposedViewTransitionAdapter(
+    provided: ViewTransitionAdapter?,
     viewModel: IViewModel?
-): ViewTransitionFactory {
-    return compositeViewTransitionFactory(
+): ViewTransitionAdapter {
+    return compositeViewTransitionAdapter(
         provided,
-        viewModel?.getDefaultViewTransitionFactoryFromPlugin(),
-        BasicViewTransitionFactory
+        viewModel?.getDefaultViewTransitionAdapterFromPlugin(),
+        BasicViewTransitionAdapter
     )
 }

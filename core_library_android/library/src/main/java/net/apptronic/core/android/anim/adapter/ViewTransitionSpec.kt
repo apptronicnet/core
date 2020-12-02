@@ -1,4 +1,4 @@
-package net.apptronic.core.android.anim.factory
+package net.apptronic.core.android.anim.adapter
 
 import android.view.View
 import net.apptronic.core.android.anim.transition.ViewTransitionDirection

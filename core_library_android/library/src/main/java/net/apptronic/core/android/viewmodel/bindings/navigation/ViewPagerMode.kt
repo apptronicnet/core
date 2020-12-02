@@ -31,7 +31,7 @@ private class ViewPagerNavigatorBinding(
     override fun onBind(viewModel: IViewModel, viewBinder: ViewBinder<*>) {
         val viewModelAdapter = ViewBinderListAdapter(
             container,
-            getComposedViewBinderFactory(mode.binderAdapter, viewModel),
+            getComposedViewBinderAdapter(mode.binderAdapter, viewModel),
             mode.styleAdapter ?: emptyViewStyleAdapter()
         )
         container.adapter = ViewPagerAdapter(viewModelAdapter).apply {

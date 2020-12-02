@@ -56,7 +56,7 @@ class RegistrationViewModel internal constructor(
         registerButtonClickEvent.subscribe {
             if (confirmedPassword.getOrNull() != null) {
                 listener.onRegistrationDone(email.get())
-                router.sendCommands(BackToLogin())
+                router.sendCommandsSync(BackToLogin())
             } else {
                 showPasswordsDoesNotMatchError.set(true)
             }

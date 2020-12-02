@@ -9,7 +9,7 @@ import android.view.animation.DecelerateInterpolator
 import android.widget.Button
 import android.widget.TextView
 import net.apptronic.core.android.anim.AnimationPlayer
-import net.apptronic.core.android.anim.factory.*
+import net.apptronic.core.android.anim.adapter.*
 import net.apptronic.core.android.anim.playback
 import net.apptronic.core.android.anim.transformations.*
 import net.apptronic.core.android.anim.transition.ViewTransitionDirection
@@ -115,11 +115,11 @@ class ViewTransitionDemoViewBinder : ViewBinder<ViewTransitionDemoViewModel>() {
         order = ViewTransitionDirectionSpec.EnteringOnFront
     }
 
-    private val CustomAdapter = viewTransitionFactory {
+    private val CustomAdapter = viewTransitionAdapter {
         bindTransition(ReplaceTransition, ReplaceSheet).durationMultiplier(1.8f)
     }
 
     private val LocalAdapter =
-        compositeViewTransitionFactory(CustomAdapter, BasicViewTransitionFactory)
+        compositeViewTransitionAdapter(CustomAdapter, BasicViewTransitionAdapter)
 
 }

@@ -79,7 +79,7 @@ class ActivityBindingPlugin(
 
     override fun onInstall(context: Context) {
         super.onInstall(context)
-        context.requireViewBinderFactoryPlugin()
+        context.requireViewBinderAdapterPlugin()
     }
 
     override fun onComponent(component: IComponent) {

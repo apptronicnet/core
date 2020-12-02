@@ -29,8 +29,8 @@ class SampleAndroidApplication : Application() {
                     Log.i("ViewModelLog", it)
                 }
                 installAndroidApplicationPlugin(this@SampleAndroidApplication) {
-                    viewBinderFactory(AppBinderFactory)
-                    viewTransitionFactory(AppTransitionFactory)
+                    installViewBinderAdapter(AppBinderFactory)
+                    installViewTransitionAdapter(AppTransitionFactory)
                     bindActivity(MainActivity::class, ApplicationScreenViewModel::class) {
                         it.onBackPressed()
                     }

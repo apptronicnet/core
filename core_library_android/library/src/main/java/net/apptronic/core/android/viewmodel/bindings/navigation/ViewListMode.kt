@@ -31,7 +31,7 @@ private class ViewListModeBinding(
         val viewModelAdapter =
             ViewBinderListAdapter(
                 container,
-                getComposedViewBinderFactory(mode.binderAdapter, viewModel),
+                getComposedViewBinderAdapter(mode.binderAdapter, viewModel),
                 mode.styleAdapter ?: emptyViewStyleAdapter()
             )
         val adapter = RecyclerViewAdapter(viewModelAdapter, mode.bindingStrategy)

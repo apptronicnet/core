@@ -2,7 +2,7 @@ package net.apptronic.test.commons_sample_app
 
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
-import net.apptronic.core.android.anim.factory.viewTransitionFactory
+import net.apptronic.core.android.anim.adapter.viewTransitionAdapter
 import net.apptronic.core.android.anim.transformations.translateYToSelf
 import net.apptronic.core.android.anim.transition.viewTransition
 import net.apptronic.test.commons_sample_app.transition.AppTransition
@@ -16,6 +16,6 @@ val ViewTransition_SwitchBottomSheet = viewTransition {
     }
 }
 
-val AppTransitionFactory = viewTransitionFactory {
+val AppTransitionFactory = viewTransitionAdapter {
     bindTransition(AppTransition.BottomSheet, ViewTransition_SwitchBottomSheet)
 }

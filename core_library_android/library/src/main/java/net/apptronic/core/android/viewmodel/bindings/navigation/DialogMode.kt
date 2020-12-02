@@ -31,9 +31,9 @@ class DialogNavigatorBinding(
 ) : Binding() {
 
     override fun onBind(viewModel: IViewModel, viewBinder: ViewBinder<*>) {
-        val binderFactory = getComposedViewBinderFactory(mode.binderAdapter, viewModel)
+        val binderAdapter = getComposedViewBinderAdapter(mode.binderAdapter, viewModel)
         navigator.setAdapter(
-            DialogBinderStackAdapter(context, binderFactory)
+            DialogBinderStackAdapter(context, binderAdapter)
         )
     }
 

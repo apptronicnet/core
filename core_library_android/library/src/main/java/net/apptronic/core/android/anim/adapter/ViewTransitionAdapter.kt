@@ -1,4 +1,4 @@
-package net.apptronic.core.android.anim.factory
+package net.apptronic.core.android.anim.adapter
 
 import net.apptronic.core.android.anim.ViewAnimation
 import net.apptronic.core.android.anim.ViewAnimationSet
@@ -6,7 +6,7 @@ import net.apptronic.core.android.anim.animations.ViewAnimation_Empty
 import net.apptronic.core.android.anim.transition.ViewTransition
 import net.apptronic.core.android.anim.transition.ViewTransitionDirection
 
-interface ViewTransitionFactory {
+interface ViewTransitionAdapter {
 
     fun buildViewTransition(spec: ViewTransitionSpec): ViewTransition?
 
@@ -16,7 +16,7 @@ interface ViewTransitionFactory {
 
 }
 
-fun ViewTransitionFactory.buildViewTransitionOrEmpty(spec: ViewTransitionSpec): ViewTransition {
+fun ViewTransitionAdapter.buildViewTransitionOrEmpty(spec: ViewTransitionSpec): ViewTransition {
     return buildViewTransition(spec) ?: ViewTransition(
         ViewAnimationSet(0).also {
             it.addAnimation(ViewAnimation_Empty, spec.enter, spec.container)
@@ -25,12 +25,12 @@ fun ViewTransitionFactory.buildViewTransitionOrEmpty(spec: ViewTransitionSpec): 
     )
 }
 
-fun ViewTransitionFactory.buildSingleEnterOrEmpty(spec: SingleTransitionSpec): ViewAnimation {
+fun ViewTransitionAdapter.buildSingleEnterOrEmpty(spec: SingleTransitionSpec): ViewAnimation {
     return buildSingleEnter(spec)
         ?: ViewAnimation_Empty.createAnimation(spec.target, spec.container, 0)
 }
 
-fun ViewTransitionFactory.buildSingleExitOrEmpty(spec: SingleTransitionSpec): ViewAnimation {
+fun ViewTransitionAdapter.buildSingleExitOrEmpty(spec: SingleTransitionSpec): ViewAnimation {
     return buildSingleExit(spec)
         ?: ViewAnimation_Empty.createAnimation(spec.target, spec.container, 0)
 }

@@ -2,7 +2,7 @@ package net.apptronic.core.android.plugins
 
 import android.app.Activity
 import android.app.Application
-import net.apptronic.core.android.anim.factory.ViewTransitionFactory
+import net.apptronic.core.android.anim.adapter.ViewTransitionAdapter
 import net.apptronic.core.android.viewmodel.ViewBinderAdapter
 import net.apptronic.core.android.viewmodel.requireBoundView
 import net.apptronic.core.context.Context
@@ -27,19 +27,19 @@ class AndroidApplicationPlugin internal constructor(
 ) : Plugin {
 
     private var viewBinderAdapter: ViewBinderAdapter? = null
-    private var viewTransitionFactory: ViewTransitionFactory? = null
+    private var viewTransitionAdapter: ViewTransitionAdapter? = null
     private val activityBindingPlugin = ActivityBindingPlugin(androidApplication)
 
     class Builder internal constructor(androidApplication: Application) {
 
         internal val target = AndroidApplicationPlugin(androidApplication)
 
-        fun viewBinderFactory(viewBinderAdapter: ViewBinderAdapter) {
+        fun installViewBinderAdapter(viewBinderAdapter: ViewBinderAdapter) {
             target.viewBinderAdapter = viewBinderAdapter
         }
 
-        fun viewTransitionFactory(viewTransitionFactory: ViewTransitionFactory) {
-            target.viewTransitionFactory = viewTransitionFactory
+        fun installViewTransitionAdapter(viewTransitionAdapter: ViewTransitionAdapter) {
+            target.viewTransitionAdapter = viewTransitionAdapter
         }
 
         fun <A : Activity, VM : IViewModel> bindActivity(
@@ -52,10 +52,10 @@ class AndroidApplicationPlugin internal constructor(
     override fun onInstall(context: Context) {
         super.onInstall(context)
         viewBinderAdapter?.let {
-            context.installBinderFactoryPlugin(it)
+            context.installViewBinderAdapterPlugin(it)
         }
-        viewTransitionFactory?.let {
-            context.installViewTransitionFactoryPlugin(it)
+        viewTransitionAdapter?.let {
+            context.installViewTransitionAdapterPlugin(it)
         }
         context.installPlugin(ActivityBindingPluginDescriptor, activityBindingPlugin)
     }

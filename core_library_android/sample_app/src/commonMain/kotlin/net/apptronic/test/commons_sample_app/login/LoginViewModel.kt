@@ -26,7 +26,7 @@ class LoginViewModel internal constructor(context: ViewModelContext) : ViewModel
 
     init {
         registerClick.subscribe {
-            router.sendCommands(OpenRegistrationScreen(this))
+            router.sendCommandsSync(OpenRegistrationScreen(this))
         }
     }
 

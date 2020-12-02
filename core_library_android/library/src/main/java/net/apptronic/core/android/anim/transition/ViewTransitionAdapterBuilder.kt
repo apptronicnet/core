@@ -24,7 +24,7 @@ class KeyDurationBuilder internal constructor(
 
 }
 
-class ViewTransitionFactoryBuilder internal constructor() {
+class ViewTransitionAdapterBuilder internal constructor() {
 
     internal val transitionDefinitions = mutableMapOf<Any?, ViewTransitionDefinition>()
     internal val transitionDurations = mutableMapOf<Any?, Long>()

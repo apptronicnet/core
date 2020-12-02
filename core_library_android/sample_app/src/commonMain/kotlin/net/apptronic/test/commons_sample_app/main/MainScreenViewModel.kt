@@ -14,67 +14,67 @@ class MainScreenViewModel internal constructor(context: ViewModelContext) : View
     private val router = injectNavigationRouter()
 
     fun onClickLoginDemo() {
-        router.sendCommands(OpenLoginDemo())
+        router.sendCommandsSync(OpenLoginDemo())
     }
 
     fun onClickConverterDemo() {
-        router.sendCommands(OpenConverterDemo())
+        router.sendCommandsSync(OpenConverterDemo())
     }
 
     fun onClickListDemo() {
-        router.sendCommands(OpenListDemo())
+        router.sendCommandsSync(OpenListDemo())
     }
 
     fun onClickPagerDemo() {
-        router.sendCommands(OpenPagerDemo())
+        router.sendCommandsSync(OpenPagerDemo())
     }
 
     fun onClickThrottleDemo() {
-        router.sendCommands(OpenThrottleDemo())
+        router.sendCommandsSync(OpenThrottleDemo())
     }
 
     fun onClickLazyListDemo() {
-        router.sendCommands(OpenLazyListDemo())
+        router.sendCommandsSync(OpenLazyListDemo())
     }
 
     fun onClickListFilterDemo() {
-        router.sendCommands(OpenListFilterDemo())
+        router.sendCommandsSync(OpenListFilterDemo())
     }
 
     fun onClickStackLoadingDemo() {
-        router.sendCommands(OpenStackLoadingDemo())
+        router.sendCommandsSync(OpenStackLoadingDemo())
     }
 
     fun onClickPrevNextNavigationDemo() {
-        router.sendCommands(OpenPrevNextNavigationDemo())
+        router.sendCommandsSync(OpenPrevNextNavigationDemo())
     }
 
     fun onClickGestureNavigationDemo() {
-        router.sendCommands(OpenGestureNavigationDemo())
+        router.sendCommandsSync(OpenGestureNavigationDemo())
     }
 
     fun onDynamicFilterListDemo() {
-        router.sendCommands(OpenDynamicFilterListDemo())
+        router.sendCommandsSync(OpenDynamicFilterListDemo())
     }
 
     fun onShowBottomSheetDemo() {
-        router.sendCommands(ShowBottomSheet())
+        router.sendCommandsSync(ShowBottomSheet())
     }
 
     fun onShowVisibilityDemo() {
-        router.sendCommands(OpenVisibilityDemo())
+        router.sendCommandsSync(OpenVisibilityDemo())
     }
 
     fun onShowAnimationDemo() {
-        router.sendCommands(OpenAnimationDemo())
+        router.sendCommandsSync(OpenAnimationDemo())
     }
 
     fun onShowViewTransitionDemo() {
-        router.sendCommands(OpenViewTransitionDemo())
+        router.sendCommandsSync(OpenViewTransitionDemo())
     }
 
     fun onClickTabsDemo() {
-        router.sendCommands(OpenTabsDemo())
+        router.sendCommandsSync(OpenTabsDemo())
     }
 
 }

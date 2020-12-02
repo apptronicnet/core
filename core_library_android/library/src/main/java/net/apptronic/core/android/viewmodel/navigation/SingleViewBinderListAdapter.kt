@@ -2,7 +2,7 @@ package net.apptronic.core.android.viewmodel.navigation
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import net.apptronic.core.android.anim.factory.ViewTransitionFactory
+import net.apptronic.core.android.anim.adapter.ViewTransitionAdapter
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.ViewBinderAdapter
 import net.apptronic.core.android.viewmodel.view.DefaultViewContainerViewAdapter
@@ -14,7 +14,7 @@ import net.apptronic.core.viewmodel.navigation.adapters.SingleViewModelListAdapt
 class SingleViewBinderListAdapter(
     private val container: ViewGroup,
     private val viewBinderAdapter: ViewBinderAdapter,
-    private val viewTransitionFactory: ViewTransitionFactory,
+    private val viewTransitionAdapter: ViewTransitionAdapter,
     private val defaultAnimationTime: Long,
     private val maxCachedViews: Int
 ) : SingleViewModelListAdapter {
@@ -22,7 +22,7 @@ class SingleViewBinderListAdapter(
     private val layoutInflater = LayoutInflater.from(container.context)
 
     private val dispatcher = SingleViewContainerDispatcher(
-        container, viewTransitionFactory, defaultAnimationTime
+        container, viewTransitionAdapter, defaultAnimationTime
     )
 
     fun bindings(setup: ViewBinderAdapter.() -> Unit) {

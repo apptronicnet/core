@@ -3,7 +3,7 @@ package net.apptronic.core.android.viewmodel.bindings.navigation
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import net.apptronic.core.android.plugins.getViewBinderFactoryFromExtension
+import net.apptronic.core.android.plugins.getViewBinderAdapterFromExtension
 import net.apptronic.core.android.viewmodel.Binding
 import net.apptronic.core.android.viewmodel.BindingContainer
 import net.apptronic.core.android.viewmodel.ViewBinder
@@ -53,16 +53,16 @@ fun BindingContainer.bindInnerViewModel(
     adapter: ViewBinderAdapter? = null,
     bindingType: BindingType = BindingType.AUTO
 ) {
-    val resultFactory = adapter
-        ?: viewModel.getViewBinderFactoryFromExtension()
-        ?: throw IllegalArgumentException("BinderFactory should be provided by parameters or Context.installViewFactoryPlugin()")
-    +InnerViewBinding(view, viewModel, resultFactory::getBinder, bindingType)
+    val resultAdapter = adapter
+        ?: viewModel.getViewBinderAdapterFromExtension()
+        ?: throw IllegalArgumentException("ViewBinderAdapter should be provided by parameters or Context.installViewBinderAdapterPlugin()")
+    +InnerViewBinding(view, viewModel, resultAdapter::getBinder, bindingType)
 }
 
 private class InnerViewBinding(
     private val targetView: View,
     private val targetViewModel: IViewModel,
-    private val factory: (IViewModel) -> ViewBinder<*>,
+    private val builder: (IViewModel) -> ViewBinder<*>,
     private val bindingType: BindingType
 ) : Binding() {
 
@@ -70,7 +70,7 @@ private class InnerViewBinding(
 
     override fun onBind(viewModel: IViewModel, viewBinder: ViewBinder<*>) {
         val viewAdapter = viewBinder as? ViewContainerViewAdapter ?: DefaultViewContainerViewAdapter
-        val targetBinder = factory.invoke(targetViewModel)
+        val targetBinder = builder.invoke(targetViewModel)
         val contentView: View = if (bindingType.detectAndCreate) {
             val container = targetView as? ViewGroup
             if (container != null && container.childCount == 0) {

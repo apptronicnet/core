@@ -3,7 +3,7 @@ package net.apptronic.core.android.viewmodel.navigation
 import android.view.View
 import android.view.ViewGroup
 import net.apptronic.core.android.anim.AnimationPlayer
-import net.apptronic.core.android.anim.factory.*
+import net.apptronic.core.android.anim.adapter.*
 import net.apptronic.core.android.anim.transition.ViewTransitionDirection
 import net.apptronic.core.android.viewmodel.ViewBinder
 import net.apptronic.core.android.viewmodel.view.DefaultViewContainerViewAdapter
@@ -13,7 +13,7 @@ import net.apptronic.core.viewmodel.navigation.TransitionInfo
 
 internal class SingleViewContainerDispatcher(
     private val container: ViewGroup,
-    private val viewTransitionFactory: ViewTransitionFactory,
+    private val viewTransitionAdapter: ViewTransitionAdapter,
     private val defaultAnimationTime: Long,
 ) {
 
@@ -48,7 +48,7 @@ internal class SingleViewContainerDispatcher(
             duration = defaultAnimationTime,
             transitionSpec = transitionSpec
         )
-        val animation = viewTransitionFactory.buildSingleEnterOrEmpty(spec)
+        val animation = viewTransitionAdapter.buildSingleEnterOrEmpty(spec)
         animation.doOnStart {
             addViewToContainer(viewBinder.viewModel, viewBinder, viewBinder.view, true)
             viewBinder.view.visibility = View.VISIBLE
@@ -72,7 +72,7 @@ internal class SingleViewContainerDispatcher(
             else
                 ViewTransitionDirection.ExitingOnFront
         )
-        val transition = viewTransitionFactory.buildViewTransitionOrEmpty(spec)
+        val transition = viewTransitionAdapter.buildViewTransitionOrEmpty(spec)
         transition.viewAnimationSet.getAnimation(newBinder.view)?.doOnStart {
             val addNewOnFront = transition.direction == ViewTransitionDirection.EnteringOnFront
             addViewToContainer(
@@ -106,7 +106,7 @@ internal class SingleViewContainerDispatcher(
             duration = defaultAnimationTime,
             transitionSpec = transitionSpec
         )
-        val animation = viewTransitionFactory.buildSingleExitOrEmpty(spec)
+        val animation = viewTransitionAdapter.buildSingleExitOrEmpty(spec)
         animation.doOnCompleteOrCancel {
             val viewAdapter =
                 viewBinder as? ViewContainerViewAdapter ?: DefaultViewContainerViewAdapter
