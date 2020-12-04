@@ -74,7 +74,7 @@ class DataProviderTest {
             single {
                 Repository(scopedContext(net.apptronic.core.context.EmptyContext))
             }
-            sharedDataProvider<String, Int>(StringProviderDescriptor) {
+            sharedDataProvider<Int, String>(StringProviderDescriptor) {
                 StringValueDataProvider(
                         scopedContext(net.apptronic.core.context.EmptyContext), it
                 )

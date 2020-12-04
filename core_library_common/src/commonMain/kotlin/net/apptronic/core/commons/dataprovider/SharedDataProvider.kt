@@ -38,7 +38,7 @@ fun <T : Any, K : Any> ModuleDefinition.sharedCache(
  *
  * To add cache use [sharedCache] with same [DataProviderDescriptor]
  */
-fun <T : Any, K : Any> ModuleDefinition.sharedDataProvider(
+fun <K : Any, T : Any> ModuleDefinition.sharedDataProvider(
         descriptor: DataProviderDescriptor<K, T>,
         fallbackCount: Int = 0,
         fallbackLifetime: Long = 0,
