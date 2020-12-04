@@ -42,7 +42,9 @@ abstract class DataProvider<K, T>(context: Context, val key: K) : Component(cont
      * In case when loading process supports returning null when [DataProvider] does not supports null values
      * [requireNotNull] can be called.
      */
-    abstract suspend fun loadData(): T
+    suspend fun loadData(): T {
+        throw UnsupportedOperationException("$this does not support client reload request")
+    }
 
     /**
      * This method can be invoked in [loadData] when load result can be null but [DataProvider] does not supports
