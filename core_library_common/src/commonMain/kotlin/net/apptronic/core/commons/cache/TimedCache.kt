@@ -11,7 +11,6 @@ class TimedCache<K, T>(
         context: Context,
         private val maxFallbackCount: Int = 32,
         private val fallbackLifetimeMillis: Long = 60000L, // 1 minute
-        private val targetCache: CacheComponent<K, T>? = null
 ) : CacheComponent<K, T>(context) {
 
     private inner class ExpirationKey(val key: K, val expirationTimestamp: Long) : Comparable<ExpirationKey> {
@@ -27,19 +26,17 @@ class TimedCache<K, T>(
         released.removeAll {
             it.key == key
         }
-        return map[key] ?: targetCache?.get(key)
+        return map[key]
     }
 
     override fun getAsync(key: K, target: (T) -> Unit): Job? {
-        val local = get(key)
-        return if (local != null) {
-            target(local.value)
-            null
-        } else targetCache?.getAsync(key, target)
+        get(key)?.let {
+            target(it.value)
+        }
+        return null
     }
 
     override fun releaseKey(key: K) {
-        targetCache?.releaseKey(key)
         super.releaseKey(key)
         if (map.containsKey(key)) {
             released.add(ExpirationKey(key, elapsedRealtimeMillis() + fallbackLifetimeMillis))
@@ -51,7 +48,6 @@ class TimedCache<K, T>(
     override fun set(key: K, value: T) {
         map[key] = ValueHolder(value)
         cleanup()
-        targetCache?.set(key, value)
     }
 
     private fun cleanup() {

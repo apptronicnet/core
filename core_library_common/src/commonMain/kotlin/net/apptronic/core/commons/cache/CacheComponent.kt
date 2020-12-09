@@ -11,7 +11,7 @@ abstract class CacheComponent<K, T>(context: Context) : Component(context) {
 
     abstract operator fun set(key: K, value: T)
 
-    abstract fun get(key: K): ValueHolder<T>?
+    abstract operator fun get(key: K): ValueHolder<T>?
 
     open fun releaseKey(key: K) {
         // implement by subclasses if needed

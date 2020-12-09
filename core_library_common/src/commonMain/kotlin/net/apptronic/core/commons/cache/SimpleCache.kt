@@ -9,39 +9,35 @@ import net.apptronic.core.context.Context
 @UnderDevelopment
 class SimpleCache<K, T>(
         context: Context,
-        private val maxCount: Int = 32,
-        private val targetCache: CacheComponent<K, T>? = null
+        private val maxCount: Int = 32
 ) : CacheComponent<K, T>(context) {
 
     private inner class CacheEntry(val value: T, var lastUsed: Long = elapsedRealtimeMillis())
 
     private val map = mutableMapOf<K, CacheEntry>()
 
-    override fun get(key: K): ValueHolder<T>? {
+    override operator fun get(key: K): ValueHolder<T>? {
         return map[key]?.let {
             it.lastUsed = elapsedRealtimeMillis()
             ValueHolder(it.value)
-        } ?: targetCache?.get(key)
+        }
     }
 
     override fun getAsync(key: K, target: (T) -> Unit): Job? {
-        val local = get(key)
-        return if (local != null) {
-            target(local.value)
-            null
-        } else targetCache?.getAsync(key, target)
+        get(key)?.let {
+            target(it.value)
+        }
+        return null
     }
 
     override fun releaseKey(key: K) {
-        targetCache?.releaseKey(key)
         super.releaseKey(key)
         cleanup()
     }
 
-    override fun set(key: K, value: T) {
+    override operator fun set(key: K, value: T) {
         map[key] = CacheEntry(value)
         cleanup()
-        targetCache?.set(key, value)
     }
 
     private fun cleanup() {
