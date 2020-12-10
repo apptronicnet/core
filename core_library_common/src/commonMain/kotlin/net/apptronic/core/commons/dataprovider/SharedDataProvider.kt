@@ -1,6 +1,6 @@
 package net.apptronic.core.commons.dataprovider
 
-import net.apptronic.core.commons.cache.CacheComponent
+import net.apptronic.core.commons.cache.Cache
 import net.apptronic.core.context.Contextual
 import net.apptronic.core.context.di.ModuleDefinition
 import net.apptronic.core.context.di.SharedScope
@@ -24,11 +24,11 @@ fun <T : Any, K : Any> Contextual.injectData(descriptor: DataProviderDescriptor<
 }
 
 /**
- * Register [CacheComponent] for used with [DataProvider] registered using [DataProviderDescriptor] managed by [SingleScope].
+ * Register [Cache] for used with [DataProvider] registered using [DataProviderDescriptor] managed by [SingleScope].
  */
 fun <T : Any, K : Any> ModuleDefinition.sharedCache(
         descriptor: DataProviderDescriptor<T, K>,
-        builder: SingleScope.() -> CacheComponent<T, K>
+        builder: SingleScope.() -> Cache<T, K>
 ) {
     single(descriptor.cacheDescriptor, builder)
 }

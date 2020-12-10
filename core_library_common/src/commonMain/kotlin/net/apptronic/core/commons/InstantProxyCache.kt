@@ -3,8 +3,7 @@ package net.apptronic.core.commons
 import kotlinx.coroutines.Job
 import net.apptronic.core.UnderDevelopment
 import net.apptronic.core.base.subject.ValueHolder
-import net.apptronic.core.commons.cache.CacheComponent
-import net.apptronic.core.context.Context
+import net.apptronic.core.commons.cache.Cache
 
 /**
  * Base cache class which stays on front of some another cache assuming that cache is "instant" meaning
@@ -14,11 +13,10 @@ import net.apptronic.core.context.Context
  */
 @UnderDevelopment
 class InstantProxyCache<K, T>(
-        context: Context,
-        private val instantCache: CacheComponent<K, T>,
-        private val targetCache: CacheComponent<K, T>,
+        private val instantCache: Cache<K, T>,
+        private val targetCache: Cache<K, T>,
         private val releaseTargetCache: Boolean = false
-) : CacheComponent<K, T>(context) {
+) : Cache<K, T> {
 
     override operator fun get(key: K): ValueHolder<T>? {
         return instantCache[key] ?: targetCache[key]

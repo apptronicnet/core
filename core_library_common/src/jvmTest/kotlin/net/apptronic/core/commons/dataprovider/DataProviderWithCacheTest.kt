@@ -43,7 +43,7 @@ class DataProviderWithCacheTest {
     val context = createTestContext {
         dependencyModule {
             sharedCache(DataProviderDescriptor) {
-                SimpleCache<Int, Data>(scopedContext(), maxCount = 2).also {
+                SimpleCache<Int, Data>(maxCount = 2).also {
                     cache = it
                 }
             }

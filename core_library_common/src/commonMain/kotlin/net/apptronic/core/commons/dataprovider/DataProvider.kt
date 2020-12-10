@@ -1,7 +1,7 @@
 package net.apptronic.core.commons.dataprovider
 
 import net.apptronic.core.base.subject.PublishSubject
-import net.apptronic.core.commons.cache.CacheComponent
+import net.apptronic.core.commons.cache.Cache
 import net.apptronic.core.context.Context
 import net.apptronic.core.context.component.Component
 import net.apptronic.core.entity.Entity
@@ -19,7 +19,7 @@ abstract class DataProvider<K, T>(context: Context, val key: K) : Component(cont
 
     /**
      * Can be used inside [DataProvider] to get current value of data. This value automatically set from
-     * [CacheComponent] if provided, and also from external invocation of [loadData], and also weil be automatically
+     * [Cache] if provided, and also from external invocation of [loadData], and also weil be automatically
      * set from [dataProviderEntity].
      */
     val data: Property<T> = dataValue
