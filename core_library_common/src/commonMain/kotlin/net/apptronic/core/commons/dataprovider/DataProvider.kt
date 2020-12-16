@@ -6,9 +6,12 @@ import net.apptronic.core.context.Context
 import net.apptronic.core.context.component.Component
 import net.apptronic.core.entity.Entity
 import net.apptronic.core.entity.base.Property
+import net.apptronic.core.entity.base.withOnNext
 import net.apptronic.core.entity.bindContext
 import net.apptronic.core.entity.commons.typedEvent
 import net.apptronic.core.entity.commons.value
+import net.apptronic.core.entity.exceptions.TryCatchResult
+import net.apptronic.core.entity.exceptions.onException
 
 /**
  * Provider some data of type [T] with key [K]. This class encapsulates loading of loading an
@@ -75,5 +78,9 @@ abstract class DataProvider<K, T>(context: Context, val key: K) : Component(cont
     fun T?.requireNotNull(): T {
         return this ?: throw DataLoadResultIsNullException("Load data for key $key of $this is null")
     }
+
+    fun <X> Entity<TryCatchResult<X>>.onExceptionNotifyError(): Entity<X> = onException(::notifyError)
+
+    fun Entity<Exception>.withOnNextNotifyError(): Entity<Exception> = withOnNext(::notifyError)
 
 }
