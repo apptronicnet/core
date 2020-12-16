@@ -7,6 +7,7 @@ import net.apptronic.core.context.component.Component
 import net.apptronic.core.entity.Entity
 import net.apptronic.core.entity.base.Property
 import net.apptronic.core.entity.bindContext
+import net.apptronic.core.entity.commons.typedEvent
 import net.apptronic.core.entity.commons.value
 
 /**
@@ -16,6 +17,14 @@ abstract class DataProvider<K, T>(context: Context, val key: K) : Component(cont
 
     internal val onNewSubscriberSubject = PublishSubject<Unit>()
     internal val dataValue = value<T>()
+    internal val errorEvent = typedEvent<Exception>()
+
+    /**
+     * Invoke this method to notify clients about [Exception] during loading data
+     */
+    fun notifyError(e: Exception) {
+        errorEvent.update(e)
+    }
 
     /**
      * Can be used inside [DataProvider] to get current value of data. This value automatically set from
