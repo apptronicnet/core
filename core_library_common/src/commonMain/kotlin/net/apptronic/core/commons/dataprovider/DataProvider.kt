@@ -24,6 +24,14 @@ abstract class DataProvider<K, T>(context: Context, val key: K) : Component(cont
      */
     fun notifyError(e: Exception) {
         errorEvent.update(e)
+        onNotifyError(e)
+    }
+
+    /**
+     * Action to do when [notifyError] called
+     */
+    open fun onNotifyError(e: Exception) {
+        e.printStackTrace()
     }
 
     /**
