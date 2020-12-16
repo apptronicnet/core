@@ -2,7 +2,7 @@ buildscript {
     ext.kotlin_version = "1.4.21"
     ext.coroutines_version = "1.4.2"
     ext.junit_version = "4.12"
-    ext.library_core_version = "0.9.27"
+    ext.library_core_version = "0.9.28"
     repositories {
         gradlePluginPortal()
         google()

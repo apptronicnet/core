@@ -20,6 +20,11 @@ abstract class DataProvider<K, T>(context: Context, val key: K) : Component(cont
     internal val errorEvent = typedEvent<Exception>()
 
     /**
+     * Publishes all errors sent to [notifyError]
+     */
+    val onError: Entity<Exception> = errorEvent
+
+    /**
      * Invoke this method to notify clients about [Exception] during loading data
      */
     fun notifyError(e: Exception) {
