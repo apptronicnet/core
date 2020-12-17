@@ -35,7 +35,7 @@ interface Plugin {
     /**
      * Called when [DependencyDispatcher] created new [instance] for injection.
      *
-     * This is called once dependency is
+     * This is called once dependency is created
      */
     fun <T> onProvide(
             definitionContext: Context,

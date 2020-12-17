@@ -81,14 +81,24 @@ internal fun <TypeDeclaration : Any> instanceProvider(
     return InstanceProvider(objectKey, instance)
 }
 
+internal interface SupportsExternalInit {
+
+    fun initializeInstance(definitionContext: Context)
+
+}
+
 private class SingleProvider<TypeDeclaration : Any>(
         objectKey: ObjectKey,
         builder: BuilderMethod<TypeDeclaration, SingleScope>
-) : ObjectBuilderProvider<TypeDeclaration, SingleScope>(objectKey, builder) {
+) : ObjectBuilderProvider<TypeDeclaration, SingleScope>(objectKey, builder), SupportsExternalInit {
 
     override val typeName: String = "single"
 
     private var entity: TypeDeclaration? = null
+
+    override fun initializeInstance(definitionContext: Context) {
+        createInstance(definitionContext, definitionContext.dependencyDispatcher)
+    }
 
     override fun provide(
             definitionContext: Context,

@@ -6,20 +6,30 @@ import org.junit.Test
 import kotlin.test.assertNotSame
 import kotlin.test.assertSame
 
-class PluginOnDependencySingleDescriptorTest : PluginOnDependencyTest() {
+class PluginOnDependencySingleDescriptorTestNormal : PluginOnDependencySingleDescriptorTest(false)
+
+class PluginOnDependencySingleDescriptorTestInitOnLoad : PluginOnDependencySingleDescriptorTest(true)
+
+abstract class PluginOnDependencySingleDescriptorTest(val initOnLoad: Boolean) : PluginOnDependencyTest() {
 
     private val descriptor = dependencyDescriptor<SomeDependency>()
 
-    init {
+    fun initModule() {
         context.dependencyModule {
             single(descriptor) {
                 SomeDependencyImpl()
+            }.apply {
+                if (initOnLoad) {
+                    initOnLoad()
+                }
             }
         }
     }
 
     @Test
     fun verifyInject() {
+        initModule()
+
         val instance1 = dependencyProvider.inject(descriptor) as SomeDependencyImpl
         val instance2 = dependencyProvider.inject(descriptor) as SomeDependencyImpl
         val instance3 = dependencyProvider.inject(descriptor) as SomeDependencyImpl
@@ -32,6 +42,7 @@ class PluginOnDependencySingleDescriptorTest : PluginOnDependencyTest() {
     @Test
     fun verifyProvideWrap() {
         enableProvideWrap = true
+        initModule()
 
         val provide1 = dependencyProvider.inject(descriptor) as ProvideWrapper
         val provide2 = dependencyProvider.inject(descriptor) as ProvideWrapper
@@ -53,6 +64,7 @@ class PluginOnDependencySingleDescriptorTest : PluginOnDependencyTest() {
     @Test
     fun verifyInjectedWrap() {
         enableInjectWrap = true
+        initModule()
 
         val inject1 = dependencyProvider.inject(descriptor) as InjectWrapper
         val inject2 = dependencyProvider.inject(descriptor) as InjectWrapper
@@ -75,6 +87,7 @@ class PluginOnDependencySingleDescriptorTest : PluginOnDependencyTest() {
     fun verifyAllWrap() {
         enableProvideWrap = true
         enableInjectWrap = true
+        initModule()
 
         val inject1 = dependencyProvider.inject(descriptor) as InjectWrapper
         val inject2 = dependencyProvider.inject(descriptor) as InjectWrapper

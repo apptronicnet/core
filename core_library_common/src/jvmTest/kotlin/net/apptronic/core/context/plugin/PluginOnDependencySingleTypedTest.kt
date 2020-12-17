@@ -5,18 +5,28 @@ import org.junit.Test
 import kotlin.test.assertNotSame
 import kotlin.test.assertSame
 
-class PluginOnDependencySingleTypedTest : PluginOnDependencyTest() {
+class PluginOnDependencySingleTypedTestNormal : PluginOnDependencySingleTypedTest(false)
 
-    init {
+class PluginOnDependencySingleTypedTestInitOnLoad : PluginOnDependencySingleTypedTest(true)
+
+abstract class PluginOnDependencySingleTypedTest(val initOnLoad: Boolean) : PluginOnDependencyTest() {
+
+    fun initModule() {
         context.dependencyModule {
             single<SomeDependency> {
                 SomeDependencyImpl()
+            }.apply {
+                if (initOnLoad) {
+                    initOnLoad()
+                }
             }
         }
     }
 
     @Test
     fun verifyInject() {
+        initModule()
+
         val instance1 = dependencyProvider.inject<SomeDependency>() as SomeDependencyImpl
         val instance2 = dependencyProvider.inject<SomeDependency>() as SomeDependencyImpl
         val instance3 = dependencyProvider.inject<SomeDependency>() as SomeDependencyImpl
@@ -29,6 +39,7 @@ class PluginOnDependencySingleTypedTest : PluginOnDependencyTest() {
     @Test
     fun verifyProvideWrap() {
         enableProvideWrap = true
+        initModule()
 
         val provide1 = dependencyProvider.inject<SomeDependency>() as ProvideWrapper
         val provide2 = dependencyProvider.inject<SomeDependency>() as ProvideWrapper
@@ -50,6 +61,7 @@ class PluginOnDependencySingleTypedTest : PluginOnDependencyTest() {
     @Test
     fun verifyInjectedWrap() {
         enableInjectWrap = true
+        initModule()
 
         val inject1 = dependencyProvider.inject<SomeDependency>() as InjectWrapper
         val inject2 = dependencyProvider.inject<SomeDependency>() as InjectWrapper
@@ -72,6 +84,7 @@ class PluginOnDependencySingleTypedTest : PluginOnDependencyTest() {
     fun verifyAllWrap() {
         enableProvideWrap = true
         enableInjectWrap = true
+        initModule()
 
         val inject1 = dependencyProvider.inject<SomeDependency>() as InjectWrapper
         val inject2 = dependencyProvider.inject<SomeDependency>() as InjectWrapper

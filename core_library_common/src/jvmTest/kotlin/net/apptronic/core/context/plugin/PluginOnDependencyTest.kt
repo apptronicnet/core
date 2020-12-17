@@ -22,7 +22,7 @@ abstract class PluginOnDependencyTest : Plugin, Contextual {
 
     private val descriptor = pluginDescriptor<PluginOnDependencyTest>()
 
-    override val context: Context = coreContext(testCoroutineDispatchers()) {
+    final override val context: Context = coreContext(testCoroutineDispatchers()) {
         installPlugin(descriptor, this@PluginOnDependencyTest)
     }
 

@@ -1,10 +1,8 @@
 package net.apptronic.core.commons.dataprovider
 
-import net.apptronic.core.commons.cache.Cache
 import net.apptronic.core.context.Contextual
 import net.apptronic.core.context.di.ModuleDefinition
 import net.apptronic.core.context.di.SharedScope
-import net.apptronic.core.context.di.SingleScope
 import net.apptronic.core.context.di.parameters
 
 /**
@@ -23,20 +21,11 @@ fun <T : Any, K : Any> Contextual.injectData(descriptor: DataProviderDescriptor<
     return DataProviderPropertyImpl(context, holder)
 }
 
-/**
- * Register [Cache] for used with [DataProvider] registered using [DataProviderDescriptor] managed by [SingleScope].
- */
-fun <T : Any, K : Any> ModuleDefinition.sharedCache(
-        descriptor: DataProviderDescriptor<T, K>,
-        builder: SingleScope.() -> Cache<T, K>
-) {
-    single(descriptor.cacheDescriptor, builder)
-}
 
 /**
- * Add [DataProvider] dependency which managed by [SharedScope],
+ * Add [DataProvider] dependency which managed by [SharedScope]
  *
- * To add cache use [sharedCache] with same [DataProviderDescriptor]
+ * To add cache use [dataProviderCache] with same [DataProviderDescriptor]
  */
 fun <K : Any, T : Any> ModuleDefinition.sharedDataProvider(
         descriptor: DataProviderDescriptor<K, T>,

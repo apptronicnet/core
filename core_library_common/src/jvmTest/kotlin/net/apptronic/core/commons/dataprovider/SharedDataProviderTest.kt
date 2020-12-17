@@ -19,7 +19,7 @@ import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 
-class DataProviderTest {
+class SharedDataProviderTest {
 
     val StringProviderDescriptor = dataProviderDescriptor<Int, String>()
 

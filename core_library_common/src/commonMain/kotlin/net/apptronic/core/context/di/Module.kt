@@ -21,7 +21,7 @@ internal class ObjectDefinition<TypeDeclaration>(
 
 }
 
-class ProviderDefinition<TypeDeclaration> internal constructor(
+sealed class ProviderDefinition<TypeDeclaration>(
         private val objectDefinition: ObjectDefinition<TypeDeclaration>
 ) {
 
@@ -39,6 +39,38 @@ class ProviderDefinition<TypeDeclaration> internal constructor(
             descriptor: DependencyDescriptor<Mapping>
     ) {
         objectDefinition.addMappings(objectKey(descriptor))
+    }
+
+    internal open fun createProvider(context: Context): ObjectProvider<TypeDeclaration> {
+        return objectDefinition.getProvider(context)
+    }
+
+}
+
+internal class GenericProviderDefinition<TypeDeclaration> internal constructor(
+        objectDefinition: ObjectDefinition<TypeDeclaration>
+) : ProviderDefinition<TypeDeclaration>(objectDefinition)
+
+class SingleProviderDefinition<TypeDeclaration> internal constructor(
+        objectDefinition: ObjectDefinition<TypeDeclaration>
+) : ProviderDefinition<TypeDeclaration>(objectDefinition) {
+
+    private var initOnLoad = false
+
+    /**
+     * Define dependency do be initialized immediately with a module and not wait for first injection
+     */
+    fun initOnLoad(): SingleProviderDefinition<TypeDeclaration> {
+        initOnLoad = true
+        return this
+    }
+
+    override fun createProvider(context: Context): ObjectProvider<TypeDeclaration> {
+        return super.createProvider(context).also {
+            if (initOnLoad) {
+                (it as? SupportsExternalInit)?.initializeInstance(context)
+            }
+        }
     }
 
 }
@@ -63,11 +95,11 @@ class ModuleDefinition internal constructor(
         val name: String
 ) {
 
-    private val definitions = mutableListOf<ObjectDefinition<*>>()
+    private val definitions = mutableListOf<ProviderDefinition<*>>()
 
     internal fun buildInstance(context: Context): Module {
         val providers: List<ObjectProvider<*>> = definitions.map {
-            it.getProvider(context)
+            it.createProvider(context)
         }
         return Module(name, providers)
     }
@@ -80,7 +112,7 @@ class ModuleDefinition internal constructor(
 
     inline fun <reified TypeDeclaration : Any> single(
             noinline builder: SingleScope.() -> TypeDeclaration
-    ): ProviderDefinition<TypeDeclaration> {
+    ): SingleProviderDefinition<TypeDeclaration> {
         return single(TypeDeclaration::class, builder)
     }
 
@@ -147,11 +179,11 @@ class ModuleDefinition internal constructor(
     fun <TypeDeclaration : Any> single(
             clazz: KClass<TypeDeclaration>,
             builder: SingleScope.() -> TypeDeclaration
-    ): ProviderDefinition<TypeDeclaration> {
+    ): SingleProviderDefinition<TypeDeclaration> {
         if (clazz::class == Context::class) {
             throw IllegalArgumentException("Cannot register [Context] provider. Please use Descriptors.")
         }
-        return addDefinition {
+        return addSingleDefinition {
             singleProvider(objectKey(clazz), BuilderMethod(builder))
         }
     }
@@ -159,8 +191,8 @@ class ModuleDefinition internal constructor(
     fun <TypeDeclaration : Any> single(
             descriptor: DependencyDescriptor<TypeDeclaration>,
             builder: SingleScope.() -> TypeDeclaration
-    ): ProviderDefinition<TypeDeclaration> {
-        return addDefinition {
+    ): SingleProviderDefinition<TypeDeclaration> {
+        return addSingleDefinition {
             singleProvider(objectKey(descriptor), BuilderMethod(builder))
         }
     }
@@ -211,9 +243,19 @@ class ModuleDefinition internal constructor(
     private fun <TypeDeclaration> addDefinition(
             providerFactory: (Context) -> ObjectProvider<TypeDeclaration>
     ): ProviderDefinition<TypeDeclaration> {
-        val definition = ObjectDefinition(ProviderFactoryMethod(providerFactory))
-        definitions.add(definition)
-        return ProviderDefinition(definition)
+        val objectDefinition = ObjectDefinition(ProviderFactoryMethod(providerFactory))
+        val providerDefinition = GenericProviderDefinition(objectDefinition)
+        definitions.add(providerDefinition)
+        return providerDefinition
+    }
+
+    private fun <TypeDeclaration> addSingleDefinition(
+            providerFactory: (Context) -> ObjectProvider<TypeDeclaration>
+    ): SingleProviderDefinition<TypeDeclaration> {
+        val objectDefinition = ObjectDefinition(ProviderFactoryMethod(providerFactory))
+        val providerDefinition = SingleProviderDefinition(objectDefinition)
+        definitions.add(providerDefinition)
+        return providerDefinition
     }
 
 }
