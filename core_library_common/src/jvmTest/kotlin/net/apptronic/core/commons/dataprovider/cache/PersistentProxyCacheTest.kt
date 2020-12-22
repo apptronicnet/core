@@ -1,9 +1,9 @@
-package net.apptronic.core.commons.cache
+package net.apptronic.core.commons.dataprovider.cache
 
 import org.junit.Test
 import kotlin.test.fail
 
-class InstantProxyCacheTest {
+class PersistentProxyCacheTest {
 
     @Test
     fun notWrittenYet() {

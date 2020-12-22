@@ -1,11 +1,11 @@
-package net.apptronic.core.commons.cache
+package net.apptronic.core.commons.dataprovider.cache
 
 import kotlinx.coroutines.Job
 import net.apptronic.core.UnderDevelopment
 import net.apptronic.core.base.subject.ValueHolder
 
 @UnderDevelopment
-interface Cache<K, T> {
+interface DataProviderCache<K, T> {
 
     operator fun set(key: K, value: T)
 
@@ -20,7 +20,7 @@ interface Cache<K, T> {
 
     /**
      * Notify that cached value is no more used. Allows cache to optimize it's internals to handle only values
-     * which are used now.
+     * which are used now (for example clean up memory).
      */
     fun releaseKey(key: K) {
         // implement by subclasses if needed

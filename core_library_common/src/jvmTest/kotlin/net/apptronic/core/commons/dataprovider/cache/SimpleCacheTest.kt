@@ -1,4 +1,4 @@
-package net.apptronic.core.commons.cache
+package net.apptronic.core.commons.dataprovider.cache
 
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
@@ -10,7 +10,7 @@ import kotlin.test.assertNull
 
 class SimpleCacheTest : BaseContextTest() {
 
-    private val cache = SimpleCache<Int, String>(maxCount = 3, true)
+    private val cache = SimpleDataProviderCache<Int, String>(maxSize = 3)
 
     @Test
     fun nullWhenNoCache() {
@@ -51,15 +51,18 @@ class SimpleCacheTest : BaseContextTest() {
 
     @Test
     fun releaseKeyWorks() {
-        cache[1] = "One"
-        cache[2] = "Two"
-        cache[3] = "Three"
-        cache.releaseKey(3)
-        cache[4] = "Four"
-        assertEquals("One".asValueHolder(), cache[1])
-        assertEquals("Two".asValueHolder(), cache[2])
-        assertEquals("Four".asValueHolder(), cache[4])
-        assertNull(cache[3])
+        runBlocking {
+            cache[1] = "One"
+            delay(3)
+            cache[2] = "Two"
+            cache[3] = "Three"
+            cache.releaseKey(3)
+            cache[4] = "Four"
+            assertEquals("One".asValueHolder(), cache[1])
+            assertEquals("Two".asValueHolder(), cache[2])
+            assertEquals("Four".asValueHolder(), cache[4])
+            assertNull(cache[3])
+        }
     }
 
 }

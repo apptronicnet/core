@@ -1,13 +1,13 @@
-package net.apptronic.core.commons.cache
+package net.apptronic.core.commons.dataprovider.cache
 
 import kotlinx.coroutines.Job
 import net.apptronic.core.base.elapsedRealtimeMillis
 import net.apptronic.core.base.subject.ValueHolder
 
-class SimpleCache<K, T>(
-        private val maxCount: Int = 32,
-        private val cleanupOnRelease: Boolean = false
-) : Cache<K, T> {
+class SimpleDataProviderCache<K, T>(
+        private val maxSize: Int = 32,
+        private val sizeFunction: (T) -> Int = { 1 }
+) : DataProviderCache<K, T> {
 
     private inner class CacheEntry(val value: T, var lastUsed: Long = elapsedRealtimeMillis())
 
@@ -34,20 +34,13 @@ class SimpleCache<K, T>(
 
     override fun releaseKey(key: K) {
         super.releaseKey(key)
-        if (cleanupOnRelease) {
-            map.remove(key)
+        map[key]?.let {
+            it.lastUsed = elapsedRealtimeMillis()
         }
     }
 
     private fun cleanup() {
-        val countToDrop = map.size - maxCount
-        if (countToDrop > 0) {
-            map.entries.sortedBy {
-                it.value.lastUsed
-            }.take(countToDrop).forEach {
-                map.remove(it.key)
-            }
-        }
+        map.trimToSizeFromMin({ sizeFunction(it.value) }, maxSize, { it.lastUsed })
     }
 
 }

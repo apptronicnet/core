@@ -1,7 +1,7 @@
 package net.apptronic.core.commons.dataprovider
 
 import kotlinx.coroutines.withContext
-import net.apptronic.core.commons.cache.SimpleCache
+import net.apptronic.core.commons.dataprovider.cache.SimpleDataProviderCache
 import net.apptronic.core.context.Context
 import net.apptronic.core.context.childContext
 import net.apptronic.core.context.component.Component
@@ -38,12 +38,12 @@ class DataProviderWithCacheTest {
 
     }
 
-    lateinit var cache: SimpleCache<Int, Data>
+    lateinit var cache: SimpleDataProviderCache<Int, Data>
 
     val context = createTestContext {
         dependencyModule {
             dataProviderCache(DataProviderDescriptor) {
-                SimpleCache<Int, Data>(maxCount = 2).also {
+                SimpleDataProviderCache<Int, Data>(maxSize = 2).also {
                     cache = it
                 }
             }
