@@ -1,12 +1,10 @@
 package net.apptronic.core.commons.eventbus
 
-import net.apptronic.core.UnderDevelopment
 import net.apptronic.core.base.subject.PublishSubject
 import net.apptronic.core.base.subject.Subject
 import net.apptronic.core.context.Context
 import net.apptronic.core.entity.base.ObservableEntity
 
-@UnderDevelopment
 internal class EventObserver<T : Any>(
         override val context: Context,
         private val channelDescriptor: EventChannelDescriptor<T>

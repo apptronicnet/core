@@ -1,15 +1,14 @@
 package net.apptronic.core.commons.eventbus
 
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import net.apptronic.core.UnderDevelopment
 import net.apptronic.core.context.Context
 import net.apptronic.core.context.component.Component
 import net.apptronic.core.context.coroutines.contextCoroutineScope
 
-@UnderDevelopment
 internal class EventBusComponent(context: Context) : Component(context) {
 
-    private val scope = contextCoroutineScope
+    private val scope: CoroutineScope = contextCoroutineScope
 
     private class Reference(val observer: EventObserver<*>)
 
