@@ -14,10 +14,10 @@ import net.apptronic.core.context.coroutines.contextCoroutineScope
  * which expires first or when expiration time for released key is ended beginning.
  */
 class TimedDataProviderCache<K, T>(
-        context: Context,
-        private val maxSize: Int = 32,
-        private val sizeFunction: (T) -> Int = { 1 },
-        private val expirationTime: Long = 60000L, // 1 minute
+    context: Context,
+    private val maxSize: Int,
+    private val sizeFunction: (T) -> Int,
+    private val expirationTime: Long
 ) : Component(context), DataProviderCache<K, T> {
 
     private inner class CacheEntry(val value: T, var expiresAt: Long = Long.MAX_VALUE)

@@ -10,10 +10,15 @@ import kotlin.test.assertNull
 
 class TimedCacheTest : BaseContextTest() {
 
-    private val cache = TimedDataProviderCache<Int, String>(context, maxSize = 3, expirationTime = 10L)
 
     @Test
     fun shouldCleanUpAfterExpiration() {
+        val cache = TimedDataProviderCache<Int, String>(
+            context,
+            maxSize = 3,
+            expirationTime = 10L,
+            sizeFunction = { 1 }
+        )
         runBlocking {
             cache[1] = "1"
             cache[2] = "2"
@@ -32,6 +37,12 @@ class TimedCacheTest : BaseContextTest() {
 
     @Test
     fun shouldCancelExpirationWhenUsed() {
+        val cache = TimedDataProviderCache<Int, String>(
+            context,
+            maxSize = 3,
+            expirationTime = 10L,
+            sizeFunction = { 1 }
+        )
         runBlocking {
             cache[1] = "1"
             assertNotNull(cache[1])
@@ -44,6 +55,12 @@ class TimedCacheTest : BaseContextTest() {
 
     @Test
     fun shouldTrim() {
+        val cache = TimedDataProviderCache<Int, String>(
+            context,
+            maxSize = 3,
+            expirationTime = 10L,
+            sizeFunction = { 1 }
+        )
         runBlocking {
             cache[1] = "1"
             delay(3)
@@ -55,6 +72,21 @@ class TimedCacheTest : BaseContextTest() {
             val data = listOf(cache[1], cache[2], cache[3], cache[4]).filterNotNull()
             assertEquals(3, data.size)
         }
+    }
+
+    @Test
+    fun sizeFunctionWorks() {
+        val cache = TimedDataProviderCache<Int, String>(
+            context,
+            maxSize = 10,
+            expirationTime = 10L,
+            sizeFunction = { it.length }
+        )
+        cache[1] = "One" // 3
+        cache[2] = "Two" // +3 = 6
+        cache[3] = "Three" // +5 = 11 > 10 (limit)
+        val cached = listOfNotNull(cache[1], cache[2], cache[3])
+        assertEquals(2, cached.size)
     }
 
 }

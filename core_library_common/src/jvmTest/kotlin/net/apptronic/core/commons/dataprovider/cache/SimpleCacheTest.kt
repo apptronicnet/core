@@ -10,15 +10,16 @@ import kotlin.test.assertNull
 
 class SimpleCacheTest : BaseContextTest() {
 
-    private val cache = SimpleDataProviderCache<Int, String>(maxSize = 3, sizeFunction = { 1 })
 
     @Test
     fun nullWhenNoCache() {
+        val cache = SimpleDataProviderCache<Int, String>(maxSize = 3, sizeFunction = { 1 })
         assertNull(cache[1])
     }
 
     @Test
     fun simpleDataInCache() {
+        val cache = SimpleDataProviderCache<Int, String>(maxSize = 3, sizeFunction = { 1 })
         cache[1] = "One"
         cache[2] = "Two"
         cache[3] = "Three"
@@ -28,29 +29,19 @@ class SimpleCacheTest : BaseContextTest() {
     }
 
     @Test
-    fun dropsFromFirstUsed() {
-        runBlocking {
-            cache[1] = "One"
-            delay(2)
-            cache[2] = "Two"
-            delay(2)
-            cache[3] = "Three"
-            delay(2)
-            cache[1]
-            delay(2)
-            cache[2]
-            delay(2)
-            cache[4] = "Four"
-            delay(2)
-            assertEquals("One".asValueHolder(), cache[1])
-            assertEquals("Two".asValueHolder(), cache[2])
-            assertEquals("Four".asValueHolder(), cache[4])
-            assertNull(cache[3])
-        }
+    fun dropsWhenExceedLimit() {
+        val cache = SimpleDataProviderCache<Int, String>(maxSize = 3, sizeFunction = { 1 })
+        cache[1] = "One"
+        cache[2] = "Two"
+        cache[3] = "Three"
+        cache[4] = "Four"
+        val cached = listOfNotNull(cache[1], cache[2], cache[3], cache[4])
+        assertEquals(3, cached.size)
     }
 
     @Test
     fun releaseKeyWorks() {
+        val cache = SimpleDataProviderCache<Int, String>(maxSize = 3, sizeFunction = { 1 })
         runBlocking {
             cache[1] = "One"
             delay(3)
@@ -63,6 +54,16 @@ class SimpleCacheTest : BaseContextTest() {
             assertEquals("Four".asValueHolder(), cache[4])
             assertNull(cache[3])
         }
+    }
+
+    @Test
+    fun sizeFunctionWorks() {
+        val cache = SimpleDataProviderCache<Int, String>(maxSize = 10, sizeFunction = { it.length })
+        cache[1] = "One" // 3
+        cache[2] = "Two" // +3 = 6
+        cache[3] = "Three" // +5 = 11 > 10 (limit)
+        val cached = listOfNotNull(cache[1], cache[2], cache[3])
+        assertEquals(2, cached.size)
     }
 
 }
