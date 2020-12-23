@@ -23,3 +23,21 @@ fun <K : Any, T : Any> ModuleDefinition.dataProviderCache(
         }
     }
 }
+
+fun <K : Any, T : Any> ModuleDefinition.dataProviderSimpleCache(
+    descriptor: DataProviderDescriptor<K, T>,
+    builder: SimpleDataProviderCacheBuilder<K, T>.() -> Unit
+): SingleProviderDefinition<DataProviderCache<K, T>> {
+    return single(descriptor.cacheDescriptor) {
+        simpleCache(builder)
+    }
+}
+
+fun <K : Any, T : Any> ModuleDefinition.dataProviderTimedCache(
+    descriptor: DataProviderDescriptor<K, T>,
+    builder: TimedDataProviderCacheBuilder<K, T>.() -> Unit
+): SingleProviderDefinition<DataProviderCache<K, T>> {
+    return single(descriptor.cacheDescriptor) {
+        timedCache(builder)
+    }
+}

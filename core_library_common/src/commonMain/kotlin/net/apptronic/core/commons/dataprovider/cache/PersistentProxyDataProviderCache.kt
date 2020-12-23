@@ -9,11 +9,11 @@ import net.apptronic.core.context.component.Component
 import net.apptronic.core.context.coroutines.contextCoroutineScope
 
 /**
- * Base cache class which stays on front of some another cache assuming that cache is "instant" meaning
+ * Cache which stays on front of some another cache assuming that cache is "instant" meaning
  * caches values in-memory without background operations. In case when [mainCache] cannot return value then
- * value is get from [persistentCache] and all values set to both [mainCache] and [persistentCache]. [persistentCache] cache can
- * be storage cache which takes longer to get/set but keeps it's data after process restart or [mainCache] values are
- * freed up.
+ * value is get from [persistentCache] and all values set to both [mainCache] and [persistentCache].
+ * [persistentCache] cache can be storage cache which takes longer to get/set but keeps it's data after
+ * process restart or [mainCache] values are freed up.
  */
 @UnderDevelopment
 class PersistentProxyDataProviderCache<K, T>(
@@ -42,7 +42,6 @@ class PersistentProxyDataProviderCache<K, T>(
     }
 
     override fun releaseKey(key: K) {
-        super.releaseKey(key)
         mainCache.releaseKey(key)
     }
 

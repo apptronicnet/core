@@ -10,7 +10,7 @@ import kotlin.test.assertNull
 
 class SimpleCacheTest : BaseContextTest() {
 
-    private val cache = SimpleDataProviderCache<Int, String>(maxSize = 3)
+    private val cache = SimpleDataProviderCache<Int, String>(maxSize = 3, sizeFunction = { 1 })
 
     @Test
     fun nullWhenNoCache() {

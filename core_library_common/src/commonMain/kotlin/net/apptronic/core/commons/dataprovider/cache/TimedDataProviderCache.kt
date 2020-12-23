@@ -3,14 +3,16 @@ package net.apptronic.core.commons.dataprovider.cache
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import net.apptronic.core.UnderDevelopment
 import net.apptronic.core.base.elapsedRealtimeMillis
 import net.apptronic.core.base.subject.ValueHolder
 import net.apptronic.core.context.Context
 import net.apptronic.core.context.component.Component
 import net.apptronic.core.context.coroutines.contextCoroutineScope
 
-@UnderDevelopment
+/**
+ * Cache which holds fixed amount of cached data and clears automatically when cache size exceeds limit from entries
+ * which expires first or when expiration time for released key is ended beginning.
+ */
 class TimedDataProviderCache<K, T>(
         context: Context,
         private val maxSize: Int = 32,
@@ -43,7 +45,6 @@ class TimedDataProviderCache<K, T>(
     }
 
     override fun releaseKey(key: K) {
-        super.releaseKey(key)
         map[key]?.let {
             it.expiresAt = elapsedRealtimeMillis() + expirationTime
         }
