@@ -17,9 +17,9 @@ import net.apptronic.core.context.coroutines.contextCoroutineScope
  */
 @UnderDevelopment
 class PersistentProxyDataProviderCache<K, T>(
-        context: Context,
-        private val mainCache: DataProviderCache<K, T>,
-        private val persistentCache: DataProviderPersistentCache<K, T>
+    context: Context,
+    private val mainCache: DataProviderCache<K, T>,
+    private val persistentCache: CachePersistence<K, T>
 ) : Component(context), DataProviderCache<K, T> {
 
     override operator fun get(key: K): ValueHolder<T>? {

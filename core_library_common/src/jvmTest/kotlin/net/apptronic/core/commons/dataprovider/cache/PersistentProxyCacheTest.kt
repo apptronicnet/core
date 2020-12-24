@@ -13,7 +13,7 @@ import kotlin.test.assertEquals
 
 class PersistentProxyCacheTest : BaseContextTest() {
 
-    private suspend fun DataProviderCache<Int, String>.getAsync(key: Int): String? {
+    private suspend fun DataProviderCache<Int, String>.getAsync(key: Int): String {
         val deferred = CompletableDeferred<String>()
         getAsync(key) {
             deferred.complete(it)
@@ -23,7 +23,7 @@ class PersistentProxyCacheTest : BaseContextTest() {
 
     val persistence = mutableMapOf<Int, String>()
 
-    inner class PersistentCache : DataProviderPersistentCache<Int, String> {
+    inner class PersistenceImpl : CachePersistence<Int, String> {
 
         override suspend fun load(key: Int): ValueHolder<String>? {
             delay(3)
@@ -40,7 +40,7 @@ class PersistentProxyCacheTest : BaseContextTest() {
     private fun newCacheInstance() = PersistentProxyDataProviderCache<Int, String>(
         context.childContext(),
         SimpleDataProviderCache(3, { 1 }),
-        PersistentCache()
+        PersistenceImpl()
     )
 
     @Test

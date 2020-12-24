@@ -1,7 +1,7 @@
 package net.apptronic.core.commons.dataprovider
 
+import net.apptronic.core.commons.dataprovider.cache.CachePersistence
 import net.apptronic.core.commons.dataprovider.cache.DataProviderCache
-import net.apptronic.core.commons.dataprovider.cache.DataProviderPersistentCache
 import net.apptronic.core.context.di.dependencyDescriptor
 import kotlin.reflect.KClass
 
@@ -15,5 +15,5 @@ data class DataProviderDescriptor<K : Any, T : Any> internal constructor(
     internal val holderDescriptor = dependencyDescriptor<DataProviderHolder<K, T>>()
     internal val keyDescriptor = dependencyDescriptor(keyType)
     internal val cacheDescriptor = dependencyDescriptor<DataProviderCache<K, T>>()
-    internal val persistenceDescriptor = dependencyDescriptor<DataProviderPersistentCache<K, T>>()
+    internal val persistenceDescriptor = dependencyDescriptor<CachePersistence<K, T>>()
 }
