@@ -5,7 +5,7 @@ import net.apptronic.core.commons.dataprovider.cache.SimpleDataProviderCache
 import net.apptronic.core.context.di.Scope
 
 fun <K, T> Scope.simpleCache(
-    builder: SimpleDataProviderCacheBuilder<K, T>.() -> Unit
+    builder: SimpleDataProviderCacheBuilder<K, T>.() -> Unit = {}
 ): DataProviderCache<K, T> {
     return SimpleDataProviderCacheBuilder<K, T>().apply(builder).build()
 }

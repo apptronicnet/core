@@ -6,7 +6,7 @@ import net.apptronic.core.context.Context
 import net.apptronic.core.context.di.Scope
 
 fun <K, T> Scope.timedCache(
-    builder: TimedDataProviderCacheBuilder<K, T>.() -> Unit
+    builder: TimedDataProviderCacheBuilder<K, T>.() -> Unit = {}
 ): DataProviderCache<K, T> {
     return TimedDataProviderCacheBuilder<K, T>(scopedContext()).apply(builder).build()
 }
