@@ -20,9 +20,9 @@ internal class OnChangeImpl<T, E>(
 ) : ObservableEntity<Next<T, E>>(), OnChangeValue<T, E> {
 
     private val value: Value<Next<T, E>> = context.value()
-    private val reflection = value.reflect(direct = { it.value }, reverse = { Next(it, null) })
     private val updateEvent = context.typedEvent<Next<T, E>>()
     override val observable: Observable<Next<T, E>> = updateEvent
+    private val reflection = reflect(direct = { it.value }, reverse = { Next(it, null) })
 
     override fun set(next: T, change: E?) {
         update(Next(next, change))
