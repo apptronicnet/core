@@ -14,9 +14,9 @@ import net.apptronic.core.entity.function.map
  * Base reference implementation of [MutableValue]
  */
 open class BaseMutableValue<T> internal constructor(
-        context: Context,
-        private val eqComparator: EqComparator<T> = SimpleEqComparator()
-) : BaseProperty<T>(context), MutableValue<T> {
+    context: Context,
+    private val eqComparator: EqComparator<T> = SimpleEqComparator()
+) : BaseProperty<T>(context, eqComparator), MutableValue<T> {
 
     private val notificationsSubject = PublishSubject<MutableValue.Change<T>>()
 
