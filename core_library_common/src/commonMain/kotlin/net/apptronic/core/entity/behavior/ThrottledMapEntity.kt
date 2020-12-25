@@ -4,6 +4,7 @@ import kotlinx.coroutines.CoroutineScope
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.base.subject.BehaviorSubject
 import net.apptronic.core.base.subject.ValueHolder
+import net.apptronic.core.base.utils.NeverEqComparator
 import net.apptronic.core.context.Context
 import net.apptronic.core.entity.BaseEntity
 import net.apptronic.core.entity.Entity
@@ -67,7 +68,7 @@ private class ThrottledTransformation<Source, Result>(
         mapping: suspend CoroutineScope.(Source) -> Result
 ) {
 
-    private val sourceEntity = BaseMutableValue<Source>(context)
+    private val sourceEntity = BaseMutableValue<Source>(context, NeverEqComparator())
     private val resultObservable = BehaviorSubject<Result>()
 
     private var awaitingValue: ValueHolder<Source>? = null
@@ -93,8 +94,8 @@ private class ThrottledTransformation<Source, Result>(
     private fun takeNext() {
         awaitingValue?.let {
             if (!isProcessing) {
-                sourceEntity.update(it.value)
                 isProcessing = true
+                sourceEntity.update(it.value)
                 awaitingValue = null
             }
         }
