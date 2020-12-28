@@ -47,6 +47,18 @@ fun <T> Contextual.mutableValueWithComparator(eqComparator: EqComparator<T>): Mu
     return BaseMutableValue(context, eqComparator)
 }
 
+fun <T> Contextual.mutableValueWithComparator(defaultValue: T, eqComparator: EqComparator<T>): MutableValue<T> {
+    return mutableValueWithComparator<T>(eqComparator).apply {
+        set(defaultValue)
+    }
+}
+
+fun <T> Contextual.mutableValueWithComparator(source: Entity<T>, eqComparator: EqComparator<T>): MutableValue<T> {
+    return mutableValueWithComparator<T>(eqComparator).apply {
+        setAs(source)
+    }
+}
+
 fun <T> Contextual.valueSet() = valueMutator<MutableSet<T>>(mutableSetOf<T>())
 
 fun <K, V> Contextual.valueMap() = valueMutator<MutableMap<K, V>>(mutableMapOf<K, V>())

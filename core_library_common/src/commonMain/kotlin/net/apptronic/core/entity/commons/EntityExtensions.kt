@@ -54,14 +54,14 @@ fun Entity<*>.mirrorGenericEvent(context: Context): Event<Unit> {
 }
 
 fun <T> Entity<T>.withDefault(defaultValue: T): Property<T> {
-    return BaseMutableValue<T>(context).also {
+    return BaseValue<T>(context).also {
         it.set(defaultValue)
         it.setAs(this)
     }
 }
 
 fun <T> Entity<T>.withDefaultNull(): Property<T?> {
-    return BaseMutableValue<T?>(context).also {
+    return BaseValue<T?>(context).also {
         it.set(null)
         it.setAs(this.toNullable())
     }

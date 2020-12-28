@@ -65,8 +65,8 @@ class LoadProperty<R, T>(
         throw it
     }
 
-    private val isLazy = BaseMutableValue<Boolean>(context).also { it.set(true) }
-    private val haveObservers = BaseMutableValue<Boolean>(context).also { it.set(false) }
+    private val isLazy = BaseValue<Boolean>(context).also { it.set(true) }
+    private val haveObservers = BaseValue<Boolean>(context).also { it.set(false) }
     private val canLoad = (isLazy.not() or haveObservers).asProperty()
 
     private var scheduleReload = false
