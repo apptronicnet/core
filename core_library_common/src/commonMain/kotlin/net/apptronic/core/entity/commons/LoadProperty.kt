@@ -2,6 +2,7 @@ package net.apptronic.core.entity.commons
 
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.base.subject.ValueHolder
@@ -13,20 +14,45 @@ import net.apptronic.core.entity.behavior.delay
 import net.apptronic.core.entity.function.not
 import net.apptronic.core.entity.function.or
 
-fun <T> IComponent.genericLoadProperty(lazy: Boolean = false, delay: Long = 0L, loadFunction: suspend CoroutineScope.(Unit) -> T): LoadProperty<Unit, T> {
+fun <T> IComponent.genericLoadProperty(
+    lazy: Boolean = false,
+    delay: Long = 0L,
+    loadFunction: suspend CoroutineScope.(Unit) -> T
+): LoadProperty<Unit, T> {
     return LoadProperty<Unit, T>(context, delay, loadFunction).also { property ->
         property.setLazy(lazy)
         property.reload(Unit)
     }
 }
 
-fun <R, T> IComponent.loadProperty(lazy: Boolean = false, delay: Long = 0L, loadFunction: suspend CoroutineScope.(R) -> T): LoadProperty<R, T> {
+fun <R, T> IComponent.loadProperty(
+    lazy: Boolean = false,
+    delay: Long = 0L,
+    loadFunction: suspend CoroutineScope.(R) -> T
+): LoadProperty<R, T> {
     return LoadProperty<R, T>(context, delay, loadFunction).also { property ->
         property.setLazy(lazy)
     }
 }
 
-fun <R, T> IComponent.loadProperty(requestSource: Entity<R>, lazy: Boolean = false, delay: Long = 0L, loadFunction: suspend CoroutineScope.(R) -> T): LoadProperty<R, T> {
+fun <R, T> IComponent.loadProperty(
+    request: R,
+    lazy: Boolean = false,
+    delay: Long = 0L,
+    loadFunction: suspend CoroutineScope.(R) -> T
+): LoadProperty<R, T> {
+    return LoadProperty<R, T>(context, delay, loadFunction).also { property ->
+        property.setLazy(lazy)
+        property.reload(request)
+    }
+}
+
+fun <R, T> IComponent.loadProperty(
+    requestSource: Entity<R>,
+    lazy: Boolean = false,
+    delay: Long = 0L,
+    loadFunction: suspend CoroutineScope.(R) -> T
+): LoadProperty<R, T> {
     return LoadProperty<R, T>(context, delay, loadFunction).also { property ->
         property.setLazy(lazy)
         requestSource.subscribe {
@@ -45,9 +71,9 @@ fun <R, T> IComponent.loadProperty(requestSource: Entity<R>, lazy: Boolean = fal
  * refreshing of data.
  */
 class LoadProperty<R, T>(
-        context: Context,
-        private val delay: Long = 0L,
-        private val loadFunction: suspend CoroutineScope.(R) -> T
+    context: Context,
+    private val delay: Long = 0L,
+    private val loadFunction: suspend CoroutineScope.(R) -> T
 ) : BaseProperty<T>(context) {
 
     private val coroutineScope = context.lifecycleCoroutineScope
@@ -121,6 +147,36 @@ class LoadProperty<R, T>(
         }
     }
 
+    fun withReloadWhen(vararg sources: Entity<*>): LoadProperty<R, T> {
+        sources.forEach { source ->
+            source.subscribe {
+                reload()
+            }
+        }
+        return this
+    }
+
+    fun withReloadFrom(vararg sources: Entity<R>): LoadProperty<R, T> {
+        sources.forEach { source ->
+            source.subscribe { request ->
+                reload(request)
+            }
+        }
+        return this
+    }
+
+    suspend fun reloadNow(): T {
+        val request = this.lastRequest
+        if (request != null) {
+            return executeLoad(request.value)
+        } else throw IllegalStateException("Request is not set")
+    }
+
+    suspend fun reloadNow(request: R): T {
+        this.lastRequest = ValueHolder(request)
+        return executeLoad(request)
+    }
+
     private fun loadNext() {
         val request = this.lastRequest
         if (request != null) {
@@ -128,8 +184,7 @@ class LoadProperty<R, T>(
             isReloading = true
             coroutineScope.launch {
                 try {
-                    val result = loadFunction(request.value)
-                    subject.update(result)
+                    executeLoad(request.value)
                 } catch (e: CancellationException) {
                     throw e
                 } catch (e: Exception) {
@@ -143,6 +198,14 @@ class LoadProperty<R, T>(
                     loadNext()
                 }
             }
+        }
+    }
+
+    private suspend fun executeLoad(request: R): T {
+        return coroutineScope {
+            val result = loadFunction(request)
+            subject.update(result)
+            result
         }
     }
 
