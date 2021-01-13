@@ -11,11 +11,11 @@ fun <K, T> Scope.simpleCache(
 class SimpleDataProviderCacheBuilder<K, T> internal constructor() {
 
     var maxSize: Int = 32
-    var sizeFunction: (T) -> Int = {
+    var sizeFunction: (Pair<K, T>) -> Int = {
         1
     }
 
-    fun sizeFunction(sizeFunction: (T) -> Int) {
+    fun sizeFunction(sizeFunction: (Pair<K, T>) -> Int) {
         this.sizeFunction = sizeFunction
     }
 

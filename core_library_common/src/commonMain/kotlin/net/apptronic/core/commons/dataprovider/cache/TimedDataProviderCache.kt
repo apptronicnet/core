@@ -16,7 +16,7 @@ import net.apptronic.core.context.coroutines.contextCoroutineScope
 class TimedDataProviderCache<K, T>(
     context: Context,
     private val maxSize: Int,
-    private val sizeFunction: (T) -> Int,
+    private val sizeFunction: (Pair<K, T>) -> Int,
     private val expirationTime: Long
 ) : Component(context), DataProviderCache<K, T> {
 
@@ -57,7 +57,13 @@ class TimedDataProviderCache<K, T>(
         cleanupJob?.cancel()
         cleanupJob = null
 
-        map.trimToSizeFromMin({ sizeFunction(it.value) }, maxSize, { it.expiresAt })
+        map.trimToSizeFromMin(
+            sizeFunction = {
+                sizeFunction(it.first to it.second.value)
+            },
+            maxSize = maxSize,
+            orderBy = { it.expiresAt }
+        )
 
         val currentTime = elapsedRealtimeMillis()
         do {

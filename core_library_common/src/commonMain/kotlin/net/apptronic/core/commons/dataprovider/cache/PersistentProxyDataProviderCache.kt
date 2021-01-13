@@ -54,6 +54,7 @@ class PersistentProxyDataProviderCache<K, T>(
 
     override fun clear() {
         mainCache.clear()
+        persistentCache.clear()
     }
 
 }

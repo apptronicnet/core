@@ -12,7 +12,7 @@ fun <K, T> Scope.timedCache(
 class TimedDataProviderCacheBuilder<K, T> internal constructor(private val context: Context) {
 
     var maxSize: Int = 32
-    var sizeFunction: (T) -> Int = {
+    var sizeFunction: (Pair<K, T>) -> Int = {
         1
     }
     var expirationTime: Long = 60000L
@@ -26,7 +26,7 @@ class TimedDataProviderCacheBuilder<K, T> internal constructor(private val conte
     val Long.hours: Long
         get() = this * 3600_000L
 
-    fun sizeFunction(sizeFunction: (T) -> Int) {
+    fun sizeFunction(sizeFunction: (Pair<K, T>) -> Int) {
         this.sizeFunction = sizeFunction
     }
 

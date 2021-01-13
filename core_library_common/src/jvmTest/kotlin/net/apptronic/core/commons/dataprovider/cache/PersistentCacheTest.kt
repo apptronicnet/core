@@ -9,8 +9,8 @@ import net.apptronic.core.base.subject.asValueHolder
 import net.apptronic.core.context.childContext
 import org.junit.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 import kotlin.test.assertNull
-import kotlin.test.fail
 
 class PersistentCacheTest : BaseContextTest() {
 
@@ -34,6 +34,10 @@ class PersistentCacheTest : BaseContextTest() {
         override suspend fun save(key: Int, value: String) {
             delay(3)
             persistence[key] = value
+        }
+
+        override fun clear() {
+            persistence.clear()
         }
 
     }
@@ -77,6 +81,7 @@ class PersistentCacheTest : BaseContextTest() {
             cache.releaseKey(1)
             cache.releaseKey(2)
             cache.releaseKey(3)
+
             assertEquals("One", cache.getAsync(1))
             assertEquals("Two", cache.getAsync(2))
             assertEquals("Three", cache.getAsync(3))
@@ -88,7 +93,23 @@ class PersistentCacheTest : BaseContextTest() {
 
     @Test
     fun cacheClears() {
-        fail("Not written yet!")
+        runBlocking {
+            cache[1] = "One"
+            cache[2] = "Two"
+            cache[3] = "Three"
+
+            delay(10)
+
+            assertNotNull(persistence[1])
+            assertNotNull(persistence[2])
+            assertNotNull(persistence[3])
+
+            cache.clear()
+
+            assertNull(persistence[1])
+            assertNull(persistence[2])
+            assertNull(persistence[3])
+        }
     }
 
 

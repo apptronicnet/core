@@ -12,7 +12,6 @@ import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
-import kotlin.test.fail
 
 class TimedCacheTest : BaseContextTest() {
 
@@ -95,7 +94,7 @@ class TimedCacheTest : BaseContextTest() {
             context,
             maxSize = 10,
             expirationTime = 10L,
-            sizeFunction = { it.length }
+            sizeFunction = { it.second.length }
         )
         cache[1] = "One" // 3
         cache[2] = "Two" // +3 = 6
@@ -106,7 +105,21 @@ class TimedCacheTest : BaseContextTest() {
 
     @Test
     fun cacheClears() {
-        fail("Not written yet!")
+        val cache =
+            TimedDataProviderCache<Int, String>(context, maxSize = 10, expirationTime = 999_999, sizeFunction = { 1 })
+        cache[1] = "One"
+        cache[2] = "Two"
+        cache[3] = "Three"
+
+        assertNotNull(cache[1])
+        assertNotNull(cache[2])
+        assertNotNull(cache[3])
+
+        cache.clear()
+
+        assertNull(cache[1])
+        assertNull(cache[2])
+        assertNull(cache[3])
     }
 
 }

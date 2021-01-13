@@ -1,10 +1,10 @@
 package net.apptronic.core.commons.dataprovider.cache
 
 internal fun <K, T> MutableMap<K, T>.trimToSizeFromMin(
-        sizeFunction: (T) -> Int, maxSize: Int, orderBy: (T) -> Long
+    sizeFunction: (Pair<K, T>) -> Int, maxSize: Int, orderBy: (T) -> Long
 ) {
     do {
-        val contentSize = values.sumBy { sizeFunction(it) }
+        val contentSize = entries.sumBy { sizeFunction(it.key to it.value) }
         if (contentSize > maxSize) {
             entries.minByOrNull {
                 orderBy(it.value)

@@ -11,7 +11,7 @@ import net.apptronic.core.base.subject.ValueHolder
  */
 class SimpleDataProviderCache<K, T>(
     private val maxSize: Int,
-    private val sizeFunction: (T) -> Int
+    private val sizeFunction: (Pair<K, T>) -> Int
 ) : DataProviderCache<K, T> {
 
     private inner class CacheEntry(val value: T, var lastUsed: Long = Long.MAX_VALUE)
@@ -44,7 +44,11 @@ class SimpleDataProviderCache<K, T>(
     }
 
     private fun cleanup() {
-        map.trimToSizeFromMin({ sizeFunction(it.value) }, maxSize, { it.lastUsed })
+        map.trimToSizeFromMin(
+            sizeFunction = { sizeFunction(it.first to it.second.value) },
+            maxSize = maxSize,
+            orderBy = { it.lastUsed }
+        )
     }
 
     override fun clear() {
