@@ -4,7 +4,7 @@ import net.apptronic.core.context.Context
 import kotlin.reflect.KClass
 
 internal class ObjectDefinition<TypeDeclaration>(
-        private val providerFactory: ProviderFactoryMethod<TypeDeclaration>
+    private val providerFactory: ProviderFactoryMethod<TypeDeclaration>
 ) {
 
     private var mappings = mutableListOf<ObjectKey>()
@@ -21,78 +21,24 @@ internal class ObjectDefinition<TypeDeclaration>(
 
 }
 
-sealed class ProviderDefinition<TypeDeclaration>(
-        private val objectDefinition: ObjectDefinition<TypeDeclaration>
-) {
-
-    inline fun <reified Mapping : Any> addMapping() {
-        addMapping(Mapping::class)
-    }
-
-    fun <Mapping : Any> addMapping(
-            clazz: KClass<Mapping>
-    ) {
-        objectDefinition.addMappings(objectKey(clazz))
-    }
-
-    fun <Mapping : Any> addMapping(
-            descriptor: DependencyDescriptor<Mapping>
-    ) {
-        objectDefinition.addMappings(objectKey(descriptor))
-    }
-
-    internal open fun createProvider(context: Context): ObjectProvider<TypeDeclaration> {
-        return objectDefinition.getProvider(context)
-    }
-
-}
-
-internal class GenericProviderDefinition<TypeDeclaration> internal constructor(
-        objectDefinition: ObjectDefinition<TypeDeclaration>
-) : ProviderDefinition<TypeDeclaration>(objectDefinition)
-
-class SingleProviderDefinition<TypeDeclaration> internal constructor(
-        objectDefinition: ObjectDefinition<TypeDeclaration>
-) : ProviderDefinition<TypeDeclaration>(objectDefinition) {
-
-    private var initOnLoad = false
-
-    /**
-     * Define dependency do be initialized immediately with a module and not wait for first injection
-     */
-    fun initOnLoad(): SingleProviderDefinition<TypeDeclaration> {
-        initOnLoad = true
-        return this
-    }
-
-    override fun createProvider(context: Context): ObjectProvider<TypeDeclaration> {
-        return super.createProvider(context).also {
-            if (initOnLoad) {
-                (it as? SupportsExternalInit)?.initializeInstance(context)
-            }
-        }
-    }
-
-}
-
 class BindDefinition<To : Any>(
-        val from: ObjectKey, val to: ObjectKey
+    val from: ObjectKey, val to: ObjectKey
 )
 
 infix fun <To : Any> KClass<*>.alsoAs(to: KClass<To>) =
-        BindDefinition<To>(objectKey(this), objectKey(to))
+    BindDefinition<To>(objectKey(this), objectKey(to))
 
 infix fun <To : Any> DependencyDescriptor<*>.alsoAs(to: KClass<To>) =
-        BindDefinition<To>(objectKey(this), objectKey(to))
+    BindDefinition<To>(objectKey(this), objectKey(to))
 
 infix fun <To : Any> KClass<*>.alsoAs(to: DependencyDescriptor<To>) =
-        BindDefinition<To>(objectKey(this), objectKey(to))
+    BindDefinition<To>(objectKey(this), objectKey(to))
 
 infix fun <To : Any> DependencyDescriptor<*>.alsoAs(to: DependencyDescriptor<To>) =
-        BindDefinition<To>(objectKey(this), objectKey(to))
+    BindDefinition<To>(objectKey(this), objectKey(to))
 
 class ModuleDefinition internal constructor(
-        val name: String
+    val name: String
 ) {
 
     private val definitions = mutableListOf<ProviderDefinition<*>>()
@@ -105,34 +51,36 @@ class ModuleDefinition internal constructor(
     }
 
     inline fun <reified TypeDeclaration : Any> factory(
-            noinline builder: FactoryScope.() -> TypeDeclaration
+        noinline builder: FactoryScope.() -> TypeDeclaration
     ): ProviderDefinition<TypeDeclaration> {
         return factory(TypeDeclaration::class, builder)
     }
 
     inline fun <reified TypeDeclaration : Any> single(
-            noinline builder: SingleScope.() -> TypeDeclaration
-    ): SingleProviderDefinition<TypeDeclaration> {
-        return single(TypeDeclaration::class, builder)
+        initOnLoad: Boolean = false,
+        noinline builder: SingleScope.() -> TypeDeclaration
+    ): ProviderDefinition<TypeDeclaration> {
+        return single(TypeDeclaration::class, initOnLoad, builder)
     }
 
     inline fun <reified TypeDeclaration : Any> shared(
-            fallbackCount: Int = 0,
-            fallbackLifetime: Long = 0L,
-            noinline builder: SharedScope.() -> TypeDeclaration
+        fallbackCount: Int = 0,
+        fallbackLifetime: Long = 0L,
+        managerDescriptor: DependencyDescriptor<SharedScopeManager>? = null,
+        noinline builder: SharedScope.() -> TypeDeclaration
     ): ProviderDefinition<TypeDeclaration> {
-        return shared(TypeDeclaration::class, fallbackCount, fallbackLifetime, builder)
+        return shared(TypeDeclaration::class, fallbackCount, fallbackLifetime, managerDescriptor, builder)
     }
 
     inline fun <reified TypeDeclaration : Any> instance(
-            instance: TypeDeclaration
+        instance: TypeDeclaration
     ): ProviderDefinition<TypeDeclaration> {
         return instance(TypeDeclaration::class, instance)
     }
 
     fun <TypeDeclaration : Any> factory(
-            clazz: KClass<TypeDeclaration>,
-            builder: FactoryScope.() -> TypeDeclaration
+        clazz: KClass<TypeDeclaration>,
+        builder: FactoryScope.() -> TypeDeclaration
     ): ProviderDefinition<TypeDeclaration> {
         if (clazz::class == Context::class) {
             throw IllegalArgumentException("Cannot register [Context] provider. Please use Descriptors.")
@@ -143,8 +91,8 @@ class ModuleDefinition internal constructor(
     }
 
     fun <TypeDeclaration : Any> factory(
-            descriptor: DependencyDescriptor<TypeDeclaration>,
-            builder: FactoryScope.() -> TypeDeclaration
+        descriptor: DependencyDescriptor<TypeDeclaration>,
+        builder: FactoryScope.() -> TypeDeclaration
     ): ProviderDefinition<TypeDeclaration> {
         return addDefinition {
             factoryProvider(objectKey(descriptor), BuilderMethod(builder))
@@ -152,67 +100,75 @@ class ModuleDefinition internal constructor(
     }
 
     fun <TypeDeclaration : Any> shared(
-            clazz: KClass<TypeDeclaration>,
-            fallbackCount: Int = 0,
-            fallbackLifetime: Long = 0L,
-            builder: SharedScope.() -> TypeDeclaration
+        clazz: KClass<TypeDeclaration>,
+        fallbackCount: Int = 0,
+        fallbackLifetime: Long = 0L,
+        managerDescriptor: DependencyDescriptor<SharedScopeManager>? = null,
+        builder: SharedScope.() -> TypeDeclaration
     ): ProviderDefinition<TypeDeclaration> {
         if (clazz::class == Context::class) {
             throw IllegalArgumentException("Cannot register [Context] provider. Please use Descriptors.")
         }
         return addDefinition {
-            sharedProvider(objectKey(clazz), BuilderMethod(builder), it, fallbackCount, fallbackLifetime)
+            sharedProvider(
+                objectKey(clazz), BuilderMethod(builder), it, fallbackCount, fallbackLifetime, managerDescriptor
+            )
         }
     }
 
     fun <TypeDeclaration : Any> shared(
-            descriptor: DependencyDescriptor<TypeDeclaration>,
-            fallbackCount: Int = 0,
-            fallbackLifetime: Long = 0L,
-            builder: SharedScope.() -> TypeDeclaration
+        descriptor: DependencyDescriptor<TypeDeclaration>,
+        fallbackCount: Int = 0,
+        fallbackLifetime: Long = 0L,
+        managerDescriptor: DependencyDescriptor<SharedScopeManager>? = null,
+        builder: SharedScope.() -> TypeDeclaration
     ): ProviderDefinition<TypeDeclaration> {
         return addDefinition {
-            sharedProvider(objectKey(descriptor), BuilderMethod(builder), it, fallbackCount, fallbackLifetime)
+            sharedProvider(
+                objectKey(descriptor), BuilderMethod(builder), it, fallbackCount, fallbackLifetime, managerDescriptor
+            )
         }
     }
 
     fun <TypeDeclaration : Any> single(
-            clazz: KClass<TypeDeclaration>,
-            builder: SingleScope.() -> TypeDeclaration
-    ): SingleProviderDefinition<TypeDeclaration> {
+        clazz: KClass<TypeDeclaration>,
+        initOnLoad: Boolean = false,
+        builder: SingleScope.() -> TypeDeclaration
+    ): ProviderDefinition<TypeDeclaration> {
         if (clazz::class == Context::class) {
             throw IllegalArgumentException("Cannot register [Context] provider. Please use Descriptors.")
         }
-        return addSingleDefinition {
-            singleProvider(objectKey(clazz), BuilderMethod(builder))
+        return addDefinition {
+            singleProvider(objectKey(clazz), BuilderMethod(builder), initOnLoad)
         }
     }
 
     fun <TypeDeclaration : Any> single(
-            descriptor: DependencyDescriptor<TypeDeclaration>,
-            builder: SingleScope.() -> TypeDeclaration
-    ): SingleProviderDefinition<TypeDeclaration> {
-        return addSingleDefinition {
-            singleProvider(objectKey(descriptor), BuilderMethod(builder))
+        descriptor: DependencyDescriptor<TypeDeclaration>,
+        initOnLoad: Boolean = false,
+        builder: SingleScope.() -> TypeDeclaration
+    ): ProviderDefinition<TypeDeclaration> {
+        return addDefinition {
+            singleProvider(objectKey(descriptor), BuilderMethod(builder), initOnLoad)
         }
     }
 
     inline fun <reified To : Any> bind(
-            descriptor: DependencyDescriptor<*>
+        descriptor: DependencyDescriptor<*>
     ): ProviderDefinition<To> {
         val clazz = To::class
         return bind(descriptor alsoAs clazz)
     }
 
     inline fun <reified To : Any> bind(
-            fromClazz: KClass<*>
+        fromClazz: KClass<*>
     ): ProviderDefinition<To> {
         val clazz = To::class
         return bind(fromClazz alsoAs clazz)
     }
 
     fun <To : Any> bind(
-            bindDefinition: BindDefinition<To>
+        bindDefinition: BindDefinition<To>
     ): ProviderDefinition<To> {
         return addDefinition {
             bindProvider<To>(bindDefinition.to)
@@ -220,8 +176,8 @@ class ModuleDefinition internal constructor(
     }
 
     fun <TypeDeclaration : Any> instance(
-            clazz: KClass<TypeDeclaration>,
-            instance: TypeDeclaration
+        clazz: KClass<TypeDeclaration>,
+        instance: TypeDeclaration
     ): ProviderDefinition<TypeDeclaration> {
         if (clazz::class == Context::class) {
             throw IllegalArgumentException("Cannot register [Context] provider. Please use Descriptors.")
@@ -232,8 +188,8 @@ class ModuleDefinition internal constructor(
     }
 
     fun <TypeDeclaration : Any> instance(
-            descriptor: DependencyDescriptor<TypeDeclaration>,
-            instance: TypeDeclaration
+        descriptor: DependencyDescriptor<TypeDeclaration>,
+        instance: TypeDeclaration
     ): ProviderDefinition<TypeDeclaration> {
         return addDefinition {
             instanceProvider(objectKey(descriptor), instance)
@@ -241,19 +197,10 @@ class ModuleDefinition internal constructor(
     }
 
     private fun <TypeDeclaration> addDefinition(
-            providerFactory: (Context) -> ObjectProvider<TypeDeclaration>
+        providerFactory: (Context) -> ObjectProvider<TypeDeclaration>
     ): ProviderDefinition<TypeDeclaration> {
         val objectDefinition = ObjectDefinition(ProviderFactoryMethod(providerFactory))
-        val providerDefinition = GenericProviderDefinition(objectDefinition)
-        definitions.add(providerDefinition)
-        return providerDefinition
-    }
-
-    private fun <TypeDeclaration> addSingleDefinition(
-            providerFactory: (Context) -> ObjectProvider<TypeDeclaration>
-    ): SingleProviderDefinition<TypeDeclaration> {
-        val objectDefinition = ObjectDefinition(ProviderFactoryMethod(providerFactory))
-        val providerDefinition = SingleProviderDefinition(objectDefinition)
+        val providerDefinition = ProviderDefinition(objectDefinition)
         definitions.add(providerDefinition)
         return providerDefinition
     }
@@ -261,8 +208,8 @@ class ModuleDefinition internal constructor(
 }
 
 internal class Module constructor(
-        val name: String,
-        val providers: List<ObjectProvider<*>>
+    val name: String,
+    val providers: List<ObjectProvider<*>>
 ) {
 
     fun getProvider(objectKey: ObjectKey): ObjectProvider<*>? {

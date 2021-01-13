@@ -39,7 +39,15 @@ fun <K : Any, T : Any> ModuleDefinition.sharedDataProvider(
     single(descriptor.dispatcherDescriptor) {
         DataProviderDispatcher(scopedContext(), descriptor)
     }
-    shared(descriptor.holderDescriptor, fallbackCount, fallbackLifetime) {
+    single(descriptor.scopeManagerDescriptor) {
+        DataProviderSharedScopeManager(scopedContext(), descriptor)
+    }
+    shared(
+        descriptor.holderDescriptor,
+        fallbackCount,
+        fallbackLifetime,
+        managerDescriptor = descriptor.scopeManagerDescriptor
+    ) {
         val key: K = provided(descriptor.keyDescriptor)
         DataProviderHolder(dataProviderContext(descriptor, key, builder), descriptor, key)
     }
@@ -62,11 +70,7 @@ fun <T : Any> ModuleDefinition.singleDataProvider(
     single(descriptor.dispatcherDescriptor) {
         DataProviderDispatcher(scopedContext(), descriptor)
     }
-    single(descriptor.holderDescriptor) {
+    single(descriptor.holderDescriptor, initOnLoad = true) {
         DataProviderHolder(dataProviderContext(descriptor, Unit, unitBuilder), descriptor, Unit)
-    }.also {
-        if (initOnLoad) {
-            it.initOnLoad()
-        }
     }
 }

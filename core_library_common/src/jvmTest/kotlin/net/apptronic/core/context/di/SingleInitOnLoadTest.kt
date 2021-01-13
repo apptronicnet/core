@@ -38,9 +38,9 @@ class SingleInitOnLoadTest : BaseContextTest() {
             single {
                 SomeNoInitOnLoad()
             }
-            single {
+            single(initOnLoad = true) {
                 SomeInitOnLoad()
-            }.initOnLoad()
+            }
         }
 
         assertFalse(isShouldBeNotInitialized)

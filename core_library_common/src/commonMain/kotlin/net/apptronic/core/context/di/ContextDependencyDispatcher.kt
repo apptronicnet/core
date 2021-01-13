@@ -8,7 +8,7 @@ import kotlin.reflect.KClass
  * Class for providing dependencies
  */
 internal class ContextDependencyDispatcher(
-        override val context: Context
+    override val context: Context
 ) : DependencyDispatcher() {
 
     private val externalInstances = mutableMapOf<ObjectKey, ValueHolder<*>>()
@@ -21,8 +21,8 @@ internal class ContextDependencyDispatcher(
      * @param name optional name for instance
      */
     override fun <TypeDeclaration : Any> addInstance(
-            clazz: KClass<TypeDeclaration>,
-            instance: TypeDeclaration
+        clazz: KClass<TypeDeclaration>,
+        instance: TypeDeclaration
     ) {
         if (instance is ModuleDefinition) {
             throw IllegalArgumentException("ModuleDefinition should be added using addModule()")
@@ -41,8 +41,8 @@ internal class ContextDependencyDispatcher(
      * @param name optional name for instance
      */
     override fun <TypeDeclaration : Any> addInstance(
-            descriptor: DependencyDescriptor<TypeDeclaration>,
-            instance: TypeDeclaration
+        descriptor: DependencyDescriptor<TypeDeclaration>,
+        instance: TypeDeclaration
     ) {
         if (instance is ModuleDefinition) {
             throw IllegalArgumentException("ModuleDefinition should be added using addModule()")
@@ -58,15 +58,19 @@ internal class ContextDependencyDispatcher(
      * @param name optional name for instance
      */
     override fun <TypeDeclaration : Any> addNullableInstance(
-            descriptor: DependencyDescriptor<TypeDeclaration?>,
-            instance: TypeDeclaration?
+        descriptor: DependencyDescriptor<TypeDeclaration?>,
+        instance: TypeDeclaration?
     ) {
         val key = objectKey(descriptor)
         externalInstances[key] = ValueHolder(instance)
     }
 
     override fun addModule(moduleDefinition: ModuleDefinition) {
-        modules.add(moduleDefinition.buildInstance(context))
+        val module = moduleDefinition.buildInstance(context)
+        modules.add(module)
+        module.providers.forEach {
+            it.onModuleLoaded(context)
+        }
     }
 
     override fun getInstanceNames(): List<String> {
@@ -80,7 +84,7 @@ internal class ContextDependencyDispatcher(
     }
 
     override fun <TypeDeclaration> searchInstance(
-            searchSpec: SearchSpec
+        searchSpec: SearchSpec
     ): ValueHolder<TypeDeclaration>? {
         searchSpec.addContextToChain(context)
         val local: ValueHolder<TypeDeclaration>? = obtainLocalInstance(searchSpec)
@@ -96,7 +100,7 @@ internal class ContextDependencyDispatcher(
 
     @Suppress("UNCHECKED_CAST")
     private fun <TypeDeclaration> obtainLocalInstance(
-            searchSpec: SearchSpec
+        searchSpec: SearchSpec
     ): ValueHolder<TypeDeclaration>? {
         val obj = externalInstances[searchSpec.key]
         if (obj != null) {
@@ -128,21 +132,21 @@ internal class ContextDependencyDispatcher(
         val name = context.toString()
         val instanceTraces = externalInstances.entries.map {
             DependencyTraceInstance(
-                    it.key.toString(),
-                    it.value
+                it.key.toString(),
+                it.value
             )
         }
         val moduleTraces = this.modules.map { module ->
             DependencyTraceModule(
-                    name = module.name,
-                    providers = module.providers.map { provider ->
-                        DependencyTraceProvider(
-                                type = provider.typeName,
-                                keys = provider.getMappings().map { objectKey ->
-                                    objectKey.toString()
-                                }
-                        )
-                    }
+                name = module.name,
+                providers = module.providers.map { provider ->
+                    DependencyTraceProvider(
+                        type = provider.typeName,
+                        keys = provider.getMappings().map { objectKey ->
+                            objectKey.toString()
+                        }
+                    )
+                }
             )
         }
         return DependencyTraceElement(name, instanceTraces, moduleTraces)

@@ -1,10 +1,6 @@
 package net.apptronic.core.context.di
 
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import net.apptronic.core.base.elapsedRealtimeMillis
 import net.apptronic.core.context.Context
-import net.apptronic.core.context.coroutines.contextCoroutineScope
 
 internal sealed class ObjectProvider<TypeDeclaration>(
     objectKey: ObjectKey
@@ -30,6 +26,10 @@ internal sealed class ObjectProvider<TypeDeclaration>(
         return objectKeys.any { it == key }
     }
 
+    open fun onModuleLoaded(definitionContext: Context) {
+        // implement by subclasses if needed
+    }
+
     abstract fun provide(
         definitionContext: Context,
         dispatcher: DependencyDispatcher,
@@ -47,23 +47,12 @@ internal abstract class ObjectBuilderProvider<TypeDeclaration : Any, BuilderScop
 
 internal fun <TypeDeclaration : Any> singleProvider(
     objectKey: ObjectKey,
-    builder: BuilderMethod<TypeDeclaration, SingleScope>
+    builder: BuilderMethod<TypeDeclaration, SingleScope>,
+    initOnLoad: Boolean
 ): ObjectProvider<TypeDeclaration> {
-    return SingleProvider(objectKey, builder)
+    return SingleProvider(objectKey, builder, initOnLoad)
 }
 
-internal fun <TypeDeclaration : Any> sharedProvider(
-    objectKey: ObjectKey,
-    builder: BuilderMethod<TypeDeclaration, SharedScope>,
-    context: Context,
-    fallbackCount: Int,
-    fallbackLifetime: Long
-): ObjectProvider<TypeDeclaration> {
-    if (fallbackCount > 0 != fallbackLifetime > 0) {
-        throw IllegalArgumentException("Both [fallbackCount] and [fallbackLifetime] should be set to be larger than 0 at same time")
-    }
-    return SharedProvider(objectKey, builder, context, fallbackCount, fallbackLifetime)
-}
 
 internal fun <TypeDeclaration : Any> factoryProvider(
     objectKey: ObjectKey,
@@ -84,23 +73,21 @@ internal fun <TypeDeclaration : Any> instanceProvider(
     return InstanceProvider(objectKey, instance)
 }
 
-internal interface SupportsExternalInit {
-
-    fun initializeInstance(definitionContext: Context)
-
-}
-
 private class SingleProvider<TypeDeclaration : Any>(
     objectKey: ObjectKey,
-    builder: BuilderMethod<TypeDeclaration, SingleScope>
-) : ObjectBuilderProvider<TypeDeclaration, SingleScope>(objectKey, builder), SupportsExternalInit {
+    builder: BuilderMethod<TypeDeclaration, SingleScope>,
+    val initOnLoad: Boolean
+) : ObjectBuilderProvider<TypeDeclaration, SingleScope>(objectKey, builder) {
 
     override val typeName: String = "single"
 
     private var entity: TypeDeclaration? = null
 
-    override fun initializeInstance(definitionContext: Context) {
-        createInstance(definitionContext, definitionContext.dependencyDispatcher)
+    override fun onModuleLoaded(definitionContext: Context) {
+        super.onModuleLoaded(definitionContext)
+        if (initOnLoad) {
+            createInstance(definitionContext, definitionContext.dependencyDispatcher)
+        }
     }
 
     override fun provide(
@@ -156,113 +143,6 @@ private class FactoryProvider<TypeDeclaration : Any>(
 
 }
 
-private class SharedProvider<TypeDeclaration : Any>(
-    objectKey: ObjectKey,
-    builder: BuilderMethod<TypeDeclaration, SharedScope>,
-    private val context: Context,
-    private val fallbackCount: Int,
-    private val fallbackLifetime: Long
-) : ObjectBuilderProvider<TypeDeclaration, SharedScope>(objectKey, builder) {
-
-    override val typeName: String = "shared"
-
-    private val coroutineScope = context.contextCoroutineScope
-
-    private class SharedInstance<T>(
-        val instance: T,
-        val scope: SharedScope
-    ) {
-        var shareCount: Int = 0
-        fun recycle() {
-            scope.finalize()
-        }
-    }
-
-    private class UnusedShare<T>(
-        val parameters: Parameters,
-        val share: SharedInstance<T>,
-        val unusedFrom: Long
-    )
-
-    private val shares = mutableMapOf<Parameters, SharedInstance<TypeDeclaration>>()
-    private val unused = mutableListOf<UnusedShare<TypeDeclaration>>()
-
-    override fun provide(
-        definitionContext: Context,
-        dispatcher: DependencyDispatcher,
-        searchSpec: SearchSpec
-    ): TypeDeclaration {
-        val providedContext = searchSpec.context
-        val parameters = searchSpec.params
-        val share = shares[parameters]
-            ?: unused.firstOrNull {
-                it.parameters == parameters
-            }?.let {
-                unused.remove(it)
-                it.share
-            } ?: createInstance(
-                definitionContext, dispatcher, parameters
-            )
-        share.shareCount++
-        providedContext.lifecycle.onExitFromActiveStage {
-            share.shareCount--
-            if (share.shareCount == 0) {
-                shares.remove(parameters)
-                unused(parameters, share)
-            }
-        }
-        return share.instance
-    }
-
-    private fun createInstance(
-        definitionContext: Context, dispatcher: DependencyDispatcher, parameters: Parameters
-    ): SharedInstance<TypeDeclaration> {
-        val scope = SharedScope(definitionContext, dispatcher, parameters)
-        val instance = builder.invoke(scope)
-        scope.autoRecycle(instance)
-        val processed = definitionContext.plugins.nextProvide(definitionContext, instance)
-        val share = SharedInstance(processed, scope)
-        shares[parameters] = share
-        return share
-    }
-
-    private fun unused(parameters: Parameters, share: SharedInstance<TypeDeclaration>) {
-        if (fallbackCount <= 0 || fallbackLifetime <= 0) {
-            share.recycle()
-        } else {
-            unused.add(UnusedShare(parameters, share, elapsedRealtimeMillis()))
-            clearUnused()
-        }
-    }
-
-    fun clearUnused() {
-        val timestamp = elapsedRealtimeMillis()
-        unused.removeAll {
-            if (timestamp - it.unusedFrom > fallbackLifetime) {
-                it.share.recycle()
-                true
-            } else false
-        }
-        while (unused.isNotEmpty() && unused.size > fallbackCount) {
-            unused.removeAt(0).share.recycle()
-        }
-        scheduleAutoClearUnused()
-    }
-
-    private fun scheduleAutoClearUnused() {
-        if (unused.isNotEmpty()) {
-            val lifetimeInUnused = elapsedRealtimeMillis() - unused[0].unusedFrom
-            val delayTime = fallbackLifetime - lifetimeInUnused
-            if (delayTime > 0) {
-                coroutineScope.launch {
-                    delay(delayTime)
-                    clearUnused()
-                }
-            }
-        }
-    }
-
-}
 
 private class BindProvider<TypeDeclaration>(
     private val objectKey: ObjectKey

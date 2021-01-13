@@ -16,12 +16,8 @@ abstract class PluginOnDependencySingleDescriptorTest(val initOnLoad: Boolean) :
 
     fun initModule() {
         context.dependencyModule {
-            single(descriptor) {
+            single(descriptor, initOnLoad = initOnLoad) {
                 SomeDependencyImpl()
-            }.apply {
-                if (initOnLoad) {
-                    initOnLoad()
-                }
             }
         }
     }

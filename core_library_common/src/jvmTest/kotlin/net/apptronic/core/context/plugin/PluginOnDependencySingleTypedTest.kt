@@ -13,12 +13,8 @@ abstract class PluginOnDependencySingleTypedTest(val initOnLoad: Boolean) : Plug
 
     fun initModule() {
         context.dependencyModule {
-            single<SomeDependency> {
+            single<SomeDependency>(initOnLoad = initOnLoad) {
                 SomeDependencyImpl()
-            }.apply {
-                if (initOnLoad) {
-                    initOnLoad()
-                }
             }
         }
     }

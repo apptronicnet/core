@@ -42,7 +42,7 @@ fun <T> ModuleDefinition.navigationRouter(descriptor: NavigationRouterDescriptor
 fun <T> ModuleDefinition.navigationRouter(
         descriptor: NavigationRouterDescriptor<T>, builder: SingleScope.() -> NavigationRouter<T>
 ) {
-    single(descriptor.dependencyDescriptor, builder)
+    single(descriptor.dependencyDescriptor, builder = builder)
 }
 
 fun Contextual.injectNavigationRouter(): NavigationRouter<Any> {

@@ -74,7 +74,9 @@ class DataProviderDispatcher<K : Any, T : Any> internal constructor(
 
     /**
      * Triggers force terminate all alive [DataProvider]s with corresponding [DataProviderDescriptor].
-     * All [DataProvider]s which have active clients will be recreated automatically after this action.
+     * All [DataProvider]s which have active clients will be recreated automatically after this action, all
+     * fallback [DataProvider]s will be terminated until new client request.
+     *
      *
      * Also all new [DataProviderProperty]s will receive no data from [DataProvider] until [DataProvider] load new data.
      */
