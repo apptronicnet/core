@@ -10,6 +10,7 @@ import net.apptronic.core.context.childContext
 import net.apptronic.core.context.terminate
 import org.junit.Test
 import kotlin.test.assertEquals
+import kotlin.test.fail
 
 class PersistentProxyCacheTest : BaseContextTest() {
 
@@ -23,7 +24,7 @@ class PersistentProxyCacheTest : BaseContextTest() {
 
     val persistence = mutableMapOf<Int, String>()
 
-    inner class PersistenceImpl : CachePersistence<Int, String> {
+    inner class PersistenceImpl : DataProviderCachePersistence<Int, String> {
 
         override suspend fun load(key: Int): ValueHolder<String>? {
             delay(3)
@@ -82,6 +83,17 @@ class PersistentProxyCacheTest : BaseContextTest() {
             )
             assertEquals(3, listOfNotNull(cache2[1], cache2[2], cache2[3], cache2[4], cache2[5]).size)
         }
+    }
+
+    @Test
+    fun cacheClears() {
+        fail("Not written yet!")
+    }
+
+
+    @Test
+    fun cacheNotClears() {
+        fail("Not written yet!")
     }
 
 }

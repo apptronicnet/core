@@ -72,6 +72,15 @@ abstract class DataProvider<K, T>(context: Context, val key: K) : Component(cont
     }
 
     /**
+     * Will be called if this [DataProvider] is active and [DataProviderDispatcher.resetData] will be called.
+     *
+     * In case if this [DataProvider] stores any data inside it is time to clear it.
+     */
+    open fun onClearRequested() {
+        // implement by subclasses if needed
+    }
+
+    /**
      * This method can be invoked in [loadData] when load result can be null but [DataProvider] does not supports
      * providing null data (for example using filtering etc.)
      */

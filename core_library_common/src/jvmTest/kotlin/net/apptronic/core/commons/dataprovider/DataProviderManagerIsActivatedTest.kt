@@ -3,16 +3,11 @@ package net.apptronic.core.commons.dataprovider
 import org.junit.Test
 import kotlin.test.fail
 
-class SingleDataProviderTest {
+class DataProviderManagerIsActivatedTest {
 
     @Test
-    fun notWrittenYet() {
+    fun verifyDeactivateActivate() {
         fail("Not written yet")
-    }
-
-    @Test
-    fun verifyDropAll() {
-        fail("Not written yet!")
     }
 
 }

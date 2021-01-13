@@ -1,7 +1,5 @@
-package net.apptronic.core.commons.dataprovider
+package net.apptronic.core.commons.dataprovider.cache
 
-import net.apptronic.core.commons.dataprovider.cache.DataProviderCache
-import net.apptronic.core.commons.dataprovider.cache.SimpleDataProviderCache
 import net.apptronic.core.context.di.Scope
 
 fun <K, T> Scope.simpleCache(

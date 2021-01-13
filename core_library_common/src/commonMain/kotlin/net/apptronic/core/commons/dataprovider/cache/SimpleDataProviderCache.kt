@@ -47,4 +47,8 @@ class SimpleDataProviderCache<K, T>(
         map.trimToSizeFromMin({ sizeFunction(it.value) }, maxSize, { it.lastUsed })
     }
 
+    override fun clear() {
+        map.clear()
+    }
+
 }

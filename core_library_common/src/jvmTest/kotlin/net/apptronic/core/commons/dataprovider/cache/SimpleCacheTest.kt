@@ -7,6 +7,7 @@ import net.apptronic.core.base.subject.asValueHolder
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
+import kotlin.test.fail
 
 class SimpleCacheTest : BaseContextTest() {
 
@@ -64,6 +65,11 @@ class SimpleCacheTest : BaseContextTest() {
         cache[3] = "Three" // +5 = 11 > 10 (limit)
         val cached = listOfNotNull(cache[1], cache[2], cache[3])
         assertEquals(2, cached.size)
+    }
+
+    @Test
+    fun cacheClears() {
+        fail("Not written yet!")
     }
 
 }

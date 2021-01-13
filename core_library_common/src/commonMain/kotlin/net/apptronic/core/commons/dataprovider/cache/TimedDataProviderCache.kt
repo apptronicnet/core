@@ -77,4 +77,10 @@ class TimedDataProviderCache<K, T>(
         } while (firstExpiration != null)
     }
 
+    override fun clear() {
+        map.clear()
+        cleanupJob?.cancel()
+        cleanupJob = null
+    }
+
 }

@@ -7,7 +7,7 @@ import net.apptronic.core.context.Context
 import net.apptronic.core.context.coroutines.contextCoroutineScope
 
 internal sealed class ObjectProvider<TypeDeclaration>(
-        objectKey: ObjectKey
+    objectKey: ObjectKey
 ) {
 
     abstract val typeName: String
@@ -31,52 +31,55 @@ internal sealed class ObjectProvider<TypeDeclaration>(
     }
 
     abstract fun provide(
-            definitionContext: Context,
-            dispatcher: DependencyDispatcher,
-            searchSpec: SearchSpec
+        definitionContext: Context,
+        dispatcher: DependencyDispatcher,
+        searchSpec: SearchSpec
     ): TypeDeclaration
 
 }
 
 internal abstract class ObjectBuilderProvider<TypeDeclaration : Any, BuilderScope : Scope> internal constructor(
-        objectKey: ObjectKey,
-        internal val builder: BuilderMethod<TypeDeclaration, BuilderScope>
+    objectKey: ObjectKey,
+    internal val builder: BuilderMethod<TypeDeclaration, BuilderScope>
 ) : ObjectProvider<TypeDeclaration>(objectKey) {
 
 }
 
 internal fun <TypeDeclaration : Any> singleProvider(
-        objectKey: ObjectKey,
-        builder: BuilderMethod<TypeDeclaration, SingleScope>
+    objectKey: ObjectKey,
+    builder: BuilderMethod<TypeDeclaration, SingleScope>
 ): ObjectProvider<TypeDeclaration> {
     return SingleProvider(objectKey, builder)
 }
 
-internal fun <TypeDeclaration : Any> sharedDataProvider(
-        objectKey: ObjectKey,
-        builder: BuilderMethod<TypeDeclaration, SharedScope>,
-        context: Context,
-        fallbackCount: Int,
-        fallbackLifetime: Long
+internal fun <TypeDeclaration : Any> sharedProvider(
+    objectKey: ObjectKey,
+    builder: BuilderMethod<TypeDeclaration, SharedScope>,
+    context: Context,
+    fallbackCount: Int,
+    fallbackLifetime: Long
 ): ObjectProvider<TypeDeclaration> {
+    if (fallbackCount > 0 != fallbackLifetime > 0) {
+        throw IllegalArgumentException("Both [fallbackCount] and [fallbackLifetime] should be set to be larger than 0 at same time")
+    }
     return SharedProvider(objectKey, builder, context, fallbackCount, fallbackLifetime)
 }
 
 internal fun <TypeDeclaration : Any> factoryProvider(
-        objectKey: ObjectKey,
-        builder: BuilderMethod<TypeDeclaration, FactoryScope>
+    objectKey: ObjectKey,
+    builder: BuilderMethod<TypeDeclaration, FactoryScope>
 ): ObjectProvider<TypeDeclaration> {
     return FactoryProvider(objectKey, builder)
 }
 
 internal fun <TypeDeclaration : Any> bindProvider(
-        objectKey: ObjectKey
+    objectKey: ObjectKey
 ): ObjectProvider<TypeDeclaration> {
     return BindProvider(objectKey)
 }
 
 internal fun <TypeDeclaration : Any> instanceProvider(
-        objectKey: ObjectKey, instance: TypeDeclaration
+    objectKey: ObjectKey, instance: TypeDeclaration
 ): ObjectProvider<TypeDeclaration> {
     return InstanceProvider(objectKey, instance)
 }
@@ -88,8 +91,8 @@ internal interface SupportsExternalInit {
 }
 
 private class SingleProvider<TypeDeclaration : Any>(
-        objectKey: ObjectKey,
-        builder: BuilderMethod<TypeDeclaration, SingleScope>
+    objectKey: ObjectKey,
+    builder: BuilderMethod<TypeDeclaration, SingleScope>
 ) : ObjectBuilderProvider<TypeDeclaration, SingleScope>(objectKey, builder), SupportsExternalInit {
 
     override val typeName: String = "single"
@@ -101,16 +104,16 @@ private class SingleProvider<TypeDeclaration : Any>(
     }
 
     override fun provide(
-            definitionContext: Context,
-            dispatcher: DependencyDispatcher,
-            searchSpec: SearchSpec
+        definitionContext: Context,
+        dispatcher: DependencyDispatcher,
+        searchSpec: SearchSpec
     ): TypeDeclaration {
         return entity ?: createInstance(definitionContext, dispatcher)
     }
 
     private fun createInstance(
-            definitionContext: Context,
-            dispatcher: DependencyDispatcher
+        definitionContext: Context,
+        dispatcher: DependencyDispatcher
     ): TypeDeclaration {
         val scope = SingleScope(definitionContext, dispatcher)
         val instance: TypeDeclaration = builder.invoke(scope)
@@ -127,13 +130,17 @@ private class SingleProvider<TypeDeclaration : Any>(
 }
 
 private class FactoryProvider<TypeDeclaration : Any>(
-        objectKey: ObjectKey,
-        builder: BuilderMethod<TypeDeclaration, FactoryScope>
+    objectKey: ObjectKey,
+    builder: BuilderMethod<TypeDeclaration, FactoryScope>
 ) : ObjectBuilderProvider<TypeDeclaration, FactoryScope>(objectKey, builder) {
 
     override val typeName: String = "factory"
 
-    override fun provide(definitionContext: Context, dispatcher: DependencyDispatcher, searchSpec: SearchSpec): TypeDeclaration {
+    override fun provide(
+        definitionContext: Context,
+        dispatcher: DependencyDispatcher,
+        searchSpec: SearchSpec
+    ): TypeDeclaration {
         val injectionContext = searchSpec.context
         val scope = FactoryScope(definitionContext, injectionContext, dispatcher, searchSpec.params)
         val instance = builder.invoke(scope)
@@ -150,11 +157,11 @@ private class FactoryProvider<TypeDeclaration : Any>(
 }
 
 private class SharedProvider<TypeDeclaration : Any>(
-        objectKey: ObjectKey,
-        builder: BuilderMethod<TypeDeclaration, SharedScope>,
-        private val context: Context,
-        private val fallbackCount: Int,
-        private val fallbackLifetime: Long
+    objectKey: ObjectKey,
+    builder: BuilderMethod<TypeDeclaration, SharedScope>,
+    private val context: Context,
+    private val fallbackCount: Int,
+    private val fallbackLifetime: Long
 ) : ObjectBuilderProvider<TypeDeclaration, SharedScope>(objectKey, builder) {
 
     override val typeName: String = "shared"
@@ -162,8 +169,8 @@ private class SharedProvider<TypeDeclaration : Any>(
     private val coroutineScope = context.contextCoroutineScope
 
     private class SharedInstance<T>(
-            val instance: T,
-            val scope: SharedScope
+        val instance: T,
+        val scope: SharedScope
     ) {
         var shareCount: Int = 0
         fun recycle() {
@@ -172,20 +179,30 @@ private class SharedProvider<TypeDeclaration : Any>(
     }
 
     private class UnusedShare<T>(
-            val parameters: Parameters,
-            val share: SharedInstance<T>,
-            val unusedFrom: Long
+        val parameters: Parameters,
+        val share: SharedInstance<T>,
+        val unusedFrom: Long
     )
 
     private val shares = mutableMapOf<Parameters, SharedInstance<TypeDeclaration>>()
     private val unused = mutableListOf<UnusedShare<TypeDeclaration>>()
 
-    override fun provide(definitionContext: Context, dispatcher: DependencyDispatcher, searchSpec: SearchSpec): TypeDeclaration {
+    override fun provide(
+        definitionContext: Context,
+        dispatcher: DependencyDispatcher,
+        searchSpec: SearchSpec
+    ): TypeDeclaration {
         val providedContext = searchSpec.context
         val parameters = searchSpec.params
-        val share = shares[parameters] ?: createInstance(
+        val share = shares[parameters]
+            ?: unused.firstOrNull {
+                it.parameters == parameters
+            }?.let {
+                unused.remove(it)
+                it.share
+            } ?: createInstance(
                 definitionContext, dispatcher, parameters
-        )
+            )
         share.shareCount++
         providedContext.lifecycle.onExitFromActiveStage {
             share.shareCount--
@@ -198,7 +215,7 @@ private class SharedProvider<TypeDeclaration : Any>(
     }
 
     private fun createInstance(
-            definitionContext: Context, dispatcher: DependencyDispatcher, parameters: Parameters
+        definitionContext: Context, dispatcher: DependencyDispatcher, parameters: Parameters
     ): SharedInstance<TypeDeclaration> {
         val scope = SharedScope(definitionContext, dispatcher, parameters)
         val instance = builder.invoke(scope)
@@ -221,7 +238,7 @@ private class SharedProvider<TypeDeclaration : Any>(
     fun clearUnused() {
         val timestamp = elapsedRealtimeMillis()
         unused.removeAll {
-            if (timestamp - it.unusedFrom > fallbackCount) {
+            if (timestamp - it.unusedFrom > fallbackLifetime) {
                 it.share.recycle()
                 true
             } else false
@@ -236,11 +253,11 @@ private class SharedProvider<TypeDeclaration : Any>(
         if (unused.isNotEmpty()) {
             val lifetimeInUnused = elapsedRealtimeMillis() - unused[0].unusedFrom
             val delayTime = fallbackLifetime - lifetimeInUnused
-            coroutineScope.launch {
-                if (delayTime > 0) {
+            if (delayTime > 0) {
+                coroutineScope.launch {
                     delay(delayTime)
+                    clearUnused()
                 }
-                clearUnused()
             }
         }
     }
@@ -248,25 +265,33 @@ private class SharedProvider<TypeDeclaration : Any>(
 }
 
 private class BindProvider<TypeDeclaration>(
-        private val objectKey: ObjectKey
+    private val objectKey: ObjectKey
 ) : ObjectProvider<TypeDeclaration>(objectKey) {
 
     override val typeName: String = "bind"
 
-    override fun provide(definitionContext: Context, dispatcher: DependencyDispatcher, searchSpec: SearchSpec): TypeDeclaration {
+    override fun provide(
+        definitionContext: Context,
+        dispatcher: DependencyDispatcher,
+        searchSpec: SearchSpec
+    ): TypeDeclaration {
         return dispatcher.inject(objectKey, emptyParameters()) as TypeDeclaration
     }
 
 }
 
 private class InstanceProvider<TypeDeclaration>(
-        private val objectKey: ObjectKey,
-        private val instance: TypeDeclaration
+    private val objectKey: ObjectKey,
+    private val instance: TypeDeclaration
 ) : ObjectProvider<TypeDeclaration>(objectKey) {
 
     override val typeName: String = "instance"
 
-    override fun provide(definitionContext: Context, dispatcher: DependencyDispatcher, searchSpec: SearchSpec): TypeDeclaration {
+    override fun provide(
+        definitionContext: Context,
+        dispatcher: DependencyDispatcher,
+        searchSpec: SearchSpec
+    ): TypeDeclaration {
         return instance
     }
 

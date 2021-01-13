@@ -36,4 +36,9 @@ interface DataProviderCache<K, T> {
      */
     fun releaseKey(key: K)
 
+    /**
+     * Force clear all cache
+     */
+    fun clear()
+
 }

@@ -67,5 +67,9 @@ open class BaseMutableValue<T> internal constructor(
         }
     }
 
+    override fun clear() {
+        subject.clear()
+    }
+
 }
 

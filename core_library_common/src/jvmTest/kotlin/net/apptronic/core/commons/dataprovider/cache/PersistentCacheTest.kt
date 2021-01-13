@@ -10,6 +10,7 @@ import net.apptronic.core.context.childContext
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
+import kotlin.test.fail
 
 class PersistentCacheTest : BaseContextTest() {
 
@@ -23,7 +24,7 @@ class PersistentCacheTest : BaseContextTest() {
         return deferred.await()
     }
 
-    private inner class PersistenceImpl : CachePersistence<Int, String> {
+    private inner class PersistenceImpl : DataProviderCachePersistence<Int, String> {
 
         override suspend fun load(key: Int): ValueHolder<String>? {
             delay(3)
@@ -84,5 +85,11 @@ class PersistentCacheTest : BaseContextTest() {
             assertEquals("Three", persistence[3]!!)
         }
     }
+
+    @Test
+    fun cacheClears() {
+        fail("Not written yet!")
+    }
+
 
 }

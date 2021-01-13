@@ -2,6 +2,7 @@ package net.apptronic.core.commons.dataprovider
 
 import kotlinx.coroutines.withContext
 import net.apptronic.core.commons.dataprovider.cache.DataProviderCache
+import net.apptronic.core.commons.dataprovider.cache.simpleCache
 import net.apptronic.core.context.Context
 import net.apptronic.core.context.childContext
 import net.apptronic.core.context.component.Component
@@ -15,6 +16,7 @@ import net.apptronic.core.testutils.createTestContext
 import org.junit.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import kotlin.test.fail
 
 private val DataProviderDescriptor = dataProviderDescriptor<Int, DataProviderWithCacheTest.Data>()
 
@@ -111,6 +113,16 @@ class DataProviderWithCacheTest {
         assertTrue(user1_4.data.get() !== user1_1.data.get())
         assertTrue(user1_4.data.get() !== user1_2.data.get())
         assertTrue(user1_4.data.get() !== user1_3.data.get())
+    }
+
+    @Test
+    fun verifyDropAll() {
+        fail("Not written yet!")
+    }
+
+    @Test
+    fun verifyDropAllWithCaches() {
+        fail("Not written yet!")
     }
 
 }

@@ -161,7 +161,7 @@ class ModuleDefinition internal constructor(
             throw IllegalArgumentException("Cannot register [Context] provider. Please use Descriptors.")
         }
         return addDefinition {
-            sharedDataProvider(objectKey(clazz), BuilderMethod(builder), it, fallbackCount, fallbackLifetime)
+            sharedProvider(objectKey(clazz), BuilderMethod(builder), it, fallbackCount, fallbackLifetime)
         }
     }
 
@@ -172,7 +172,7 @@ class ModuleDefinition internal constructor(
             builder: SharedScope.() -> TypeDeclaration
     ): ProviderDefinition<TypeDeclaration> {
         return addDefinition {
-            sharedDataProvider(objectKey(descriptor), BuilderMethod(builder), it, fallbackCount, fallbackLifetime)
+            sharedProvider(objectKey(descriptor), BuilderMethod(builder), it, fallbackCount, fallbackLifetime)
         }
     }
 

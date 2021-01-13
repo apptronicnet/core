@@ -128,4 +128,8 @@ private class ReflectionValue<T, E>(
 
     override fun doIfSet(action: (E) -> Unit) = getValueHolder().doIfSet(action)
 
+    override fun clear() {
+        target.clear()
+    }
+
 }

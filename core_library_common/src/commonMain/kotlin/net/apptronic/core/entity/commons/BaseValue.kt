@@ -24,5 +24,9 @@ open class BaseValue<T> internal constructor(
         update(next)
     }
 
+    override fun clear() {
+        subject.clear()
+    }
+
 }
 

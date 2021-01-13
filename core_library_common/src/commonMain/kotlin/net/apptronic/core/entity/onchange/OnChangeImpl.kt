@@ -101,4 +101,8 @@ internal class OnChangeImpl<T, E>(
         return reflection
     }
 
+    override fun clear() {
+        value.clear()
+    }
+
 }

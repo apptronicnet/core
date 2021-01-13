@@ -9,7 +9,7 @@ import net.apptronic.core.context.coroutines.contextCoroutineScope
 
 class PersistentDataProviderCache<K, T>(
     context: Context,
-    private val persistence: CachePersistence<K, T>
+    private val persistence: DataProviderCachePersistence<K, T>
 ) : Component(context), DataProviderCache<K, T> {
 
     override fun set(key: K, value: T) {
@@ -33,6 +33,10 @@ class PersistentDataProviderCache<K, T>(
 
     override fun releaseKey(key: K) {
         // persistent cache does not have state which is needed to release
+    }
+
+    override fun clear() {
+        persistence.clear()
     }
 
 }

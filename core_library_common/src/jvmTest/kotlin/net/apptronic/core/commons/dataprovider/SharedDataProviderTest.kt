@@ -18,6 +18,7 @@ import net.apptronic.core.testutils.createTestContext
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.fail
 
 class SharedDataProviderTest {
 
@@ -121,6 +122,11 @@ class SharedDataProviderTest {
 
         uses1_2.terminate()
         assertListEquals(providersById, listOf(2))
+    }
+
+    @Test
+    fun verifyDropAll() {
+        fail("Not written yet!")
     }
 
 }

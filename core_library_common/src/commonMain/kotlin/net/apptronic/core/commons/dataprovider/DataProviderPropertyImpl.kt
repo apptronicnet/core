@@ -7,9 +7,9 @@ import net.apptronic.core.context.coroutines.contextCoroutineScope
 import net.apptronic.core.entity.commons.BaseProperty
 import net.apptronic.core.entity.commons.typedEvent
 
-internal class DataProviderPropertyImpl<T>(
-        override val context: Context,
-        private val holder: DataProviderHolder<*, T>
+internal class DataProviderPropertyImpl<T : Any>(
+    override val context: Context,
+    private val holder: DataProviderHolder<*, T>
 ) : BaseProperty<T>(context), DataProviderProperty<T> {
 
     override val errors = context.typedEvent<Exception>()

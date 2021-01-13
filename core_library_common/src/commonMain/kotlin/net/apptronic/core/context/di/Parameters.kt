@@ -7,15 +7,15 @@ class Parameters {
     private val instances = mutableMapOf<ObjectKey, Any>()
 
     internal fun <ObjectType : Any> add(
-            clazz: KClass<ObjectType>,
-            instance: ObjectType
+        clazz: KClass<ObjectType>,
+        instance: ObjectType
     ) {
         instances[objectKey(clazz)] = instance
     }
 
     internal fun <ObjectType : Any> add(
-            descriptor: DependencyDescriptor<ObjectType>,
-            instance: ObjectType
+        descriptor: DependencyDescriptor<ObjectType>,
+        instance: ObjectType
     ) {
         instances[descriptor.toObjectKey()] = instance
     }
@@ -60,23 +60,29 @@ class Parameters {
 class Builder internal constructor(private val params: Parameters) {
 
     inline fun <reified ObjectType : Any> add(
-            instance: ObjectType
+        instance: ObjectType
     ) {
         add(ObjectType::class, instance)
     }
 
     fun <ObjectType : Any> add(
-            clazz: KClass<ObjectType>,
-            instance: ObjectType
+        clazz: KClass<ObjectType>,
+        instance: ObjectType
     ) {
         params.add(clazz, instance)
     }
 
     fun <ObjectType : Any> add(
-            descriptor: DependencyDescriptor<ObjectType>,
-            instance: ObjectType
+        descriptor: DependencyDescriptor<ObjectType>,
+        instance: ObjectType
     ) {
         params.add(descriptor, instance)
+    }
+
+    infix fun <ObjectType : Any> DependencyDescriptor<ObjectType>.withValue(
+        instance: ObjectType
+    ) {
+        add(this, instance)
     }
 
 }
