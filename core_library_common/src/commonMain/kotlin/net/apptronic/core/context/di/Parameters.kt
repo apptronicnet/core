@@ -2,9 +2,36 @@ package net.apptronic.core.context.di
 
 import kotlin.reflect.KClass
 
+inline fun <reified T : Any> withValue(value: T): Parameter {
+    return withValue(T::class, value)
+}
+
+fun <T : Any> withValue(clazz: KClass<T>, value: T): Parameter {
+    return Parameter(objectKey(clazz), value)
+}
+
+infix fun <T : Any> DependencyDescriptor<T>.withValue(value: T): Parameter {
+    return Parameter(objectKey(this), value)
+}
+
+data class Parameter internal constructor(val objectKey: ObjectKey, val value: Any)
+
+fun parametersOf(vararg params: Parameter) =
+    Parameters().apply {
+        params.forEach {
+            instances[it.objectKey] = it
+        }
+    }
+
+inline fun <reified T : Any> parametersOf(value: T) =
+    parametersOf(withValue(value))
+
+inline fun <T : Any> parametersOf(descriptor: DependencyDescriptor<T>, value: T) =
+    parametersOf(descriptor withValue value)
+
 class Parameters {
 
-    private val instances = mutableMapOf<ObjectKey, Any>()
+    internal val instances = mutableMapOf<ObjectKey, Any>()
 
     internal fun <ObjectType : Any> add(
         clazz: KClass<ObjectType>,

@@ -66,7 +66,7 @@ class ModuleDefinition internal constructor(
     inline fun <reified TypeDeclaration : Any> shared(
         fallbackCount: Int = 0,
         fallbackLifetime: Long = 0L,
-        managerDescriptor: DependencyDescriptor<SharedScopeManager>? = null,
+        managerDescriptor: DependencyDescriptor<out SharedScopeManager>? = null,
         noinline builder: SharedScope.() -> TypeDeclaration
     ): ProviderDefinition<TypeDeclaration> {
         return shared(TypeDeclaration::class, fallbackCount, fallbackLifetime, managerDescriptor, builder)
@@ -103,7 +103,7 @@ class ModuleDefinition internal constructor(
         clazz: KClass<TypeDeclaration>,
         fallbackCount: Int = 0,
         fallbackLifetime: Long = 0L,
-        managerDescriptor: DependencyDescriptor<SharedScopeManager>? = null,
+        managerDescriptor: DependencyDescriptor<out SharedScopeManager>? = null,
         builder: SharedScope.() -> TypeDeclaration
     ): ProviderDefinition<TypeDeclaration> {
         if (clazz::class == Context::class) {
@@ -120,7 +120,7 @@ class ModuleDefinition internal constructor(
         descriptor: DependencyDescriptor<TypeDeclaration>,
         fallbackCount: Int = 0,
         fallbackLifetime: Long = 0L,
-        managerDescriptor: DependencyDescriptor<SharedScopeManager>? = null,
+        managerDescriptor: DependencyDescriptor<out SharedScopeManager>? = null,
         builder: SharedScope.() -> TypeDeclaration
     ): ProviderDefinition<TypeDeclaration> {
         return addDefinition {

@@ -12,7 +12,7 @@ internal fun <TypeDeclaration : Any> sharedProvider(
     context: Context,
     fallbackCount: Int,
     fallbackLifetime: Long,
-    managerDescriptor: DependencyDescriptor<SharedScopeManager>?
+    managerDescriptor: DependencyDescriptor<out SharedScopeManager>?
 ): ObjectProvider<TypeDeclaration> {
     if (fallbackCount > 0 != fallbackLifetime > 0) {
         throw IllegalArgumentException("Both [fallbackCount] and [fallbackLifetime] should be set to be larger than 0 at same time")
@@ -34,7 +34,7 @@ private class SharedProvider<TypeDeclaration : Any>(
     private val context: Context,
     private val fallbackCount: Int,
     private val fallbackLifetime: Long,
-    private val managerDescriptor: DependencyDescriptor<SharedScopeManager>?
+    private val managerDescriptor: DependencyDescriptor<out SharedScopeManager>?
 ) : ObjectBuilderProvider<TypeDeclaration, SharedScope>(objectKey, builder), SharedScopeOwner {
 
     override val typeName: String = "shared"
