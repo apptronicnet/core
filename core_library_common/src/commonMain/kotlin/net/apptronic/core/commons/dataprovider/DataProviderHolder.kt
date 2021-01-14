@@ -119,7 +119,7 @@ internal class DataProviderHolder<K : Any, T : Any>(
             withContext(it.contextCoroutineScope.coroutineContext) {
                 it.loadData()
             }
-        } ?: throw CancellationException("DataProvider is not available")
+        } ?: throw CancellationException("DataProvider is not deactivated")
         cache?.set(key, value)
         holderDataValue.set(value)
         return value
