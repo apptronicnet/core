@@ -43,3 +43,11 @@ fun <K : Any, T : Any> ModuleDefinition.dataProviderTimedCache(
         timedCache(builder)
     }
 }
+
+fun <K : Any, T : Any> ModuleDefinition.dataProviderCacheProcessor(
+    descriptor: DataProviderDescriptor<K, T>,
+    initOnLoad: Boolean = false,
+    builder: SingleScope.() -> DataProviderCacheProcessor<K, T>
+): ProviderDefinition<DataProviderCacheProcessor<K, T>> {
+    return single(descriptor.cacheProcessorDescriptor, initOnLoad, builder = builder)
+}

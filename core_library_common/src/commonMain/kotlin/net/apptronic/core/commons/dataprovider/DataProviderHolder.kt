@@ -3,6 +3,7 @@ package net.apptronic.core.commons.dataprovider
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.withContext
+import net.apptronic.core.commons.dataprovider.cache.processedWith
 import net.apptronic.core.context.Context
 import net.apptronic.core.context.component.Component
 import net.apptronic.core.context.coroutines.contextCoroutineScope
@@ -46,7 +47,8 @@ internal class DataProviderHolder<K : Any, T : Any>(
 ) : Component(context) {
 
     private val dispatcher = injectDataDispatcher(descriptor)
-    private val cache = optional(descriptor.cacheDescriptor)
+    private val cache =
+        optional(descriptor.cacheDescriptor)?.processedWith(optional(descriptor.cacheProcessorDescriptor))
     private val holderDataValue = value<T>()
     private val errorEvents = typedEvent<Exception>()
     private val onNewSubscriberEvent = genericEvent()

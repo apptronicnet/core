@@ -2,6 +2,7 @@ package net.apptronic.core.commons.dataprovider
 
 import net.apptronic.core.commons.dataprovider.cache.DataProviderCache
 import net.apptronic.core.commons.dataprovider.cache.DataProviderCachePersistence
+import net.apptronic.core.commons.dataprovider.cache.DataProviderCacheProcessor
 import net.apptronic.core.context.di.SharedScopeManager
 import net.apptronic.core.context.di.dependencyDescriptor
 import kotlin.reflect.KClass
@@ -21,4 +22,5 @@ data class DataProviderDescriptor<K : Any, T : Any> internal constructor(
     internal val persistenceDescriptor = dependencyDescriptor<DataProviderCachePersistence<K, T>>()
     internal val providerInstanceDescriptor = dependencyDescriptor<DataProvider<K, T>>()
     internal val scopeManagerDescriptor = dependencyDescriptor<SharedScopeManager>()
+    internal val cacheProcessorDescriptor = dependencyDescriptor<DataProviderCacheProcessor<K, T>>()
 }
