@@ -15,7 +15,7 @@ fun <T : Any> Contextual.injectData(descriptor: DataProviderDescriptor<Unit, T>)
 /**
  * Inject data of type [T] using [descriptor] with [key].
  */
-fun <T : Any, K : Any> Contextual.injectData(
+fun <K : Any, T : Any> Contextual.injectData(
     descriptor: DataProviderDescriptor<K, T>,
     key: K
 ): DataProviderProperty<T> {

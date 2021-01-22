@@ -24,7 +24,7 @@ class ProcessedDataProviderCache<K, T>(
 
     override fun set(key: K, value: T) {
         processor.processSet(key, value)?.let {
-            targetCache[key] = value
+            targetCache[key] = it.value
         }
     }
 
