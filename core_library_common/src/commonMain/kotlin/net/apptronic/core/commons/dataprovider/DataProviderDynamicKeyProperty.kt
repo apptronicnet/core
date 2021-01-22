@@ -10,7 +10,6 @@ import net.apptronic.core.context.terminate
 import net.apptronic.core.entity.Entity
 import net.apptronic.core.entity.commons.BaseProperty
 import net.apptronic.core.entity.commons.typedEvent
-import net.apptronic.core.entity.commons.value
 
 /**
  * Inject data of type [T] using [descriptor] with key changing from [keySource].
@@ -34,8 +33,6 @@ private class DataProviderDynamicKeyProperty<K : Any, T : Any>(
 
     override val errors = context.typedEvent<Exception>()
 
-    override val observable = context.value<T>()
-
     override fun postReload() {
         keyContextComponent?.postReload() ?: throw IllegalArgumentException("[keySource] value is not set")
     }
@@ -50,7 +47,7 @@ private class DataProviderDynamicKeyProperty<K : Any, T : Any>(
             keyContextComponent = KeyContextComponent(
                 context.childContext(), dataDescriptor, key
             ).apply {
-                valuesTo(observable)
+                valuesTo(subject)
                 errorsTo(errors)
             }
         }
