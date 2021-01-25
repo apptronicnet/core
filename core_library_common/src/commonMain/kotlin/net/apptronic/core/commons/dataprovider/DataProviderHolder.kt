@@ -58,7 +58,7 @@ internal class DataProviderHolder<K : Any, T : Any>(
         onEnterStage(DataProviderActive) {
             val dataProvider: DataProvider<K, T> = inject(descriptor.providerInstanceDescriptor)
             currentDataProvider = dataProvider
-            dataProvider.processOutData(dataProvider.dataValue).subscribe(holderDataValue)
+            dataProvider.outData.subscribe(holderDataValue)
             dataProvider.errorEvent.subscribe(errorEvents)
             onNewSubscriberEvent.subscribe(dataProvider.onNewSubscriberSubject)
 

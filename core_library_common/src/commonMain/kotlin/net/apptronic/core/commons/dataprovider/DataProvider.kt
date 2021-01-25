@@ -53,11 +53,7 @@ abstract class DataProvider<K, T>(context: Context, val key: K) : Component(cont
      * Here it is possible to do final filtering of data before sending to clients. [source] includes all data
      * from [dataProviderEntity], from [DataProviderCache] and [loadData] invocations
      */
-    open fun processOutData(source: Entity<T>): Entity<T> {
-        return source
-    }
-
-    val outData: Entity<T> = dataValue
+    open val outData: Entity<T> = data
 
     /**
      * Event emitted when new [DataProviderProperty] started to consume data from this [DataProvider].
