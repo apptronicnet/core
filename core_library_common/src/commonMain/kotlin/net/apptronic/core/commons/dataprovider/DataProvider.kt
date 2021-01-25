@@ -50,6 +50,16 @@ abstract class DataProvider<K, T>(context: Context, val key: K) : Component(cont
     val data: Property<T> = dataValue
 
     /**
+     * Here it is possible to do final filtering of data before sending to clients. [source] includes all data
+     * from [dataProviderEntity], from [DataProviderCache] and [loadData] invocations
+     */
+    open fun processOutData(source: Entity<T>): Entity<T> {
+        return source
+    }
+
+    val outData: Entity<T> = dataValue
+
+    /**
      * Event emitted when new [DataProviderProperty] started to consume data from this [DataProvider].
      */
     val onNewClient: Entity<Unit> = onNewSubscriberSubject.bindContext(context)
