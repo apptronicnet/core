@@ -15,7 +15,7 @@ internal fun <TypeDeclaration : Any> sharedProvider(
     managerDescriptor: DependencyDescriptor<out SharedScopeManager>?
 ): ObjectProvider<TypeDeclaration> {
     if (fallbackCount > 0 != fallbackLifetime > 0) {
-        throw IllegalArgumentException("Both [fallbackCount] and [fallbackLifetime] should be set to be larger than 0 at same time")
+        throw IllegalArgumentException("Both [fallbackCount] and [fallbackLifetime] should be set to be larger than 0 at same time for dependency $objectKey")
     }
     return SharedProvider(objectKey, builder, context, fallbackCount, fallbackLifetime, managerDescriptor)
 }
