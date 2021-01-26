@@ -25,7 +25,7 @@ class SharedScopeFallbackTimeAndCounterRequiredTest : BaseContextTest() {
                     Unit
                 }
             }
-            fail("Bot time and count should be set")
+            fail("Both time and count should be set")
         } catch (e: IllegalArgumentException) {
             assertEquals(
                 "Both [fallbackCount] and [fallbackLifetime] should be set to be larger than 0 at same time for dependency Class=class kotlin.Unit",
@@ -42,7 +42,7 @@ class SharedScopeFallbackTimeAndCounterRequiredTest : BaseContextTest() {
                     Unit
                 }
             }
-            fail("Bot time and count should be set")
+            fail("Both time and count should be set")
         } catch (e: IllegalArgumentException) {
             assertEquals(
                 "Both [fallbackCount] and [fallbackLifetime] should be set to be larger than 0 at same time for dependency Class=class kotlin.Unit",
