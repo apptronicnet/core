@@ -10,9 +10,4 @@ class SingleDataProviderTest {
         fail("Not written yet")
     }
 
-    @Test
-    fun verifyDropAll() {
-        fail("Not written yet!")
-    }
-
 }

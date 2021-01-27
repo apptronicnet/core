@@ -10,6 +10,7 @@ import net.apptronic.core.context.childContext
 import net.apptronic.core.context.terminate
 import org.junit.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
 class PersistentProxyCacheTest : BaseContextTest() {
@@ -104,10 +105,10 @@ class PersistentProxyCacheTest : BaseContextTest() {
             assertNull(cache[2])
             assertNull(cache[3])
 
-            assertNull(persistence[1])
-            assertNull(persistence[2])
-            assertNull(persistence[3])
-
+            // persistence is cleared only by separate request
+            assertNotNull(persistence[1])
+            assertNotNull(persistence[2])
+            assertNotNull(persistence[3])
         }
     }
 

@@ -12,7 +12,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.fail
 
-class DataProviderManagerIsActivatedTest : BaseContextTest() {
+class DataProviderDispatcherIsActivatedTest : BaseContextTest() {
 
     var dataSuffix = "A"
 

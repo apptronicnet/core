@@ -1,5 +1,6 @@
 package net.apptronic.core.commons.dataprovider
 
+import net.apptronic.core.BaseContextTest
 import net.apptronic.core.assertListEquals
 import net.apptronic.core.context.Context
 import net.apptronic.core.context.childContext
@@ -18,9 +19,8 @@ import net.apptronic.core.testutils.createTestContext
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
-import kotlin.test.fail
 
-class SharedDataProviderTest {
+class SharedDataProviderTest : BaseContextTest() {
 
     val StringProviderDescriptor = dataProviderDescriptor<Int, String>()
 
@@ -70,14 +70,14 @@ class SharedDataProviderTest {
 
     }
 
-    val context = createTestContext {
+    override val context = createTestContext {
         dependencyModule {
             single {
                 Repository(scopedContext(net.apptronic.core.context.EmptyContext))
             }
             sharedDataProvider<Int, String>(StringProviderDescriptor) {
                 StringValueDataProvider(
-                        scopedContext(net.apptronic.core.context.EmptyContext), it
+                    scopedContext(net.apptronic.core.context.EmptyContext), it
                 )
             }
         }
@@ -122,11 +122,6 @@ class SharedDataProviderTest {
 
         uses1_2.terminate()
         assertListEquals(providersById, listOf(2))
-    }
-
-    @Test
-    fun verifyDropAll() {
-        fail("Not written yet!")
     }
 
 }
