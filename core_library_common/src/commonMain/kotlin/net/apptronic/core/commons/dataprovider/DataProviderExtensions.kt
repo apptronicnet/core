@@ -70,7 +70,7 @@ fun <T : Any> ModuleDefinition.singleDataProvider(
     single(descriptor.dispatcherDescriptor) {
         DataProviderDispatcher(scopedContext(), descriptor)
     }
-    single(descriptor.holderDescriptor, initOnLoad = true) {
+    single(descriptor.holderDescriptor, initOnLoad = initOnLoad) {
         DataProviderHolder(dataProviderContext(descriptor, Unit, unitBuilder), descriptor, Unit)
     }
 }

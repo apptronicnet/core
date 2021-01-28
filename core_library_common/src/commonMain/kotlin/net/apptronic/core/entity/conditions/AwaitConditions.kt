@@ -3,6 +3,33 @@ package net.apptronic.core.entity.conditions
 import kotlinx.coroutines.CoroutineScope
 import net.apptronic.core.entity.Entity
 
+suspend fun <T> Entity<T>.awaitAny(): T {
+    val condition = createCondition()
+    try {
+        return condition.next()
+    } finally {
+        condition.release()
+    }
+}
+
+suspend fun <T> Entity<T>.awaitMatches(matchCondition: (T) -> Boolean): T {
+    val condition = createCondition()
+    try {
+        return condition.nextMatching(matchCondition)
+    } finally {
+        condition.release()
+    }
+}
+
+suspend fun <T> Entity<T>.awaitMatchesSuspend(matchCondition: suspend CoroutineScope.(T) -> Boolean): T {
+    val condition = createCondition()
+    try {
+        return condition.nextMatchingSuspend(matchCondition)
+    } finally {
+        condition.release()
+    }
+}
+
 suspend fun <T> Entity<T>.awaitUntilCondition(awaitCondition: (T) -> Boolean) {
     val condition = createCondition()
     try {
@@ -21,18 +48,18 @@ suspend fun <T> Entity<T>.awaitUntilConditionSuspend(awaitCondition: suspend Cor
     }
 }
 
-suspend fun <T> Entity<T>.awaitUntilValue(value: T) {
+suspend fun <T> Entity<T>.awaitUntilMatches(value: T) {
     awaitUntilCondition<T> {
         it == value
     }
 }
 
 suspend fun Entity<Boolean>.awaitUntilTrue() {
-    awaitUntilValue(true)
+    awaitUntilMatches(true)
 }
 
 suspend fun Entity<Boolean>.awaitUntilFalse() {
-    awaitUntilValue(false)
+    awaitUntilMatches(false)
 }
 
 suspend fun <T> Entity<T>.awaitUntilSet() {

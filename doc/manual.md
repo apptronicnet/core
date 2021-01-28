@@ -1,17 +1,19 @@
 # apptronic.net/core
+
 ### Modern framework for developing Multiplatform apps
 
 It needed to create [Kotlin Multiplatform project](https://kotlinlang.org/docs/reference/) to use Core Framework.
 
 To easy setup **apptronic.net/core** framework in project read [getting started Guide](getting_started.md)
 
-Demo app which demonstrates basics of **apptronic.net/core**:<br/>[https://github.com/apptronicnet/core_demo_android_app](https://github.com/apptronicnet/core_demo_android_app)
+Demo app which demonstrates basics of **
+apptronic.net/core**:<br/>[https://github.com/apptronicnet/core_demo_android_app](https://github.com/apptronicnet/core_demo_android_app)
 
 ### Documentation
 
 How to implement app architecture with **apptronic.net/core** framework
 
-#### Framework architecture
+## Base architecture
 
 [Framework Architecture](common/architecture.md)
 
@@ -29,7 +31,7 @@ How to implement app architecture with **apptronic.net/core** framework
 
 [Using Dependency Injection](common/dependency_injection.md)
 
-#### Android
+## Android
 
 TBD: Project initialization and Android plugins
 
@@ -37,7 +39,7 @@ TBD: Project initialization and Android plugins
 
 TBD: Using compatibility mode with Fragments
 
-#### Advanced features
+## Advanced features
 
 TBD ViewModel: features // Overview of all **ViewModel** features for implementation custom behavior
 
@@ -57,7 +59,8 @@ TBD Context Plugins // How to extend functionality of **apptronic.net/core** ins
 
 TBD Defining custom lifecycle // How to create and use custom **Lifecycle** for **Context**
 
-TBD Dependency Injection: injection with parameters // Adding injection parameters from place where ```inject()``` called
+TBD Dependency Injection: injection with parameters // Adding injection parameters from place where ```inject()```
+called
 
 TBD Dependency Injection: debugging // How to solve issues with Dependency Injection
 
@@ -67,10 +70,62 @@ TBD Dependency Injection: recycling // Implement recycling of instances, provide
 
 TBD Composite ViewModels and bindings // Creating multiple *ViewModels* inside single **ViewModelContext**
 
-TBD Working with suspend transformations with coroutines // How to work with reactive streams in different threads (with Coroutines)
+TBD Working with suspend transformations with coroutines // How to work with reactive streams in different threads (with
+Coroutines)
 
 TBD Reactive streams features // Special functions for reactive streams: ```debounce```, ```throttle``` etc...
 
 TBD Reactive streams: watcher // How to react on specific states of stream values
 
 TBD Implementation of custom Entity classes // How to create custom reactive stream function or transformation
+
+## Commons
+
+**apptronic.net/core** framework contains several extensions for common tasks out of the box.
+
+### Data providers
+
+Designed to provide data for UI:
+
+- encapsulates logic of retrieving data from data user
+- allows choose data source or combine several sources
+- define optional caching and persistence
+
+TBD detailed guide
+
+### Event bus
+
+Allows to asynchronously transfer event between whole application.
+
+- include channels to separate different types of messages
+- useful for transferring notification or data updates
+
+TBD detailed guide
+
+### Interoperation with Kotlin/Coroutines Channel
+
+TBD
+
+### Interoperation with Kotlin/Coroutines Flow
+
+TBD
+
+### ViewModel routing
+
+Easy to use framework for routing and navigation.
+
+TBD detailed guide
+
+### Services
+
+A workers which can execute long-running tasks in background:
+
+- delegates execution to external class
+- have independent lifecycle from caller, so can finish task also after caller Context terminated
+- client can await result or post commands and continue execution without awaiting
+
+TBD detailed guide
+
+## Testing
+
+TBD

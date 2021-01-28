@@ -50,7 +50,7 @@ class AwaitUntilTest {
         val state = context.value<String>()
         val deferred = CompletableDeferred<Unit>()
         context.contextCoroutineScope.launch {
-            state.awaitUntilValue("Completed")
+            state.awaitUntilMatches("Completed")
             deferred.complete(Unit)
         }
         assert(deferred.isCompleted.not())
