@@ -22,6 +22,7 @@ Each **Lifecycle Stage**, including **Root State**:
 - can be used to trigger one-time actions on enter (for example, it useful when result of some long-running action comes when app in background, when user should explicitly see completion event - one-time action then registered in *Visible* stage of **ViewModel**s **Lifecycle**)
 - all **Entity** subscriptions, created by ```subscube``` calls, automatically registered in currently active **Lifecycle Stage** of **Entity** **Context** and unsubscribed on **Lifecycle Stage** is exited. So, all reactive behavior, based on **Entity**, which is started on entering **Lifecycle Stage** will be automatically stopped on the exit from this **Lifecycle Stage** because all reactive chains unsubscribed automatically. 
 
+TBD
 ___
 
 [Back to Manual](../manual.md)
