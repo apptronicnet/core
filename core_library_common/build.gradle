@@ -1,8 +1,8 @@
 buildscript {
-    ext.kotlin_version = "1.4.21"
+    ext.kotlin_version = "1.4.30"
     ext.coroutines_version = "1.4.2"
-    ext.junit_version = "4.12"
-    ext.library_core_version = "0.9.35"
+    ext.junit_version = "4.13.1"
+    ext.library_core_version = "0.10.0"
     repositories {
         gradlePluginPortal()
         google()
@@ -32,13 +32,13 @@ version = ext.library_core_version
 
 kotlin {
     jvm()
-//    iosX64('ios') {
-//        binaries {
-//            framework {
-//                baseName = 'CoreLibraryCommon'
-//            }
-//        }
-//    }
+    iosX64('ios') {
+        binaries {
+            framework {
+                baseName = 'CoreLibraryCommon'
+            }
+        }
+    }
     sourceSets {
         commonMain {
             dependencies {
@@ -57,11 +57,11 @@ kotlin {
                 implementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_version"
             }
         }
-//        iosMain {
-//            dependencies {
-//                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-iosx64:$coroutines_version"
-//            }
-//        }
+        iosMain {
+            dependencies {
+                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-iosx64:$coroutines_version"
+            }
+        }
     }
     targets {
         configure([]) {

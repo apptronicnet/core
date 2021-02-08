@@ -7,8 +7,7 @@ actual class SerialIdGenerator {
     private var value = AtomicLong(0)
 
     actual fun nextId(): Long {
-        value.increment()
-        return value.value
+        return value.addAndGet(1)
     }
 
 }

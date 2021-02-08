@@ -8,6 +8,7 @@ import net.apptronic.core.entity.Entity
 import net.apptronic.core.entity.base.Property
 import net.apptronic.core.entity.commons.asProperty
 import net.apptronic.core.entity.commons.genericEvent
+import net.apptronic.core.entity.commons.setAs
 import net.apptronic.core.entity.commons.value
 
 fun <K : Any, T : Any> Contextual.injectDataDispatcher(
@@ -70,6 +71,13 @@ class DataProviderDispatcher<K : Any, T : Any> internal constructor(
 
     fun observeActivated(targetContext: Context): Property<Boolean> {
         return isActivatedValue.switchContext(targetContext).asProperty()
+    }
+
+    /**
+     * Set [isActivated] state from [source]
+     */
+    fun setActivatedAs(source: Entity<Boolean>) {
+        isActivatedValue.setAs(source)
     }
 
     /**
