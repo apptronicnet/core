@@ -4,9 +4,7 @@ import android.app.Activity
 import android.app.Application
 import net.apptronic.core.android.anim.adapter.ViewTransitionAdapter
 import net.apptronic.core.android.viewmodel.ViewBinderAdapter
-import net.apptronic.core.android.viewmodel.requireBoundView
 import net.apptronic.core.context.Context
-import net.apptronic.core.context.component.IComponent
 import net.apptronic.core.context.plugin.Plugin
 import net.apptronic.core.context.plugin.pluginDescriptor
 import net.apptronic.core.viewmodel.IViewModel
@@ -58,13 +56,6 @@ class AndroidApplicationPlugin internal constructor(
             context.installViewTransitionAdapterPlugin(it)
         }
         context.installPlugin(ActivityBindingPluginDescriptor, activityBindingPlugin)
-    }
-
-    override fun onComponent(component: IComponent) {
-        super.onComponent(component)
-        if (component is IViewModel) {
-            component.requireBoundView()
-        }
     }
 
 }

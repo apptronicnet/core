@@ -7,6 +7,7 @@ import net.apptronic.core.context.ContextDefinition
 import net.apptronic.core.context.component.AbstractComponent
 import net.apptronic.core.context.component.IComponent
 import net.apptronic.core.context.component.addComponent
+import net.apptronic.core.context.doAsync
 import net.apptronic.core.context.lifecycle.LifecycleStage
 import net.apptronic.core.context.lifecycle.LifecycleStageDefinition
 import net.apptronic.core.entity.Entity
@@ -88,6 +89,11 @@ interface IViewModel : IComponent {
      * @return true is parent exists and false otherwise
      */
     fun closeSelf(transitionInfo: Any? = null): Boolean
+
+    /**
+     * Do same as [closeSelf] but make call asynchronously
+     */
+    fun closeSelfAsync(transitionInfo: Any? = null): Boolean
 
     // ----- CREATED STAGE ACTIONS -----
 
@@ -209,7 +215,10 @@ open class ViewModel : AbstractComponent, IViewModel {
         context.addComponent(this)
     }
 
-    private fun stateOfStage(target: BehaviorSubject<Boolean>, definition: LifecycleStageDefinition): Observable<Boolean> {
+    private fun stateOfStage(
+        target: BehaviorSubject<Boolean>,
+        definition: LifecycleStageDefinition
+    ): Observable<Boolean> {
         onEnterStage(definition) {
             target.update(true)
         }
@@ -292,6 +301,15 @@ open class ViewModel : AbstractComponent, IViewModel {
     final override fun closeSelf(transitionInfo: Any?): Boolean {
         return parent?.let {
             it.requestCloseSelf(this, transitionInfo)
+            true
+        } ?: false
+    }
+
+    override fun closeSelfAsync(transitionInfo: Any?): Boolean {
+        return parent?.let {
+            doAsync {
+                it.requestCloseSelf(this@ViewModel, transitionInfo)
+            }
             true
         } ?: false
     }
