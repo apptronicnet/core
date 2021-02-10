@@ -4,9 +4,8 @@ import net.apptronic.core.base.observable.Observable
 import net.apptronic.core.base.subject.BehaviorSubject
 import net.apptronic.core.context.Context
 import net.apptronic.core.context.ContextDefinition
-import net.apptronic.core.context.component.AbstractComponent
+import net.apptronic.core.context.component.Component
 import net.apptronic.core.context.component.IComponent
-import net.apptronic.core.context.component.addComponent
 import net.apptronic.core.context.doAsync
 import net.apptronic.core.context.lifecycle.LifecycleStage
 import net.apptronic.core.context.lifecycle.LifecycleStageDefinition
@@ -181,9 +180,10 @@ interface IViewModel : IComponent {
 
 }
 
-open class ViewModel : AbstractComponent, IViewModel {
+open class ViewModel : Component, IViewModel {
 
     final override val context: ViewModelContext
+        get() = super.context as ViewModelContext
 
     private val isAttached = BehaviorSubject<Boolean>()
     private val isBound = BehaviorSubject<Boolean>()
@@ -192,27 +192,24 @@ open class ViewModel : AbstractComponent, IViewModel {
 
     private var parent: ViewModelParent? = null
 
-    constructor(context: ViewModelContext) {
-        this.context = context
-        doInit()
+    constructor(context: ViewModelContext) : super(context) {
+        initializeStages()
     }
 
-    constructor(parent: IViewModel) {
-        context = parent.context
-        doInit()
+    constructor(parent: IViewModel) : super(parent.context) {
+        initializeStages()
     }
 
-    constructor(parent: Context, contextDefinition: ContextDefinition<ViewModelContext>) {
-        context = contextDefinition.createContext(parent)
-        doInit()
+    constructor(parent: Context, contextDefinition: ContextDefinition<ViewModelContext>) :
+            super(parent, contextDefinition) {
+        initializeStages()
     }
 
-    private fun doInit() {
+    private fun initializeStages() {
         stateOfStage(isAttached, ViewModelLifecycle.STAGE_ATTACHED)
         stateOfStage(isBound, ViewModelLifecycle.STAGE_BOUND)
         stateOfStage(isVisible, ViewModelLifecycle.STAGE_VISIBLE)
         stateOfStage(isFocused, ViewModelLifecycle.STAGE_FOCUSED)
-        context.addComponent(this)
     }
 
     private fun stateOfStage(

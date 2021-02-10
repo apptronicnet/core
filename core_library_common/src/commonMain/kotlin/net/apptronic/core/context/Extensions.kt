@@ -2,12 +2,12 @@ package net.apptronic.core.context
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import net.apptronic.core.context.component.AbstractComponent
+import net.apptronic.core.context.component.Component
 import net.apptronic.core.context.coroutines.contextCoroutineScope
 import net.apptronic.core.context.lifecycle.Lifecycle
 
 /**
- * Terminate [Context] lifecycle. This action cause termination of all [AbstractComponent]s in this [Context]
+ * Terminate [Context] lifecycle. This action cause termination of all [Component]s in this [Context]
  */
 fun Contextual.terminate() {
     context.lifecycle.terminate()

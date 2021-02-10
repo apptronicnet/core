@@ -1,12 +1,12 @@
 package net.apptronic.core.context.plugin
 
 import net.apptronic.core.context.Context
-import net.apptronic.core.context.component.AbstractComponent
+import net.apptronic.core.context.component.Component
 import net.apptronic.core.context.component.IComponent
 import net.apptronic.core.context.di.DependencyDispatcher
 
 /**
- * Base class which can extend functionality for [Context] and [AbstractComponent]. Plugin applies to target [Context]
+ * Base class which can extend functionality for [Context] and [Component]. Plugin applies to target [Context]
  * and all children if it
  */
 interface Plugin {

@@ -1,7 +1,6 @@
 package net.apptronic.core.context.di
 
 import net.apptronic.core.context.EmptyContext
-import net.apptronic.core.context.component.AbstractComponent
 import net.apptronic.core.context.component.Component
 import net.apptronic.core.testutils.createTestContext
 import org.junit.Before
@@ -32,7 +31,7 @@ class ProvidingTest {
 
     class SomeThing(val text: String)
 
-    lateinit var component: AbstractComponent
+    lateinit var component: Component
 
     @Before
     fun before() {

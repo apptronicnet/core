@@ -1,10 +1,9 @@
 package net.apptronic.core.commons.service
 
 import net.apptronic.core.context.Context
-import net.apptronic.core.context.component.IComponent
 import net.apptronic.core.entity.base.Property
 
-interface ServiceClient<T : Any, R : Any> : IComponent {
+interface ServiceClient<T : Any, R : Any> {
 
     /**
      * Represents is [Service] now processing any requests
