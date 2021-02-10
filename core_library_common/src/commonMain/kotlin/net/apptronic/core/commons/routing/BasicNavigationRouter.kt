@@ -1,9 +1,8 @@
 package net.apptronic.core.commons.routing
 
-import kotlinx.coroutines.launch
 import net.apptronic.core.context.Context
 import net.apptronic.core.context.component.Component
-import net.apptronic.core.context.coroutines.contextCoroutineScope
+import net.apptronic.core.context.doAsync
 
 class BasicNavigationRouter<T>(context: Context) : Component(context), NavigationRouter<T> {
 
@@ -52,7 +51,7 @@ class BasicNavigationRouter<T>(context: Context) : Component(context), Navigatio
     }
 
     override fun sendCommandsAsync(vararg commands: T) {
-        contextCoroutineScope.launch {
+        doAsync {
             sendCommandsSync(*commands)
         }
     }
@@ -62,7 +61,7 @@ class BasicNavigationRouter<T>(context: Context) : Component(context), Navigatio
     }
 
     override fun sendCommandsBroadcastAsync(vararg commands: T) {
-        contextCoroutineScope.launch {
+        doAsync {
             sendCommandsInternal(commands.toList(), true)
         }
     }

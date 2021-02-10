@@ -1,5 +1,6 @@
 package net.apptronic.core.context
 
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import net.apptronic.core.context.component.Component
@@ -18,10 +19,14 @@ fun Contextual.terminate() {
  * termination of [Lifecycle] changes.
  */
 fun Contextual.doAsync(
-        coroutineScope: CoroutineScope = contextCoroutineScope,
-        action: suspend CoroutineScope.() -> Unit
+    coroutineScope: CoroutineScope = contextCoroutineScope,
+    action: suspend CoroutineScope.() -> Unit
 ) {
     coroutineScope.launch {
-        action()
+        try {
+            action()
+        } catch (e: CancellationException) {
+            // ignore
+        }
     }
 }
