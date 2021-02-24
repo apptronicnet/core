@@ -9,6 +9,7 @@ import net.apptronic.core.entity.EntitySubscription
 import net.apptronic.core.entity.base.MutableValue
 import net.apptronic.core.entity.base.Value
 import net.apptronic.core.entity.commons.asEvent
+import net.apptronic.core.entity.commons.distinctUntilChanged
 import net.apptronic.core.entity.function.map
 
 private class LambdaMirror<T, E>(
@@ -63,8 +64,8 @@ private class ReflectionValue<T, E>(
         get() = mirror.reverse(this)
 
     override fun onSubscribeObserver(targetContext: Context, targetObserver: Observer<E>): EntitySubscription {
-        return target.subscribe(context) {
-            targetObserver.update(it.directReflection)
+        return target.map { it.directReflection }.distinctUntilChanged().subscribe(context) {
+            targetObserver.update(it)
         }
     }
 
