@@ -349,7 +349,7 @@ All parameters in ```ViewPagerMode2``` are optional, and defaults will be used i
 
 ViewPager2 uses RecyclerView inside, so all parameters and functionality are same as for using it with RecyclerView.
 
-Decause of it uses RecyclerView inside it is POSSIBLE to use ListDynamicNavigator with ViewPager2.
+Because of it uses RecyclerView inside it is POSSIBLE to use ListDynamicNavigator with ViewPager2.
 
 ___
 
