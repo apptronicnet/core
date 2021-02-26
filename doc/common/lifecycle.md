@@ -44,7 +44,7 @@ class SomeViewModel(context: ViewModelContext) : ViewModel(context) {
 The ```ViewModelContext``` has 4 additional stages:
 - *ATTACHED*: when **ViewModel** is added to container
 - *BOUND*: when **ViewModel** is bound to **View**
-- *VISIBL*E: when **View** is rendered on screen and user can see it
+- *VISIBLE*: when **View** is rendered on screen and user can see it
 - *FOCUSED* when user can interact view **View**
 
 Invocation ```doOnVisible``` registers handler on enter **LifecycleStage** *VISIBLE*: it will be invoked each time when **Lifecycle** entered **LifecycleStage** VISIBLE.
