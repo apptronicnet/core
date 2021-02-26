@@ -22,7 +22,37 @@ Each **Lifecycle Stage**, including **Root State**:
 - can be used to trigger one-time actions on enter (for example, it useful when result of some long-running action comes when app in background, when user should explicitly see completion event - one-time action then registered in *Visible* stage of **ViewModel**s **Lifecycle**)
 - all **Entity** subscriptions, created by ```subscube``` calls, automatically registered in currently active **Lifecycle Stage** of **Entity** **Context** and unsubscribed on **Lifecycle Stage** is exited. So, all reactive behavior, based on **Entity**, which is started on entering **Lifecycle Stage** will be automatically stopped on the exit from this **Lifecycle Stage** because all reactive chains unsubscribed automatically. 
 
-TBD
+Let's see some example to understand how **LifecycleStage**s works.
+
+```kotlin
+class SomeViewModel(context: ViewModelContext) : ViewModel(context) {
+    
+    val number = value(0)
+    val notification = typedEvent<String>()
+    
+    init {
+        doOnVisible {
+            number.subscribe { value ->
+                notification.update("Number change to $value")
+            }
+        }
+    }
+    
+}
+```
+
+The ```ViewModelContext``` has 4 additional stages:
+- *ATTACHED*: when **ViewModel** is added to container
+- *BOUND*: when **ViewModel** is bound to **View**
+- *VISIBL*E: when **View** is rendered on screen and user can see it
+- *FOCUSED* when user can interact view **View**
+
+Invocation ```doOnVisible``` registers handler on enter **LifecycleStage** *VISIBLE*: it will be invoked each time when **Lifecycle** entered **LifecycleStage** VISIBLE.
+
+```number.subscribe``` called after **Lifecycle** entered **LifecycleStage** *VISIBLE*. This means, that *subscription*, created by this call, will be registered in *VISIBLE* **LifecycleStage**.
+
+When *VISIBLE* **LifecycleStage** exited (means user does not see the View) ```unsubscribe``` is automatically called from *VISIBLE* **LifecycleStage**. It allows not manage subscriptions manually.
+
 ___
 
 [Back to Manual](../manual.md)
