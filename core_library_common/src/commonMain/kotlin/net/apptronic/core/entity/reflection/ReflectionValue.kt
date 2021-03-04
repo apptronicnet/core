@@ -127,6 +127,8 @@ private class ReflectionValue<T, E>(
 
     override fun isSet() = getValueHolder().isSet()
 
+    override fun isNotSet(): Boolean = !getValueHolder().isSet()
+
     override fun doIfSet(action: (E) -> Unit) = getValueHolder().doIfSet(action)
 
     override fun clear() {

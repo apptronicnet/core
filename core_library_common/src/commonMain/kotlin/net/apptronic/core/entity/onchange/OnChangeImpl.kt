@@ -95,6 +95,8 @@ internal class OnChangeImpl<T, E>(
 
     override fun isSet(): Boolean = getValueHolder().isSet()
 
+    override fun isNotSet(): Boolean = !getValueHolder().isSet()
+
     override fun doIfSet(action: (Next<T, E>) -> Unit) = getValueHolder().doIfSet(action)
 
     override fun getValueEntity(): Value<T> {

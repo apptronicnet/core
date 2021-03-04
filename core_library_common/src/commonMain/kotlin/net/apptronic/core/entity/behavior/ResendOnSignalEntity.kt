@@ -53,6 +53,8 @@ private class ResendOnSignalEntity<T>(wrappedEntity: Entity<T>) : RelayEntity<T>
 
     override fun isSet() = lastValue.isSet()
 
+    override fun isNotSet() = !lastValue.isSet()
+
 }
 
 fun <E : ResendEntity<T>, T> E.signalWhen(vararg entities: Entity<*>): E {
