@@ -1,6 +1,6 @@
-package net.apptronic.core.entity.reflection
+package net.apptronic.core.entity.association
 
-class TypeToIdMirror<T, Id>(val items: List<T>, val idProvider: (T) -> Id) : Mirror<T?, Id?> {
+class TypeToIdAssociation<T, Id>(val items: List<T>, val idProvider: (T) -> Id) : Association<T?, Id?> {
 
     private val T?.id: Id?
         get() = if (this != null) idProvider(this) else null

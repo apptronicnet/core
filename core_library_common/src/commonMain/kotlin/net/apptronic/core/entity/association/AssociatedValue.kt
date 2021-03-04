@@ -1,4 +1,4 @@
-package net.apptronic.core.entity.reflection
+package net.apptronic.core.entity.association
 
 import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.base.subject.*
@@ -12,10 +12,10 @@ import net.apptronic.core.entity.commons.asEvent
 import net.apptronic.core.entity.commons.distinctUntilChanged
 import net.apptronic.core.entity.function.map
 
-private class LambdaMirror<T, E>(
-        private val directMethod: (T) -> E,
-        private val reverseMethod: (E) -> T
-) : Mirror<T, E> {
+private class LambdaAssociation<T, E>(
+    private val directMethod: (T) -> E,
+    private val reverseMethod: (E) -> T
+) : Association<T, E> {
 
     override fun direct(value: T): E = directMethod(value)
 
@@ -24,97 +24,97 @@ private class LambdaMirror<T, E>(
 }
 
 /**
- * Created new [Value] which reflects source [Value] with converted value.
- * Any changes made to source automatically reflected on reflection, and any changes, made to
- * reflection, automatically reflected on source.
+ * Created new [Value] which associated to source [Value] with converted value.
+ * Any changes made to source automatically set on associated value, and any changes, made to
+ * associated value, automatically set on source.
  */
-fun <T, E> Value<T>.reflect(
-        direct: (T) -> E,
-        reverse: (E) -> T,
+fun <T, E> Value<T>.associate(
+    direct: (T) -> E,
+    reverse: (E) -> T,
 ): Value<E> {
-    return ReflectionValue(this, LambdaMirror(direct, reverse))
+    return AssociatedValue(this, LambdaAssociation(direct, reverse))
 }
 
-fun <T, E> MutableValue<T>.reflectMutable(
-        direct: (T) -> E,
-        reverse: (E) -> T,
+fun <T, E> MutableValue<T>.associateMutable(
+    direct: (T) -> E,
+    reverse: (E) -> T,
 ): MutableValue<E> {
-    return ReflectionValue(this, LambdaMirror(direct, reverse))
+    return AssociatedValue(this, LambdaAssociation(direct, reverse))
 }
 
-fun <T, E> Value<T>.reflect(mirror: Mirror<T, E>): Value<E> {
-    return ReflectionValue(this, mirror)
+fun <T, E> Value<T>.associate(association: Association<T, E>): Value<E> {
+    return AssociatedValue(this, association)
 }
 
-fun <T, E> MutableValue<T>.reflectMutable(mirror: Mirror<T, E>): MutableValue<E> {
-    return ReflectionValue(this, mirror)
+fun <T, E> MutableValue<T>.associateMutable(association: Association<T, E>): MutableValue<E> {
+    return AssociatedValue(this, association)
 }
 
-private class ReflectionValue<T, E>(
-        private val target: Value<T>,
-        private val mirror: Mirror<T, E>
+private class AssociatedValue<T, E>(
+    private val target: Value<T>,
+    private val association: Association<T, E>
 ) : BaseEntity<E>(), MutableValue<E> {
 
     override val context: Context = target.context
 
-    val T.directReflection: E
-        get() = mirror.direct(this)
+    val T.directAssociation: E
+        get() = association.direct(this)
 
-    val E.reverseReflection: T
-        get() = mirror.reverse(this)
+    val E.reverseAssociation: T
+        get() = association.reverse(this)
 
     override fun onSubscribeObserver(targetContext: Context, targetObserver: Observer<E>): EntitySubscription {
-        return target.map { it.directReflection }.distinctUntilChanged().subscribe(context) {
+        return target.map { it.directAssociation }.distinctUntilChanged().subscribe(context) {
             targetObserver.update(it)
         }
     }
 
     override fun set(value: E) {
-        target.set(value.reverseReflection)
+        target.set(value.reverseAssociation)
     }
 
     override fun update(value: E) {
-        target.update(value.reverseReflection)
+        target.update(value.reverseAssociation)
     }
 
     override fun getValueHolder(): ValueHolder<E>? {
-        return target.getValueHolder().map(mirror::direct)
+        return target.getValueHolder().map(association::direct)
     }
 
     override val changes: Entity<MutableValue.Change<E>> =
             if (target is MutableValue<T>) {
-                target.changes.map { MutableValue.Change(it.value.directReflection, it.isUpdate) }
+                target.changes.map { MutableValue.Change(it.value.directAssociation, it.isUpdate) }
             } else {
                 map { MutableValue.Change(it, true) }
             }.asEvent()
 
     override val updates: Entity<E> =
             if (target is MutableValue<T>) {
-                target.updates.map(mirror::direct)
+                target.updates.map(association::direct)
             } else {
-                target.map(mirror::direct)
+                target.map(association::direct)
             }.asEvent()
 
     override fun applyChange(change: MutableValue.Change<E>) {
         if (change.isUpdate) {
-            target.update(mirror.reverse(change.value))
+            target.update(association.reverse(change.value))
         } else {
-            target.set(mirror.reverse(change.value))
+            target.set(association.reverse(change.value))
         }
     }
 
     override fun applyChange(value: E, isUpdate: Boolean) {
         if (isUpdate) {
-            target.update(mirror.reverse(value))
+            target.update(association.reverse(value))
         } else {
-            target.set(mirror.reverse(value))
+            target.set(association.reverse(value))
         }
     }
 
     override fun updateValue(updateCall: (E) -> E) {
-        val current = mirror.direct(target.get())
+        val current = association.direct(target.get())
         val next = updateCall(current)
-        target.update(mirror.reverse(next))
+        target.update(association.reverse(next))
     }
 
     override fun get() = getValueHolder().getOrThrow()

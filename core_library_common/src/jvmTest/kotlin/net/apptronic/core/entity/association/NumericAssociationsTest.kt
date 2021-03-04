@@ -1,16 +1,16 @@
-package net.apptronic.core.entity.reflection
+package net.apptronic.core.entity.association
 
 import net.apptronic.core.BaseContextTest
 import net.apptronic.core.entity.assertValueEquals
 import net.apptronic.core.entity.commons.value
 import org.junit.Test
 
-class NumericReflectionsTest : BaseContextTest() {
+class NumericAssociationsTest : BaseContextTest() {
 
     @Test
-    fun verifyIntReflection() {
+    fun verifyIntAssociation() {
         val text = value("")
-        val number = text.reflectAsInt()
+        val number = text.associateAsInt()
         text.assertValueEquals("")
         number.assertValueEquals(null)
 
@@ -40,9 +40,9 @@ class NumericReflectionsTest : BaseContextTest() {
     }
 
     @Test
-    fun verifyLongReflection() {
+    fun verifyLongAssociation() {
         val text = value("")
-        val number = text.reflectAsLong()
+        val number = text.associateAsLong()
         text.assertValueEquals("")
         number.assertValueEquals(null)
 
@@ -72,9 +72,9 @@ class NumericReflectionsTest : BaseContextTest() {
     }
 
     @Test
-    fun verifyFloatReflection() {
+    fun verifyFloatAssociation() {
         val text = value("")
-        val number = text.reflectAsFloat()
+        val number = text.associateAsFloat()
         text.assertValueEquals("")
         number.assertValueEquals(null)
 
@@ -104,9 +104,9 @@ class NumericReflectionsTest : BaseContextTest() {
     }
 
     @Test
-    fun verifyDoubleReflection() {
+    fun verifyDoubleAssociation() {
         val text = value("")
-        val number = text.reflectAsDouble()
+        val number = text.associateAsDouble()
         text.assertValueEquals("")
         number.assertValueEquals(null)
 

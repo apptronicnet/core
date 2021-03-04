@@ -1,4 +1,4 @@
-package net.apptronic.core.entity.reflection
+package net.apptronic.core.entity.association
 
 import net.apptronic.core.BaseContextTest
 import net.apptronic.core.entity.commons.value
@@ -6,16 +6,16 @@ import net.apptronic.core.record
 import org.junit.Test
 import kotlin.test.assertEquals
 
-class PartialReflectionTest : BaseContextTest() {
+class PartialAssociationTest : BaseContextTest() {
 
     private data class Point(val x: Int, val y: Int)
 
     private val coordinates = value<Point>(Point(0, 0))
-    private val x = coordinates.reflectPart(direct = { it.x }, reverse = { copy(x = it) })
-    private val y = coordinates.reflectPart(direct = { it.y }, reverse = { copy(y = it) })
+    private val x = coordinates.associatePart(direct = { it.x }, reverse = { copy(x = it) })
+    private val y = coordinates.associatePart(direct = { it.y }, reverse = { copy(y = it) })
 
     @Test
-    fun verifyPartialReflection() {
+    fun verifyPartialAssociation() {
         val coordinatesRecord = coordinates.record()
         coordinatesRecord.assertItems(Point(0, 0))
         coordinatesRecord.clear()

@@ -5,11 +5,11 @@ import net.apptronic.core.base.observable.Observer
 import net.apptronic.core.base.subject.*
 import net.apptronic.core.context.Context
 import net.apptronic.core.entity.Entity
+import net.apptronic.core.entity.association.associate
 import net.apptronic.core.entity.base.ObservableEntity
 import net.apptronic.core.entity.base.Value
 import net.apptronic.core.entity.commons.typedEvent
 import net.apptronic.core.entity.commons.value
-import net.apptronic.core.entity.reflection.reflect
 
 /**
  * This variant of [Entity] designed to be property, which should pass additional information to observers when it's
@@ -22,7 +22,7 @@ internal class OnChangeImpl<T, E>(
     private val value: Value<Next<T, E>> = context.value()
     private val updateEvent = context.typedEvent<Next<T, E>>()
     override val observable: Observable<Next<T, E>> = updateEvent
-    private val reflection = reflect(direct = { it.value }, reverse = { Next(it, null) })
+    private val reflection = associate(direct = { it.value }, reverse = { Next(it, null) })
 
     override fun set(next: T, change: E?) {
         update(Next(next, change))

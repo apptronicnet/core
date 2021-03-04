@@ -1,32 +1,32 @@
-package net.apptronic.core.entity.reflection
+package net.apptronic.core.entity.association
 
 import net.apptronic.core.BaseContextTest
 import net.apptronic.core.entity.commons.mutableValue
 import net.apptronic.core.record
 import org.junit.Test
 
-class ReflectionTest : BaseContextTest() {
+class AssociationTest : BaseContextTest() {
 
     private val source = mutableValue<Int>()
-    private val reflection = source.reflectMutable(direct = { it.toString() }, reverse = { it.toInt() })
+    private val associatedValue = source.associateMutable(direct = { it.toString() }, reverse = { it.toInt() })
 
     private val sourceRecord = source.record()
     private val sourceUpdatesRecord = source.updates.record()
-    private val reflectionRecord = reflection.record()
-    private val reflectionUpdatesRecord = reflection.updates.record()
+    private val associatedRecord = associatedValue.record()
+    private val associatedUpdatesRecord = associatedValue.updates.record()
 
     private fun assertState(vararg values: Int) {
         sourceRecord.assertItems(values.toList())
-        reflectionRecord.assertItems(values.map { it.toString() })
+        associatedRecord.assertItems(values.map { it.toString() })
     }
 
     private fun assertUpdates(vararg values: Int) {
         sourceUpdatesRecord.assertItems(values.toList())
-        reflectionUpdatesRecord.assertItems(values.map { it.toString() })
+        associatedUpdatesRecord.assertItems(values.map { it.toString() })
     }
 
     @Test
-    fun verifyDirectReflectionWithOnSet() {
+    fun verifyDirectAssociationWithOnSet() {
         assertState()
         assertUpdates()
 
@@ -44,7 +44,7 @@ class ReflectionTest : BaseContextTest() {
     }
 
     @Test
-    fun verifyDirectReflectionWithOnUpdate() {
+    fun verifyDirectAssociationWithOnUpdate() {
         assertState()
         assertUpdates()
 
@@ -62,47 +62,47 @@ class ReflectionTest : BaseContextTest() {
     }
 
     @Test
-    fun verifyReverseReflectionWithOnSet() {
+    fun verifyReverseAssociationWithOnSet() {
         assertState()
         assertUpdates()
 
-        reflection.set("1")
+        associatedValue.set("1")
         assertState(1)
         assertUpdates()
 
-        reflection.update("2")
+        associatedValue.update("2")
         assertState(1, 2)
         assertUpdates(2)
 
-        reflection.set("3")
+        associatedValue.set("3")
         assertState(1, 2, 3)
         assertUpdates(2)
     }
 
     @Test
-    fun verifyReverseReflectionWithOnUpdate() {
+    fun verifyReverseAssociationWithOnUpdate() {
         assertState()
         assertUpdates()
 
-        reflection.update("1")
+        associatedValue.update("1")
         assertState(1)
         assertUpdates(1)
 
-        reflection.set("2")
+        associatedValue.set("2")
         assertState(1, 2)
         assertUpdates(1)
 
-        reflection.update("3")
+        associatedValue.update("3")
         assertState(1, 2, 3)
         assertUpdates(1, 3)
     }
 
     @Test
-    fun verifyMixedReflection() {
+    fun verifyMixedAssociation() {
         assertState()
         assertUpdates()
 
-        reflection.set("1")
+        associatedValue.set("1")
         assertState(1)
         assertUpdates()
 
@@ -110,7 +110,7 @@ class ReflectionTest : BaseContextTest() {
         assertState(1, 2)
         assertUpdates(2)
 
-        reflection.update("3")
+        associatedValue.update("3")
         assertState(1, 2, 3)
         assertUpdates(2, 3)
 
