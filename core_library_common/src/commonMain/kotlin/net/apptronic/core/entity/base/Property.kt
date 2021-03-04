@@ -41,6 +41,11 @@ interface Property<T> : Entity<T> {
     fun isSet(): Boolean
 
     /**
+     * Check is value is not set
+     */
+    fun isNotSet(): Boolean
+
+    /**
      * Do [action] with value if it is set
      * @return true if action performed, false if value is not set
      */

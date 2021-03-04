@@ -10,8 +10,8 @@ import net.apptronic.core.entity.base.ObservableEntity
 import net.apptronic.core.entity.base.Property
 
 abstract class BaseProperty<T>(
-        override val context: Context,
-        private val eqComparator: EqComparator<T> = SimpleEqComparator<T>()
+    override val context: Context,
+    private val eqComparator: EqComparator<T> = SimpleEqComparator<T>()
 ) : ObservableEntity<T>(), Property<T> {
 
     protected val subject = BehaviorSubject<T>()
@@ -30,6 +30,8 @@ abstract class BaseProperty<T>(
     final override fun getOr(fallbackValueProvider: () -> T) = getValueHolder().getOr(fallbackValueProvider)
 
     final override fun isSet() = getValueHolder().isSet()
+
+    final override fun isNotSet() = !getValueHolder().isSet()
 
     final override fun doIfSet(action: (T) -> Unit) = getValueHolder().doIfSet(action)
 
