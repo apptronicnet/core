@@ -49,7 +49,8 @@ open class BaseMutableValue<T> internal constructor(
         setInternal(next, true)
     }
 
-    final override val updates: Entity<T> = changes.filter { it.isUpdate }.map { it.value }
+    final override val updates: Entity<T>
+        get() = changes.filter { it.isUpdate }.map { it.value }
 
     final override fun applyChange(change: MutableValue.Change<T>) {
         if (change.isUpdate) {
