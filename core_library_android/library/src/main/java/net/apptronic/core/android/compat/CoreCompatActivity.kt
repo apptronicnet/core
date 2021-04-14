@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import net.apptronic.core.context.Context
 import net.apptronic.core.viewmodel.IViewModel
-import net.apptronic.core.viewmodel.ViewModelContext
 import net.apptronic.core.viewmodel.navigation.ViewModelLifecycleController
 
 abstract class CoreCompatActivity<T : IViewModel> : AppCompatActivity(),
@@ -20,7 +19,7 @@ abstract class CoreCompatActivity<T : IViewModel> : AppCompatActivity(),
             return viewModelReference
         }
 
-    override val componentContext: ViewModelContext
+    override val componentContext: Context
         get() = viewModel.context
 
     abstract fun buildViewModel(parent: Context): T

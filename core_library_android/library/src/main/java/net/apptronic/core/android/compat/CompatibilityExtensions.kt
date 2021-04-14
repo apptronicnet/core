@@ -6,7 +6,6 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModelProvider
 import net.apptronic.core.context.Context
 import net.apptronic.core.context.childContext
-import net.apptronic.core.context.lifecycle.BASE_LIFECYCLE
 
 internal fun Activity.getParentContext(): Context {
     return (application as? CoreCompatContextHolder)?.componentContext
@@ -30,13 +29,13 @@ fun Fragment.getParentContext(): Context {
 fun FragmentActivity.componentContext(builder: Context.() -> Unit) = lazy {
     ViewModelProvider(this, ContextHolderViewModelFactory {
         val parentContext = getParentContext()
-        parentContext.childContext(BASE_LIFECYCLE, builder)
+        parentContext.childContext(builder)
     }).get(CoreCompatContextHolderViewModel::class.java).context
 }
 
 fun Fragment.componentContext(builder: Context.() -> Unit) = lazy {
     ViewModelProvider(this, ContextHolderViewModelFactory {
         val parentContext = getParentContext()
-        parentContext.childContext(BASE_LIFECYCLE, builder)
+        parentContext.childContext(builder)
     }).get(CoreCompatContextHolderViewModel::class.java).context
 }

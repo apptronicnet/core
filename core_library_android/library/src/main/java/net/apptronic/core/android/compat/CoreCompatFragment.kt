@@ -22,7 +22,7 @@ abstract class CoreCompatFragment<T : IViewModel> : Fragment(), ICoreCompatFragm
 
     abstract fun buildViewModel(parent: Context): T
 
-    override val componentContext: ViewModelContext
+    override val componentContext: Context
         get() = viewModel.context
 
     @Suppress("UNCHECKED_CAST")

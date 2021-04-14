@@ -6,7 +6,6 @@ import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import net.apptronic.core.context.Context
 import net.apptronic.core.viewmodel.IViewModel
-import net.apptronic.core.viewmodel.ViewModelContext
 import net.apptronic.core.viewmodel.navigation.ViewModelLifecycleController
 
 abstract class CoreCompatDialogFragment<T : IViewModel> : DialogFragment(), ICoreCompatFragment<T> {
@@ -22,7 +21,7 @@ abstract class CoreCompatDialogFragment<T : IViewModel> : DialogFragment(), ICor
 
     abstract fun buildViewModel(parent: Context): T
 
-    override val componentContext: ViewModelContext
+    override val componentContext: Context
         get() = viewModel.context
 
     @Suppress("UNCHECKED_CAST")

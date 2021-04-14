@@ -1,6 +1,5 @@
 package net.apptronic.core.viewmodel.dispatcher
 
-import net.apptronic.core.context.Context
 import net.apptronic.core.context.Contextual
 import net.apptronic.core.context.component.Component
 import net.apptronic.core.entity.commons.genericEvent
@@ -15,11 +14,11 @@ inline fun <reified T : IViewModel> viewModelDispatcher(noinline builder: (Conte
 }
 
 class ViewModelDispatcherComponent<T : IViewModel>(
-        private val viewModelClass: KClass<T>,
-        private val builder: (Context) -> T
+    private val viewModelClass: KClass<T>,
+    private val builder: (Contextual) -> T
 ) : Component(createTestContext()) {
 
-    val dispatcher = BuilderViewModelDispatcher(context, viewModelClass, builder)
+    val dispatcher = viewModelDispatcher(viewModelClass, builder)
 
     private var container: TestViewContainer? = null
 
