@@ -1,8 +1,12 @@
 package net.apptronic.core.viewmodel.navigation
 
+import net.apptronic.core.context.Context
 import net.apptronic.core.context.childContext
 import net.apptronic.core.context.lifecycle.enterStage
-import net.apptronic.core.viewmodel.*
+import net.apptronic.core.viewmodel.IViewModel
+import net.apptronic.core.viewmodel.TestViewModel
+import net.apptronic.core.viewmodel.ViewModel
+import net.apptronic.core.viewmodel.ViewModelLifecycle
 import org.junit.Test
 
 /**
@@ -12,13 +16,13 @@ class StackNavigationModelContextTest : TestViewModel() {
 
     val rootModel = TestViewModel()
 
-    class ChildModel(context: ViewModelContext) : ViewModel(context) {
+    class ChildModel(context: Context) : ViewModel(context) {
 
         val navigator = stackNavigator()
 
     }
 
-    class ChildModelNavigatorContext(context: ViewModelContext) : ViewModel(context) {
+    class ChildModelNavigatorContext(context: Context) : ViewModel(context) {
 
         val navigatorContext = childContext()
         val navigator = stackNavigator(navigatorContext)
@@ -33,24 +37,24 @@ class StackNavigationModelContextTest : TestViewModel() {
 
     @Test(expected = IncorrectContextHierarchyException::class)
     fun shouldFailCreateNavigatorWithIncorrectContext1() {
-        val childModel = ViewModel(rootModel.viewModelContext())
+        val childModel = ViewModel(rootModel.childContext())
         childModel.stackNavigator(rootModel.context)
     }
 
     @Test(expected = IncorrectContextHierarchyException::class)
     fun shouldFailCreateNavigatorWithIncorrectContext2() {
-        val childModel = ViewModel(rootModel.viewModelContext())
+        val childModel = ViewModel(rootModel.childContext())
         childModel.stackNavigator(rootModel.childContext())
     }
 
     private fun shouldFailOnNonCorrectContext(onMethod: StackNavigationModel.(IViewModel) -> Unit) {
         rootModel.attach()
         rootModel.bind()
-        val childModelContext = rootModel.viewModelContext()
+        val childModelContext = rootModel.childContext()
         val childModel = ChildModel(childModelContext)
-        childModel.enterStage(ViewModelLifecycle.STAGE_ATTACHED)
-        childModel.enterStage(ViewModelLifecycle.STAGE_BOUND)
-        childModel.navigator.onMethod(ViewModel(rootModel.context.viewModelContext()))
+        childModel.enterStage(ViewModelLifecycle.Attached)
+        childModel.enterStage(ViewModelLifecycle.Bound)
+        childModel.navigator.onMethod(ViewModel(rootModel.context.childContext()))
     }
 
     @Test(expected = IncorrectContextHierarchyException::class)
@@ -72,11 +76,11 @@ class StackNavigationModelContextTest : TestViewModel() {
     private fun shouldFailOnNonCorrectContextWithNavigatorContext(onMethod: StackNavigationModel.(IViewModel) -> Unit) {
         rootModel.attach()
         rootModel.bind()
-        val childModelContext = rootModel.viewModelContext()
+        val childModelContext = rootModel.childContext()
         val childModel = ChildModelNavigatorContext(childModelContext)
-        childModel.enterStage(ViewModelLifecycle.STAGE_ATTACHED)
-        childModel.enterStage(ViewModelLifecycle.STAGE_BOUND)
-        childModel.navigator.onMethod(ViewModel(rootModel.context.viewModelContext()))
+        childModel.enterStage(ViewModelLifecycle.Attached)
+        childModel.enterStage(ViewModelLifecycle.Bound)
+        childModel.navigator.onMethod(ViewModel(rootModel.context.childContext()))
     }
 
     @Test(expected = IncorrectContextHierarchyException::class)
@@ -98,11 +102,11 @@ class StackNavigationModelContextTest : TestViewModel() {
     private fun shouldFailOnNonCorrectOnNonNavigatorContext(onMethod: StackNavigationModel.(IViewModel) -> Unit) {
         rootModel.attach()
         rootModel.bind()
-        val childModelContext = rootModel.viewModelContext()
+        val childModelContext = rootModel.childContext()
         val childModel = ChildModelNavigatorContext(childModelContext)
-        childModel.enterStage(ViewModelLifecycle.STAGE_ATTACHED)
-        childModel.enterStage(ViewModelLifecycle.STAGE_BOUND)
-        childModel.navigator.onMethod(ViewModel(childModelContext.viewModelContext()))
+        childModel.enterStage(ViewModelLifecycle.Attached)
+        childModel.enterStage(ViewModelLifecycle.Bound)
+        childModel.navigator.onMethod(ViewModel(childModelContext.childContext()))
     }
 
     @Test(expected = IncorrectContextHierarchyException::class)

@@ -1,3 +1,5 @@
 package net.apptronic.core.viewmodel
 
-open class LifecycleTestViewModel(context: ViewModelContext) : ViewModel(context)
+import net.apptronic.core.context.Context
+
+open class LifecycleTestViewModel(context: Context) : ViewModel(context)

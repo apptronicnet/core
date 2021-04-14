@@ -1,5 +1,7 @@
 package net.apptronic.core.viewmodel
 
+import net.apptronic.core.context.Context
+import net.apptronic.core.context.childContext
 import net.apptronic.core.context.terminate
 import net.apptronic.core.testutils.createTestContext
 import net.apptronic.core.viewmodel.navigation.ViewModelLifecycleController
@@ -10,7 +12,7 @@ class SubModelLifecycleTest {
 
     private val baseContext = createTestContext()
 
-    private inner class ParentModel : LifecycleTestViewModel(EmptyViewModelContext.createContext(baseContext)) {
+    private inner class ParentModel : LifecycleTestViewModel(baseContext.childContext()) {
 
         val children = stackNavigator()
 
@@ -26,7 +28,7 @@ class SubModelLifecycleTest {
 
     }
 
-    private class ChildModel(root: IViewModel) : LifecycleTestViewModel(root.viewModelContext()) {
+    private class ChildModel(context: Context) : LifecycleTestViewModel(context) {
 
         val children = stackNavigator()
 
@@ -76,7 +78,7 @@ class SubModelLifecycleTest {
 
     @Test
     fun shouldRunChildLifecycle() {
-        val child = ChildModel(root)
+        val child = ChildModel(root.childContext())
         root.children.add(child)
         assert(root.currentChild() === child)
         assert(child.isAttached())
@@ -107,14 +109,14 @@ class SubModelLifecycleTest {
 
     @Test
     fun shouldSwitchChildLifecycle() {
-        val child1 = ChildModel(root)
+        val child1 = ChildModel(root.childContext())
         root.children.add(child1)
         assert(root.currentChild() == child1)
 
         controller.setAttached(true)
         assert(child1.isStateAttached())
 
-        val child2 = ChildModel(root)
+        val child2 = ChildModel(root.childContext())
         root.children.add(child2)
         assert(root.currentChild() == child2)
         assert(child1.isStateAttached())
@@ -124,7 +126,7 @@ class SubModelLifecycleTest {
         assert(child1.isStateAttached())
         assert(child2.isStateBound())
 
-        val child3 = ChildModel(root)
+        val child3 = ChildModel(root.childContext())
         root.children.add(child3)
         assert(root.currentChild() == child3)
         assert(child1.isStateAttached())
@@ -138,7 +140,7 @@ class SubModelLifecycleTest {
         assert(child2.isStateAttached())
         assert(child3.isStateFocused())
 
-        val child4 = ChildModel(root)
+        val child4 = ChildModel(root.childContext())
         root.children.add(child4)
         assert(root.currentChild() == child4)
 
@@ -167,7 +169,7 @@ class SubModelLifecycleTest {
         assert(child3.isTerminated())
         assert(child4.isTerminated())
 
-        val child5 = ChildModel(root)
+        val child5 = ChildModel(root.childContext())
         root.children.replace(child5)
         assert(root.currentChild() == child5)
         assert(child1.isStateAttached())

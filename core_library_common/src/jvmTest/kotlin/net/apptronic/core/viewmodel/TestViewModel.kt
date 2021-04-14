@@ -1,41 +1,42 @@
 package net.apptronic.core.viewmodel
 
+import net.apptronic.core.context.childContext
 import net.apptronic.core.context.lifecycle.enterStage
 import net.apptronic.core.context.lifecycle.exitStage
 import net.apptronic.core.testutils.createTestContext
 
-open class TestViewModel : ViewModel(createTestContext().viewModelContext()) {
+open class TestViewModel : ViewModel(createTestContext().childContext()) {
 
     fun attach() {
-        enterStage(context, ViewModelLifecycle.STAGE_ATTACHED)
+        enterStage(context, ViewModelLifecycle.Attached)
     }
 
     fun bind() {
-        enterStage(context, ViewModelLifecycle.STAGE_BOUND)
+        enterStage(context, ViewModelLifecycle.Bound)
     }
 
     fun show() {
-        enterStage(context, ViewModelLifecycle.STAGE_VISIBLE)
+        enterStage(context, ViewModelLifecycle.Visible)
     }
 
     fun focus() {
-        enterStage(context, ViewModelLifecycle.STAGE_FOCUSED)
+        enterStage(context, ViewModelLifecycle.Focused)
     }
 
     fun unfocus() {
-        exitStage(context, ViewModelLifecycle.STAGE_FOCUSED)
+        exitStage(context, ViewModelLifecycle.Focused)
     }
 
     fun hide() {
-        exitStage(context, ViewModelLifecycle.STAGE_VISIBLE)
+        exitStage(context, ViewModelLifecycle.Visible)
     }
 
     fun unbind() {
-        exitStage(context, ViewModelLifecycle.STAGE_BOUND)
+        exitStage(context, ViewModelLifecycle.Bound)
     }
 
     fun detach() {
-        exitStage(context, ViewModelLifecycle.STAGE_ATTACHED)
+        exitStage(context, ViewModelLifecycle.Attached)
     }
 
 }

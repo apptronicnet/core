@@ -1,5 +1,7 @@
 package net.apptronic.core.viewmodel
 
+import net.apptronic.core.context.Context
+import net.apptronic.core.context.childContext
 import net.apptronic.core.testutils.createTestContext
 import org.junit.Test
 
@@ -7,11 +9,11 @@ class ViewModelLifecycleTest {
 
     private val baseContext = createTestContext()
 
-    private class SampleViewModel(viewModelContext: ViewModelContext) :
-            ViewModel(viewModelContext) {
-    }
+    private class SampleViewModel(context: Context) : ViewModel(context)
 
-    private val viewModelContext = EmptyViewModelContext.createContext(baseContext)
+    private val viewModelContext = baseContext.childContext {
+        ViewModelLifecycleDefinition.assignTo(this)
+    }
 
     private val viewModel = SampleViewModel(viewModelContext)
 

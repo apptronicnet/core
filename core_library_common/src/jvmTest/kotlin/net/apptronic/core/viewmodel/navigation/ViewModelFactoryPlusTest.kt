@@ -1,39 +1,38 @@
 package net.apptronic.core.viewmodel.navigation
 
 import net.apptronic.core.context.Context
+import net.apptronic.core.context.childContext
 import net.apptronic.core.testutils.createTestContext
 import net.apptronic.core.viewmodel.IViewModel
 import net.apptronic.core.viewmodel.ViewModel
-import net.apptronic.core.viewmodel.ViewModelContext
-import net.apptronic.core.viewmodel.viewModelContext
 import org.junit.Test
 
 class ViewModelFactoryPlusTest {
 
     private val context = createTestContext()
 
-    class IntViewModel(context: ViewModelContext, val id: Int) : ViewModel(context)
-    class StringViewModel(context: ViewModelContext, val id: String) : ViewModel(context)
-    class BooleanViewModel(context: ViewModelContext, val id: Boolean) : ViewModel(context)
+    class IntViewModel(context: Context, val id: Int) : ViewModel(context)
+    class StringViewModel(context: Context, val id: String) : ViewModel(context)
+    class BooleanViewModel(context: Context, val id: Boolean) : ViewModel(context)
 
     object IntAdapter : ViewModelAdapter<Int, Int, IntViewModel> {
         override fun getItemId(item: Int): Int = item
         override fun createViewModel(parent: Context, item: Int): IntViewModel {
-            return IntViewModel(parent.viewModelContext(), item)
+            return IntViewModel(parent.childContext(), item)
         }
     }
 
     object StringAdapter : ViewModelAdapter<String, String, StringViewModel> {
         override fun getItemId(item: String): String = item
         override fun createViewModel(parent: Context, item: String): StringViewModel {
-            return StringViewModel(parent.viewModelContext(), item)
+            return StringViewModel(parent.childContext(), item)
         }
     }
 
     object BooleanAdapter : ViewModelAdapter<Boolean, Boolean, BooleanViewModel> {
         override fun getItemId(item: Boolean): Boolean = item
         override fun createViewModel(parent: Context, item: Boolean): BooleanViewModel {
-            return BooleanViewModel(parent.viewModelContext(), item)
+            return BooleanViewModel(parent.childContext(), item)
         }
     }
 

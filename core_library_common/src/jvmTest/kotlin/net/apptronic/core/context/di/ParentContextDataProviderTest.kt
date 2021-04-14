@@ -1,8 +1,7 @@
 package net.apptronic.core.context.di
 
-import net.apptronic.core.context.Context
-import net.apptronic.core.context.SubContext
-import net.apptronic.core.context.lifecycle.BASE_LIFECYCLE
+import net.apptronic.core.context.childContext
+import net.apptronic.core.context.dependencyModule
 import net.apptronic.core.testutils.createTestContext
 import org.junit.Test
 
@@ -45,17 +44,12 @@ class ParentContextDataProviderTest {
 
     }
 
-    private class ChildContext(parent: Context) :
-            SubContext(parent, BASE_LIFECYCLE) {
-        init {
-            dependencyDispatcher.addModule(childModule)
-        }
-    }
-
     private val parent = createTestContext {
         dependencyDispatcher.addModule(parentModule)
     }
-    private val child = ChildContext(parent)
+    private val child = parent.childContext {
+        dependencyModule(childModule)
+    }
 
     @Test
     fun parentShouldHave() {

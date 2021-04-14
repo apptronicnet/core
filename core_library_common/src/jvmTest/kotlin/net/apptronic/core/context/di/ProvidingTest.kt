@@ -1,6 +1,6 @@
 package net.apptronic.core.context.di
 
-import net.apptronic.core.context.EmptyContext
+import net.apptronic.core.context.childContext
 import net.apptronic.core.context.component.Component
 import net.apptronic.core.testutils.createTestContext
 import org.junit.Before
@@ -38,7 +38,7 @@ class ProvidingTest {
         val coreContext = createTestContext {
             dependencyDispatcher.addModule(CoreModule)
         }
-        component = Component(coreContext, EmptyContext)
+        component = Component(coreContext.childContext())
         component.context.dependencyDispatcher.addInstance(SomeThingTextDescriptor, EXPECTED_TEXT)
     }
 

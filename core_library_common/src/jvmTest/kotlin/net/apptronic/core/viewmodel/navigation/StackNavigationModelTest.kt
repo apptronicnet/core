@@ -1,5 +1,6 @@
 package net.apptronic.core.viewmodel.navigation
 
+import net.apptronic.core.context.childContext
 import net.apptronic.core.context.lifecycle.enterStage
 import net.apptronic.core.context.terminate
 import net.apptronic.core.testutils.createTestContext
@@ -8,7 +9,6 @@ import net.apptronic.core.viewmodel.ViewModel
 import net.apptronic.core.viewmodel.ViewModelLifecycle
 import net.apptronic.core.viewmodel.navigation.adapters.SingleViewModelAdapter
 import net.apptronic.core.viewmodel.navigation.models.SingleItemNavigatorContent
-import net.apptronic.core.viewmodel.viewModelContext
 import org.junit.After
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -24,7 +24,7 @@ class StackNavigationModelTest {
         context.terminate()
     }
 
-    private val coreViewModel = ViewModel(context.viewModelContext())
+    private val coreViewModel = ViewModel(context.childContext())
 
     lateinit var status: SingleItemNavigatorContent
 
@@ -42,7 +42,7 @@ class StackNavigationModelTest {
         }
     }
 
-    private fun childViewModel(): IViewModel = ViewModel(coreViewModel.viewModelContext())
+    private fun childViewModel(): IViewModel = ViewModel(coreViewModel.childContext())
 
     fun assertStack(vararg viewModels: IViewModel) {
         val stack = stackNavigationModel.items
@@ -413,7 +413,7 @@ class StackNavigationModelTest {
 
     @Test
     fun shouldCorrectlyReplaceStack() {
-        coreViewModel.enterStage(ViewModelLifecycle.STAGE_ATTACHED)
+        coreViewModel.enterStage(ViewModelLifecycle.Attached)
         val page1 = childViewModel()
         val page2 = childViewModel()
         val page3 = childViewModel()

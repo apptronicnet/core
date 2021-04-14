@@ -7,12 +7,16 @@ import kotlin.test.Test
 class LifecycleEventsTest : TestViewModel() {
 
     private val isAttachedRecord = whenAttached().record()
-    private val isBoundRecord = whenAttached().record()
-    private val isVisibleRecord = whenAttached().record()
-    private val isFocusedRecord = whenAttached().record()
+    private val isBoundRecord = whenBound().record()
+    private val isVisibleRecord = whenVisible().record()
+    private val isFocusedRecord = whenFocused().record()
 
     @Test
     fun shouldRecordAll() {
+        isAttachedRecord.assertSize(0)
+        isBoundRecord.assertSize(0)
+        isVisibleRecord.assertSize(0)
+        isFocusedRecord.assertSize(0)
         attach()
         isAttachedRecord.assertSize(1)
         bind()

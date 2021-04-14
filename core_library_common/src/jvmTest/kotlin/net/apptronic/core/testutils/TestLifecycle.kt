@@ -3,7 +3,7 @@ package net.apptronic.core.testutils
 import net.apptronic.core.context.lifecycle.defineLifecycle
 import net.apptronic.core.context.lifecycle.lifecycleStage
 
-val TEST_LIFECYCLE = defineLifecycle {
+val TestLifecycleDefinition = defineLifecycle {
     addStage(TestLifecycle.STAGE_CREATED)
     addStage(TestLifecycle.STAGE_ACTIVATED)
     addStage(TestLifecycle.STAGE_WORKING)

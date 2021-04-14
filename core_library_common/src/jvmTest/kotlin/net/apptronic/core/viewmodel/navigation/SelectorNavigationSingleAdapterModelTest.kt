@@ -1,9 +1,13 @@
 package net.apptronic.core.viewmodel.navigation
 
 import net.apptronic.core.assertListEquals
+import net.apptronic.core.context.Context
+import net.apptronic.core.context.childContext
 import net.apptronic.core.context.lifecycle.enterStage
 import net.apptronic.core.testutils.createTestContext
-import net.apptronic.core.viewmodel.*
+import net.apptronic.core.viewmodel.IViewModel
+import net.apptronic.core.viewmodel.ViewModel
+import net.apptronic.core.viewmodel.ViewModelLifecycle
 import net.apptronic.core.viewmodel.navigation.adapters.SingleViewModelAdapter
 import net.apptronic.core.viewmodel.navigation.models.ISelectorNavigationModel
 import org.junit.Test
@@ -15,17 +19,17 @@ import kotlin.test.assertTrue
 class SelectorNavigationSingleAdapterModelTest {
 
     private val context = createTestContext()
-    private val rootModel = RootModel(context.viewModelContext())
+    private val rootModel = RootModel(context.childContext())
     private val navigator = rootModel.navigator
     private val adapter = SingleAdapter()
 
-    private class SomeViewModel(context: ViewModelContext, val identifier: String) : ViewModel(context) {
+    private class SomeViewModel(context: Context, val identifier: String) : ViewModel(context) {
         override fun toString(): String {
             return "ViewModel[$identifier]"
         }
     }
 
-    private fun someViewModel(identifier: String) = SomeViewModel(navigator.navigatorContext.viewModelContext(), identifier)
+    private fun someViewModel(identifier: String) = SomeViewModel(navigator.navigatorContext.childContext(), identifier)
 
     private val vm0 = someViewModel("vm0")
     private val vm1 = someViewModel("vm1")
@@ -37,7 +41,7 @@ class SelectorNavigationSingleAdapterModelTest {
     private val vm7 = someViewModel("vm7")
     private val vm8 = someViewModel("vm8")
 
-    class RootModel(context: ViewModelContext) : ViewModel(context) {
+    class RootModel(context: Context) : ViewModel(context) {
 
         val navigator = selectorNavigator()
 
@@ -88,11 +92,11 @@ class SelectorNavigationSingleAdapterModelTest {
 
     @Test
     fun verifySelectorNavigator() {
-        rootModel.enterStage(ViewModelLifecycle.STAGE_ATTACHED)
-        rootModel.enterStage(ViewModelLifecycle.STAGE_BOUND)
+        rootModel.enterStage(ViewModelLifecycle.Attached)
+        rootModel.enterStage(ViewModelLifecycle.Bound)
         navigator.setAdapter(adapter)
-        rootModel.enterStage(ViewModelLifecycle.STAGE_VISIBLE)
-        rootModel.enterStage(ViewModelLifecycle.STAGE_FOCUSED)
+        rootModel.enterStage(ViewModelLifecycle.Visible)
+        rootModel.enterStage(ViewModelLifecycle.Focused)
 
         navigator.set(vm0)
         assertAdapterInvalidatedTo(vm0, null)
@@ -128,11 +132,11 @@ class SelectorNavigationSingleAdapterModelTest {
     }
 
     fun initDefaults() {
-        rootModel.enterStage(ViewModelLifecycle.STAGE_ATTACHED)
-        rootModel.enterStage(ViewModelLifecycle.STAGE_BOUND)
+        rootModel.enterStage(ViewModelLifecycle.Attached)
+        rootModel.enterStage(ViewModelLifecycle.Bound)
         navigator.setAdapter(adapter)
-        rootModel.enterStage(ViewModelLifecycle.STAGE_VISIBLE)
-        rootModel.enterStage(ViewModelLifecycle.STAGE_FOCUSED)
+        rootModel.enterStage(ViewModelLifecycle.Visible)
+        rootModel.enterStage(ViewModelLifecycle.Focused)
         navigator.set(listOf(vm0, vm1, vm2, vm3, vm4), ISelectorNavigationModel.SELECTOR_NOTHING)
         assertAdapterInvalidatedTo(null, null)
         assertContent(arrayOf(vm0, vm1, vm2, vm3, vm4), null)

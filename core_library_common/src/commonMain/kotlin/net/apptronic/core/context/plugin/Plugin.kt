@@ -2,8 +2,8 @@ package net.apptronic.core.context.plugin
 
 import net.apptronic.core.context.Context
 import net.apptronic.core.context.component.Component
-import net.apptronic.core.context.component.IComponent
 import net.apptronic.core.context.di.DependencyDispatcher
+import net.apptronic.core.viewmodel.IViewModel
 
 /**
  * Base class which can extend functionality for [Context] and [Component]. Plugin applies to target [Context]
@@ -28,7 +28,7 @@ interface Plugin {
     /**
      * Called when any component is initialized
      */
-    fun onComponent(component: IComponent) {
+    fun onViewModelAttached(viewModel: IViewModel) {
         // implement by subclasses if needed
     }
 
@@ -37,21 +37,14 @@ interface Plugin {
      *
      * This is called once dependency is created
      */
-    fun <T> onProvide(
-            definitionContext: Context,
-            instance: T
-    ): T {
+    fun <T> onProvide(definitionContext: Context, instance: T): T {
         return instance
     }
 
     /**
      * Called when [DependencyDispatcher] injecting [instance] somewhere
      */
-    fun <T> onInject(
-            definitionContext: Context,
-            injectionContext: Context,
-            instance: T
-    ): T {
+    fun <T> onInject(definitionContext: Context, injectionContext: Context, instance: T): T {
         return instance
     }
 

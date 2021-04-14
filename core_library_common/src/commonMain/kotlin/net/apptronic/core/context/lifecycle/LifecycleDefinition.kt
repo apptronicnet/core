@@ -1,8 +1,8 @@
 package net.apptronic.core.context.lifecycle
 
-val BASE_LIFECYCLE = defineLifecycle {
-    // no additional stages
-}
+import net.apptronic.core.context.Context
+
+val DefaultLifecycleDefinition: LifecycleDefinition = LifecycleDefinitionImpl { }
 
 fun defineLifecycle(builder: LifecycleBuilder.() -> Unit): LifecycleDefinition {
     return LifecycleDefinitionImpl(builder)
@@ -10,16 +10,25 @@ fun defineLifecycle(builder: LifecycleBuilder.() -> Unit): LifecycleDefinition {
 
 interface LifecycleDefinition {
 
-    fun createLifecycle(): Lifecycle
+    fun assignTo(context: Context)
 
 }
 
 private class LifecycleDefinitionImpl(
-        private val builder: LifecycleBuilder.() -> Unit
+    private val builder: LifecycleBuilder.() -> Unit
 ) : LifecycleDefinition {
 
-    override fun createLifecycle(): Lifecycle {
-        return LifecycleBuilderImpl().apply(builder).lifecycle
+    override fun assignTo(context: Context) {
+        when (context.lifecycle.lifecycleDefinition) {
+            null -> {
+                context.lifecycle.lifecycleDefinition = this
+                LifecycleBuilderImpl(context.lifecycle).apply(builder)
+            }
+            this -> {
+                // ignore as already assigned
+            }
+            else -> throw LifecycleDefinitionAssignmentFailedException()
+        }
     }
 
 }
@@ -30,9 +39,7 @@ interface LifecycleBuilder {
 
 }
 
-private class LifecycleBuilderImpl : LifecycleBuilder {
-
-    val lifecycle: Lifecycle = Lifecycle()
+private class LifecycleBuilderImpl(private val lifecycle: Lifecycle) : LifecycleBuilder {
 
     override fun addStage(definition: LifecycleStageDefinition) {
         lifecycle.addStage(definition)

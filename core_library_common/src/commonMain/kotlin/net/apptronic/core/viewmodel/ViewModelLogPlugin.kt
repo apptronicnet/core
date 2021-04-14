@@ -16,23 +16,21 @@ fun Context.installViewModelLogPlugin(logMessage: (String) -> Unit) {
 private val ViewModelLogPluginDescriptor = pluginDescriptor<ViewModelLogPlugin>()
 
 private class ViewModelLogPlugin internal constructor(
-        private val logMessage: (String) -> Unit
+    private val logMessage: (String) -> Unit
 ) : Plugin {
 
-    override fun onComponent(component: IComponent) {
-        super.onComponent(component)
-        if (component is IViewModel) {
-            component.context.lifecycle.rootStage.doOnce {
-                logMessage("ViewModelLifecycle: $component initialized")
-            }
-            component.doOnTerminate {
-                logMessage("ViewModelLifecycle: ${component} terminated")
-            }
-            stateOfStage(component, ViewModelLifecycle.STAGE_ATTACHED)
-            stateOfStage(component, ViewModelLifecycle.STAGE_BOUND)
-            stateOfStage(component, ViewModelLifecycle.STAGE_VISIBLE)
-            stateOfStage(component, ViewModelLifecycle.STAGE_FOCUSED)
+    override fun onViewModelAttached(viewModel: IViewModel) {
+        super.onViewModelAttached(viewModel)
+        viewModel.context.lifecycle.rootStage.doOnce {
+            logMessage("ViewModelLifecycle: $viewModel initialized")
         }
+        viewModel.doOnTerminate {
+            logMessage("ViewModelLifecycle: ${viewModel} terminated")
+        }
+        stateOfStage(viewModel, ViewModelLifecycle.Attached)
+        stateOfStage(viewModel, ViewModelLifecycle.Bound)
+        stateOfStage(viewModel, ViewModelLifecycle.Visible)
+        stateOfStage(viewModel, ViewModelLifecycle.Focused)
     }
 
     private fun stateOfStage(component: IComponent, definition: LifecycleStageDefinition) {

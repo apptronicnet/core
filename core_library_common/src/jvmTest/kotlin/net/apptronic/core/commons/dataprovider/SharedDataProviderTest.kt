@@ -73,11 +73,11 @@ class SharedDataProviderTest : BaseContextTest() {
     override val context = createTestContext {
         dependencyModule {
             single {
-                Repository(scopedContext(net.apptronic.core.context.EmptyContext))
+                Repository(scopedContext())
             }
             sharedDataProvider<Int, String>(StringProviderDescriptor) {
                 StringValueDataProvider(
-                    scopedContext(net.apptronic.core.context.EmptyContext), it
+                    scopedContext(), it
                 )
             }
         }

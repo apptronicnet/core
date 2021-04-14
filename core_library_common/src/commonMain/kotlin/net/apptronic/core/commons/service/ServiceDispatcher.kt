@@ -12,9 +12,9 @@ import net.apptronic.core.entity.Entity
 import net.apptronic.core.entity.commons.value
 
 internal class ServiceDispatcher<T : Any, R : Any>(
-        context: Context,
-        private val serviceInstanceDescriptor: DependencyDescriptor<Service<T, R>>
-) : Component(context) {
+    context: Context,
+    private val serviceInstanceDescriptor: DependencyDescriptor<Service<T, R>>
+) : Component(context, ServiceDispatcherLifecycle) {
 
     interface PendingRequest<T, R> {
         val request: T

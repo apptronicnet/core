@@ -1,17 +1,17 @@
 package net.apptronic.core.viewmodel.dispatcher
 
 import net.apptronic.core.context.Context
+import net.apptronic.core.context.childContext
 import net.apptronic.core.record
-import net.apptronic.core.viewmodel.EmptyViewModelContext
 import net.apptronic.core.viewmodel.ViewModel
 import org.junit.Test
 
 class ViewModelDispatcherBaseText {
 
-    private class TestViewModel(parent: Context) : ViewModel(parent, EmptyViewModelContext)
+    private class TestViewModel(context: Context) : ViewModel(context)
 
-    private val component = viewModelDispathcerComponent {
-        TestViewModel(it)
+    private val component = viewModelDispatcher {
+        TestViewModel(it.childContext())
     }
 
     @Test

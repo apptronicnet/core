@@ -1,10 +1,7 @@
 package net.apptronic.core.context.di
 
 import net.apptronic.core.context.Context
-import net.apptronic.core.context.ContextDefinition
 import net.apptronic.core.context.childContext
-import net.apptronic.core.context.lifecycle.BASE_LIFECYCLE
-import net.apptronic.core.context.lifecycle.LifecycleDefinition
 import net.apptronic.core.context.terminate
 import kotlin.reflect.KClass
 
@@ -12,9 +9,9 @@ import kotlin.reflect.KClass
  * Context of creating methods in module definition
  */
 abstract class Scope internal constructor(
-        protected val definitionContext: Context,
-        protected val dependencyDispatcher: DependencyDispatcher,
-        protected val parameters: Parameters
+    protected val definitionContext: Context,
+    protected val dependencyDispatcher: DependencyDispatcher,
+    protected val parameters: Parameters
 ) {
 
     private val recyclers = mutableListOf<RecyclerMethod<*>>()
@@ -34,7 +31,7 @@ abstract class Scope internal constructor(
     }
 
     fun <ObjectType : Any> inject(
-            clazz: KClass<ObjectType>
+        clazz: KClass<ObjectType>
     ): ObjectType {
         if (clazz == Context::class) {
             throw IllegalArgumentException("Cannot inject [Context]. Please use definitionContext() or providedContext() instead")
@@ -43,7 +40,7 @@ abstract class Scope internal constructor(
     }
 
     fun <ObjectType : Any> optional(
-            clazz: KClass<ObjectType>
+        clazz: KClass<ObjectType>
     ): ObjectType? {
         if (clazz == Context::class) {
             throw IllegalArgumentException("Cannot inject [Context]. Please use definitionContext() or providedContext() instead")
@@ -52,25 +49,25 @@ abstract class Scope internal constructor(
     }
 
     fun <ObjectType : Any> inject(
-            descriptor: DependencyDescriptor<ObjectType>
+        descriptor: DependencyDescriptor<ObjectType>
     ): ObjectType {
         return performInjection(objectKey(descriptor))
     }
 
     fun <ObjectType : Any> optional(
-            descriptor: DependencyDescriptor<ObjectType>
+        descriptor: DependencyDescriptor<ObjectType>
     ): ObjectType? {
         return optionalInjection(objectKey(descriptor))
     }
 
     private fun <ObjectType> performInjection(
-            objectKey: ObjectKey
+        objectKey: ObjectKey
     ): ObjectType {
         return parameters.get(objectKey) ?: dependencyDispatcher.inject(objectKey, emptyParameters())
     }
 
     private fun <ObjectType> optionalInjection(
-            objectKey: ObjectKey
+        objectKey: ObjectKey
     ): ObjectType? {
         return parameters.get(objectKey) ?: dependencyDispatcher.optional(objectKey, emptyParameters())
     }
@@ -84,22 +81,11 @@ abstract class Scope internal constructor(
      * this scope ends.
      */
     @Suppress("UNUSED_PARAMETER")
-    fun <T : Context> scopedContext(
-            contextDefinition: ContextDefinition<T>,
-            parent: ScopedContextParentDefinition = defaultBuilderContext
-    ): T {
-        val scopedContext = parent.context.childContext(contextDefinition)
-        contexts.add(scopedContext)
-        return scopedContext
-    }
-
-    @Suppress("UNUSED_PARAMETER")
     fun scopedContext(
-            lifecycleDefinition: LifecycleDefinition = BASE_LIFECYCLE,
-            parent: ScopedContextParentDefinition = defaultBuilderContext,
-            builder: Context.() -> Unit = {}
+        parent: ScopedContextParentDefinition = defaultBuilderContext,
+        builder: Context.() -> Unit = {}
     ): Context {
-        val scopedContext = parent.context.childContext(lifecycleDefinition, builder)
+        val scopedContext = parent.context.childContext(builder)
         contexts.add(scopedContext)
         return scopedContext
     }
@@ -131,8 +117,8 @@ abstract class Scope internal constructor(
 }
 
 class SingleScope internal constructor(
-        definitionContext: Context,
-        dependencyDispatcher: DependencyDispatcher
+    definitionContext: Context,
+    dependencyDispatcher: DependencyDispatcher
 ) : Scope(definitionContext, dependencyDispatcher, emptyParameters()) {
 
     override val defaultBuilderContext = ScopedContextParentDefinition(definitionContext)
@@ -147,9 +133,9 @@ class SingleScope internal constructor(
 }
 
 abstract class ParametersScope(
-        definitionContext: Context,
-        dependencyDispatcher: DependencyDispatcher,
-        parameters: Parameters
+    definitionContext: Context,
+    dependencyDispatcher: DependencyDispatcher,
+    parameters: Parameters
 ) : Scope(definitionContext, dependencyDispatcher, parameters) {
 
     /**
@@ -163,7 +149,7 @@ abstract class ParametersScope(
      * Request injection from injection context. Allows to override instances in child context or parameters
      */
     fun <ObjectType : Any> provided(
-            clazz: KClass<ObjectType>
+        clazz: KClass<ObjectType>
     ): ObjectType {
         if (clazz == Context::class) {
             throw  IllegalArgumentException("Cannot inject [Context]. Please use definitionContext() or providedContext() instead")
@@ -175,22 +161,22 @@ abstract class ParametersScope(
      * Request injection from injection context. Allows to override descriptors in child context or parameters
      */
     fun <ObjectType : Any> provided(
-            descriptor: DependencyDescriptor<ObjectType>
+        descriptor: DependencyDescriptor<ObjectType>
     ): ObjectType {
         return performProvide(objectKey(descriptor))
     }
 
     internal abstract fun <ObjectType> performProvide(
-            objectKey: ObjectKey
+        objectKey: ObjectKey
     ): ObjectType
 
 }
 
 class FactoryScope internal constructor(
-        definitionContext: Context,
-        private val injectionContext: Context,
-        dependencyDispatcher: DependencyDispatcher,
-        parameters: Parameters
+    definitionContext: Context,
+    private val injectionContext: Context,
+    dependencyDispatcher: DependencyDispatcher,
+    parameters: Parameters
 ) : ParametersScope(definitionContext, dependencyDispatcher, parameters) {
 
     private val injectionDispatcher = injectionContext.dependencyDispatcher
@@ -213,14 +199,14 @@ class FactoryScope internal constructor(
 }
 
 class SharedScope internal constructor(
-        definitionContext: Context,
-        dependencyDispatcher: DependencyDispatcher,
-        parameters: Parameters
+    definitionContext: Context,
+    dependencyDispatcher: DependencyDispatcher,
+    parameters: Parameters
 ) : ParametersScope(definitionContext, dependencyDispatcher, parameters) {
 
     override fun <ObjectType> performProvide(objectKey: ObjectKey): ObjectType {
         return parameters.get(objectKey)
-                ?: throw InjectionFailedException("Cannot provide $objectKey: this is missing in provided parameters")
+            ?: throw InjectionFailedException("Cannot provide $objectKey: this is missing in provided parameters")
     }
 
     override val defaultBuilderContext = ScopedContextParentDefinition(definitionContext)

@@ -1,12 +1,11 @@
 package net.apptronic.core.viewmodel.navigation
 
 import net.apptronic.core.context.Context
+import net.apptronic.core.context.childContext
 import net.apptronic.core.entity.Entity
 import net.apptronic.core.entity.commons.value
 import net.apptronic.core.viewmodel.TestViewModel
 import net.apptronic.core.viewmodel.ViewModel
-import net.apptronic.core.viewmodel.ViewModelContext
-import net.apptronic.core.viewmodel.viewModelContext
 import org.junit.Test
 
 class DynamicListNavigatorTest : TestViewModel() {
@@ -45,9 +44,9 @@ class DynamicListNavigatorTest : TestViewModel() {
         }
     }
 
-    open class ItemViewModel(context: ViewModelContext) : ViewModel(context)
+    open class ItemViewModel(context: Context) : ViewModel(context)
     class StaticItemViewModel(
-            context: ViewModelContext, val item: Item.Static
+        context: Context, val item: Item.Static
     ) : ItemViewModel(context), ViewModelWithVisibility {
 
         val isReadyToShow = value(false)
@@ -60,7 +59,7 @@ class DynamicListNavigatorTest : TestViewModel() {
     }
 
     class DynamicItemViewModel(
-            context: ViewModelContext, val item: Item.Dynamic
+        context: Context, val item: Item.Dynamic
     ) : ItemViewModel(context), ViewModelWithVisibility {
 
         private val isReadyToShow = value(false)
@@ -78,7 +77,7 @@ class DynamicListNavigatorTest : TestViewModel() {
         }
 
         override fun createViewModel(parent: Context, item: Item.Static): StaticItemViewModel {
-            val context = parent.viewModelContext()
+            val context = parent.childContext()
             return StaticItemViewModel(context, item)
         }
 
@@ -91,7 +90,7 @@ class DynamicListNavigatorTest : TestViewModel() {
         }
 
         override fun createViewModel(parent: Context, item: Item.Dynamic): DynamicItemViewModel {
-            val context = parent.viewModelContext()
+            val context = parent.childContext()
             return DynamicItemViewModel(context, item)
         }
 

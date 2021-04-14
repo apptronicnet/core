@@ -1,6 +1,6 @@
 package net.apptronic.core.context.di
 
-import net.apptronic.core.context.EmptyContext
+import net.apptronic.core.context.childContext
 import net.apptronic.core.context.component.Component
 import net.apptronic.core.context.lifecycle.enterStage
 import net.apptronic.core.context.lifecycle.exitStage
@@ -67,12 +67,12 @@ class SharedScopeTest {
 
     @Test
     fun shouldBeSameInContexts() {
-        val childContext1 = EmptyContext.createContext(context)
+        val childContext1 = context.childContext()
         val childComponent1 = Component(childContext1)
         val instance1 = childComponent1.inject<Shared>()
         assert(instance1.isRecycled.not())
 
-        val childContext2 = EmptyContext.createContext(context)
+        val childContext2 = context.childContext()
         val childComponent2 = Component(childContext2)
         val instance2 = childComponent2.inject<Shared>()
         assert(instance1 === instance2)
@@ -87,14 +87,14 @@ class SharedScopeTest {
 
     @Test
     fun shouldBeDifferentInContexts() {
-        val childContext1 = EmptyContext.createContext(context)
+        val childContext1 = context.childContext()
         val childComponent1 = Component(childContext1)
         val instance1 = childComponent1.inject<Shared>()
         assert(instance1.isRecycled.not())
         childContext1.terminate()
         assert(instance1.isRecycled)
 
-        val childContext2 = EmptyContext.createContext(context)
+        val childContext2 = context.childContext()
         val childComponent2 = Component(childContext2)
         val instance2 = childComponent2.inject<Shared>()
         assert(instance1 !== instance2)

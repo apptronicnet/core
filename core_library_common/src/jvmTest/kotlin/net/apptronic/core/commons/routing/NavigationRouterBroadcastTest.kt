@@ -1,12 +1,12 @@
 package net.apptronic.core.commons.routing
 
+import net.apptronic.core.context.Context
 import net.apptronic.core.context.Contextual
+import net.apptronic.core.context.childContext
 import net.apptronic.core.entity.commons.typedEvent
 import net.apptronic.core.record
 import net.apptronic.core.testutils.createTestContext
 import net.apptronic.core.viewmodel.ViewModel
-import net.apptronic.core.viewmodel.ViewModelContext
-import net.apptronic.core.viewmodel.viewModelContext
 import org.junit.Test
 
 class NavigationRouterBroadcastTest {
@@ -14,10 +14,10 @@ class NavigationRouterBroadcastTest {
     val coreContext = createTestContext()
 
     companion object {
-        private fun Contextual.childViewModel() = ChildViewModel(viewModelContext())
+        private fun Contextual.childViewModel() = ChildViewModel(childContext())
     }
 
-    class HostViewModel(context: ViewModelContext) : ViewModel(context), NavigationHandler<Any> {
+    class HostViewModel(context: Context) : ViewModel(context), NavigationHandler<Any> {
 
         val navigationEvents = typedEvent<Any>()
 
@@ -39,7 +39,7 @@ class NavigationRouterBroadcastTest {
 
     }
 
-    class ChildViewModel(context: ViewModelContext) : ViewModel(context), NavigationHandler<Any> {
+    class ChildViewModel(context: Context) : ViewModel(context), NavigationHandler<Any> {
 
         val navigationEvents = typedEvent<Any>()
 
@@ -56,7 +56,7 @@ class NavigationRouterBroadcastTest {
 
     @Test
     fun verifyBroadcastSentToAll() {
-        val viewModel = HostViewModel(coreContext.viewModelContext())
+        val viewModel = HostViewModel(coreContext.childContext())
         val eventsRoot = viewModel.navigationEvents.record()
         val eventsChild1 = viewModel.child1.navigationEvents.record()
         val eventsChild2 = viewModel.child2.navigationEvents.record()

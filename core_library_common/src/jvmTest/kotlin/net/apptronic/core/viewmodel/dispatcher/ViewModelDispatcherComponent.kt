@@ -1,6 +1,7 @@
 package net.apptronic.core.viewmodel.dispatcher
 
 import net.apptronic.core.context.Context
+import net.apptronic.core.context.Contextual
 import net.apptronic.core.context.component.Component
 import net.apptronic.core.entity.commons.genericEvent
 import net.apptronic.core.entity.commons.typedEvent
@@ -9,7 +10,7 @@ import net.apptronic.core.viewmodel.IViewModel
 import net.apptronic.core.viewmodel.navigation.ViewModelLifecycleController
 import kotlin.reflect.KClass
 
-inline fun <reified T : IViewModel> viewModelDispathcerComponent(noinline builder: (Context) -> T): ViewModelDispatcherComponent<T> {
+inline fun <reified T : IViewModel> viewModelDispatcher(noinline builder: (Contextual) -> T): ViewModelDispatcherComponent<T> {
     return ViewModelDispatcherComponent(T::class, builder)
 }
 

@@ -9,6 +9,8 @@ import net.apptronic.core.entity.EntitySubscription
  */
 class Lifecycle internal constructor() {
 
+    internal var lifecycleDefinition: LifecycleDefinition? = null
+
     private inner class BaseParent : LifecycleStageParent {
 
         override fun onChildEnter() {

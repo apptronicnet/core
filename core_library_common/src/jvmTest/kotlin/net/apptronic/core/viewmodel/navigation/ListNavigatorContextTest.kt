@@ -1,8 +1,11 @@
 package net.apptronic.core.viewmodel.navigation
 
+import net.apptronic.core.context.Context
 import net.apptronic.core.context.childContext
 import net.apptronic.core.context.lifecycle.enterStage
-import net.apptronic.core.viewmodel.*
+import net.apptronic.core.viewmodel.TestViewModel
+import net.apptronic.core.viewmodel.ViewModel
+import net.apptronic.core.viewmodel.ViewModelLifecycle
 import org.junit.Test
 
 /**
@@ -12,13 +15,13 @@ class ListNavigatorContextTest : TestViewModel() {
 
     val rootModel = TestViewModel()
 
-    class ChildModel(context: ViewModelContext) : ViewModel(context) {
+    class ChildModel(context: Context) : ViewModel(context) {
 
         val navigator = listNavigator()
 
     }
 
-    class ChildModelNavigatorContext(context: ViewModelContext) : ViewModel(context) {
+    class ChildModelNavigatorContext(context: Context) : ViewModel(context) {
 
         val navigatorContext = childContext()
         val navigator = listNavigator(navigatorContext)
@@ -33,13 +36,13 @@ class ListNavigatorContextTest : TestViewModel() {
 
     @Test(expected = IncorrectContextHierarchyException::class)
     fun shouldFailCreateNavigatorWithIncorrectContext1() {
-        val childModel = ViewModel(rootModel.viewModelContext())
+        val childModel = ViewModel(rootModel.childContext())
         childModel.listNavigator(rootModel.context)
     }
 
     @Test(expected = IncorrectContextHierarchyException::class)
     fun shouldFailCreateNavigatorWithIncorrectContext2() {
-        val childModel = ViewModel(rootModel.viewModelContext())
+        val childModel = ViewModel(rootModel.childContext())
         childModel.listNavigator(rootModel.childContext())
     }
 
@@ -47,14 +50,14 @@ class ListNavigatorContextTest : TestViewModel() {
     fun shouldFailOnNonCorrectContext() {
         rootModel.attach()
         rootModel.bind()
-        val childModelContext = rootModel.viewModelContext()
+        val childModelContext = rootModel.childContext()
         val childModel = ChildModel(childModelContext)
-        childModel.enterStage(ViewModelLifecycle.STAGE_ATTACHED)
-        childModel.enterStage(ViewModelLifecycle.STAGE_BOUND)
+        childModel.enterStage(ViewModelLifecycle.Attached)
+        childModel.enterStage(ViewModelLifecycle.Bound)
         childModel.navigator.set(
-                listOf(
-                        ViewModel(rootModel.context.viewModelContext())
-                )
+            listOf(
+                ViewModel(rootModel.context.childContext())
+            )
         )
     }
 
@@ -62,14 +65,14 @@ class ListNavigatorContextTest : TestViewModel() {
     fun shouldFailOnNonCorrectContextWithNavigatorContext() {
         rootModel.attach()
         rootModel.bind()
-        val childModelContext = rootModel.viewModelContext()
+        val childModelContext = rootModel.childContext()
         val childModel = ChildModelNavigatorContext(childModelContext)
-        childModel.enterStage(ViewModelLifecycle.STAGE_ATTACHED)
-        childModel.enterStage(ViewModelLifecycle.STAGE_BOUND)
+        childModel.enterStage(ViewModelLifecycle.Attached)
+        childModel.enterStage(ViewModelLifecycle.Bound)
         childModel.navigator.set(
-                listOf(
-                        ViewModel(rootModel.context.viewModelContext())
-                )
+            listOf(
+                ViewModel(rootModel.context.childContext())
+            )
         )
     }
 
@@ -77,14 +80,14 @@ class ListNavigatorContextTest : TestViewModel() {
     fun shouldFailOnNonCorrectOnNonNavigatorContext() {
         rootModel.attach()
         rootModel.bind()
-        val childModelContext = rootModel.viewModelContext()
+        val childModelContext = rootModel.childContext()
         val childModel = ChildModelNavigatorContext(childModelContext)
-        childModel.enterStage(ViewModelLifecycle.STAGE_ATTACHED)
-        childModel.enterStage(ViewModelLifecycle.STAGE_BOUND)
+        childModel.enterStage(ViewModelLifecycle.Attached)
+        childModel.enterStage(ViewModelLifecycle.Bound)
         childModel.navigator.set(
-                listOf(
-                        ViewModel(childModelContext.viewModelContext())
-                )
+            listOf(
+                ViewModel(childModelContext.childContext())
+            )
         )
     }
 

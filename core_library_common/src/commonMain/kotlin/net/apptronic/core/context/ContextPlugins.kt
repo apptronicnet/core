@@ -1,8 +1,8 @@
 package net.apptronic.core.context
 
-import net.apptronic.core.context.component.IComponent
 import net.apptronic.core.context.plugin.Plugin
 import net.apptronic.core.context.plugin.PluginDescriptor
+import net.apptronic.core.viewmodel.IViewModel
 
 class ContextPlugins internal constructor() {
 
@@ -23,7 +23,9 @@ class ContextPlugins internal constructor() {
         if (parentContext != null) {
             map.putAll(parentContext.plugins.map)
         }
-        nextContext(context)
+        plugins.forEach {
+            it.onContext(context)
+        }
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -37,15 +39,9 @@ class ContextPlugins internal constructor() {
         plugin.onContext(context)
     }
 
-    private fun nextContext(context: Context) {
+    fun nextViewModelAttached(viewModel: IViewModel) {
         plugins.forEach {
-            it.onContext(context)
-        }
-    }
-
-    fun nextComponent(component: IComponent) {
-        plugins.forEach {
-            it.onComponent(component)
+            it.onViewModelAttached(viewModel)
         }
     }
 

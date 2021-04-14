@@ -1,7 +1,6 @@
 package net.apptronic.core.context.di
 
 import net.apptronic.core.context.Context
-import net.apptronic.core.context.EmptyContext
 import net.apptronic.core.context.component.Component
 import net.apptronic.core.context.terminate
 import net.apptronic.core.testutils.createTestContext
@@ -37,7 +36,7 @@ class AutoRecyclingTest {
 
     }
 
-    class TestComponent(context: Context) : Component(context, EmptyContext) {
+    class TestComponent(context: Context) : Component(context) {
 
         val instance = inject(DeclarationDescriptor)
 

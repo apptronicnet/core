@@ -1,5 +1,6 @@
 package net.apptronic.core.viewmodel.navigation
 
+import net.apptronic.core.context.childContext
 import net.apptronic.core.context.lifecycle.enterStage
 import net.apptronic.core.context.lifecycle.exitStage
 import net.apptronic.core.context.terminate
@@ -9,7 +10,6 @@ import net.apptronic.core.viewmodel.IViewModel
 import net.apptronic.core.viewmodel.ViewModel
 import net.apptronic.core.viewmodel.ViewModelLifecycle
 import net.apptronic.core.viewmodel.navigation.models.StaticListNavigatorContent
-import net.apptronic.core.viewmodel.viewModelContext
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -19,11 +19,11 @@ import kotlin.test.assertTrue
 class ListNavigatorTest {
 
     private val context = createTestContext { }
-    private val rootViewModel = ViewModel(context.viewModelContext())
+    private val rootViewModel = ViewModel(context.childContext())
     private val items = rootViewModel.value<List<IViewModel>>(emptyList())
     private val navigator = rootViewModel.listNavigator(items)
 
-    fun childModel() = ViewModel(rootViewModel.viewModelContext())
+    fun childModel() = ViewModel(rootViewModel.childContext())
 
     private val adapter = TestListAdapter()
     private var listItems: List<IViewModel> = emptyList()
@@ -102,7 +102,7 @@ class ListNavigatorTest {
 
     @Test
     fun shouldEnterAttachedStage() {
-        rootViewModel.enterStage(ViewModelLifecycle.STAGE_ATTACHED)
+        rootViewModel.enterStage(ViewModelLifecycle.Attached)
 
         val child1 = childModel()
         assertTrue(child1.isDefaultStage())
@@ -145,7 +145,7 @@ class ListNavigatorTest {
 
     @Test
     fun shouldTerminateWithParent() {
-        rootViewModel.enterStage(ViewModelLifecycle.STAGE_ATTACHED)
+        rootViewModel.enterStage(ViewModelLifecycle.Attached)
         val child1 = childModel()
         items.set(listOf(child1))
         assertTrue(child1.isStateAttached())
@@ -156,37 +156,37 @@ class ListNavigatorTest {
 
     @Test
     fun shouldIgnoreParentStagesWithoutAdapter() {
-        rootViewModel.enterStage(ViewModelLifecycle.STAGE_ATTACHED)
+        rootViewModel.enterStage(ViewModelLifecycle.Attached)
         val child1 = childModel()
         items.set(listOf(child1))
         assertTrue(child1.isStateAttached())
 
-        rootViewModel.enterStage(ViewModelLifecycle.STAGE_BOUND)
+        rootViewModel.enterStage(ViewModelLifecycle.Bound)
         assertTrue(child1.isStateAttached())
 
-        rootViewModel.enterStage(ViewModelLifecycle.STAGE_VISIBLE)
+        rootViewModel.enterStage(ViewModelLifecycle.Visible)
         assertTrue(child1.isStateAttached())
 
-        rootViewModel.enterStage(ViewModelLifecycle.STAGE_FOCUSED)
+        rootViewModel.enterStage(ViewModelLifecycle.Focused)
         assertTrue(child1.isStateAttached())
     }
 
     @Test
     fun shouldMatchParentStageWithAdapter() {
-        rootViewModel.enterStage(ViewModelLifecycle.STAGE_ATTACHED)
+        rootViewModel.enterStage(ViewModelLifecycle.Attached)
         navigator.setAdapter(adapter)
 
         val child1 = childModel()
         items.set(listOf(child1))
         assertTrue(child1.isStateAttached())
 
-        rootViewModel.enterStage(ViewModelLifecycle.STAGE_BOUND)
+        rootViewModel.enterStage(ViewModelLifecycle.Bound)
         assertTrue(child1.isStateAttached())
 
-        rootViewModel.enterStage(ViewModelLifecycle.STAGE_VISIBLE)
+        rootViewModel.enterStage(ViewModelLifecycle.Visible)
         assertTrue(child1.isStateAttached())
 
-        rootViewModel.enterStage(ViewModelLifecycle.STAGE_FOCUSED)
+        rootViewModel.enterStage(ViewModelLifecycle.Focused)
         assertTrue(child1.isStateAttached())
 
         val child1item = adapter.items.first { it.viewModel == child1 }
@@ -199,10 +199,10 @@ class ListNavigatorTest {
         child1item.setFocused(true)
         assertTrue(child1.isStateFocused())
 
-        rootViewModel.exitStage(ViewModelLifecycle.STAGE_FOCUSED)
+        rootViewModel.exitStage(ViewModelLifecycle.Focused)
         assertTrue(child1.isStateVisible())
 
-        rootViewModel.exitStage(ViewModelLifecycle.STAGE_VISIBLE)
+        rootViewModel.exitStage(ViewModelLifecycle.Visible)
         assertTrue(child1.isStateBound())
     }
 

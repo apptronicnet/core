@@ -1,20 +1,20 @@
 package net.apptronic.core.commons.routing
 
+import net.apptronic.core.context.Context
 import net.apptronic.core.context.Contextual
+import net.apptronic.core.context.childContext
 import net.apptronic.core.context.dependencyModule
 import net.apptronic.core.entity.commons.typedEvent
 import net.apptronic.core.record
 import net.apptronic.core.testutils.createTestContext
 import net.apptronic.core.viewmodel.ViewModel
-import net.apptronic.core.viewmodel.ViewModelContext
-import net.apptronic.core.viewmodel.viewModelContext
 import org.junit.Test
 
 class NavigationRouterHostTest {
 
     val coreContext = createTestContext()
 
-    class HostViewModel(context: ViewModelContext) : ViewModel(context), NavigationHandler<Any> {
+    class HostViewModel(context: Context) : ViewModel(context), NavigationHandler<Any> {
 
         val navigationEvents = typedEvent<Any>()
 
@@ -34,7 +34,7 @@ class NavigationRouterHostTest {
 
     @Test
     fun verifyNavigationRouterHost() {
-        val viewModel = HostViewModel(coreContext.viewModelContext())
+        val viewModel = HostViewModel(coreContext.childContext())
         val events = viewModel.navigationEvents.record()
         viewModel.router.sendCommandsSync(1)
         viewModel.router.sendCommandsSync(2)
@@ -43,14 +43,14 @@ class NavigationRouterHostTest {
     }
 
     private fun Contextual.dependencyViewModel() = DependencyViewModel(
-            viewModelContext {
-                dependencyModule {
-                    navigationRouter()
-                }
+        childContext {
+            dependencyModule {
+                navigationRouter()
             }
+        }
     )
 
-    class DependencyViewModel(context: ViewModelContext) : ViewModel(context), NavigationHandler<Any> {
+    class DependencyViewModel(context: Context) : ViewModel(context), NavigationHandler<Any> {
 
         val navigationEvents = typedEvent<Any>()
 

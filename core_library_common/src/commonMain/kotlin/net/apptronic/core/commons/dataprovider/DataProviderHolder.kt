@@ -32,7 +32,7 @@ fun <K : Any, T : Any> Scope.dataProviderContext(
     descriptor: DataProviderDescriptor<K, T>,
     key: K,
     builder: FactoryScope.(K) -> DataProvider<K, T>
-) = scopedContext(DataProviderHolderLifecycle) {
+) = scopedContext {
     dependencyModule("DataProviderHolderModule") {
         factory(descriptor.providerInstanceDescriptor) {
             builder(key)
@@ -44,7 +44,7 @@ internal class DataProviderHolder<K : Any, T : Any>(
     context: Context,
     private val descriptor: DataProviderDescriptor<K, T>,
     private val key: K,
-) : Component(context) {
+) : Component(context, DataProviderHolderLifecycle) {
 
     private val dispatcher = injectDataDispatcher(descriptor)
     private val cache =

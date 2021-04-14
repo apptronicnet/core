@@ -8,8 +8,8 @@ import net.apptronic.core.context.terminate
 import net.apptronic.core.entity.base.Property
 import net.apptronic.core.entity.base.Value
 import net.apptronic.core.entity.commons.*
-import net.apptronic.core.testutils.TEST_LIFECYCLE
 import net.apptronic.core.testutils.TestLifecycle
+import net.apptronic.core.testutils.TestLifecycleDefinition
 import net.apptronic.core.testutils.createTestContext
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -18,8 +18,12 @@ abstract class ContextSwitchTest {
 
     val baseContext = createTestContext()
 
-    val sourceContext = baseContext.childContext(lifecycleDefinition = TEST_LIFECYCLE)
-    val targetContext = baseContext.childContext(lifecycleDefinition = TEST_LIFECYCLE)
+    val sourceContext = baseContext.childContext().apply {
+        TestLifecycleDefinition.assignTo(context)
+    }
+    val targetContext = baseContext.childContext().apply {
+        TestLifecycleDefinition.assignTo(context)
+    }
 
     val source: Value<String> = sourceContext.value<String>()
     abstract fun createResult(): Property<String>

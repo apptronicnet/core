@@ -14,7 +14,7 @@ import net.apptronic.core.entity.commons.value
 fun <T> IViewModel.propertyWithSetWhenAttached(
     clearOnExit: Boolean = false, sourceProvider: () -> Entity<T>
 ): Entity<T> = propertyWithSetWhenStage(
-    ViewModelLifecycle.STAGE_ATTACHED, clearOnExit, sourceProvider
+    ViewModelLifecycle.Attached, clearOnExit, sourceProvider
 )
 
 /**
@@ -24,7 +24,7 @@ fun <T> IViewModel.propertyWithSetWhenAttached(
 fun <T> IViewModel.propertyWithSetWhenAttached(
     defaultValue: T, resetOnExit: Boolean = false, sourceProvider: () -> Entity<T>
 ): Entity<T> = propertyWithSetWhenStage(
-    ViewModelLifecycle.STAGE_ATTACHED, defaultValue, resetOnExit, sourceProvider
+    ViewModelLifecycle.Attached, defaultValue, resetOnExit, sourceProvider
 )
 
 /**
@@ -34,7 +34,7 @@ fun <T> IViewModel.propertyWithSetWhenAttached(
 fun <T> IViewModel.propertyWithSetWhenBound(
     clearOnExit: Boolean = false, sourceProvider: () -> Entity<T>
 ): Entity<T> = propertyWithSetWhenStage(
-    ViewModelLifecycle.STAGE_BOUND, clearOnExit, sourceProvider
+    ViewModelLifecycle.Bound, clearOnExit, sourceProvider
 )
 
 /**
@@ -44,7 +44,7 @@ fun <T> IViewModel.propertyWithSetWhenBound(
 fun <T> IViewModel.propertyWithSetWhenBound(
     defaultValue: T, resetOnExit: Boolean = false, sourceProvider: () -> Entity<T>
 ): Entity<T> = propertyWithSetWhenStage(
-    ViewModelLifecycle.STAGE_BOUND, defaultValue, resetOnExit, sourceProvider
+    ViewModelLifecycle.Bound, defaultValue, resetOnExit, sourceProvider
 )
 
 /**
@@ -54,7 +54,7 @@ fun <T> IViewModel.propertyWithSetWhenBound(
 fun <T> IViewModel.propertyWithSetWhenVisible(
     clearOnExit: Boolean = false, sourceProvider: () -> Entity<T>
 ): Entity<T> = propertyWithSetWhenStage(
-    ViewModelLifecycle.STAGE_VISIBLE, clearOnExit, sourceProvider
+    ViewModelLifecycle.Visible, clearOnExit, sourceProvider
 )
 
 /**
@@ -64,7 +64,7 @@ fun <T> IViewModel.propertyWithSetWhenVisible(
 fun <T> IViewModel.propertyWithSetWhenVisible(
     defaultValue: T, resetOnExit: Boolean = false, sourceProvider: () -> Entity<T>
 ): Entity<T> = propertyWithSetWhenStage(
-    ViewModelLifecycle.STAGE_VISIBLE, defaultValue, resetOnExit, sourceProvider
+    ViewModelLifecycle.Visible, defaultValue, resetOnExit, sourceProvider
 )
 
 /**
@@ -74,7 +74,7 @@ fun <T> IViewModel.propertyWithSetWhenVisible(
 fun <T> IViewModel.propertyWithSetWhenFocused(
     clearOnExit: Boolean = false, sourceProvider: () -> Entity<T>
 ): Entity<T> = propertyWithSetWhenStage(
-    ViewModelLifecycle.STAGE_FOCUSED, clearOnExit, sourceProvider
+    ViewModelLifecycle.Focused, clearOnExit, sourceProvider
 )
 
 /**
@@ -84,7 +84,7 @@ fun <T> IViewModel.propertyWithSetWhenFocused(
 fun <T> IViewModel.propertyWithSetWhenFocused(
     defaultValue: T, resetOnExit: Boolean = false, sourceProvider: () -> Entity<T>
 ): Entity<T> = propertyWithSetWhenStage(
-    ViewModelLifecycle.STAGE_FOCUSED, defaultValue, resetOnExit, sourceProvider
+    ViewModelLifecycle.Focused, defaultValue, resetOnExit, sourceProvider
 )
 
 /**

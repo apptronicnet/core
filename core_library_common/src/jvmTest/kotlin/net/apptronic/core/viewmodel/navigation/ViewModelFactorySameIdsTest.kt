@@ -1,9 +1,9 @@
 package net.apptronic.core.viewmodel.navigation
 
 import net.apptronic.core.context.Context
+import net.apptronic.core.context.childContext
 import net.apptronic.core.viewmodel.IViewModel
 import net.apptronic.core.viewmodel.ViewModel
-import net.apptronic.core.viewmodel.viewModelContext
 import org.junit.Test
 import kotlin.test.assertEquals
 
@@ -16,7 +16,7 @@ class ViewModelFactorySameIdsTest {
         }
 
         override fun createViewModel(parent: Context, item: Short): IViewModel {
-            return ViewModel(parent.viewModelContext())
+            return ViewModel(parent.childContext())
         }
 
     }
@@ -28,7 +28,7 @@ class ViewModelFactorySameIdsTest {
         }
 
         override fun createViewModel(parent: Context, item: Int): IViewModel {
-            return ViewModel(parent.viewModelContext())
+            return ViewModel(parent.childContext())
         }
 
     }
@@ -40,7 +40,7 @@ class ViewModelFactorySameIdsTest {
         }
 
         override fun createViewModel(parent: Context, item: Long): IViewModel {
-            return ViewModel(parent.viewModelContext())
+            return ViewModel(parent.childContext())
         }
 
     }

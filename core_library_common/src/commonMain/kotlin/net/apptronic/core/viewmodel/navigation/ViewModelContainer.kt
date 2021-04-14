@@ -90,10 +90,10 @@ internal class ViewModelContainer(
     }
 
     init {
-        bindStage(viewModel, ViewModelLifecycle.STAGE_ATTACHED, isAttached)
-        bindStage(viewModel, ViewModelLifecycle.STAGE_BOUND, isBound)
-        bindStage(viewModel, ViewModelLifecycle.STAGE_VISIBLE, isVisible)
-        bindStage(viewModel, ViewModelLifecycle.STAGE_FOCUSED, isFocused)
+        bindStage(viewModel, ViewModelLifecycle.Attached, isAttached)
+        bindStage(viewModel, ViewModelLifecycle.Bound, isBound)
+        bindStage(viewModel, ViewModelLifecycle.Visible, isVisible)
+        bindStage(viewModel, ViewModelLifecycle.Focused, isFocused)
         shouldShow.subscribe(viewModel.context) {
             if (shouldShowValue != it) {
                 shouldShowValue = it

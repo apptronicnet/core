@@ -1,13 +1,13 @@
 package net.apptronic.core.context.component
 
 import net.apptronic.core.context.Context
-import net.apptronic.core.context.ContextDefinition
 import net.apptronic.core.context.Contextual
 import net.apptronic.core.context.di.DependencyDescriptor
 import net.apptronic.core.context.di.DependencyProvider
 import net.apptronic.core.context.di.Parameters
 import net.apptronic.core.context.di.emptyParameters
 import net.apptronic.core.context.lifecycle.Lifecycle
+import net.apptronic.core.context.lifecycle.LifecycleDefinition
 import net.apptronic.core.context.lifecycle.LifecycleStage
 import net.apptronic.core.context.lifecycle.LifecycleStageDefinition
 import net.apptronic.core.context.plugin.Extendable
@@ -27,30 +27,16 @@ interface IComponent : Extendable, Contextual {
 
 }
 
-open class Component : IComponent {
+open class Component(
+    final override val context: Context,
+    lifecycleDefinition: LifecycleDefinition? = null
+) : IComponent {
+
+    init {
+        lifecycleDefinition?.assignTo(context)
+    }
 
     final override val componentId: Long = ComponentRegistry.nextId()
-
-    private val componentContext: Context
-
-    override val context: Context
-        get() = componentContext
-
-    open fun contextLoaded() {
-
-    }
-
-    constructor(context: Context) : super() {
-        this.componentContext = context
-        contextLoaded()
-        componentContext.addComponent(this)
-    }
-
-    constructor(parentContext: Context, contextDefinition: ContextDefinition<out Context>) : super() {
-        this.componentContext = contextDefinition.createContext(parentContext)
-        contextLoaded()
-        componentContext.addComponent(this)
-    }
 
     final override val extensions: Extensions = Extensions()
 

@@ -1,28 +1,28 @@
 package net.apptronic.core.viewmodel.navigation
 
+import net.apptronic.core.context.Context
+import net.apptronic.core.context.childContext
 import net.apptronic.core.context.terminate
 import net.apptronic.core.testutils.createTestContext
 import net.apptronic.core.viewmodel.IViewModel
 import net.apptronic.core.viewmodel.ViewModel
-import net.apptronic.core.viewmodel.ViewModelContext
-import net.apptronic.core.viewmodel.viewModelContext
 import kotlin.test.Test
 
 class StackNavigatorTest {
 
     private val context = createTestContext()
 
-    private class RootViewModel(context: ViewModelContext) : ViewModel(context) {
+    private class RootViewModel(context: Context) : ViewModel(context) {
 
         val navigator = stackNavigator()
 
     }
 
     private fun createViewModel(): IViewModel {
-        return ViewModel(root.viewModelContext())
+        return ViewModel(root.childContext())
     }
 
-    private val root = RootViewModel(context.viewModelContext())
+    private val root = RootViewModel(context.childContext())
     private val lifecycleController = ViewModelLifecycleController(root)
     private val adapter = TestAdapterSingle()
 

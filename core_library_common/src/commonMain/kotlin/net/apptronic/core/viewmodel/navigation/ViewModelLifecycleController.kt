@@ -19,19 +19,19 @@ class ViewModelLifecycleController(
     }
 
     fun setAttached(value: Boolean) {
-        setStage(value, ViewModelLifecycle.STAGE_ATTACHED)
+        setStage(value, ViewModelLifecycle.Attached)
     }
 
     fun setBound(value: Boolean) {
-        setStage(value, ViewModelLifecycle.STAGE_BOUND)
+        setStage(value, ViewModelLifecycle.Bound)
     }
 
     fun setVisible(value: Boolean) {
-        setStage(value, ViewModelLifecycle.STAGE_VISIBLE)
+        setStage(value, ViewModelLifecycle.Visible)
     }
 
     fun setFocused(value: Boolean) {
-        setStage(value, ViewModelLifecycle.STAGE_FOCUSED)
+        setStage(value, ViewModelLifecycle.Focused)
     }
 
     fun terminate() {
