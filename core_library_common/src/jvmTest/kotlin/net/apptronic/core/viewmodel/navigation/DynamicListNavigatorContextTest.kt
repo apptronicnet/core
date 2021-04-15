@@ -1,6 +1,7 @@
 package net.apptronic.core.viewmodel.navigation
 
 import net.apptronic.core.context.Context
+import net.apptronic.core.context.Contextual
 import net.apptronic.core.context.childContext
 import net.apptronic.core.context.lifecycle.enterStage
 import net.apptronic.core.entity.commons.value
@@ -60,7 +61,7 @@ class DynamicListNavigatorContextTest : TestViewModel() {
             childModelContext,
             object : ViewModelAdapter<Int, Int, IViewModel> {
                 override fun getItemId(item: Int): Int = item
-                override fun createViewModel(parent: Context, item: Int): IViewModel {
+                override fun createViewModel(parent: Contextual, item: Int): IViewModel {
                     return ViewModel(rootModel.context.childContext())
                 }
             }.asComposite()
@@ -80,7 +81,7 @@ class DynamicListNavigatorContextTest : TestViewModel() {
             childModelContext,
             object : ViewModelAdapter<Int, Int, IViewModel> {
                 override fun getItemId(item: Int): Int = item
-                override fun createViewModel(parent: Context, item: Int): IViewModel {
+                override fun createViewModel(parent: Contextual, item: Int): IViewModel {
                     return ViewModel(rootModel.context.childContext())
                 }
             }.asComposite()
@@ -100,7 +101,7 @@ class DynamicListNavigatorContextTest : TestViewModel() {
             childModelContext,
             object : ViewModelAdapter<Int, Int, IViewModel> {
                 override fun getItemId(item: Int): Int = item
-                override fun createViewModel(parent: Context, item: Int): IViewModel {
+                override fun createViewModel(parent: Contextual, item: Int): IViewModel {
                     return ViewModel(childModelContext.childContext())
                 }
             }.asComposite()

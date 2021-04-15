@@ -1,6 +1,6 @@
 package net.apptronic.core.viewmodel.navigation
 
-import net.apptronic.core.context.Context
+import net.apptronic.core.context.Contextual
 import net.apptronic.core.viewmodel.IViewModel
 import net.apptronic.core.viewmodel.ViewModel
 
@@ -21,7 +21,7 @@ interface ViewModelAdapter<T, Id, VM : IViewModel> {
     /**
      * Create [ViewModel] fro item
      */
-    fun createViewModel(parent: Context, item: T): VM
+    fun createViewModel(parent: Contextual, item: T): VM
 
     /**
      * Update already existing [ViewModel] for item

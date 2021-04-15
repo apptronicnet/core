@@ -1,7 +1,7 @@
 package net.apptronic.core.viewmodel.navigation
 
 import net.apptronic.core.base.utils.isInstanceOf
-import net.apptronic.core.context.Context
+import net.apptronic.core.context.Contextual
 import net.apptronic.core.viewmodel.IViewModel
 import kotlin.reflect.KClass
 
@@ -63,7 +63,7 @@ class CompositeViewModelAdapter : ViewModelAdapter<Any, Any, IViewModel> {
         throw IllegalArgumentException("getId for $item failed")
     }
 
-    override fun createViewModel(parent: Context, item: Any): IViewModel {
+    override fun createViewModel(parent: Contextual, item: Any): IViewModel {
         builders.forEach {
             if (it.isFor(item)) {
                 return it.createViewModel(parent, item)
@@ -100,7 +100,7 @@ class CompositeViewModelAdapter : ViewModelAdapter<Any, Any, IViewModel> {
             return wrapped.getItemId(item as SubT) as Any
         }
 
-        override fun createViewModel(parent: Context, item: Any): IViewModel {
+        override fun createViewModel(parent: Contextual, item: Any): IViewModel {
             return wrapped.createViewModel(parent, item as SubT)
         }
 

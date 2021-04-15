@@ -1,6 +1,7 @@
 package net.apptronic.core.viewmodel.navigation
 
 import net.apptronic.core.context.Context
+import net.apptronic.core.context.Contextual
 import net.apptronic.core.context.childContext
 import net.apptronic.core.testutils.createTestContext
 import net.apptronic.core.viewmodel.IViewModel
@@ -17,21 +18,21 @@ class ViewModelFactoryPlusTest {
 
     object IntAdapter : ViewModelAdapter<Int, Int, IntViewModel> {
         override fun getItemId(item: Int): Int = item
-        override fun createViewModel(parent: Context, item: Int): IntViewModel {
+        override fun createViewModel(parent: Contextual, item: Int): IntViewModel {
             return IntViewModel(parent.childContext(), item)
         }
     }
 
     object StringAdapter : ViewModelAdapter<String, String, StringViewModel> {
         override fun getItemId(item: String): String = item
-        override fun createViewModel(parent: Context, item: String): StringViewModel {
+        override fun createViewModel(parent: Contextual, item: String): StringViewModel {
             return StringViewModel(parent.childContext(), item)
         }
     }
 
     object BooleanAdapter : ViewModelAdapter<Boolean, Boolean, BooleanViewModel> {
         override fun getItemId(item: Boolean): Boolean = item
-        override fun createViewModel(parent: Context, item: Boolean): BooleanViewModel {
+        override fun createViewModel(parent: Contextual, item: Boolean): BooleanViewModel {
             return BooleanViewModel(parent.childContext(), item)
         }
     }

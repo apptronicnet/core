@@ -1,6 +1,6 @@
 package net.apptronic.core.viewmodel.navigation
 
-import net.apptronic.core.context.Context
+import net.apptronic.core.context.Contextual
 import net.apptronic.core.testutils.createTestContext
 import net.apptronic.core.viewmodel.TestViewModel
 import org.junit.Test
@@ -30,7 +30,7 @@ class ViewModelFactoryTest {
             return IntId(item.id)
         }
 
-        override fun createViewModel(parent: Context, item: TypeInt): IntViewModel {
+        override fun createViewModel(parent: Contextual, item: TypeInt): IntViewModel {
             return IntViewModel(item.someValue)
         }
 
@@ -48,7 +48,7 @@ class ViewModelFactoryTest {
             return StringId(item.id)
         }
 
-        override fun createViewModel(parent: Context, item: TypeString): StringViewModel {
+        override fun createViewModel(parent: Contextual, item: TypeString): StringViewModel {
             return StringViewModel(item.someValue)
         }
 

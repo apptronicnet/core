@@ -1,6 +1,6 @@
 package net.apptronic.core.viewmodel.navigation
 
-import net.apptronic.core.context.Context
+import net.apptronic.core.context.Contextual
 import net.apptronic.core.context.childContext
 import net.apptronic.core.viewmodel.IViewModel
 import net.apptronic.core.viewmodel.ViewModel
@@ -15,7 +15,7 @@ class ViewModelFactorySameIdsTest {
             return item.toString()
         }
 
-        override fun createViewModel(parent: Context, item: Short): IViewModel {
+        override fun createViewModel(parent: Contextual, item: Short): IViewModel {
             return ViewModel(parent.childContext())
         }
 
@@ -27,7 +27,7 @@ class ViewModelFactorySameIdsTest {
             return item.toString()
         }
 
-        override fun createViewModel(parent: Context, item: Int): IViewModel {
+        override fun createViewModel(parent: Contextual, item: Int): IViewModel {
             return ViewModel(parent.childContext())
         }
 
@@ -39,7 +39,7 @@ class ViewModelFactorySameIdsTest {
             return item.toString()
         }
 
-        override fun createViewModel(parent: Context, item: Long): IViewModel {
+        override fun createViewModel(parent: Contextual, item: Long): IViewModel {
             return ViewModel(parent.childContext())
         }
 

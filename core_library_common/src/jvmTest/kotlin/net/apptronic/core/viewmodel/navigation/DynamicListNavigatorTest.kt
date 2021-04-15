@@ -1,6 +1,7 @@
 package net.apptronic.core.viewmodel.navigation
 
 import net.apptronic.core.context.Context
+import net.apptronic.core.context.Contextual
 import net.apptronic.core.context.childContext
 import net.apptronic.core.entity.Entity
 import net.apptronic.core.entity.commons.value
@@ -76,7 +77,7 @@ class DynamicListNavigatorTest : TestViewModel() {
             return "Static_" + item.type
         }
 
-        override fun createViewModel(parent: Context, item: Item.Static): StaticItemViewModel {
+        override fun createViewModel(parent: Contextual, item: Item.Static): StaticItemViewModel {
             val context = parent.childContext()
             return StaticItemViewModel(context, item)
         }
@@ -89,7 +90,7 @@ class DynamicListNavigatorTest : TestViewModel() {
             return "Dynamic:" + item.id
         }
 
-        override fun createViewModel(parent: Context, item: Item.Dynamic): DynamicItemViewModel {
+        override fun createViewModel(parent: Contextual, item: Item.Dynamic): DynamicItemViewModel {
             val context = parent.childContext()
             return DynamicItemViewModel(context, item)
         }
