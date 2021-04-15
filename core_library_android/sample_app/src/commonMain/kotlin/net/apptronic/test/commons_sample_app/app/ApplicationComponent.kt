@@ -5,11 +5,12 @@ import net.apptronic.core.context.component.Component
 import net.apptronic.core.viewmodel.dispatcher.ViewModelDispatcher
 import net.apptronic.core.viewmodel.dispatcher.viewModelDispatcher
 import net.apptronic.test.commons_sample_app.ApplicationScreenViewModel
+import net.apptronic.test.commons_sample_app.applicationScreenViewModel
 
 class ApplicationComponent(context: Context) : Component(context) {
 
     val appUI: ViewModelDispatcher<ApplicationScreenViewModel> = viewModelDispatcher {
-        ApplicationScreenViewModel(it)
+        applicationScreenViewModel()
     }
 
 }

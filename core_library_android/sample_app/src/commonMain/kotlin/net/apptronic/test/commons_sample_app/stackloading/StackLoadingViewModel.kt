@@ -1,23 +1,23 @@
 package net.apptronic.test.commons_sample_app.stackloading
 
 import kotlinx.coroutines.launch
+import net.apptronic.core.context.Context
 import net.apptronic.core.context.Contextual
+import net.apptronic.core.context.childContext
 import net.apptronic.core.context.coroutines.contextCoroutineScope
 import net.apptronic.core.entity.commons.genericEvent
 import net.apptronic.core.entity.commons.value
 import net.apptronic.core.entity.conditions.awaitUntilSet
 import net.apptronic.core.entity.function.map
 import net.apptronic.core.viewmodel.ViewModel
-import net.apptronic.core.viewmodel.ViewModelContext
 import net.apptronic.core.viewmodel.navigation.BasicTransition
 import net.apptronic.core.viewmodel.navigation.models.size
 import net.apptronic.core.viewmodel.navigation.models.viewModel
 import net.apptronic.core.viewmodel.navigation.stackNavigator
-import net.apptronic.core.viewmodel.viewModelContext
 
-fun Contextual.stackLoadingViewModel() = StackLoadingViewModel(viewModelContext())
+fun Contextual.stackLoadingViewModel() = StackLoadingViewModel(childContext())
 
-class StackLoadingViewModel internal constructor(context: ViewModelContext) : ViewModel(context),
+class StackLoadingViewModel internal constructor(context: Context) : ViewModel(context),
     StackRouter {
 
     init {
@@ -42,7 +42,7 @@ class StackLoadingViewModel internal constructor(context: ViewModelContext) : Vi
 
     private suspend fun newItem(name: String): ViewModel {
         isInProgress.set(true)
-        val item = StackItemViewModel(context, "$name #${index++}")
+        val item = stackItemViewModel("$name #${index++}")
         item.text.awaitUntilSet()
         isInProgress.set(false)
         return item

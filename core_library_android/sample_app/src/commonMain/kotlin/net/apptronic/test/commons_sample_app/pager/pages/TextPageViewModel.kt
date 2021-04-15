@@ -1,9 +1,10 @@
 package net.apptronic.test.commons_sample_app.pager.pages
 
 import net.apptronic.core.context.Context
+import net.apptronic.core.context.Contextual
+import net.apptronic.core.context.childContext
 import net.apptronic.core.entity.commons.toggle
 import net.apptronic.core.entity.commons.value
-import net.apptronic.core.viewmodel.EmptyViewModelContext
 import net.apptronic.core.viewmodel.ViewModel
 import net.apptronic.test.commons_sample_app.pager.NextPageNumberDescriptor
 
@@ -17,7 +18,9 @@ private val STRINGS = listOf(
     "Universe in infinite"
 )
 
-class TextPageViewModel(parent: Context) : ViewModel(parent, EmptyViewModelContext) {
+fun Contextual.textPageViewModel() = TextPageViewModel(childContext())
+
+class TextPageViewModel(context: Context) : ViewModel(context) {
 
     private val pageNumber = inject(NextPageNumberDescriptor)
 

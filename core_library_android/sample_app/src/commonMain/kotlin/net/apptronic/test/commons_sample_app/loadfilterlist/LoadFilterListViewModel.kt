@@ -1,16 +1,16 @@
 package net.apptronic.test.commons_sample_app.loadfilterlist
 
+import net.apptronic.core.context.Context
 import net.apptronic.core.context.Contextual
+import net.apptronic.core.context.childContext
 import net.apptronic.core.entity.commons.value
 import net.apptronic.core.entity.function.map
 import net.apptronic.core.viewmodel.ViewModel
-import net.apptronic.core.viewmodel.ViewModelContext
 import net.apptronic.core.viewmodel.navigation.*
-import net.apptronic.core.viewmodel.viewModelContext
 
-fun Contextual.loadFilterListViewModel() = LoadFilterListViewModel(viewModelContext())
+fun Contextual.loadFilterListViewModel() = LoadFilterListViewModel(childContext())
 
-class LoadFilterListViewModel internal constructor(context: ViewModelContext) : ViewModel(context) {
+class LoadFilterListViewModel internal constructor(context: Context) : ViewModel(context) {
 
     val loadFilterMode = value<LoadFilterMode>(LoadFilterMode.Simple)
 
@@ -18,7 +18,7 @@ class LoadFilterListViewModel internal constructor(context: ViewModelContext) : 
 
     private fun List<Long>.items(initialReady: Boolean): List<LoadItemViewModel> {
         return mapIndexed { index, time ->
-            LoadItemViewModel(context, index + 1, time, initialReady)
+            loadItemViewModel(index + 1, time, initialReady)
         }
     }
 

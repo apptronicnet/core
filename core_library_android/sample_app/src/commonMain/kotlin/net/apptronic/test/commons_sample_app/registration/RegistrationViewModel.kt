@@ -1,7 +1,9 @@
 package net.apptronic.test.commons_sample_app.registration
 
 import net.apptronic.core.commons.routing.injectNavigationRouter
+import net.apptronic.core.context.Context
 import net.apptronic.core.context.Contextual
+import net.apptronic.core.context.childContext
 import net.apptronic.core.entity.commons.genericEvent
 import net.apptronic.core.entity.commons.nullValue
 import net.apptronic.core.entity.commons.setAs
@@ -9,8 +11,6 @@ import net.apptronic.core.entity.commons.value
 import net.apptronic.core.entity.extensions.forEachChangeAnyOf
 import net.apptronic.core.entity.function.*
 import net.apptronic.core.viewmodel.ViewModel
-import net.apptronic.core.viewmodel.ViewModelContext
-import net.apptronic.core.viewmodel.viewModelContext
 import net.apptronic.test.commons_sample_app.BackToLogin
 import net.apptronic.test.commons_sample_app.app.HttpClientDescriptor
 import net.apptronic.test.commons_sample_app.app.PlatformDefinition
@@ -18,10 +18,10 @@ import net.apptronic.test.commons_sample_app.app.PlatformDescriptor
 import net.apptronic.test.commons_sample_app.login.RegistrationListener
 
 fun Contextual.registrationViewModel(listener: RegistrationListener) =
-    RegistrationViewModel(viewModelContext(), listener)
+    RegistrationViewModel(childContext(), listener)
 
 class RegistrationViewModel internal constructor(
-    context: ViewModelContext, private val listener: RegistrationListener
+    context: Context, private val listener: RegistrationListener
 ) : ViewModel(context) {
 
     private val httpClient = inject(HttpClientDescriptor)

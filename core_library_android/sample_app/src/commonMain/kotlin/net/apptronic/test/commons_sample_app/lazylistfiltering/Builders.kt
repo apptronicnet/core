@@ -1,6 +1,6 @@
 package net.apptronic.test.commons_sample_app.lazylistfiltering
 
-import net.apptronic.core.context.Context
+import net.apptronic.core.context.Contextual
 import net.apptronic.core.viewmodel.navigation.ViewModelAdapter
 
 class StaticItem(
@@ -19,8 +19,11 @@ object StaticViewModelBuilder : ViewModelAdapter<StaticItem, String, StaticFilte
         return item.id
     }
 
-    override fun createViewModel(parent: Context, item: StaticItem): StaticFilteredItemViewModel {
-        return StaticFilteredItemViewModel(parent, item.id, item.delay)
+    override fun createViewModel(
+        parent: Contextual,
+        item: StaticItem
+    ): StaticFilteredItemViewModel {
+        return parent.staticFilteredItemViewModel(item.id, item.delay)
     }
 
 }
@@ -31,8 +34,8 @@ object DynamicViewModelBuilder : ViewModelAdapter<DynamicItem, Int, DynamicItemV
         return item.id
     }
 
-    override fun createViewModel(parent: Context, item: DynamicItem): DynamicItemViewModel {
-        return DynamicItemViewModel(parent, item.text)
+    override fun createViewModel(parent: Contextual, item: DynamicItem): DynamicItemViewModel {
+        return parent.dynamicItemViewModel(item.text)
     }
 
 }

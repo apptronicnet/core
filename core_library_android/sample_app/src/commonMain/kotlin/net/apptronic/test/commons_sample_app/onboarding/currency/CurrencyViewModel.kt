@@ -1,14 +1,18 @@
 package net.apptronic.test.commons_sample_app.onboarding.currency
 
 import net.apptronic.core.context.Context
+import net.apptronic.core.context.Contextual
+import net.apptronic.core.context.childContext
 import net.apptronic.core.entity.commons.genericEvent
 import net.apptronic.core.entity.commons.value
-import net.apptronic.core.viewmodel.EmptyViewModelContext
 import net.apptronic.core.viewmodel.ViewModel
 import net.apptronic.test.commons_sample_app.onboarding.OnboardingDataDescriptor
 
-class CurrencyViewModel(parent: Context, private val router: CurrencyRouter) :
-    ViewModel(parent, EmptyViewModelContext) {
+fun Contextual.currencyViewModel(router: CurrencyRouter) =
+    CurrencyViewModel(childContext(), router)
+
+class CurrencyViewModel(context: Context, private val router: CurrencyRouter) :
+    ViewModel(context) {
 
     private val data = inject(OnboardingDataDescriptor)
 

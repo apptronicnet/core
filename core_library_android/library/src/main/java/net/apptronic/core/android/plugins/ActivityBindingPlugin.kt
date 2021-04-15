@@ -7,10 +7,10 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcherOwner
 import net.apptronic.core.android.viewmodel.activityContainer
 import net.apptronic.core.context.Context
-import net.apptronic.core.context.component.IComponent
 import net.apptronic.core.context.plugin.Plugin
 import net.apptronic.core.context.plugin.pluginDescriptor
 import net.apptronic.core.viewmodel.IViewModel
+import net.apptronic.core.viewmodel.dispatcher.ViewDispatcher
 import net.apptronic.core.viewmodel.dispatcher.ViewModelDispatcher
 import kotlin.reflect.KClass
 
@@ -18,7 +18,7 @@ val ActivityBindingPluginDescriptor = pluginDescriptor<ActivityBindingPlugin>()
 
 class ActivityBindingPlugin(
     private val androidApplication: Application
-) : Plugin, Application.ActivityLifecycleCallbacks {
+) : Plugin, Application.ActivityLifecycleCallbacks, ViewDispatcher {
 
     private class ActivityBinding<A : Activity, VM : IViewModel>(
         val activity: KClass<A>,
@@ -43,8 +43,8 @@ class ActivityBindingPlugin(
     }
 
     private class ActivityInstance(
-            val activity: Activity,
-            val dispatcher: ViewModelDispatcher<*>
+        val activity: Activity,
+        val dispatcher: ViewModelDispatcher<*>
     ) {
         val viewContainer = activity.activityContainer(dispatcher)
     }
@@ -80,13 +80,11 @@ class ActivityBindingPlugin(
     override fun onInstall(context: Context) {
         super.onInstall(context)
         context.requireViewBinderAdapterPlugin()
+        context.dependencyDispatcher.addInstance<ViewDispatcher>(this)
     }
 
-    override fun onComponent(component: IComponent) {
-        super.onComponent(component)
-        if (component is ViewModelDispatcher<*>) {
-            dispatchers.add(component)
-        }
+    override fun onNextViewModelDispatcher(viewModelDispatcher: ViewModelDispatcher<*>) {
+        dispatchers.add(viewModelDispatcher)
     }
 
     private fun Activity.instance(): ActivityInstance? {
@@ -101,13 +99,13 @@ class ActivityBindingPlugin(
         }
         if (binding != null) {
             val dispatcher = dispatchers.firstOrNull {
-                it.viewModelType() == binding.viewModel
+                it.viewModelType == binding.viewModel
             }
             if (dispatcher != null) {
                 instances.add(ActivityInstance(activity, dispatcher))
                 if (activity is OnBackPressedDispatcherOwner) {
                     val backPressedCallback =
-                            binding.buildBackPressedCallback(activity, dispatcher.getViewModel())
+                        binding.buildBackPressedCallback(activity, dispatcher.obtainViewModel())
                     if (backPressedCallback != null) {
                         activity.onBackPressedDispatcher.addCallback(backPressedCallback)
                     }

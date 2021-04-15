@@ -6,7 +6,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import net.apptronic.core.context.Context
 import net.apptronic.core.viewmodel.IViewModel
-import net.apptronic.core.viewmodel.ViewModelContext
 import net.apptronic.core.viewmodel.navigation.ViewModelLifecycleController
 
 abstract class CoreCompatFragment<T : IViewModel> : Fragment(), ICoreCompatFragment<T> {

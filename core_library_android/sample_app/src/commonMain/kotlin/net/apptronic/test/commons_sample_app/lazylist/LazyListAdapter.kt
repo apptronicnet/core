@@ -1,6 +1,6 @@
 package net.apptronic.test.commons_sample_app.lazylist
 
-import net.apptronic.core.context.Context
+import net.apptronic.core.context.Contextual
 import net.apptronic.core.viewmodel.IViewModel
 import net.apptronic.core.viewmodel.navigation.GenericViewModelAdapter
 
@@ -14,10 +14,10 @@ class LazyListAdapter : GenericViewModelAdapter {
         }
     }
 
-    override fun createViewModel(parent: Context, item: Any): IViewModel {
+    override fun createViewModel(parent: Contextual, item: Any): IViewModel {
         return when (item) {
-            is LazyListItem -> LazyListItemViewModel(parent)
-            is StaticItem -> StaticItemViewModel(parent)
+            is LazyListItem -> parent.lazyListItemViewModel()
+            is StaticItem -> parent.staticItemViewModel()
             else -> throw IllegalArgumentException(item.toString())
         }.also {
             updateViewModel(it, item)

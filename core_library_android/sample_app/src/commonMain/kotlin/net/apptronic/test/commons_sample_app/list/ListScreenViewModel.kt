@@ -2,6 +2,8 @@ package net.apptronic.test.commons_sample_app.list
 
 import net.apptronic.core.context.Context
 import net.apptronic.core.context.Contextual
+import net.apptronic.core.context.childContext
+import net.apptronic.core.context.dependencyModule
 import net.apptronic.core.entity.commons.mutableValue
 import net.apptronic.core.entity.function.map
 import net.apptronic.core.entity.function.merge
@@ -9,9 +11,13 @@ import net.apptronic.core.viewmodel.IViewModel
 import net.apptronic.core.viewmodel.ViewModel
 import net.apptronic.core.viewmodel.navigation.listNavigator
 
-fun Contextual.listScreenViewModel() = ListScreenViewModel(context)
+fun Contextual.listScreenViewModel() = ListScreenViewModel(
+    childContext {
+        dependencyModule(ListModule)
+    }
+)
 
-class ListScreenViewModel internal constructor(parent: Context) : ViewModel(parent, listContext),
+class ListScreenViewModel internal constructor(context: Context) : ViewModel(context),
     ListController {
 
     val listNavigator = listNavigator()

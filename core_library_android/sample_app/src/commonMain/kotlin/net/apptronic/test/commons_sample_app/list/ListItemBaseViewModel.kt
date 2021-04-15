@@ -2,12 +2,10 @@ package net.apptronic.test.commons_sample_app.list
 
 import net.apptronic.core.context.Context
 import net.apptronic.core.entity.commons.value
-import net.apptronic.core.viewmodel.EmptyViewModelContext
 import net.apptronic.core.viewmodel.ViewModel
 
-abstract class ListItemBaseViewModel(
-    private val indexNumber: Int, parent: Context
-) : ViewModel(parent, EmptyViewModelContext) {
+abstract class ListItemBaseViewModel(context: Context, private val indexNumber: Int) :
+    ViewModel(context) {
 
     private val controller = inject(ListControllerDescriptor)
 

@@ -1,21 +1,24 @@
 package net.apptronic.test.commons_sample_app.onboarding.balance
 
 import net.apptronic.core.context.Context
+import net.apptronic.core.context.Contextual
+import net.apptronic.core.context.childContext
 import net.apptronic.core.entity.commons.genericEvent
 import net.apptronic.core.entity.commons.setAs
 import net.apptronic.core.entity.commons.value
 import net.apptronic.core.entity.function.map
 import net.apptronic.core.viewmodel.ViewModel
-import net.apptronic.core.viewmodel.defineViewModelContext
 import net.apptronic.test.commons_sample_app.app.HttpClientDescriptor
 import net.apptronic.test.commons_sample_app.onboarding.OnboardingDataDescriptor
 
-private fun balanceContext(router: BalanceRouter) = defineViewModelContext {
-    dependencyDispatcher.addInstance(router)
-}
+fun Contextual.balanceViewModel(router: BalanceRouter) =
+    BalanceViewModel(
+        childContext {
+            dependencyDispatcher.addInstance(router)
+        }
+    )
 
-class BalanceViewModel(parent: Context, router: BalanceRouter) :
-    ViewModel(parent, balanceContext(router)) {
+class BalanceViewModel internal constructor(context: Context) : ViewModel(context) {
 
     private val data = inject(OnboardingDataDescriptor)
     private val router = inject<BalanceRouter>()

@@ -3,14 +3,17 @@ package net.apptronic.test.commons_sample_app.stackloading
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import net.apptronic.core.context.Context
+import net.apptronic.core.context.Contextual
+import net.apptronic.core.context.childContext
 import net.apptronic.core.context.coroutines.contextCoroutineScope
 import net.apptronic.core.entity.commons.genericEvent
 import net.apptronic.core.entity.commons.value
-import net.apptronic.core.viewmodel.EmptyViewModelContext
 import net.apptronic.core.viewmodel.ViewModel
 
-class StackItemViewModel(parent: Context, val name: String) :
-    ViewModel(parent, EmptyViewModelContext) {
+fun Contextual.stackItemViewModel(name: String) =
+    StackItemViewModel(childContext(), name)
+
+class StackItemViewModel(context: Context, val name: String) : ViewModel(context) {
 
     private val router = inject(StackRouterDescriptor)
 

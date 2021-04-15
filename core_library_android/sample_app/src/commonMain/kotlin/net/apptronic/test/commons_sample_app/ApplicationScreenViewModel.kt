@@ -5,9 +5,9 @@ import net.apptronic.core.commons.routing.navigationRouter
 import net.apptronic.core.commons.routing.registerNavigationHandler
 import net.apptronic.core.context.Context
 import net.apptronic.core.context.Contextual
+import net.apptronic.core.context.childContext
 import net.apptronic.core.context.dependencyModule
 import net.apptronic.core.viewmodel.ViewModel
-import net.apptronic.core.viewmodel.defineViewModelContext
 import net.apptronic.core.viewmodel.navigation.BasicTransition
 import net.apptronic.core.viewmodel.navigation.stackNavigator
 import net.apptronic.test.commons_sample_app.animation.animationDemoViewModel
@@ -30,13 +30,14 @@ import net.apptronic.test.commons_sample_app.throttle.throttleSampleViewModel
 import net.apptronic.test.commons_sample_app.transition.AppTransition
 import net.apptronic.test.commons_sample_app.visibility.visibilityDemoViewModel
 
-val ApplicationScreenContext = defineViewModelContext {
-    dependencyModule {
-        navigationRouter()
-    }
-}
+fun Contextual.applicationScreenViewModel() =
+    ApplicationScreenViewModel(childContext {
+        dependencyModule {
+            navigationRouter()
+        }
+    })
 
-class ApplicationScreenViewModel(parent: Context) : ViewModel(parent, ApplicationScreenContext),
+class ApplicationScreenViewModel(context: Context) : ViewModel(context),
     DefaultNavigationHandler {
 
     val appNavigator = stackNavigator()

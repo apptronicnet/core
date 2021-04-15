@@ -3,13 +3,13 @@ package net.apptronic.test.commons_sample_app.lazylist
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import net.apptronic.core.context.Context
 import net.apptronic.core.context.Contextual
+import net.apptronic.core.context.childContext
 import net.apptronic.core.context.coroutines.contextCoroutineScope
 import net.apptronic.core.context.coroutines.serialThrottler
 import net.apptronic.core.viewmodel.ViewModel
-import net.apptronic.core.viewmodel.ViewModelContext
 import net.apptronic.core.viewmodel.navigation.listDynamicNavigator
-import net.apptronic.core.viewmodel.viewModelContext
 import kotlin.random.Random
 
 private const val CHARS = "qwertyuiopasdfghjklzxcvbnm1234567890"
@@ -20,9 +20,9 @@ private fun randomString(): String {
     }.toCharArray().concatToString()
 }
 
-fun Contextual.lazyListViewModel() = LazyListViewModel(viewModelContext())
+fun Contextual.lazyListViewModel() = LazyListViewModel(childContext())
 
-class LazyListViewModel internal constructor(context: ViewModelContext) : ViewModel(context),
+class LazyListViewModel internal constructor(context: Context) : ViewModel(context),
     LazyListItemClickListener {
 
     private val throttler = contextCoroutineScope.serialThrottler()

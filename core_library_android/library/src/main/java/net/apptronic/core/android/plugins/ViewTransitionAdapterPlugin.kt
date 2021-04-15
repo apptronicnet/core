@@ -2,7 +2,6 @@ package net.apptronic.core.android.plugins
 
 import net.apptronic.core.android.anim.adapter.ViewTransitionAdapter
 import net.apptronic.core.context.Context
-import net.apptronic.core.context.component.IComponent
 import net.apptronic.core.context.plugin.Plugin
 import net.apptronic.core.context.plugin.extensionDescriptor
 import net.apptronic.core.context.plugin.pluginDescriptor
@@ -18,11 +17,9 @@ private class ViewTransitionAdapterPlugin(
     private val adapter: ViewTransitionAdapter
 ) : Plugin {
 
-    override fun onComponent(component: IComponent) {
-        super.onComponent(component)
-        if (component is IViewModel) {
-            component.extensions[DefaultViewTransitionAdapterExtensionDescriptor] = adapter
-        }
+    override fun onViewModelAttached(viewModel: IViewModel) {
+        super.onViewModelAttached(viewModel)
+        viewModel.extensions[DefaultViewTransitionAdapterExtensionDescriptor] = adapter
     }
 
 }

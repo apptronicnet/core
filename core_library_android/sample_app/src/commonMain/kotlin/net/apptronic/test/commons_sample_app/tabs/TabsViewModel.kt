@@ -1,15 +1,15 @@
 package net.apptronic.test.commons_sample_app.tabs
 
+import net.apptronic.core.context.Context
 import net.apptronic.core.context.Contextual
+import net.apptronic.core.context.childContext
 import net.apptronic.core.viewmodel.ViewModel
-import net.apptronic.core.viewmodel.ViewModelContext
 import net.apptronic.core.viewmodel.navigation.BasicTransition
 import net.apptronic.core.viewmodel.navigation.selectorNavigator
-import net.apptronic.core.viewmodel.viewModelContext
 
-fun Contextual.tabsViewModel() = TabsViewModel(viewModelContext())
+fun Contextual.tabsViewModel() = TabsViewModel(childContext())
 
-class TabsViewModel(context: ViewModelContext) : ViewModel(context) {
+class TabsViewModel(context: Context) : ViewModel(context) {
 
     val tabNavigator = selectorNavigator()
 

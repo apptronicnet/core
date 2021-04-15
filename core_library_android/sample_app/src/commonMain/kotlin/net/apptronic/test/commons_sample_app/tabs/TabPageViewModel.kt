@@ -1,20 +1,17 @@
 package net.apptronic.test.commons_sample_app.tabs
 
+import net.apptronic.core.context.Context
 import net.apptronic.core.context.Contextual
+import net.apptronic.core.context.childContext
 import net.apptronic.core.entity.commons.value
 import net.apptronic.core.viewmodel.ViewModel
-import net.apptronic.core.viewmodel.ViewModelContext
 import net.apptronic.core.viewmodel.navigation.listDynamicNavigator
-import net.apptronic.core.viewmodel.viewModelContext
 
 fun Contextual.tabPageViewModel(title: String, backgroundColor: Int) =
-    TabPageViewModel(viewModelContext(), title, backgroundColor)
+    TabPageViewModel(childContext(), title, backgroundColor)
 
-class TabPageViewModel(
-    context: ViewModelContext,
-    title: String,
-    val backgroundColor: Int
-) : ViewModel(context) {
+class TabPageViewModel(context: Context, title: String, val backgroundColor: Int) :
+    ViewModel(context) {
 
     val title = value(title)
 

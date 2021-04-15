@@ -1,9 +1,10 @@
 package net.apptronic.test.commons_sample_app.pager.pages
 
 import net.apptronic.core.context.Context
+import net.apptronic.core.context.Contextual
+import net.apptronic.core.context.childContext
 import net.apptronic.core.entity.commons.toggle
 import net.apptronic.core.entity.commons.value
-import net.apptronic.core.viewmodel.EmptyViewModelContext
 import net.apptronic.core.viewmodel.ViewModel
 import net.apptronic.test.commons_sample_app.pager.NextPageNumberDescriptor
 import net.apptronic.test.commons_sample_app.resources.ColorVariant
@@ -13,7 +14,10 @@ import kotlin.random.Random
 private val IMAGE_VARIANTS = ImageVariant.values().toList()
 private val COLOR_VARIANTS = ColorVariant.values().toList()
 
-class ImagePageViewModel(parent: Context) : ViewModel(parent, EmptyViewModelContext) {
+fun Contextual.imagePageViewModel() =
+    ImagePageViewModel(childContext())
+
+class ImagePageViewModel(context: Context) : ViewModel(context) {
 
     private val pageNumber = inject(NextPageNumberDescriptor)
 
