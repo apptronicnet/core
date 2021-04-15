@@ -15,8 +15,12 @@ internal class EventBusComponent(context: Context) : Component(context) {
     private val references = mutableListOf<Reference>()
 
     fun postEvent(eventTransportObject: EventTransportObject<*>) {
+        // prevent concurrent modification
+        val iterator = mutableListOf<Reference>().apply {
+            addAll(references)
+        }
         scope.launch {
-            for (ref in references) {
+            for (ref in iterator) {
                 ref.observer.processEvent(eventTransportObject)
             }
         }
