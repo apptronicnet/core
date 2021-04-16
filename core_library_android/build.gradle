@@ -3,8 +3,8 @@ buildscript {
     ext.kotlin_version = "1.4.32"
     ext.coroutines_version = "1.4.3"
     ext.junit_version = "4.13.1"
-    ext.library_core_version = "0.11.2"
-    ext.library_android_version = "0.11.2"
+    ext.library_core_version = "0.11.3"
+    ext.library_android_version = "0.11.3"
 
     repositories {
         google()
