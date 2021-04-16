@@ -17,9 +17,9 @@ private class ViewBinderAdapterPlugin(
     private val adapter: ViewBinderAdapter
 ) : Plugin {
 
-    override fun onViewModelAttached(viewModel: IViewModel) {
-        super.onViewModelAttached(viewModel)
-        viewModel.extensions[DefaultViewBinderAdapterExtension] = adapter
+    override fun onContext(context: Context) {
+        super.onContext(context)
+        context.extensions[DefaultViewBinderAdapterExtension] = adapter
     }
 
 }
@@ -27,7 +27,7 @@ private class ViewBinderAdapterPlugin(
 private val DefaultViewBinderAdapterExtension = extensionDescriptor<ViewBinderAdapter>()
 
 fun IViewModel.getViewBinderAdapterFromExtension(): ViewBinderAdapter? {
-    return extensions[DefaultViewBinderAdapterExtension]
+    return context.extensions[DefaultViewBinderAdapterExtension]
 }
 
 fun Context.requireViewBinderAdapterPlugin() {
