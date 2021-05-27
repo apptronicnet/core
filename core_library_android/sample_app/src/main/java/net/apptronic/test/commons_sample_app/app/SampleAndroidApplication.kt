@@ -5,8 +5,8 @@ import android.content.Context
 import android.util.Log
 import net.apptronic.core.android.plugins.installAndroidApplicationPlugin
 import net.apptronic.core.viewmodel.installViewModelLogPlugin
-import net.apptronic.test.commons_sample_app.AppBinderFactory
 import net.apptronic.test.commons_sample_app.AppTransitionFactory
+import net.apptronic.test.commons_sample_app.AppViewBinderAdapter
 import net.apptronic.test.commons_sample_app.ApplicationScreenViewModel
 import net.apptronic.test.commons_sample_app.MainActivity
 
@@ -29,7 +29,7 @@ class SampleAndroidApplication : Application() {
                     Log.i("ViewModelLog", it)
                 }
                 installAndroidApplicationPlugin(this@SampleAndroidApplication) {
-                    installViewBinderAdapter(AppBinderFactory)
+                    installViewBinderAdapter(AppViewBinderAdapter)
                     installViewTransitionAdapter(AppTransitionFactory)
                     bindActivity(MainActivity::class, ApplicationScreenViewModel::class) {
                         it.onBackPressed()

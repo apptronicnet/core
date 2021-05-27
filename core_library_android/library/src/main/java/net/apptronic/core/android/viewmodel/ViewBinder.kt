@@ -56,9 +56,12 @@ abstract class ViewBinder<T : IViewModel> : ViewAdapter, BindingContainer {
         return view.getBinding(builder)
     }
 
-    fun <E> withBinging(builder: (View) -> E, action: E.() -> Unit) {
+    fun <E> withBinding(builder: (View) -> E, action: E.() -> Unit) {
         with(view.getBinding(builder), action)
     }
+
+    @Deprecated("Grammar mistake in method name")
+    fun <E> withBinging(builder: (View) -> E, action: E.() -> Unit) = withBinding(builder, action)
 
     val viewModelItem: ViewModelItem
         get() {

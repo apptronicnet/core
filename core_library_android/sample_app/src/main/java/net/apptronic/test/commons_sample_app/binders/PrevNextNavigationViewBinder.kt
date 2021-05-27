@@ -11,7 +11,7 @@ class PrevNextNavigationViewBinder : ViewBinder<PrevNextNavigationViewModel>() {
 
     override var layoutResId: Int? = R.layout.stack_navigation
 
-    override fun onBindView() = withBinging(StackNavigationBinding::bind) {
+    override fun onBindView() = withBinding(StackNavigationBinding::bind) {
         bindNavigator(navigationContainer, viewModel.navigator)
         bindClickListener(btnAdd, viewModel::onClickAdd)
         bindClickListener(btnReplace, viewModel::onClickReplace)

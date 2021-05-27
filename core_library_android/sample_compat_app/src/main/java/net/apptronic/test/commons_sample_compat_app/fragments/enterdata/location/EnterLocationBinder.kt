@@ -12,7 +12,7 @@ class EnterLocationBinder : ViewBinder<EnterLocationViewModel>() {
     override var layoutResId: Int? = R.layout.fragment_enter_location
 
     override fun onBindView() {
-        withBinging(FragmentEnterLocationBinding::bind) {
+        withBinding(FragmentEnterLocationBinding::bind) {
             bindTextInput(edtCountry, viewModel.country)
             bindTextInput(edtCity, viewModel.city)
             bindEnabledDisabled(btnSubmit, viewModel.isSubmitEnabled)

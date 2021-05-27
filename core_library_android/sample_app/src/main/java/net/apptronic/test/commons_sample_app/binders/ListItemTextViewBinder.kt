@@ -12,7 +12,7 @@ class ListItemTextViewBinder : ViewBinder<ListItemTextViewModel>() {
 
     override var layoutResId: Int? = R.layout.list_item_text
 
-    override fun onBindView() = withBinging(ListItemTextBinding::bind) {
+    override fun onBindView() = withBinding(ListItemTextBinding::bind) {
         bindText(listItemTxtIndex, viewModel.index.map { it.toString() })
         bindText(listItemTxtContent, viewModel.text)
         bindClickListener(view, viewModel::onBodyClick)

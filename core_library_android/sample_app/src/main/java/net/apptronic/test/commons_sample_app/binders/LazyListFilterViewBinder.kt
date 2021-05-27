@@ -12,7 +12,7 @@ class LazyListFilterViewBinder : ViewBinder<LazyListFilterViewModel>() {
 
     override var layoutResId: Int? = R.layout.lazy_filtered_list
 
-    override fun onBindView() = withBinging(LazyFilteredListBinding::bind) {
+    override fun onBindView() = withBinding(LazyFilteredListBinding::bind) {
         bindNavigator(lazyFilteredItemsList, viewModel.listNavigator)
         lazyFilteredItemsList.layoutManager = LinearLayoutManager(context)
         bindVisibleGone(progressBar, viewModel.isInProgress)

@@ -9,7 +9,7 @@ class MainViewBinder : ViewBinder<MainViewModel>() {
     override var layoutResId: Int? = R.layout.activity_main
 
     override fun onBindView() {
-        withBinging(ActivityMainBinding::bind) {
+        withBinding(ActivityMainBinding::bind) {
             bindClickListener(btnAbout, viewModel.onClickAbout)
             bindClickListener(btnDialog, viewModel.onClickDialog)
         }

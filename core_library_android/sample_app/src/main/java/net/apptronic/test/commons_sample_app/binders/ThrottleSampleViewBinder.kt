@@ -11,7 +11,7 @@ class ThrottleSampleViewBinder : ViewBinder<ThrottleSampleViewModel>() {
 
     override var layoutResId: Int? = R.layout.throttle_test
 
-    override fun onBindView() = withBinging(ThrottleTestBinding::bind) {
+    override fun onBindView() = withBinding(ThrottleTestBinding::bind) {
         bindClickListener(btnEmitNextItem, viewModel.onClickEmitNewItem)
         bindText(source, viewModel.currentItem)
         bindText(processing, viewModel.processingItem)

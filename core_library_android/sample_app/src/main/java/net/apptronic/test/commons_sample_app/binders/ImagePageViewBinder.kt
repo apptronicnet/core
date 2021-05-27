@@ -16,7 +16,7 @@ class ImagePageViewBinder : ViewBinder<ImagePageViewModel>() {
 
     override var layoutResId: Int? = R.layout.page_image
 
-    override fun onBindView() = withBinging(PageImageBinding::bind) {
+    override fun onBindView() = withBinding(PageImageBinding::bind) {
         bindText(imagePageNumber, viewModel.number)
         bindImageResource(imagePageValue, viewModel.imageRes.map { it.getResourceId() })
         bindImageTint(imagePageValue, viewModel.colorRes.map {

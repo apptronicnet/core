@@ -14,7 +14,7 @@ class StackLoadingViewBinder : ViewBinder<StackLoadingViewModel>() {
 
     override var layoutResId: Int? = R.layout.stack_loading
 
-    override fun onBindView() = withBinging(StackLoadingBinding::bind) {
+    override fun onBindView() = withBinding(StackLoadingBinding::bind) {
         bindNavigator(container, viewModel.navigator)
         bindText(txtLoading, viewModel.loadingIndicatorText)
         bindText(txtVisible, viewModel.visibleIndicatorText)

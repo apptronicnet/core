@@ -14,7 +14,7 @@ class StackNavigationItemViewBinder : ViewBinder<StackItemViewModel>() {
 
     override var layoutResId: Int? = R.layout.navigation_item
 
-    override fun onBindView() = withBinging(NavigationItemBinding::bind) {
+    override fun onBindView() = withBinding(NavigationItemBinding::bind) {
         bindText(text, viewModel.text)
         viewModel.backgroundColor.subscribe {
             val color = when (it) {

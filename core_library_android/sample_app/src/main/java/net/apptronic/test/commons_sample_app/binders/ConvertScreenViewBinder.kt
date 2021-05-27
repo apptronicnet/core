@@ -20,7 +20,7 @@ class ConvertScreenViewBinder : ViewBinder<ConvertScreenViewModel>() {
 
     override var layoutResId: Int? = R.layout.screen_convert
 
-    override fun onBindView() = withBinging(ScreenConvertBinding::bind) {
+    override fun onBindView() = withBinding(ScreenConvertBinding::bind) {
         bindTextInput(inputDistanceInKm, viewModel.inputDistance)
         bindTextInput(inputCostPerKmInUsd, viewModel.inputCost)
 

@@ -12,7 +12,7 @@ class DialogViewBinder(
     override var layoutResId: Int? = R.layout.sample_dialog
 
     override fun onBindView() {
-        withBinging(SampleDialogBinding::bind) {
+        withBinding(SampleDialogBinding::bind) {
             btnClose.setOnClickListener {
                 fragment.dismiss()
             }

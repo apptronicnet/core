@@ -11,7 +11,7 @@ class PagerViewBinder : ViewBinder<PagerViewModel>() {
 
     override var layoutResId: Int? = R.layout.screen_pages
 
-    override fun onBindView() = withBinging(ScreenPagesBinding::bind) {
+    override fun onBindView() = withBinding(ScreenPagesBinding::bind) {
         bindNavigator(viewPager, viewModel.pages)
         bindClickListener(addTextStart, viewModel::addTextStart)
         bindClickListener(addTextEnd, viewModel::addTextEnd)

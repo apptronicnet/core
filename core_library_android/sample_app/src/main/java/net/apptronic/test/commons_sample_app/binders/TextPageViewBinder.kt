@@ -11,7 +11,7 @@ class TextPageViewBinder : ViewBinder<TextPageViewModel>() {
 
     override var layoutResId: Int? = R.layout.page_text
 
-    override fun onBindView() = withBinging(PageTextBinding::bind) {
+    override fun onBindView() = withBinding(PageTextBinding::bind) {
         bindText(textPageNumber, viewModel.number)
         bindText(textPageValue, viewModel.text)
         bindClickListener(textPageValue, viewModel::onTextClick)

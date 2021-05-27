@@ -10,7 +10,7 @@ class NavigationScreenViewBinder : ViewBinder<MainScreenViewModel>() {
 
     override var layoutResId: Int? = R.layout.screen_navigation
 
-    override fun onBindView() = withBinging(ScreenNavigationBinding::bind) {
+    override fun onBindView() = withBinding(ScreenNavigationBinding::bind) {
         bindClickListener(loginScreenDemo, viewModel::onClickLoginDemo)
         bindClickListener(converterScreenDemo, viewModel::onClickConverterDemo)
         bindClickListener(listScreenDemo, viewModel::onClickListDemo)

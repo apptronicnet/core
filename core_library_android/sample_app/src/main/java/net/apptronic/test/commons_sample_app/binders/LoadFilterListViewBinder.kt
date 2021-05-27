@@ -16,7 +16,7 @@ class LoadFilterListViewBinder : ViewBinder<LoadFilterListViewModel>() {
 
     override var layoutResId: Int? = R.layout.load_filter_list
 
-    override fun onBindView() = withBinging(LoadFilterListBinding::bind) {
+    override fun onBindView() = withBinding(LoadFilterListBinding::bind) {
         bindNavigator(loadFilterList, viewModel.list)
         loadFilterList.layoutManager = LinearLayoutManager(context)
         LoadFilterMode.values().forEachIndexed { index, mode ->

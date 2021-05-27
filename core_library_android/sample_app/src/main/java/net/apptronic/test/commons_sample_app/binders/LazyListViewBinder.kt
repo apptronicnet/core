@@ -13,7 +13,7 @@ class LazyListViewBinder : ViewBinder<LazyListViewModel>() {
 
     override var layoutResId: Int? = R.layout.lazy_list
 
-    override fun onBindView() = withBinging(LazyListBinding::bind) {
+    override fun onBindView() = withBinding(LazyListBinding::bind) {
         bindNavigator(
             lazyList, viewModel.navigator,
             ViewListMode(bindingStrategy = BindingStrategy.UntilReused)

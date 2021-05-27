@@ -6,7 +6,7 @@ import net.apptronic.test.commons_sample_app.binders.tabs.TabListItemViewBinder
 import net.apptronic.test.commons_sample_app.binders.tabs.TabPageViewBinder
 import net.apptronic.test.commons_sample_app.binders.tabs.TabsViewBinder
 
-val AppBinderFactory = viewBinderAdapter {
+val AppViewBinderAdapter = viewBinderAdapter {
     add(::MainActivityViewBinder)
     add(::LoginScreenViewBinder)
     add(::RegistrationScreenViewBinder)

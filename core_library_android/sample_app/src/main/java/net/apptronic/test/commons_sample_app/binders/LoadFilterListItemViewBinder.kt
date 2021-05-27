@@ -10,7 +10,7 @@ class LoadFilterListItemViewBinder : ViewBinder<LoadItemViewModel>() {
 
     override var layoutResId: Int? = R.layout.load_filter_item
 
-    override fun onBindView() = withBinging(LoadFilterItemBinding::bind) {
+    override fun onBindView() = withBinding(LoadFilterItemBinding::bind) {
         bindText(loadFilterItemText, viewModel.text)
     }
 

@@ -11,7 +11,7 @@ class StackLoadingItemViewBinder : ViewBinder<StackItemViewModel>() {
 
     override var layoutResId: Int? = R.layout.stack_loading_item
 
-    override fun onBindView() = withBinging(StackLoadingItemBinding::bind) {
+    override fun onBindView() = withBinding(StackLoadingItemBinding::bind) {
         bindText(text, viewModel.text)
         bindClickListener(navigatorAdd, viewModel.onClickAdd)
         bindClickListener(navigatorRepalce, viewModel.onClickReplace)

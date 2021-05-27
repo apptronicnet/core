@@ -13,7 +13,7 @@ class RegistrationScreenViewBinder : ViewBinder<RegistrationViewModel>() {
 
     override var layoutResId: Int? = R.layout.screen_registration
 
-    override fun onBindView() = withBinging(ScreenRegistrationBinding::bind) {
+    override fun onBindView() = withBinding(ScreenRegistrationBinding::bind) {
         bindTextInput(email, viewModel.email)
         bindTextInput(password, viewModel.password)
         bindTextInput(passwordConfirmation, viewModel.passwordConfirmation)

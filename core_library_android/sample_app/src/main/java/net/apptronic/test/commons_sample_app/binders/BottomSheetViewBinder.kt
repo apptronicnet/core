@@ -10,7 +10,7 @@ class BottomSheetViewBinder : ViewBinder<BottomSheetViewModel>() {
 
     override var layoutResId: Int? = R.layout.bottom_sheet
 
-    override fun onBindView() = withBinging(BottomSheetBinding::bind) {
+    override fun onBindView() = withBinding(BottomSheetBinding::bind) {
         bindClickListener(btnReplace, viewModel::onClickReplace)
         bindClickListener(btnHide, viewModel::onClickHide)
     }

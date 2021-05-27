@@ -16,7 +16,7 @@ class ListItemImageViewBinder : ViewBinder<ListItemImageViewModel>() {
 
     override var layoutResId: Int? = R.layout.list_item_image
 
-    override fun onBindView() = withBinging(ListItemImageBinding::bind) {
+    override fun onBindView() = withBinding(ListItemImageBinding::bind) {
         bindText(listItemImgIndex, viewModel.index.map { it.toString() })
         bindImageResource(listItemImgContent, viewModel.imageRes.map { it.getResourceId() })
         bindImageTint(

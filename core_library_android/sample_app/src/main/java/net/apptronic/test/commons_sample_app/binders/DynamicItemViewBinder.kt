@@ -10,7 +10,7 @@ class DynamicItemViewBinder : ViewBinder<DynamicItemViewModel>() {
 
     override var layoutResId: Int? = R.layout.simple_text_item
 
-    override fun onBindView() = withBinging(SimpleTextItemBinding::bind) {
+    override fun onBindView() = withBinding(SimpleTextItemBinding::bind) {
         bindText(simpleText, viewModel.text)
     }
 

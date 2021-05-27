@@ -12,7 +12,7 @@ class EnterNameBinder : ViewBinder<EnterNameViewModel>() {
     override var layoutResId: Int? = R.layout.fragment_enter_name
 
     override fun onBindView() {
-        withBinging(FragmentEnterNameBinding::bind) {
+        withBinding(FragmentEnterNameBinding::bind) {
             bindTextInput(edtFirstName, viewModel.firstName)
             bindTextInput(edtLastName, viewModel.lastName)
             bindEnabledDisabled(btnContinue, viewModel.isContinueEnabled)

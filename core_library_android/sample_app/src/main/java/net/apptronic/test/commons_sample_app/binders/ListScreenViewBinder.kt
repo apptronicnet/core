@@ -14,7 +14,7 @@ class ListScreenViewBinder : ViewBinder<ListScreenViewModel>() {
 
     override var layoutResId: Int? = R.layout.screen_list
 
-    override fun onBindView() = withBinging(ScreenListBinding::bind) {
+    override fun onBindView() = withBinding(ScreenListBinding::bind) {
         bindText(listTitle, viewModel.title)
 
         bindNavigator(listOfItems, viewModel.listNavigator)
