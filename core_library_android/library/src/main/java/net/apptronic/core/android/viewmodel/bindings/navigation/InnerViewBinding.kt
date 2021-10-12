@@ -12,91 +12,71 @@ import net.apptronic.core.android.viewmodel.view.DefaultViewContainerViewAdapter
 import net.apptronic.core.android.viewmodel.view.ViewContainerViewAdapter
 import net.apptronic.core.viewmodel.IViewModel
 
-enum class BindingType(
-    internal val detectAndCreate: Boolean,
-    internal val createLayout:
-    Boolean, internal val clearLayout: Boolean
-) {
-    /**
-     * [ViewBinder] will create content view if target view is [ViewGroup] and have no children
-     */
-    AUTO(true, false, false),
-
-    /**
-     * Perform only binding of content view
-     */
-    BIND_ONLY(false, false, false),
-
-    /**
-     * [ViewBinder] will create content view before bind
-     */
-    CREATE_CONTENT(false, true, false),
-
-    /**
-     * [ViewBinder] will create content view before bind and destroy it on unbind
-     */
-    CREATE_CONTENT_AND_CLEAR(false, true, true)
-}
-
-fun BindingContainer.bindInnerViewModel(
+fun BindingContainer.bindInnerViewModelToView(
     view: View,
     viewModel: IViewModel,
     viewBinder: ViewBinder<*>,
-    bindingType: BindingType = BindingType.AUTO
 ) {
-    +InnerViewBinding(view, viewModel, { viewBinder }, bindingType)
+    +InnerViewBinding(view.parent as ViewGroup, view, viewModel) { viewBinder }
 }
 
-fun BindingContainer.bindInnerViewModel(
+fun BindingContainer.bindInnerViewModelToView(
     view: View,
     viewModel: IViewModel,
     adapter: ViewBinderAdapter? = null,
-    bindingType: BindingType = BindingType.AUTO
 ) {
     val resultAdapter = adapter
         ?: viewModel.getViewBinderAdapterFromExtension()
         ?: throw IllegalArgumentException("ViewBinderAdapter should be provided by parameters or Context.installViewBinderAdapterPlugin()")
-    +InnerViewBinding(view, viewModel, resultAdapter::getBinder, bindingType)
+    +InnerViewBinding(view.parent as ViewGroup, view, viewModel, resultAdapter::getBinder)
+}
+
+fun BindingContainer.bindInnerViewModelToContainer(
+    container: ViewGroup,
+    viewModel: IViewModel,
+    viewBinder: ViewBinder<*>,
+) {
+    +InnerViewBinding(container, null, viewModel) { viewBinder }
+}
+
+fun BindingContainer.bindInnerViewModelToContainer(
+    container: ViewGroup,
+    viewModel: IViewModel,
+    adapter: ViewBinderAdapter? = null,
+) {
+    val resultAdapter = adapter
+        ?: viewModel.getViewBinderAdapterFromExtension()
+        ?: throw IllegalArgumentException("ViewBinderAdapter should be provided by parameters or Context.installViewBinderAdapterPlugin()")
+    +InnerViewBinding(container, null, viewModel, resultAdapter::getBinder)
 }
 
 private class InnerViewBinding(
-    private val targetView: View,
+    private val targetContainer: ViewGroup,
+    private val targetView: View?,
     private val targetViewModel: IViewModel,
     private val builder: (IViewModel) -> ViewBinder<*>,
-    private val bindingType: BindingType
 ) : Binding() {
 
-    private val layoutInflater = LayoutInflater.from(targetView.context)
+    private val layoutInflater = LayoutInflater.from(targetContainer.context)
 
     override fun onBind(viewModel: IViewModel, viewBinder: ViewBinder<*>) {
         val viewAdapter = viewBinder as? ViewContainerViewAdapter ?: DefaultViewContainerViewAdapter
         val targetBinder = builder.invoke(targetViewModel)
-        val contentView: View = if (bindingType.detectAndCreate) {
-            val container = targetView as? ViewGroup
-            if (container != null && container.childCount == 0) {
-                val contentView = viewAdapter.onCreateView(
-                    viewModel,
-                    targetBinder,
-                    container.context,
-                    layoutInflater,
-                    container
-                )
-                viewAdapter.onAttachView(viewModel, contentView, container, container.childCount)
-                contentView
-            } else targetView
-        } else if (bindingType.createLayout) {
-            val container = targetView as ViewGroup
-            container.removeAllViews()
-            val contentView = viewAdapter.onCreateView(
+        val contentView = if (this.targetView != null) {
+            this.targetView
+        } else if (targetContainer.childCount > 0) {
+            targetContainer.getChildAt(0)
+        } else {
+            val result = viewAdapter.onCreateView(
                 viewModel,
                 targetBinder,
-                container.context,
+                targetContainer.context,
                 layoutInflater,
-                container
+                targetContainer
             )
-            viewAdapter.onAttachView(viewModel, contentView, container, container.childCount)
-            contentView
-        } else targetView
+            viewAdapter.onAttachView(viewModel, result, targetContainer, 0)
+            result
+        }
         targetBinder.performViewBinding(targetViewModel, contentView)
     }
 
