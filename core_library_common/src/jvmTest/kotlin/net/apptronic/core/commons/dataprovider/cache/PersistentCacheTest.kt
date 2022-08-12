@@ -7,6 +7,8 @@ import net.apptronic.core.BaseContextTest
 import net.apptronic.core.base.subject.ValueHolder
 import net.apptronic.core.base.subject.asValueHolder
 import net.apptronic.core.context.childContext
+import net.apptronic.core.entity.commons.genericEvent
+import net.apptronic.core.entity.conditions.awaitAny
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -15,6 +17,7 @@ import kotlin.test.assertNull
 class PersistentCacheTest : BaseContextTest() {
 
     private val persistence = mutableMapOf<Int, String>()
+    private val clock = genericEvent()
 
     private suspend fun DataProviderCache<Int, String>.getAsync(key: Int): String {
         val deferred = CompletableDeferred<String>()
@@ -27,12 +30,11 @@ class PersistentCacheTest : BaseContextTest() {
     private inner class PersistenceImpl : DataProviderCachePersistence<Int, String> {
 
         override suspend fun load(key: Int): ValueHolder<String>? {
-            delay(3)
             return persistence[key]?.asValueHolder()
         }
 
         override suspend fun save(key: Int, value: String) {
-            delay(3)
+            clock.awaitAny()
             persistence[key] = value
         }
 
@@ -98,7 +100,7 @@ class PersistentCacheTest : BaseContextTest() {
             cache[2] = "Two"
             cache[3] = "Three"
 
-            delay(10)
+            clock.update()
 
             assertNotNull(persistence[1])
             assertNotNull(persistence[2])
